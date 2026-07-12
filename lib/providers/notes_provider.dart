@@ -1,0 +1,223 @@
+import 'dart:developer' as developer;
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../models/note.dart';
+import 'auth_provider.dart';
+import 'relay_provider.dart';
+import 'service_providers.dart';
+import 'upload_settings_provider.dart';
+
+/// Note list shown in [HomeScreen]. `build()` loads from the local cache
+/// (instant, offline-first); mutations (create/update/delete) write to
+/// local storage right away and update the in-memory state.
+///
+/// Only ever watched once note encryption is confirmed unlocked (see
+/// [NoteEncryptionState] and [HomeScreen]) — [build] would otherwise throw
+/// when [LocalStorageService.loadNotes] hits a locked, encrypted box.
+class NotesNotifier extends AsyncNotifier<List<Note>> {
+  @override
+  Future<List<Note>> build() async {
+    developer.log('NotesNotifier.build called (loading from local cache)', name: 'NotesNotifier');
+    final localStorageService = ref.read(localStorageServiceProvider);
+    return localStorageService.loadNotes();
+  }
+
+  /// Creates or updates a note in local storage only — always fast and
+  /// reliable, regardless of network state, relay availability, or Amber
+  /// being reachable. Publishing to Nostr is a separate, explicit action
+  /// (see [syncNote]): tying it to every save meant a slow/failing signer
+  /// or relay silently made saving *feel* broken, with no feedback at all.
+  Future<void> saveNote(Note note) async {
+    developer.log('NotesNotifier.saveNote called: ${note.id}', name: 'NotesNotifier');
+    final current = state.value ?? const <Note>[];
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(localStorageServiceProvider).saveNote(note);
+      final index = current.indexWhere((n) => n.id == note.id);
+      if (index >= 0) {
+        return [
+          for (final n in current) n.id == note.id ? note : n,
+        ];
+      }
+      return [note, ...current];
+    });
+  }
+
+  /// Deletes [note] from local storage, and — if it had ever been synced —
+  /// best-effort retracts it from the relays too (NIP-09 deletion event,
+  /// see [NostrService.deleteNoteEvent]).
+  ///
+  /// The local delete always happens regardless of whether the retraction
+  /// does: relay state is a separate, best-effort concern from local
+  /// storage, same as everywhere else sync happens in this app. A
+  /// retraction failure is rethrown afterwards (after the note is already
+  /// gone locally) so `HomeScreen` can warn that it may still be visible on
+  /// the relay, instead of silently leaving a "deleted" note there forever.
+  Future<void> deleteNote(Note note) async {
+    developer.log('NotesNotifier.deleteNote called: ${note.id}', name: 'NotesNotifier');
+    final current = state.value ?? const <Note>[];
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      await ref.read(localStorageServiceProvider).deleteNote(note.id);
+      return current.where((n) => n.id != note.id).toList();
+    });
+
+    final author = ref.read(authProvider).value;
+    if (note.nostrEventId != null && author != null) {
+      final relays = ref.read(relayProvider).value ?? const [];
+      await ref.read(nostrServiceProvider).deleteNoteEvent(note: note, author: author, relays: relays);
+    }
+  }
+
+  /// Explicitly publishes a single [note] to Nostr right now — the cloud
+  /// button in `NoteEditorScreen`. Requires a logged-in Nostr account.
+  ///
+  /// Unlike [saveNote], this does *not* swallow failures into the provider's
+  /// error state (which would blank out the whole note list over one failed
+  /// sync): it rethrows so the editor screen can show an inline error and
+  /// leave the cloud icon showing "not synced", while [state] keeps
+  /// reflecting the last known-good note list.
+  Future<Note> syncNote(Note note) async {
+    developer.log('NotesNotifier.syncNote called: ${note.id}', name: 'NotesNotifier');
+    final author = ref.read(authProvider).value;
+    if (author == null) {
+      throw StateError('Cannot sync without a Nostr account.');
+    }
+    final relays = ref.read(relayProvider).value ?? const [];
+    final uploadProvider = ref.read(uploadProviderProvider);
+    final syncedNote = await ref.read(syncServiceProvider).syncNote(
+          note: note,
+          author: author,
+          relays: relays,
+          uploadProvider: uploadProvider,
+        );
+
+    final current = state.value ?? const <Note>[];
+    final index = current.indexWhere((n) => n.id == syncedNote.id);
+    state = AsyncData(
+      index >= 0
+          ? [for (final n in current) n.id == syncedNote.id ? syncedNote : n]
+          : [syncedNote, ...current],
+    );
+    return syncedNote;
+  }
+
+  /// Retracts a previously-synced [note] from the relays (NIP-09 deletion
+  /// event) and clears its local `synced`/`nostrEventId` state — the
+  /// counterpart to [syncNote], triggered by tapping the same cloud button
+  /// once it's already showing "synced". Requires a logged-in Nostr
+  /// account. Rethrows on failure, same rationale as [syncNote].
+  Future<Note> unsyncNote(Note note) async {
+    developer.log('NotesNotifier.unsyncNote called: ${note.id}', name: 'NotesNotifier');
+    final author = ref.read(authProvider).value;
+    if (author == null) {
+      throw StateError('Cannot unsync without a Nostr account.');
+    }
+    final relays = ref.read(relayProvider).value ?? const [];
+    final unsyncedNote = await ref.read(syncServiceProvider).unsyncNote(
+          note: note,
+          author: author,
+          relays: relays,
+        );
+
+    final current = state.value ?? const <Note>[];
+    final index = current.indexWhere((n) => n.id == unsyncedNote.id);
+    state = AsyncData(
+      index >= 0
+          ? [for (final n in current) n.id == unsyncedNote.id ? unsyncedNote : n]
+          : [unsyncedNote, ...current],
+    );
+    return unsyncedNote;
+  }
+
+  /// Forces a manual sync cycle (e.g. pull-to-refresh in [HomeScreen]):
+  /// pushes every unsynced local note and pulls remote changes.
+  ///
+  /// Unlike the unattended background auto-sync, a failure here is not
+  /// swallowed: the local note list is reloaded and shown regardless (so a
+  /// failed remote sync never blanks out notes that are already on the
+  /// device), but the error is rethrown afterwards so `HomeScreen` can
+  /// surface it — otherwise a failed refresh (no relays configured, Amber
+  /// not responding, relay unreachable...) would look identical to "there
+  /// was simply nothing new to sync".
+  ///
+  /// In local-only mode there is nothing to sync with, so this just
+  /// re-reads the local cache (harmless, and keeps pull-to-refresh working
+  /// as a general "reload" gesture either way).
+  Future<void> refreshFromRelays() async {
+    developer.log('NotesNotifier.refreshFromRelays called', name: 'NotesNotifier');
+    final author = ref.read(authProvider).value;
+    final localStorageService = ref.read(localStorageServiceProvider);
+
+    Object? syncError;
+    if (author != null) {
+      try {
+        final relays = ref.read(relayProvider).value ?? const [];
+        final uploadProvider = ref.read(uploadProviderProvider);
+        await ref.read(syncServiceProvider).runSyncCycle(
+              author: author,
+              relays: relays,
+              uploadProvider: uploadProvider,
+              silent: false,
+            );
+      } catch (e) {
+        syncError = e;
+      }
+    }
+
+    state = await AsyncValue.guard(localStorageService.loadNotes);
+    if (syncError != null) throw syncError;
+  }
+
+  /// Republishes every previously-synced note to every currently configured
+  /// relay — for backfilling a relay that was just added (e.g. a
+  /// self-hosted backup node) with notes that already went out to the
+  /// others before it existed. See [SyncService.republishAllSyncedNotes].
+  /// Returns how many notes were successfully republished.
+  Future<int> republishAllToRelays() async {
+    developer.log('NotesNotifier.republishAllToRelays called', name: 'NotesNotifier');
+    final author = ref.read(authProvider).value;
+    if (author == null) {
+      throw StateError('Cannot sync without a Nostr account.');
+    }
+    final relays = ref.read(relayProvider).value ?? const [];
+    final uploadProvider = ref.read(uploadProviderProvider);
+    final notes = state.value ?? const <Note>[];
+    final count = await ref.read(syncServiceProvider).republishAllSyncedNotes(
+          notes: notes,
+          author: author,
+          relays: relays,
+          uploadProvider: uploadProvider,
+        );
+    state = await AsyncValue.guard(() => ref.read(localStorageServiceProvider).loadNotes());
+    return count;
+  }
+
+  /// Serializes local notes into a single JSON string for backup — see
+  /// `SettingsScreen`'s "Export notes" action ([noteIds] null) and the note
+  /// list's multi-select "export selected" action ([noteIds] set). Passing
+  /// [password] encrypts the export (see
+  /// [LocalStorageService.exportNotesAsJson]) — the export dialog in
+  /// `note_actions.dart` is what decides whether/which password to collect.
+  Future<String> exportNotes({Iterable<String>? noteIds, String? password}) {
+    developer.log('NotesNotifier.exportNotes called', name: 'NotesNotifier');
+    return ref.read(localStorageServiceProvider).exportNotesAsJson(noteIds: noteIds, password: password);
+  }
+
+  /// Imports notes from a JSON string previously produced by [exportNotes]
+  /// and refreshes the in-memory list to reflect what was written. Returns
+  /// how many notes were actually imported/updated (see
+  /// [LocalStorageService.importNotesFromJson] for the merge rule).
+  /// [password] is required if the export was encrypted.
+  Future<int> importNotes(String json, {String? password}) async {
+    developer.log('NotesNotifier.importNotes called', name: 'NotesNotifier');
+    final localStorageService = ref.read(localStorageServiceProvider);
+    final count = await localStorageService.importNotesFromJson(json, password: password);
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(localStorageService.loadNotes);
+    return count;
+  }
+}
+
+final notesProvider = AsyncNotifierProvider<NotesNotifier, List<Note>>(NotesNotifier.new);

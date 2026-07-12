@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Lets a user-configured relay use a plain ws:// URL (Settings' relay
+    field has no scheme requirement — see RelayUrlInput) instead of only
+    wss://. Needed for e.g. a self-hosted relay reachable at a bare LAN or
+    Tailscale IP (ws://192.168.x.x:4848, ws://100.x.y.z:4848): Android 9+
+    blocks all cleartext traffic by default, and network_security_config has
+    no way to scope an exception to "any private/Tailscale IP" — its
+    <domain> matching only supports exact hostnames/subdomains, not CIDR
+    ranges — so the alternative would be a fixed allowlist that breaks the
+    moment the relay's IP changes.
+
+    This does not weaken the app's other network use: attachment
+    upload/download independently refuses anything but https:// in Dart
+    itself (see AttachmentUploadService._requireHttps), regardless of what
+    the OS permits, and every built-in default (relays, upload hosts,
+    profile metadata fallback relays) is wss/https already. A cleartext
+    connection only ever happens if the user explicitly types a ws:// URL
+    into Settings — e.g. a self-hosted backup relay reached over Tailscale
+    or the local network without TLS in front of it.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

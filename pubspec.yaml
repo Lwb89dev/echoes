@@ -1,0 +1,164 @@
+name: echoes
+description: "Echoes - offline-first note-taking app on the Nostr protocol."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management: Riverpod chosen over Provider because AsyncNotifier/
+  # AsyncValue model async sync/fetch operations against relays better
+  # (explicit loading/error/data states, no nested FutureBuilders).
+  flutter_riverpod: ^3.3.2
+
+  # Nostr protocol: key generation, event signing, relay management over websockets.
+  dart_nostr: ^10.0.1
+
+  # "Simple" local persistence: settings, relay list, misc flags.
+  shared_preferences: ^2.5.5
+
+  # Local persistence for notes (structured data, no codegen: Notes are
+  # saved as Map<String, dynamic> serialized via manual toJson/fromJson,
+  # which avoids hive_generator/build_runner — it currently conflicts with
+  # the 'analyzer' versions required by dart_nostr/riverpod).
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Encrypted storage dedicated to the account private key (nsec). The
+  # private key must never end up in plaintext SharedPreferences: this uses
+  # the native keystore/keychain instead.
+  flutter_secure_storage: ^10.3.1
+
+  uuid: ^4.5.3
+  connectivity_plus: ^7.2.0
+
+  # Login via Amber (NIP-55 external signer, Android only): the app never
+  # sees the private key, it delegates signing/encryption to Amber via intent.
+  amberflutter: ^0.0.9
+
+  # Low-level crypto primitives (secp256k1 EC point math, HMAC-SHA256,
+  # ChaCha20) backing our own NIP-44 implementation — see
+  # lib/utils/nip44.dart. dart_nostr doesn't implement NIP-44, and every
+  # published Dart package that does (e.g. `nostr`) pulls in a `bip340`
+  # version that needs pointycastle ^4.0.0, which conflicts with
+  # dart_nostr's own (transitive, via bip39) pointycastle ^3.x requirement.
+  # pointycastle itself has no such conflict, so implementing NIP-44
+  # directly against it — instead of forcing a package-level
+  # dependency_override — avoids the conflict entirely without touching
+  # dart_nostr's own dependency tree.
+  pointycastle: ^3.9.1
+
+  # `@visibleForTesting` on the NIP-44 internals that test/nip44_test.dart
+  # exercises directly against the official spec vectors.
+  meta: ^1.16.0
+
+  # At-rest encryption of local notes (Pbkdf2 + AES-GCM), when the user
+  # turns on password protection.
+  cryptography: ^2.9.0
+
+  # Localization: official EU languages + Chinese/Russian/Japanese (see
+  # lib/l10n/ and l10n.yaml).
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  # Notes export/import (Settings > Data): saveFile()/pickFiles(withData:)
+  # need at least file_picker 8.x — pinned to ^8.0.0 explicitly, since an
+  # unconstrained `flutter pub add` resolved to a much older 3.x that
+  # predates that API.
+  file_picker: ^8.0.0
+
+  # "Support Echoes" tile in Settings: opens the developer's Lightning
+  # address via a `lightning:` URI in whatever wallet app is installed.
+  url_launcher: ^6.3.2
+
+  # Uploading/downloading encrypted attachment blobs (Blossom/NIP-96 file
+  # hosts) and fetching Nostr profile metadata/avatars.
+  http: ^1.6.0
+
+  # MediaType, for declaring an attachment's real (image/audio) category on
+  # upload — some Blossom/NIP-96 hosts reject a generic content type.
+  http_parser: ^4.1.2
+
+  # SHA-256: cache keys for downloaded files (avatar, attachments) and
+  # integrity hashes for uploaded/downloaded attachment blobs.
+  crypto: ^3.0.7
+
+  # App-private cache directory for the avatar image and decrypted
+  # attachment files — never external/shared storage.
+  path_provider: ^2.1.0
+
+  # Microphone recording for voice notes.
+  record: ^6.0.0
+
+  # Voice message playback with a Telegram-style waveform (extracted from
+  # the actual recording, not a placeholder), used in the note editor.
+  audio_waveforms: ^2.0.2
+
+  # Renders note bodies as markdown in Preview mode, with a custom image
+  # builder for inline attachment images (see note_editor_screen.dart).
+  # Community-maintained continuation of the now-discontinued
+  # flutter_markdown, same API.
+  flutter_markdown_plus: ^1.0.12
+
+  # Google-Keep-style masonry grid for the optional note list layout (see
+  # note_layout_provider.dart) — a plain GridView can't vary tile height
+  # per note the way a masonry layout does.
+  flutter_staggered_grid_view: ^0.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.8
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  uses-material-design: true
+
+  # Generates lib/l10n/app_localizations*.dart from the ARB files, per l10n.yaml.
+  generate: true
+
+  assets:
+    - assets/icon/
+    - assets/splash/
+
+# App icon generated from Icons.graphic_eq (see assets/icon/icon.png): solid
+# teal 700 background for iOS/web, adaptive icon (transparent foreground +
+# solid background) for Android. Regenerate with:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#00796B"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  remove_alpha_ios: true
+  web:
+    generate: true
+    background_color: "#00796B"
+    theme_color: "#00796B"
+
+# Native splash screen (same symbol, teal background in both light and
+# dark, dark-mode-friendly by design). Regenerate with:
+#   dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#00796B"
+  color_dark: "#001E1B"
+  image: assets/splash/splash_icon.png
+  android_12:
+    image: assets/splash/splash_icon.png
+    color: "#00796B"
+    color_dark: "#001E1B"
+  web: false
