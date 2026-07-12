@@ -65,4 +65,4 @@ lib/
 
 ## License
 
-No license has been chosen yet — all rights reserved by default until one is added.
+GNU GPL v3.0 — copyleft: free to use, study, modify and redistribute, verbatim or modified, provided that any distributed version (including forks and modified copies) remains licensed under the GPL and its complete corresponding source code is made available to recipients. Attribution appreciated.
