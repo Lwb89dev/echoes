@@ -45,6 +45,14 @@ class Attachment {
   final int? width;
   final int? height;
 
+  /// Voice notes only: what moment this recording is *about* — defaults to
+  /// when recording stopped (see `_NoteEditorScreenState._onVoiceRecorded`),
+  /// but editable to any arbitrary moment (long-press the voice message
+  /// bubble — see `_VoiceMessageBubble`), same idea as a diary entry's own
+  /// freely-editable [Note.entryDate]. Null for image attachments, and for
+  /// any voice note recorded before this existed.
+  final DateTime? recordedAt;
+
   const Attachment({
     required this.id,
     required this.type,
@@ -59,6 +67,7 @@ class Attachment {
     this.durationSeconds,
     this.width,
     this.height,
+    this.recordedAt,
   });
 
   bool get isUploaded => url != null;
@@ -66,10 +75,7 @@ class Attachment {
   /// The uploaded counterpart of this (necessarily still-pending, i.e.
   /// [isUploaded] == false) attachment: same identity/media metadata,
   /// now with a remote [url] and decryption material, and no local path
-  /// left to fall back to. There is exactly one transition an
-  /// [Attachment] ever goes through in this app, so a single named
-  /// constructor for it reads clearer than a general-purpose `copyWith`
-  /// with a field for every possible change.
+  /// left to fall back to.
   factory Attachment.uploaded({
     required Attachment pending,
     required String url,
@@ -90,6 +96,29 @@ class Attachment {
       durationSeconds: pending.durationSeconds,
       width: pending.width,
       height: pending.height,
+      recordedAt: pending.recordedAt,
+    );
+  }
+
+  /// The other transition an [Attachment] goes through: the user manually
+  /// (re)setting [recordedAt] on a voice note (see `_VoiceMessageBubble`'s
+  /// long-press menu). Everything else about it is unchanged.
+  Attachment withRecordedAt(DateTime recordedAt) {
+    return Attachment(
+      id: id,
+      type: type,
+      localPath: localPath,
+      url: url,
+      decryptionKeyBase64: decryptionKeyBase64,
+      decryptionNonceBase64: decryptionNonceBase64,
+      encryptionAlgorithm: encryptionAlgorithm,
+      mimeType: mimeType,
+      sizeBytes: sizeBytes,
+      sha256OfEncrypted: sha256OfEncrypted,
+      durationSeconds: durationSeconds,
+      width: width,
+      height: height,
+      recordedAt: recordedAt,
     );
   }
 
@@ -107,6 +136,7 @@ class Attachment {
         'durationSeconds': durationSeconds,
         'width': width,
         'height': height,
+        'recordedAt': recordedAt?.toIso8601String(),
       };
 
   factory Attachment.fromJson(Map<String, dynamic> json) {
@@ -124,6 +154,7 @@ class Attachment {
       durationSeconds: json['durationSeconds'] as int?,
       width: json['width'] as int?,
       height: json['height'] as int?,
+      recordedAt: json['recordedAt'] != null ? DateTime.parse(json['recordedAt'] as String) : null,
     );
   }
 }

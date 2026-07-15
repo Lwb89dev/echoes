@@ -8,10 +8,12 @@ import '../providers/fab_menu_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/note_encryption_provider.dart';
 import '../providers/note_layout_provider.dart';
+import '../providers/note_search_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/selection_provider.dart';
 import '../utils/constants.dart';
 import '../utils/formatter.dart';
+import '../utils/note_colors.dart';
 import 'note_editor_screen.dart';
 import 'settings_screen.dart';
 import 'widgets/note_actions.dart';
@@ -46,22 +48,7 @@ class HomeScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: selection.isEmpty
-          ? AppBar(
-              title: Text(tab == HomeTab.notes ? AppConstants.appName : l.diaryTabLabel),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  tooltip: l.settingsTooltip,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                    );
-                  },
-                ),
-              ],
-            )
-          : const _SelectionAppBar(),
+      appBar: selection.isEmpty ? _HomeAppBar(tab: tab) : const _SelectionAppBar(),
       body: Stack(
         children: [
           encryptionState.when(
@@ -122,6 +109,103 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+/// The normal (non-selection) app bar: the current tab's title, or — once
+/// the search icon is tapped — an inline query field in its place, same
+/// idea as Google Keep/Notes' search (no separate search screen/route). A
+/// `ConsumerStatefulWidget` (rather than the simpler `ConsumerWidget` most
+/// of this file uses) because the query field's controller needs to
+/// survive rebuilds without losing focus/cursor position while typing,
+/// same rationale as Settings' custom-URL field.
+///
+/// The query itself lives in [noteSearchProvider] (so both tabs' bodies
+/// can filter by it), but whether the search field is currently expanded
+/// is local, purely-visual state — it doesn't need to be shared or survive
+/// a rebuild of anything else.
+class _HomeAppBar extends ConsumerStatefulWidget implements PreferredSizeWidget {
+  const _HomeAppBar({required this.tab});
+
+  final HomeTab tab;
+
+  @override
+  ConsumerState<_HomeAppBar> createState() => _HomeAppBarState();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
+  bool _searching = false;
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController()
+      ..addListener(() => ref.read(noteSearchProvider.notifier).setQuery(_searchController.text));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _startSearch() => setState(() => _searching = true);
+
+  void _stopSearch() {
+    _searchController.clear();
+    ref.read(noteSearchProvider.notifier).clear();
+    setState(() => _searching = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final layout = ref.watch(noteLayoutProvider);
+    return AppBar(
+      title: _searching
+          ? TextField(
+              controller: _searchController,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: l.searchNotesHint,
+                border: InputBorder.none,
+              ),
+              style: Theme.of(context).textTheme.titleMedium,
+            )
+          : Text(widget.tab == HomeTab.notes ? AppConstants.appName : l.diaryTabLabel),
+      actions: [
+        // Layout only applies to the Notes tab's own list — Diary is
+        // always a day-grouped timeline, there's no grid variant of it to
+        // switch to.
+        if (!_searching && widget.tab == HomeTab.notes)
+          IconButton(
+            icon: Icon(layout == NoteLayout.list ? Icons.grid_view_outlined : Icons.view_list_outlined),
+            tooltip: l.noteLayoutToggleTitle,
+            onPressed: () => ref.read(noteLayoutProvider.notifier).setLayout(
+                  layout == NoteLayout.list ? NoteLayout.grid : NoteLayout.list,
+                ),
+          ),
+        IconButton(
+          icon: Icon(_searching ? Icons.close : Icons.search),
+          tooltip: _searching ? l.closeSearchTooltip : l.searchTooltip,
+          onPressed: _searching ? _stopSearch : _startSearch,
+        ),
+        if (!_searching)
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l.settingsTooltip,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
+            },
+          ),
+      ],
+    );
+  }
+}
+
 bool _notesOnly(Note note) => !note.isDiaryEntry;
 bool _diaryOnly(Note note) => note.isDiaryEntry;
 
@@ -138,6 +222,7 @@ class _RefreshableNotesBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notesState = ref.watch(notesProvider);
+    final query = ref.watch(noteSearchProvider).trim().toLowerCase();
     final l = AppLocalizations.of(context);
     return RefreshIndicator(
       onRefresh: () async {
@@ -152,12 +237,26 @@ class _RefreshableNotesBody extends ConsumerWidget {
         }
       },
       child: notesState.when(
-        data: (notes) => builder(notes: notes.where(filter).toList()),
+        data: (notes) {
+          final tabFiltered = notes.where(filter);
+          final matched = query.isEmpty ? tabFiltered : tabFiltered.where((n) => _matchesQuery(n, query));
+          return builder(notes: matched.toList());
+        },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => _ErrorState(error: error),
       ),
     );
   }
+}
+
+/// Whether [note] matches a (already-lowercased, trimmed) search [query] —
+/// title, body, and every checklist item's text, so a search finds a
+/// checklist note by an item's wording even though [Note.preview] joins
+/// those same items with commas rather than showing the raw body.
+bool _matchesQuery(Note note, String query) {
+  if (note.title.toLowerCase().contains(query)) return true;
+  if (note.body.toLowerCase().contains(query)) return true;
+  return note.items.any((item) => item.text.toLowerCase().contains(query));
 }
 
 /// App bar shown instead of the normal one while [selectionProvider] is
@@ -224,12 +323,16 @@ class _NotesList extends ConsumerWidget {
     final layout = ref.watch(noteLayoutProvider);
 
     if (notes.isEmpty) {
+      // An active search query filtered everything out — "Tap + to create
+      // one" would be misleading here, the notes it's talking about exist,
+      // they just don't match.
+      final searching = ref.watch(noteSearchProvider).trim().isNotEmpty;
       return LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(child: Text(l.emptyNotesMessage)),
+            child: Center(child: Text(searching ? l.noSearchResultsMessage : l.emptyNotesMessage)),
           ),
         ),
       );
@@ -259,7 +362,13 @@ class _NotesListView extends ConsumerWidget {
       itemBuilder: (context, index) {
         final note = notes[index];
         final selected = selection.contains(note.id);
+        // Only overrides text color when the note actually has one of its
+        // own — leaves the tile's normal theme-driven colors (including
+        // the selected-row tint) alone otherwise.
+        final textColor = note.color?.onBackground;
+        final mutedColor = note.color != null ? mutedTextColorOn(note.color!.background) : null;
         return ListTile(
+          tileColor: note.color?.background,
           selected: selected,
           leading: selectionMode
               ? Icon(selected ? Icons.check_circle : Icons.circle_outlined)
@@ -268,11 +377,13 @@ class _NotesListView extends ConsumerWidget {
             note.title.isEmpty ? l.untitledNote : note.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            style: textColor != null ? TextStyle(color: textColor) : null,
           ),
           subtitle: Text(
             note.preview,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            style: mutedColor != null ? TextStyle(color: mutedColor) : null,
           ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -280,7 +391,7 @@ class _NotesListView extends ConsumerWidget {
             children: [
               Text(
                 Formatter.relativeTimestamp(note.updatedAt, l),
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
               ),
               const SizedBox(height: 4),
               // Same three-state icon as the cloud button in
@@ -333,9 +444,16 @@ class _NotesGridView extends ConsumerWidget {
         final note = notes[index];
         final selected = selection.contains(note.id);
         final colorScheme = Theme.of(context).colorScheme;
+        // Selection highlight wins over a note's own color when both would
+        // otherwise apply — the tint is a transient UI state, not the
+        // note's actual color, and needs to stay recognizable regardless
+        // of what that color is.
+        final cardColor = selected ? colorScheme.primaryContainer : note.color?.background;
+        final textColor = !selected ? note.color?.onBackground : null;
+        final mutedColor = !selected && note.color != null ? mutedTextColorOn(note.color!.background) : null;
         return Card(
           clipBehavior: Clip.antiAlias,
-          color: selected ? colorScheme.primaryContainer : null,
+          color: cardColor,
           child: InkWell(
             onTap: () => _openNote(context, ref, note, selectionMode),
             onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
@@ -352,7 +470,7 @@ class _NotesGridView extends ConsumerWidget {
                             ? (selected ? Icons.check_circle : Icons.circle_outlined)
                             : (note.isChecklist ? Icons.checklist : Icons.notes),
                         size: 18,
-                        color: colorScheme.onSurfaceVariant,
+                        color: mutedColor ?? colorScheme.onSurfaceVariant,
                       ),
                       const Spacer(),
                       Icon(
@@ -369,7 +487,7 @@ class _NotesGridView extends ConsumerWidget {
                     note.title.isEmpty ? l.untitledNote : note.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor),
                   ),
                   if (note.preview.isNotEmpty) ...[
                     const SizedBox(height: 4),
@@ -377,7 +495,7 @@ class _NotesGridView extends ConsumerWidget {
                       note.preview,
                       maxLines: 6,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
                     ),
                   ],
                   const SizedBox(height: 8),
@@ -386,7 +504,7 @@ class _NotesGridView extends ConsumerWidget {
                     style: Theme.of(context)
                         .textTheme
                         .labelSmall
-                        ?.copyWith(color: colorScheme.onSurfaceVariant),
+                        ?.copyWith(color: mutedColor ?? colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -442,12 +560,13 @@ class _DiaryList extends ConsumerWidget {
     final l = AppLocalizations.of(context);
 
     if (notes.isEmpty) {
+      final searching = ref.watch(noteSearchProvider).trim().isNotEmpty;
       return LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(child: Text(l.emptyDiaryMessage)),
+            child: Center(child: Text(searching ? l.noSearchResultsMessage : l.emptyDiaryMessage)),
           ),
         ),
       );
@@ -540,18 +659,27 @@ class _DiaryEntryTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final textColor = note.color?.onBackground;
+    final mutedColor = note.color != null ? mutedTextColorOn(note.color!.background) : null;
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 34, right: 16),
+      tileColor: note.color?.background,
       selected: selected,
       leading: selectionMode ? Icon(selected ? Icons.check_circle : Icons.circle_outlined) : null,
       title: Text(
         note.title.isEmpty ? l.untitledNote : note.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
+        style: textColor != null ? TextStyle(color: textColor) : null,
       ),
       subtitle: note.preview.isEmpty
           ? null
-          : Text(note.preview, maxLines: 2, overflow: TextOverflow.ellipsis),
+          : Text(
+              note.preview,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: mutedColor != null ? TextStyle(color: mutedColor) : null,
+            ),
       trailing: Icon(
         note.synced
             ? Icons.cloud_done_outlined

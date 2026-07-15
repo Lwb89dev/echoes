@@ -47,21 +47,31 @@ class SyncService {
   /// subscribes to connectivity changes, so coming back online after being
   /// offline triggers a sync right away instead of waiting for the next
   /// scheduled tick.
+  /// [onCycleCompleted] runs after every unattended cycle finishes
+  /// (successfully or not — a cycle that failed halfway may still have
+  /// written uploaded-attachment state for some notes before the failure).
+  /// The caller uses it to refresh in-memory state from storage: these
+  /// cycles write to [LocalStorageService] directly, invisibly to any
+  /// provider holding notes in memory.
   void startAutoSync({
     required User author,
     required List<Relay> relays,
     required UploadProviderOption uploadProvider,
+    void Function()? onCycleCompleted,
   }) {
     developer.log('SyncService.startAutoSync called', name: 'SyncService');
     stopAutoSync();
 
-    _pollTimer = Timer.periodic(AppConstants.syncPollInterval, (_) {
-      runSyncCycle(author: author, relays: relays, uploadProvider: uploadProvider);
-    });
+    Future<void> cycle() async {
+      await runSyncCycle(author: author, relays: relays, uploadProvider: uploadProvider);
+      onCycleCompleted?.call();
+    }
+
+    _pollTimer = Timer.periodic(AppConstants.syncPollInterval, (_) => cycle());
 
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {
       if (results.any((result) => result != ConnectivityResult.none)) {
-        runSyncCycle(author: author, relays: relays, uploadProvider: uploadProvider);
+        cycle();
       }
     });
   }

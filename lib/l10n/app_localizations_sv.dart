@@ -31,6 +31,18 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settingsTooltip => 'Inställningar';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Inga anteckningar än. Tryck på + för att skapa en.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get unlockButton => 'Lås upp';
 
   @override
-  String get newNoteTitle => 'Ny anteckning';
-
-  @override
-  String get editNoteTitle => 'Redigera anteckning';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Spara';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsSv extends AppLocalizations {
   String get addItemButton => 'Lägg till objekt';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Lägg till bild';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Spela in en röstanteckning';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Stoppa inspelning';
 
   @override
   String get cancelRecordingTooltip => 'Avbryt inspelning';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -260,9 +323,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Layout för anteckningslista';
-
-  @override
-  String get noteLayoutToggleSubtitle => 'Växla mellan list- och rutnätsvy';
 
   @override
   String get manageRelaysTitle => 'Hantera reläer';

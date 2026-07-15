@@ -31,6 +31,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsTooltip => 'Instellingen';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Nog geen notities. Tik op + om er een te maken.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unlockButton => 'Ontgrendelen';
 
   @override
-  String get newNoteTitle => 'Nieuwe notitie';
-
-  @override
-  String get editNoteTitle => 'Notitie bewerken';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Opslaan';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsNl extends AppLocalizations {
   String get addItemButton => 'Item toevoegen';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Afbeelding toevoegen';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Spraaknotitie opnemen';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Opname stoppen';
 
   @override
   String get cancelRecordingTooltip => 'Opname annuleren';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -260,10 +323,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Indeling notitielijst';
-
-  @override
-  String get noteLayoutToggleSubtitle =>
-      'Schakel tussen lijst- en rasterweergave';
 
   @override
   String get manageRelaysTitle => 'Relays beheren';

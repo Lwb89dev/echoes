@@ -31,6 +31,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsTooltip => 'Настройки';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Заметок пока нет. Нажмите +, чтобы создать новую.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get unlockButton => 'Разблокировать';
 
   @override
-  String get newNoteTitle => 'Новая заметка';
-
-  @override
-  String get editNoteTitle => 'Редактировать заметку';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Сохранить';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addItemButton => 'Добавить пункт';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Добавить изображение';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Записать голосовую заметку';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Остановить запись';
 
   @override
   String get cancelRecordingTooltip => 'Отменить запись';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -259,9 +322,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Вид списка заметок';
-
-  @override
-  String get noteLayoutToggleSubtitle => 'Переключение между списком и сеткой';
 
   @override
   String get manageRelaysTitle => 'Управление реле';

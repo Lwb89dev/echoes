@@ -1,8 +1,11 @@
+import 'dart:async';
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +17,7 @@ import '../providers/auth_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/service_providers.dart';
 import '../utils/formatter.dart';
+import '../utils/note_colors.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/voice_recorder.dart';
 
@@ -129,7 +133,39 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     return _imageAttachments.where((a) => !body.contains('attachment://${a.id}')).toList();
   }
 
+  /// Same idea as [_unreferencedImageAttachments], for voice notes: a new
+  /// recording is inserted as an inline token (see [_onVoiceRecorded]) so
+  /// it can sit wherever the user placed the cursor — right between two
+  /// paragraphs, say — instead of always trailing at the very bottom of
+  /// the note. Checklists (no body to embed a token in) and any voice note
+  /// recorded before this existed still fall back to showing it here.
+  List<Attachment> get _unreferencedAudioAttachments {
+    final body = _bodyController.text;
+    return _audioAttachments.where((a) => !body.contains('attachment://${a.id}')).toList();
+  }
+
   bool _showRecorder = false;
+
+  /// Whether the body's formatting toolbar is showing — driven by
+  /// [_bodyController]'s selection (see the listener added in [initState]),
+  /// not a manually-toggled flag: it appears the moment there's an actual
+  /// text selection (e.g. from a long-press) and disappears the moment
+  /// there isn't, freeing that same slot for [_VoiceRecorderTrigger]/
+  /// [VoiceRecorder] the rest of the time (see [_buildEditBody]).
+  bool _showFormattingToolbar = false;
+
+  /// Checklist-only, transient (not persisted, not part of [Note]): whether
+  /// already-checked-off items are hidden from both the read view and the
+  /// editor — see [_ChecklistToolbar]. Resets to "show everything" the next
+  /// time this note is opened, same as every other purely-visual toggle in
+  /// this screen.
+  bool _hideCompleted = false;
+
+  /// This note's own background color (see [NoteColor]), null for "no
+  /// override, use the app's normal surface color" — editable via the
+  /// palette icon in the app bar (see [_pickColor]), same in both view and
+  /// edit mode.
+  NoteColor? _color;
 
   // Whether this screen is showing the editable form (text fields,
   // formatting toolbar, attachment controls) or the read-only rendered
@@ -139,6 +175,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   // separate edit-mode button, the whole point of this over the old
   // preview/edit toggle icon.
   late bool _editing;
+
+  /// Debounces [_autosave] so a burst of keystrokes coalesces into one
+  /// write instead of one per character — see [_scheduleAutosave].
+  Timer? _autosaveTimer;
 
   bool get _isNewNote => widget.note == null;
 
@@ -152,18 +192,76 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _nostrEventId = note?.nostrEventId;
     _isDiaryEntry = note?.isDiaryEntry ?? widget.isDiaryEntry;
     _entryDate = note?.entryDate ?? (_isDiaryEntry ? DateTime.now() : null);
+    _color = note?.color;
     _titleController = TextEditingController(text: note?.title ?? '')..addListener(_markDirty);
-    _bodyController = TextEditingController(text: note?.body ?? '')..addListener(_markDirty);
+    _bodyController = TextEditingController(text: note?.body ?? '')
+      ..addListener(_markDirty)
+      ..addListener(_onBodySelectionChanged);
     _isChecklist = note?.isChecklist ?? (_isNewNote && widget.startAsChecklist);
     _attachments.addAll(note?.attachments ?? const <Attachment>[]);
     _showRecorder = _isNewNote && widget.startRecording;
-    _editing = _isNewNote;
+    // A checklist has nothing sensible to *read* — it's a working list,
+    // not prose — so it skips the read-only view entirely and always
+    // opens straight into editing, same as a brand-new note.
+    _editing = _isNewNote || _isChecklist;
 
     for (final item in note?.items ?? const <ChecklistItem>[]) {
       _checklistDone.add(item.done);
       _checklistControllers.add(TextEditingController(text: item.text)..addListener(_markDirty));
       _checklistFocusNodes.add(FocusNode());
     }
+
+    // Keeps this screen's private `_attachments` copy in step with upload
+    // state landing in the provider from *outside* this screen — chiefly a
+    // background auto-sync cycle uploading a pending attachment (and
+    // deleting its local plaintext file) mid-edit. Without this, the
+    // editor keeps rendering (and worse, autosaving) attachments that
+    // claim a `localPath` that no longer exists and no `url`.
+    // `fireImmediately` also covers having been opened from a home-list
+    // snapshot that was already stale when tapped. Auto-cancelled when
+    // this State is disposed.
+    ref.listenManual(notesProvider, fireImmediately: true, (previous, next) {
+      _mergeUploadedAttachmentState(next.value);
+    });
+  }
+
+  /// Adopts uploaded-attachment state (url/decryption material) from the
+  /// provider's copy of this note into [_attachments], id-matched and
+  /// upgrade-only: never downgrades an uploaded attachment, never
+  /// resurrects one the user removed on screen, never touches text. The
+  /// in-editor counterpart of `LocalStorageService`'s own save-time merge
+  /// — that one protects what's written, this one fixes what's shown.
+  void _mergeUploadedAttachmentState(List<Note>? notes) {
+    Note? latest;
+    for (final n in notes ?? const <Note>[]) {
+      if (n.id == _noteId) {
+        latest = n;
+        break;
+      }
+    }
+    if (latest == null) return;
+
+    final uploadedById = {
+      for (final attachment in latest.attachments)
+        if (attachment.isUploaded) attachment.id: attachment,
+    };
+
+    var changed = false;
+    for (var i = 0; i < _attachments.length; i++) {
+      final uploaded = uploadedById[_attachments[i].id];
+      if (!_attachments[i].isUploaded && uploaded != null) {
+        _attachments[i] = uploaded;
+        changed = true;
+      }
+    }
+    // A background cycle can also have published this note for the first
+    // time on this device's screen-session; without adopting the event id
+    // the editor would treat it as never-synced.
+    if (_nostrEventId == null && latest.nostrEventId != null) {
+      _nostrEventId = latest.nostrEventId;
+      changed = true;
+    }
+    if (changed && mounted) setState(() {});
   }
 
   /// Flags on-screen content as different from what's on the relay the
@@ -174,6 +272,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// *previous* version from the relay instead of publishing the new one.
   void _markDirty() {
     if (_synced) setState(() => _synced = false);
+    _scheduleAutosave();
   }
 
   /// Switches from the read-only view into the editable form — the sole
@@ -183,8 +282,59 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (!_editing) setState(() => _editing = true);
   }
 
+  /// Shows/hides the formatting toolbar based on whether the body field
+  /// currently has an actual (non-collapsed) text selection — called on
+  /// every change to [_bodyController], not just text edits, since
+  /// changing the *selection* alone (e.g. a long-press, or dragging a
+  /// handle) still notifies a `TextEditingController`'s listeners.
+  void _onBodySelectionChanged() {
+    final hasSelection = _bodyController.selection.isValid && !_bodyController.selection.isCollapsed;
+    if (hasSelection != _showFormattingToolbar) {
+      setState(() => _showFormattingToolbar = hasSelection);
+    }
+  }
+
+  /// Debounced local save, a safety net against losing an edit to e.g. the
+  /// system back button or the app being killed — not a replacement for
+  /// the cloud button's own explicit, immediate save (see [_syncNow]).
+  /// Coalesces a burst of keystrokes/edits into one write instead of one
+  /// per change by restarting the delay on every call.
+  void _scheduleAutosave() {
+    _autosaveTimer?.cancel();
+    _autosaveTimer = Timer(const Duration(milliseconds: 600), _autosave);
+  }
+
+  Future<void> _autosave() async {
+    if (!mounted) return;
+    // A sync (see [_syncNow]) already does its own local save before and
+    // after uploading attachments/publishing — `_attachments` may not yet
+    // reflect a just-completed upload's real url while that's in flight
+    // (it's only updated at the very end, in `_syncNow`'s own `setState`).
+    // Saving here concurrently, with a stale pre-upload snapshot, would
+    // otherwise be able to clobber the sync's own, more up-to-date write.
+    // Deferring until the sync finishes (rather than just dropping this
+    // save) means an edit made mid-sync still ends up persisted, just
+    // slightly later.
+    if (_syncing) {
+      _scheduleAutosave();
+      return;
+    }
+    await ref.read(notesProvider.notifier).saveNote(_buildNote());
+  }
+
   @override
   void dispose() {
+    if (_autosaveTimer?.isActive ?? false) {
+      // A save was about to happen but hadn't fired yet — flush it now
+      // rather than silently dropping the last few hundred milliseconds
+      // of edits just because the debounce window didn't close in time.
+      // `ref.read` for a one-off action is still valid this late in
+      // dispose (only `watch`/`listen` aren't); `_buildNote()` is called
+      // before the controllers below are disposed, while it can still
+      // read their text.
+      _autosaveTimer!.cancel();
+      ref.read(notesProvider.notifier).saveNote(_buildNote());
+    }
     _titleController.dispose();
     _bodyController.dispose();
     for (final controller in _checklistControllers) {
@@ -207,6 +357,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _checklistFocusNodes.insert(insertAt, focusNode);
       _synced = false;
     });
+    _scheduleAutosave();
     // The new row's TextField doesn't exist yet in the widget tree until
     // this frame finishes building, so the focus request has to wait for it.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -221,6 +372,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _checklistFocusNodes.removeAt(index).dispose();
       _synced = false;
     });
+    _scheduleAutosave();
   }
 
   void _setChecklistItemDone(int index, bool done) {
@@ -228,6 +380,49 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _checklistDone[index] = done;
       _synced = false;
     });
+    _scheduleAutosave();
+  }
+
+  /// Removes every checklist item currently marked done, in one shot —
+  /// the "clear completed" action (see [_ChecklistToolbar]). Indices are
+  /// removed back-to-front so each removal doesn't shift the ones still
+  /// to come out from under it.
+  Future<void> _deleteCompletedChecklistItems() async {
+    final l = AppLocalizations.of(context);
+    final completedIndices = [
+      for (var i = 0; i < _checklistDone.length; i++)
+        if (_checklistDone[i]) i,
+    ];
+    if (completedIndices.isEmpty) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l.deleteCompletedItemsConfirmTitle),
+        content: Text(l.deleteCompletedItemsConfirmBody(completedIndices.length)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l.cancelButton),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l.deleteCompletedItemsButton),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() {
+      for (final index in completedIndices.reversed) {
+        _checklistDone.removeAt(index);
+        _checklistControllers.removeAt(index).dispose();
+        _checklistFocusNodes.removeAt(index).dispose();
+      }
+      _synced = false;
+    });
+    _scheduleAutosave();
   }
 
   /// Lets the user pick a local image (via `file_picker`, already a
@@ -266,22 +461,25 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _insertImageToken(attachment.id, size);
       _synced = false;
     });
+    _scheduleAutosave();
   }
 
-  /// Matches the specific inline image token referencing [attachmentId],
-  /// regardless of its current size keyword — used to update or remove it
-  /// without disturbing any other text around it.
-  RegExp _imageTokenPattern(String attachmentId) {
+  /// Matches the specific inline attachment token referencing
+  /// [attachmentId] — image (with its optional size keyword) or voice
+  /// (none) alike, both are `![alt](attachment://id "optional title")`
+  /// — used to update or remove it without disturbing any other text
+  /// around it.
+  RegExp _attachmentTokenPattern(String attachmentId) {
     return RegExp('!\\[[^\\]]*\\]\\(attachment://${RegExp.escape(attachmentId)}(?:\\s+"[^"]*")?\\)');
   }
 
-  /// Inserts a fresh inline image token at the current cursor position (or
-  /// the end, if there isn't a valid selection), adding surrounding
-  /// newlines only where the text doesn't already have one — markdown
-  /// treats an image sharing a line with other text as part of the same
-  /// paragraph, which isn't what "add image" should produce.
-  void _insertImageToken(String attachmentId, String widthKeyword) {
-    final token = '![](attachment://$attachmentId "$widthKeyword")';
+  /// Inserts [token] at the current cursor position (or the end, if there
+  /// isn't a valid selection), adding surrounding newlines only where the
+  /// text doesn't already have one — markdown treats an image/token
+  /// sharing a line with other text as part of the same paragraph, which
+  /// isn't what "insert this as its own block" should produce. Shared by
+  /// [_insertImageToken] and [_insertVoiceToken].
+  void _insertAttachmentToken(String token) {
     final text = _bodyController.text;
     final selection = _bodyController.selection;
     final insertAt = selection.isValid ? selection.start : text.length;
@@ -291,25 +489,38 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _bodyController.text = text.replaceRange(insertAt, insertAt, insertion);
   }
 
+  void _insertImageToken(String attachmentId, String widthKeyword) {
+    _insertAttachmentToken('![](attachment://$attachmentId "$widthKeyword")');
+  }
+
+  /// Embeds a just-recorded voice note at the current cursor position —
+  /// same mechanism as an inline image (see [_insertAttachmentToken]), so
+  /// it can sit wherever the user placed it (between two paragraphs, say)
+  /// instead of always trailing at the bottom of the note. No size
+  /// keyword: unlike images, a voice message bubble is always full-width.
+  void _insertVoiceToken(String attachmentId) {
+    _insertAttachmentToken('![voice](attachment://$attachmentId)');
+  }
+
   /// Changes an already-inserted image's size keyword in place — the tap
   /// target in the read-only view (see [_InlineAttachmentImage]) for
   /// "resize" without a drag handle.
   void _setImageSize(String attachmentId, String widthKeyword) {
     setState(() {
       _bodyController.text = _bodyController.text.replaceFirst(
-        _imageTokenPattern(attachmentId),
+        _attachmentTokenPattern(attachmentId),
         '![](attachment://$attachmentId "$widthKeyword")',
       );
       _synced = false;
     });
   }
 
-  /// Removes an inline image: both its token from the body text and the
-  /// underlying [Attachment] (via [_removeAttachment], which also cleans
-  /// up the not-yet-uploaded local file, if any).
-  void _removeInlineImage(Attachment attachment) {
+  /// Removes an inline image or voice note: both its token from the body
+  /// text and the underlying [Attachment] (via [_removeAttachment], which
+  /// also cleans up the not-yet-uploaded local file, if any).
+  void _removeInlineAttachment(Attachment attachment) {
     setState(() {
-      _bodyController.text = _bodyController.text.replaceFirst(_imageTokenPattern(attachment.id), '');
+      _bodyController.text = _bodyController.text.replaceFirst(_attachmentTokenPattern(attachment.id), '');
     });
     _removeAttachment(attachment);
   }
@@ -476,27 +687,48 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   Future<void> _editInlineImage(Attachment attachment, String? currentSize) async {
     final size = await _pickImageSize(
       currentSize: currentSize,
-      onRemove: () => _removeInlineImage(attachment),
+      onRemove: () => _removeInlineAttachment(attachment),
     );
     if (size != null) _setImageSize(attachment.id, size);
   }
 
   /// Called by [VoiceRecorder] once recording stops: appends the recording
   /// as a pending `audio` attachment (same upload-on-sync path as images)
-  /// and hides the recorder — one voice note per FAB tap, matching how the
-  /// FAB's other two options each produce a single piece of content.
+  /// and hides the recorder. For a note with a body to embed it in, it's
+  /// inserted as an inline token at the cursor position — same as an image
+  /// — so it can be positioned wherever, e.g. between two paragraphs of
+  /// notes, rather than always trailing at the bottom (checklists have no
+  /// body to embed a token into, so their recordings just fall back to
+  /// [_unreferencedAudioAttachments]'s plain list, same as always).
   void _onVoiceRecorded(String path, Duration duration) {
+    final attachment = Attachment(
+      id: const Uuid().v4(),
+      type: AttachmentType.audio,
+      localPath: path,
+      mimeType: 'audio/mp4',
+      durationSeconds: duration.inSeconds,
+      recordedAt: DateTime.now(),
+    );
     setState(() {
-      _attachments.add(Attachment(
-        id: const Uuid().v4(),
-        type: AttachmentType.audio,
-        localPath: path,
-        mimeType: 'audio/mp4',
-        durationSeconds: duration.inSeconds,
-      ));
+      _attachments.add(attachment);
+      if (!_isChecklist) _insertVoiceToken(attachment.id);
       _showRecorder = false;
       _synced = false;
     });
+    _scheduleAutosave();
+  }
+
+  /// Sets or edits a voice note's [Attachment.recordedAt] — the long-press
+  /// menu on [_VoiceMessageBubble], defaulting to the moment recording
+  /// stopped but freely editable to log it under a different time.
+  void _setAttachmentTimestamp(String attachmentId, DateTime timestamp) {
+    setState(() {
+      final index = _attachments.indexWhere((a) => a.id == attachmentId);
+      if (index == -1) return;
+      _attachments[index] = _attachments[index].withRecordedAt(timestamp);
+      _synced = false;
+    });
+    _scheduleAutosave();
   }
 
   void _removeAttachment(Attachment attachment) {
@@ -512,6 +744,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _attachments.removeWhere((a) => a.id == attachment.id);
       _synced = false;
     });
+    _scheduleAutosave();
   }
 
   /// Lets the user change this diary entry's [_entryDate] to any arbitrary
@@ -532,6 +765,55 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _entryDate = picked;
       _synced = false;
     });
+    _scheduleAutosave();
+  }
+
+  /// Lets the user pick this note's own background color (see
+  /// [NoteColor]), or clear it back to the app's normal surface color. A
+  /// modal bottom sheet of swatches, applying and closing immediately on
+  /// tap — unlike e.g. an image's resize/remove sheet, a color choice has
+  /// no wrong-tap consequence worth a separate confirm step.
+  Future<void> _pickColor() async {
+    final l = AppLocalizations.of(context);
+    const noColorSentinel = Object();
+
+    final result = await showModalBottomSheet<Object>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Wrap(
+            spacing: 20,
+            runSpacing: 16,
+            alignment: WrapAlignment.center,
+            children: [
+              _ColorSwatchOption(
+                color: null,
+                label: l.noteColorDefault,
+                selected: _color == null,
+                onTap: () => Navigator.of(sheetContext).pop(noColorSentinel),
+              ),
+              for (final option in NoteColor.values)
+                _ColorSwatchOption(
+                  color: option,
+                  label: _noteColorLabel(option, l),
+                  selected: _color == option,
+                  onTap: () => Navigator.of(sheetContext).pop(option),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (result == null) return; // Dismissed without picking anything.
+
+    final newColor = identical(result, noColorSentinel) ? null : result as NoteColor;
+    if (newColor == _color) return;
+    setState(() {
+      _color = newColor;
+      _synced = false;
+    });
+    _scheduleAutosave();
   }
 
   Future<void> _deleteLocalFileQuietly(String path) async {
@@ -542,9 +824,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     }
   }
 
-  /// Builds a [Note] from the current field values. Editing always resets
-  /// `synced` to false: the local copy no longer matches whatever was last
-  /// published (if anything), until the cloud button re-syncs it.
+  /// Builds a [Note] from the current field values. Uses [_synced] as-is
+  /// rather than hardcoding `false`: every mutation method already flips
+  /// `_synced` to false itself the instant it touches anything (see
+  /// [_markDirty]), so by the time this runs after a real edit it's
+  /// already correctly false — but this way, a call that happens to land
+  /// with *no* edit since the last successful sync (e.g. [_autosave]
+  /// deferred past a sync that just completed — see [_scheduleAutosave])
+  /// doesn't spuriously mark an unchanged, still-synced note as dirty.
   Note _buildNote() {
     final items = <ChecklistItem>[
       for (var i = 0; i < _checklistControllers.length; i++)
@@ -557,19 +844,46 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       body: _bodyController.text,
       items: items,
       isChecklist: _isChecklist,
-      attachments: _attachments,
+      // A snapshot, not the live `_attachments` reference: `_syncNow` hands
+      // its own `_buildNote()` result off to `SyncService`, which uploads
+      // pending attachments one at a time over the network — genuinely
+      // slow, and every `await` in that loop is a point where the user can
+      // still add/remove an attachment on screen. Sharing the same mutable
+      // List there meant a recording/image added or removed mid-upload
+      // could shift what a concurrently-running `for (attachment in
+      // note.attachments)` loop sees mid-iteration, pairing the wrong
+      // encryption key/nonce with the wrong uploaded file — decrypting the
+      // mismatched result produces garbage bytes, which is exactly what a
+      // broken-image icon (or the voice player's error glyph) is.
+      attachments: List<Attachment>.of(_attachments),
       createdAt: _createdAt,
       updatedAt: DateTime.now(),
-      synced: false,
+      synced: _synced,
       nostrEventId: _nostrEventId,
       isDiaryEntry: _isDiaryEntry,
       entryDate: _entryDate,
+      color: _color,
     );
   }
 
+  /// Saves and switches back to the read-only view of what was just saved
+  /// — not a pop back to the note list. The list is one Navigator level
+  /// further out (the back arrow already goes there); "done editing"
+  /// should land on the note itself, the same way tapping its content is
+  /// what got here in the first place.
+  ///
+  /// A checklist has no read-only view to land on (see [initState]'s
+  /// `_editing` default) — saving it pops back to the list instead, the
+  /// same way this button always behaved before the read/edit split
+  /// existed.
   Future<void> _save() async {
     await ref.read(notesProvider.notifier).saveNote(_buildNote());
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    if (_isChecklist) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() => _editing = false);
+    }
   }
 
   /// Publishes the note. Uploading any not-yet-uploaded attachment first is
@@ -671,11 +985,41 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (deleted && mounted) Navigator.of(context).pop();
   }
 
-  String _appBarTitle(AppLocalizations l) {
-    if (_isDiaryEntry) {
-      return _isNewNote ? l.newDiaryEntryTitle : l.editDiaryEntryTitle;
+  /// The note's own title lives here now, not a generic "New note"/"Edit
+  /// note" label — editable in place while [_editing], read-only (but
+  /// still tappable, same as everywhere else in the read view) otherwise.
+  /// The body no longer has its own separate title field/text — this is
+  /// the only place it's shown, matching how [_appBarTitle] used to be
+  /// the only thing in the app bar with nothing useful to say.
+  Widget _buildAppBarTitle(AppLocalizations l) {
+    // The app bar sits outside [_applyNoteColorTheme]'s wrapped body (an
+    // app bar colored to match — see [build] — needs its *own* readable
+    // text, before that widget even exists), and this title's style is
+    // always fully specified rather than inherited, so the color has to
+    // be explicit here regardless.
+    final color = _color;
+    final titleColor = color?.onBackground;
+    if (_editing) {
+      return TextField(
+        controller: _titleController,
+        decoration: InputDecoration(
+          hintText: l.titleFieldLabel,
+          hintStyle: color != null ? TextStyle(color: mutedTextColorOn(color.background)) : null,
+          border: InputBorder.none,
+        ),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: titleColor),
+        cursorColor: titleColor,
+      );
     }
-    return _isNewNote ? l.newNoteTitle : l.editNoteTitle;
+    return GestureDetector(
+      onTap: _enterEditMode,
+      child: Text(
+        _titleController.text.isEmpty ? l.untitledNote : _titleController.text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: titleColor != null ? TextStyle(color: titleColor) : null,
+      ),
+    );
   }
 
   @override
@@ -683,10 +1027,37 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final l = AppLocalizations.of(context);
     final hasNostrAccount = ref.watch(authProvider).value != null;
     final colorScheme = Theme.of(context).colorScheme;
+    final color = _color;
+    // The app bar — and the system status bar right above it — follow this
+    // note's own color when it has one, for the same "consistent, not two
+    // different chrome colors stacked on top of each other" reason the
+    // body itself does (see [_applyNoteColorTheme]). `surfaceTintColor:
+    // transparent` stops Material 3's own scroll-elevation tint from
+    // mixing the app theme's accent color back into it.
+    final appBarOnColor = color?.onBackground;
+    final isLightNoteColor = appBarOnColor == Colors.black;
 
     return Scaffold(
+      // Paired with the app bar's own background below going fully
+      // transparent: this is what lets [_NoteColorReveal] paint one
+      // single, continuous circle across the *entire* screen — app bar
+      // and status-bar strip included — instead of the reveal stopping
+      // at the body's own top edge with the app bar snapping separately.
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(_appBarTitle(l)),
+        backgroundColor: Colors.transparent,
+        foregroundColor: appBarOnColor,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        systemOverlayStyle: color == null
+            ? null
+            : SystemUiOverlayStyle(
+                statusBarColor: color.background,
+                statusBarIconBrightness: isLightNoteColor ? Brightness.dark : Brightness.light,
+                statusBarBrightness: isLightNoteColor ? Brightness.light : Brightness.dark,
+              ),
+        title: _buildAppBarTitle(l),
         actions: [
           if (hasNostrAccount)
             Padding(
@@ -736,6 +1107,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               tooltip: l.addImageButton,
               onPressed: _addImage,
             ),
+          // Available in both view and edit mode — a self-contained,
+          // lightweight action, same reasoning as the diary date chip and
+          // voice-note timestamp (see [_buildViewBody]'s doc comment).
+          IconButton(
+            icon: const Icon(Icons.palette_outlined),
+            tooltip: l.noteColorButton,
+            onPressed: _pickColor,
+          ),
           if (!_isNewNote)
             IconButton(
               icon: const Icon(Icons.delete_outline),
@@ -750,13 +1129,69 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ),
         ],
       ),
-      body: _editing ? _buildEditBody(l) : _buildViewBody(l),
+      body: _NoteColorReveal(
+        // A concrete color either way (never null/transparent): the reveal
+        // animates between two solid fills, including the "back to no
+        // custom color" direction, which needs just as real a target as
+        // any actual [NoteColor] — the theme's own surface color, here.
+        color: color?.background ?? Theme.of(context).colorScheme.surface,
+        child: Padding(
+          // The reveal's own background fills the *entire* screen,
+          // status bar and app bar included (see `extendBodyBehindAppBar`
+          // above) — only the actual content needs pushing back down
+          // below the now-transparent app bar's real height, or it'd
+          // render right underneath it.
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight),
+          child: _applyNoteColorTheme(_editing ? _buildEditBody(l) : _buildViewBody(l)),
+        ),
+      ),
     );
   }
 
-  /// The editable form: title/body text fields (or the checklist editor),
-  /// the formatting toolbar, and every attachment control — everything
-  /// that was always on this screen before the read/edit split.
+  /// Wraps [child] so every default-styled text/icon within it — a plain
+  /// [Text], a [TextField]'s input, a [Checkbox], hint text — resolves to
+  /// a color readable against this note's own background (see
+  /// [NoteColor]), when it has one, in *both* light and dark app theme.
+  ///
+  /// Overriding [ColorScheme.onSurface]/[onSurfaceVariant] alone is not
+  /// enough: `ThemeData.textTheme` bakes a concrete `color` into each of
+  /// its styles (`titleLarge`, `bodyMedium`, ...) at the point the app's
+  /// theme was built, from *that* theme's original colorScheme — a later
+  /// `theme.copyWith(colorScheme: ...)` does not retroactively recompute
+  /// them. Anything that renders via `Theme.of(context).textTheme.X`
+  /// (the title/body fields' own style, `MarkdownStyleSheet.fromTheme`'s
+  /// paragraph/heading styles, ...) would keep showing the *app* theme's
+  /// text color — in dark mode, a light grey meant for a dark background,
+  /// which is exactly what read as low-contrast against a light pastel
+  /// note color. [TextTheme.apply] is what actually retints every style at
+  /// once; `iconTheme`/`hintColor` are separate top-level `ThemeData`
+  /// fields that don't derive from `colorScheme` either, so they need
+  /// their own explicit override too.
+  Widget _applyNoteColorTheme(Widget child) {
+    final color = _color;
+    if (color == null) return child;
+    final theme = Theme.of(context);
+    final onColor = color.onBackground;
+    final mutedColor = mutedTextColorOn(color.background);
+    return Theme(
+      data: theme.copyWith(
+        colorScheme: theme.colorScheme.copyWith(
+          onSurface: onColor,
+          onSurfaceVariant: mutedColor,
+        ),
+        textTheme: theme.textTheme.apply(bodyColor: onColor, displayColor: onColor),
+        primaryTextTheme: theme.primaryTextTheme.apply(bodyColor: onColor, displayColor: onColor),
+        iconTheme: theme.iconTheme.copyWith(color: onColor),
+        hintColor: mutedColor,
+      ),
+      child: child,
+    );
+  }
+
+  /// The editable form: the body text field (or the checklist editor), the
+  /// formatting toolbar, and every attachment control — everything that
+  /// was always on this screen before the read/edit split. The title
+  /// itself lives in the app bar now (see [_buildAppBarTitle]), not here.
   Widget _buildEditBody(AppLocalizations l) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -764,16 +1199,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _pickEntryDate),
-          TextField(
-            controller: _titleController,
-            decoration: InputDecoration(
-              labelText: l.titleFieldLabel,
-              border: InputBorder.none,
+          if (_isChecklist) ...[
+            _ChecklistToolbar(
+              doneCount: _checklistDone.where((done) => done).length,
+              totalCount: _checklistDone.length,
+              hideCompleted: _hideCompleted,
+              onToggleHideCompleted: () => setState(() => _hideCompleted = !_hideCompleted),
+              onDeleteCompleted: _deleteCompletedChecklistItems,
             ),
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const Divider(),
-          if (_isChecklist)
             _ChecklistEditor(
               doneFlags: _checklistDone,
               controllers: _checklistControllers,
@@ -782,15 +1215,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               onSubmitted: _addChecklistItemAfter,
               onRemove: _removeChecklistItem,
               onAddItem: () => _addChecklistItemAfter(_checklistControllers.length - 1),
-            )
-          else ...[
-            _FormattingToolbar(
-              onBold: () => _wrapBodySelection('**'),
-              onItalic: () => _wrapBodySelection('*'),
-              onHeading: () => _prefixBodyLines('# '),
-              onList: () => _prefixBodyLines('- '),
-              onLink: _insertLink,
+              hideCompleted: _hideCompleted,
             ),
+            const SizedBox(height: 8),
+            _voiceRecorderSlot(),
+          ] else ...[
+            _voiceRecorderSlot(),
             TextField(
               controller: _bodyController,
               decoration: InputDecoration(
@@ -802,28 +1232,21 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ),
           ],
           const SizedBox(height: 12),
-          if (!_showRecorder)
-            IconButton(
-              icon: const Icon(Icons.mic_none_outlined),
-              tooltip: l.recordVoiceNoteTooltip,
-              onPressed: () => setState(() => _showRecorder = true),
-            ),
-          if (_showRecorder)
-            VoiceRecorder(
-              onRecorded: _onVoiceRecorded,
-              onCancel: () => setState(() => _showRecorder = false),
-            ),
           if (_unreferencedImageAttachments.isNotEmpty)
             _AttachmentsStrip(attachments: _unreferencedImageAttachments, onRemove: _removeAttachment),
           // Voice notes get their own full-width "message" bubble (with a
           // waveform, like Telegram) rather than being squeezed into the
-          // same small square thumbnail strip as images.
-          for (final attachment in _audioAttachments)
+          // same small square thumbnail strip as images. Only ones not
+          // already embedded inline in the body (see [_insertVoiceToken])
+          // show up here — new recordings go straight into the text.
+          for (final attachment in _unreferencedAudioAttachments)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: _VoiceMessageBubble(
+                key: ValueKey(attachment.id),
                 attachment: attachment,
                 onRemove: () => _removeAttachment(attachment),
+                onSetTimestamp: (timestamp) => _setAttachmentTimestamp(attachment.id, timestamp),
               ),
             ),
         ],
@@ -831,10 +1254,40 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     );
   }
 
-  /// The read-only rendered view an existing note opens into: title,
-  /// rendered markdown body (or a read-only checklist), and attachments,
-  /// none of it directly editable. Tapping *anywhere* in it — the sole
-  /// entry point into editing, see [_enterEditMode] — switches to
+  /// Whichever of these three is relevant is shown here, in the exact same
+  /// layout slot right under the title: the active [VoiceRecorder] panel;
+  /// otherwise, for a non-checklist note, the formatting toolbar while
+  /// there's a text selection (see [_showFormattingToolbar]); otherwise, a
+  /// compact "start recording" trigger. Freeing this slot up when there's
+  /// no selection — rather than a toolbar permanently pinned under the
+  /// title like a Word ribbon — is what makes room for the recording
+  /// trigger without needing a whole separate row of its own.
+  Widget _voiceRecorderSlot() {
+    if (_showRecorder) {
+      return VoiceRecorder(
+        onRecorded: _onVoiceRecorded,
+        onCancel: () => setState(() => _showRecorder = false),
+      );
+    }
+    if (!_isChecklist && _showFormattingToolbar) {
+      return _FormattingToolbar(
+        onBold: () => _wrapBodySelection('**'),
+        onItalic: () => _wrapBodySelection('*'),
+        onHeading: () => _prefixBodyLines('# '),
+        onList: () => _prefixBodyLines('- '),
+        onLink: _insertLink,
+      );
+    }
+    return _VoiceRecorderTrigger(onTap: () => setState(() => _showRecorder = true));
+  }
+
+  /// The read-only rendered view an existing note opens into: rendered
+  /// markdown body and attachments, none of it directly editable — the
+  /// title itself is in the app bar (see [_buildAppBarTitle]), not here.
+  /// Never reached for a checklist (see [initState]'s `_editing` default —
+  /// a checklist has nothing sensible to *read*, so it always opens
+  /// straight into [_buildEditBody] instead). Tapping *anywhere* in it —
+  /// the sole entry point into editing, see [_enterEditMode] — switches to
   /// [_buildEditBody]; a few genuinely read-only interactions (playing a
   /// voice note) are left to still work without triggering that, since
   /// they're not an editing intent.
@@ -851,35 +1304,32 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _enterEditMode),
-                Text(
-                  _titleController.text.isEmpty ? l.untitledNote : _titleController.text,
-                  style: Theme.of(context).textTheme.titleLarge,
+                _MarkdownPreview(
+                  text: _bodyController.text,
+                  attachments: _attachments,
+                  // Same resize/remove bottom sheet as while editing
+                  // (see [_editInlineImage]) rather than routing through
+                  // [_enterEditMode]: like voice playback and the diary
+                  // date chip above, this is a self-contained action
+                  // that doesn't need the full raw-text editor open.
+                  onTapImage: _editInlineImage,
+                  onRemoveVoice: _removeInlineAttachment,
+                  onSetVoiceTimestamp: (attachment, timestamp) =>
+                      _setAttachmentTimestamp(attachment.id, timestamp),
                 ),
-                const Divider(),
-                if (_isChecklist)
-                  _ReadOnlyChecklist(
-                    doneFlags: _checklistDone,
-                    texts: [for (final controller in _checklistControllers) controller.text],
-                  )
-                else
-                  _MarkdownPreview(
-                    text: _bodyController.text,
-                    attachments: _attachments,
-                    // Same resize/remove bottom sheet as while editing
-                    // (see [_editInlineImage]) rather than routing through
-                    // [_enterEditMode]: like voice playback and the diary
-                    // date chip above, this is a self-contained action
-                    // that doesn't need the full raw-text editor open.
-                    onTapImage: _editInlineImage,
-                  ),
                 if (_unreferencedImageAttachments.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   _AttachmentsStrip(attachments: _unreferencedImageAttachments, onRemove: null),
                 ],
-                for (final attachment in _audioAttachments)
+                for (final attachment in _unreferencedAudioAttachments)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: _VoiceMessageBubble(attachment: attachment, onRemove: null),
+                    child: _VoiceMessageBubble(
+                      key: ValueKey(attachment.id),
+                      attachment: attachment,
+                      onRemove: null,
+                      onSetTimestamp: (timestamp) => _setAttachmentTimestamp(attachment.id, timestamp),
+                    ),
                   ),
               ],
             ),
@@ -888,6 +1338,171 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       ),
     );
   }
+}
+
+String _noteColorLabel(NoteColor color, AppLocalizations l) => switch (color) {
+      NoteColor.yellow => l.noteColorYellow,
+      NoteColor.red => l.noteColorRed,
+      NoteColor.purple => l.noteColorPurple,
+      NoteColor.blue => l.noteColorBlue,
+      NoteColor.green => l.noteColorGreen,
+      NoteColor.orange => l.noteColorOrange,
+      NoteColor.white => l.noteColorWhite,
+    };
+
+/// A single swatch in [_NoteEditorScreenState._pickColor]'s bottom sheet:
+/// a colored circle (or, for [color] null, an outlined one with a "reset"
+/// icon — the "no override, use the app's normal surface" option) with its
+/// label underneath and a check overlay when it's the current selection.
+class _ColorSwatchOption extends StatelessWidget {
+  const _ColorSwatchOption({
+    required this.color,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final NoteColor? color;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final swatchColor = color?.background;
+    final iconColor = color?.onBackground ?? colorScheme.onSurfaceVariant;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: swatchColor ?? colorScheme.surface,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? colorScheme.primary : colorScheme.outlineVariant,
+                  width: selected ? 3 : 1,
+                ),
+              ),
+              child: Icon(
+                swatchColor == null ? Icons.format_color_reset_outlined : Icons.check,
+                color: swatchColor == null ? iconColor : (selected ? iconColor : Colors.transparent),
+                size: 20,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(label, style: Theme.of(context).textTheme.labelSmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Paints [child] over a solid fill of [color] that transitions to a newly
+/// picked [color] with a circular "reverb" — a ring of the new color
+/// growing outward from dead center until it covers the whole area —
+/// instead of just snapping. Used behind the note editor's body so
+/// choosing a color (see [_NoteEditorScreenState._pickColor]) visibly
+/// *happens* rather than silently becoming true on the next frame.
+///
+/// Purely a background effect: [child] (the actual title/body/checklist
+/// content, already re-colored for legibility by
+/// [_NoteEditorScreenState._applyNoteColorTheme]) sits on top, unclipped,
+/// and updates its own text color on the normal build cycle — only the
+/// fill underneath animates.
+class _NoteColorReveal extends StatefulWidget {
+  const _NoteColorReveal({required this.color, required this.child});
+
+  final Color color;
+  final Widget child;
+
+  @override
+  State<_NoteColorReveal> createState() => _NoteColorRevealState();
+}
+
+class _NoteColorRevealState extends State<_NoteColorReveal> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 450),
+  );
+  late final Animation<double> _progress = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+
+  late Color _fromColor = widget.color;
+  late Color _toColor = widget.color;
+
+  @override
+  void didUpdateWidget(covariant _NoteColorReveal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.color == widget.color) return;
+    // Jumping in from wherever the previous reveal had gotten to (rather
+    // than always restarting from the old target) means picking a second
+    // color before the first reveal finishes doesn't stutter back to a
+    // half-applied color first.
+    _fromColor = Color.lerp(_fromColor, _toColor, _progress.value) ?? _toColor;
+    _toColor = widget.color;
+    _controller.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        AnimatedBuilder(
+          animation: _progress,
+          builder: (context, _) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                ColoredBox(color: _fromColor),
+                if (_progress.value > 0)
+                  ClipPath(
+                    clipper: _CircleRevealClipper(fraction: _progress.value),
+                    child: ColoredBox(color: _toColor),
+                  ),
+              ],
+            );
+          },
+        ),
+        widget.child,
+      ],
+    );
+  }
+}
+
+/// Clips to a circle centered on the widget's own center, growing from
+/// radius 0 (at [fraction] 0) to fully covering every corner (at
+/// [fraction] 1) — corners are equidistant from a true center, so one
+/// radius calculation covers all four regardless of aspect ratio.
+class _CircleRevealClipper extends CustomClipper<Path> {
+  const _CircleRevealClipper({required this.fraction});
+
+  final double fraction;
+
+  @override
+  Path getClip(Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final maxRadius = center.distance; // (0,0) to center == any corner to center
+    return Path()..addOval(Rect.fromCircle(center: center, radius: maxRadius * fraction));
+  }
+
+  @override
+  bool shouldReclip(covariant _CircleRevealClipper oldClipper) => oldClipper.fraction != fraction;
 }
 
 /// The date chip shown at the top of a diary entry (see
@@ -964,6 +1579,7 @@ class _AttachmentsStrip extends ConsumerWidget {
           final attachment = attachments[index];
           final remove = onRemove;
           return _AttachmentChip(
+            key: ValueKey(attachment.id),
             attachment: attachment,
             onRemove: remove == null ? null : () => remove(attachment),
           );
@@ -974,7 +1590,7 @@ class _AttachmentsStrip extends ConsumerWidget {
 }
 
 class _AttachmentChip extends ConsumerWidget {
-  const _AttachmentChip({required this.attachment, this.onRemove});
+  const _AttachmentChip({super.key, required this.attachment, this.onRemove});
 
   final Attachment attachment;
   final VoidCallback? onRemove;
@@ -1040,12 +1656,15 @@ class _ImageAttachmentPreview extends ConsumerStatefulWidget {
 }
 
 class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview> {
+  /// The still-on-disk local original, when there is one — checked once
+  /// per attachment identity (not on every build) in [_resolveSource].
+  File? _localFile;
   Future<File>? _decryptFuture;
 
   @override
   void initState() {
     super.initState();
-    _startDecrypt();
+    _resolveSource();
   }
 
   @override
@@ -1054,26 +1673,57 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
     // A note editor reuses this Element across rebuilds, but the
     // attachment it's showing can genuinely change (e.g. right after an
     // upload fills in `url` for the first time) — only then does the
-    // cached Future need to be replaced.
+    // cached source decision need to be redone.
     if (oldWidget.attachment.url != widget.attachment.url ||
         oldWidget.attachment.localPath != widget.attachment.localPath) {
-      _startDecrypt();
+      _resolveSource();
     }
   }
 
-  void _startDecrypt() {
-    if (!widget.attachment.isUploaded) {
-      _decryptFuture = null; // Not-yet-uploaded case is handled synchronously below.
-      return;
-    }
-    _decryptFuture = ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment);
+  /// Decides where this image's bytes come from, in order of preference:
+  /// the original local file if it still exists, else download-and-decrypt
+  /// if it was ever uploaded, else nothing — rendered as a neutral
+  /// missing-attachment placeholder by [build], *never* left to
+  /// `Image.file` on a dead path (whose unhandled exception is Flutter's
+  /// red ErrorWidget box). A dead path is a real state, not a fluke: the
+  /// OS purging a cache-dir file, or a note synced from another device
+  /// whose `localPath` never meant anything here.
+  void _resolveSource() {
+    final localPath = widget.attachment.localPath;
+    _localFile = localPath != null && File(localPath).existsSync() ? File(localPath) : null;
+    _decryptFuture = _localFile == null && widget.attachment.isUploaded
+        ? ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)
+        : null;
+  }
+
+  Widget _missingPlaceholder(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      color: colorScheme.surfaceContainerHighest,
+      padding: const EdgeInsets.all(12),
+      child: Center(
+        child: Icon(Icons.image_not_supported_outlined, color: colorScheme.outline),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final localPath = widget.attachment.localPath;
-    if (!widget.attachment.isUploaded && localPath != null) {
-      return Image.file(File(localPath), fit: widget.fit);
+    final localFile = _localFile;
+    if (localFile != null) {
+      return Image.file(
+        localFile,
+        fit: widget.fit,
+        // The file passing existsSync in [_resolveSource] doesn't
+        // guarantee it decodes (truncated write, deleted since) — degrade
+        // to the placeholder, never Flutter's red error box.
+        errorBuilder: (context, error, stackTrace) => _missingPlaceholder(context),
+      );
+    }
+    if (_decryptFuture == null) {
+      // No local file *and* never uploaded: the bytes are gone. Nothing
+      // to retry — show it honestly instead of an eternal spinner.
+      return _missingPlaceholder(context);
     }
     return FutureBuilder<File>(
       future: _decryptFuture,
@@ -1085,12 +1735,16 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
             child: snapshot.hasError
                 ? IconButton(
                     icon: const Icon(Icons.refresh),
-                    onPressed: () => setState(_startDecrypt),
+                    onPressed: () => setState(_resolveSource),
                   )
                 : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
           );
         }
-        return Image.file(file, fit: widget.fit);
+        return Image.file(
+          file,
+          fit: widget.fit,
+          errorBuilder: (context, error, stackTrace) => _missingPlaceholder(context),
+        );
       },
     );
   }
@@ -1098,10 +1752,18 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
 
 /// Renders a note's body as markdown — used by the read-only view (see
 /// [_NoteEditorScreenState._buildViewBody]) — with inline
-/// `attachment://<id>` image tokens (see [_insertImageToken]) resolved to
-/// the actual attachment and shown at their chosen width.
+/// `attachment://<id>` tokens (see [_NoteEditorScreenState._insertImageToken]/
+/// [_NoteEditorScreenState._insertVoiceToken]) resolved to the actual
+/// attachment: an image at its chosen width, or a full-width playable
+/// voice message bubble.
 class _MarkdownPreview extends StatelessWidget {
-  const _MarkdownPreview({required this.text, required this.attachments, required this.onTapImage});
+  const _MarkdownPreview({
+    required this.text,
+    required this.attachments,
+    required this.onTapImage,
+    required this.onRemoveVoice,
+    required this.onSetVoiceTimestamp,
+  });
 
   final String text;
   final List<Attachment> attachments;
@@ -1109,6 +1771,14 @@ class _MarkdownPreview extends StatelessWidget {
   /// Called with the tapped image's attachment and its current size
   /// keyword (null if the token had none/an unrecognized one).
   final void Function(Attachment attachment, String? currentSize) onTapImage;
+
+  /// Wired to an inline voice bubble's own remove (✕) button — unlike
+  /// images (whose removal sits behind the resize sheet), a voice message
+  /// exposes it directly, same as everywhere else [_VoiceMessageBubble] is
+  /// used.
+  final void Function(Attachment attachment) onRemoveVoice;
+
+  final void Function(Attachment attachment, DateTime timestamp) onSetVoiceTimestamp;
 
   Attachment? _findAttachment(String id) {
     for (final attachment in attachments) {
@@ -1129,6 +1799,20 @@ class _MarkdownPreview extends StatelessWidget {
           // A token whose attachment was removed some other way (e.g. an
           // older export/import round trip) — nothing sane to render.
           return const SizedBox.shrink();
+        }
+        if (attachment.type == AttachmentType.audio) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: SizedBox(
+              width: double.infinity,
+              child: _VoiceMessageBubble(
+                key: ValueKey(attachment.id),
+                attachment: attachment,
+                onRemove: () => onRemoveVoice(attachment),
+                onSetTimestamp: (timestamp) => onSetVoiceTimestamp(attachment, timestamp),
+              ),
+            ),
+          );
         }
         return _InlineAttachmentImage(
           attachment: attachment,
@@ -1176,10 +1860,22 @@ class _InlineAttachmentImage extends StatelessWidget {
 /// play/pause button, a waveform that traces the actual recorded audio
 /// (extracted on-device by `audio_waveforms`, not a generic placeholder)
 /// and fills in to show playback progress, and the recording's duration.
+/// Long-pressing it (anywhere except the play/remove buttons themselves,
+/// which claim that gesture first) offers setting/editing
+/// [Attachment.recordedAt] — allowed everywhere this bubble appears,
+/// read-only view included, same as playback itself: neither is really an
+/// "editing" action the way adding/removing an attachment is.
 class _VoiceMessageBubble extends ConsumerStatefulWidget {
-  const _VoiceMessageBubble({required this.attachment, this.onRemove});
+  const _VoiceMessageBubble({
+    super.key,
+    required this.attachment,
+    required this.onSetTimestamp,
+    this.onRemove,
+  });
 
   final Attachment attachment;
+
+  final void Function(DateTime timestamp) onSetTimestamp;
 
   /// Null in the read-only view: hides the remove (✕) button but leaves
   /// playback fully working — listening to a voice note isn't an editing
@@ -1207,21 +1903,59 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
   }
 
   @override
+  void didUpdateWidget(covariant _VoiceMessageBubble oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The attachment can gain its `url` while this bubble is on screen (a
+    // background sync uploading it — which also deletes the local file
+    // the player was prepared from). Re-preparing from the decrypted
+    // cache is what keeps the play button working across that handoff;
+    // ExoPlayer only opens the file at play time, so a stale prepared
+    // path fails exactly then (seen as a FileNotFoundException/ENOENT
+    // playback error in logcat), not at prepare time.
+    if (oldWidget.attachment.url != widget.attachment.url ||
+        oldWidget.attachment.localPath != widget.attachment.localPath) {
+      _prepare();
+    }
+  }
+
+  @override
   void dispose() {
     _playerController.dispose();
     super.dispose();
   }
 
   Future<void> _prepare() async {
+    setState(() {
+      _error = null;
+      _ready = false;
+    });
     try {
+      if (_playerController.playerState == PlayerState.playing) {
+        await _playerController.stopPlayer();
+      }
+      // Prefer the local original only while it actually exists on disk —
+      // never trust `localPath` blindly: the OS may have purged it (old
+      // cache-dir recordings) or it may have come from another device
+      // entirely. Fall back to download-and-decrypt when uploaded;
+      // otherwise the audio is genuinely gone and the error state (with
+      // its tap-to-retry) is the honest answer.
       final localPath = widget.attachment.localPath;
-      final path = localPath != null && !widget.attachment.isUploaded
-          ? localPath
-          : (await ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)).path;
+      final String path;
+      if (localPath != null && File(localPath).existsSync()) {
+        path = localPath;
+      } else if (widget.attachment.isUploaded) {
+        path = (await ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)).path;
+      } else {
+        throw StateError('Voice note file is missing locally and was never uploaded.');
+      }
       await _playerController.preparePlayer(path: path, noOfSamples: 60);
       if (!mounted) return;
       setState(() => _ready = true);
     } catch (e) {
+      developer.log(
+        'Could not prepare voice note ${widget.attachment.id} for playback: $e',
+        name: '_VoiceMessageBubble',
+      );
       if (!mounted) return;
       setState(() => _error = e);
     }
@@ -1243,65 +1977,126 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
     return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
+  Future<void> _showTimestampMenu() async {
+    final l = AppLocalizations.of(context);
+    final hasTimestamp = widget.attachment.recordedAt != null;
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListTile(
+          leading: const Icon(Icons.schedule_outlined),
+          title: Text(hasTimestamp ? l.editVoiceTimestampButton : l.addVoiceTimestampButton),
+          onTap: () {
+            Navigator.of(sheetContext).pop();
+            _pickTimestamp();
+          },
+        ),
+      ),
+    );
+  }
+
+  /// Defaults to [Attachment.recordedAt] if already set, or to now — not
+  /// the moment recording actually stopped, since that's only meaningful
+  /// as the *initial* default (already applied in
+  /// [_NoteEditorScreenState._onVoiceRecorded]); re-opening this picker
+  /// later has no way to recover that original moment, so "now" is the
+  /// more honest fallback for an edit happening well after the fact.
+  Future<void> _pickTimestamp() async {
+    final now = DateTime.now();
+    final initial = widget.attachment.recordedAt ?? now;
+    final date = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(now.year - 100),
+      lastDate: now.add(const Duration(days: 1)),
+    );
+    if (date == null || !mounted) return;
+    final time = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(initial));
+    if (time == null || !mounted) return;
+    widget.onSetTimestamp(DateTime(date.year, date.month, date.day, time.hour, time.minute));
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final onBubble = theme.colorScheme.onSecondaryContainer;
     final playing = _playerController.playerState == PlayerState.playing;
     final duration = widget.attachment.durationSeconds;
+    final recordedAt = widget.attachment.recordedAt;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: _error != null
-                ? Icon(Icons.error_outline, color: onBubble)
-                : Icon(playing ? Icons.pause : Icons.play_arrow, color: onBubble),
-            onPressed: _ready ? _toggle : null,
-          ),
-          Expanded(
-            child: _ready
-                ? LayoutBuilder(
-                    builder: (context, constraints) => AudioFileWaveforms(
-                      size: Size(constraints.maxWidth, 36),
-                      playerController: _playerController,
-                      waveformType: WaveformType.fitWidth,
-                      enableSeekGesture: true,
-                      playerWaveStyle: PlayerWaveStyle(
-                        fixedWaveColor: onBubble.withValues(alpha: 0.35),
-                        liveWaveColor: onBubble,
-                        spacing: 4,
-                        waveThickness: 2,
-                      ),
-                    ),
-                  )
-                : SizedBox(
-                    height: 36,
-                    child: Center(
-                      child: _error != null
-                          ? null
-                          : const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+    return GestureDetector(
+      onLongPress: _showTimestampMenu,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                IconButton(
+                  icon: _error != null
+                      ? Icon(Icons.error_outline, color: onBubble)
+                      : Icon(playing ? Icons.pause : Icons.play_arrow, color: onBubble),
+                  // Tapping the error state retries preparation instead of
+                  // doing nothing — matches `_ImageAttachmentPreview`'s own
+                  // retry-on-tap for the same "download/decrypt failed"
+                  // situation.
+                  onPressed: _error != null ? _prepare : (_ready ? _toggle : null),
+                ),
+                Expanded(
+                  child: _ready
+                      ? LayoutBuilder(
+                          builder: (context, constraints) => AudioFileWaveforms(
+                            size: Size(constraints.maxWidth, 36),
+                            playerController: _playerController,
+                            waveformType: WaveformType.fitWidth,
+                            enableSeekGesture: true,
+                            playerWaveStyle: PlayerWaveStyle(
+                              fixedWaveColor: onBubble.withValues(alpha: 0.35),
+                              liveWaveColor: onBubble,
+                              spacing: 4,
+                              waveThickness: 2,
                             ),
-                    ),
+                          ),
+                        )
+                      : SizedBox(
+                          height: 36,
+                          child: Center(
+                            child: _error != null
+                                ? null
+                                : const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                          ),
+                        ),
+                ),
+                const SizedBox(width: 8),
+                if (duration != null)
+                  Text(_formatDuration(duration), style: theme.textTheme.bodySmall?.copyWith(color: onBubble)),
+                if (widget.onRemove != null)
+                  IconButton(
+                    icon: Icon(Icons.close, size: 18, color: onBubble),
+                    onPressed: widget.onRemove,
                   ),
-          ),
-          const SizedBox(width: 8),
-          if (duration != null)
-            Text(_formatDuration(duration), style: theme.textTheme.bodySmall?.copyWith(color: onBubble)),
-          if (widget.onRemove != null)
-            IconButton(
-              icon: Icon(Icons.close, size: 18, color: onBubble),
-              onPressed: widget.onRemove,
+              ],
             ),
-        ],
+            if (recordedAt != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 4),
+                child: Text(
+                  Formatter.voiceTimestampLabel(recordedAt, Localizations.localeOf(context)),
+                  style: theme.textTheme.labelSmall?.copyWith(color: onBubble.withValues(alpha: 0.7)),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -1313,6 +2108,45 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
 /// plain markdown syntax (see `_wrapBodySelection`/`_prefixBodyLines`/
 /// `_insertLink`) — there's no rich-text model underneath, only the same
 /// text a user could've typed by hand.
+/// Compact entry point for recording a voice note, shown in the same slot
+/// as [_FormattingToolbar]/[VoiceRecorder] (see
+/// [_NoteEditorScreenState._voiceRecorderSlot]) whenever neither of those
+/// is currently relevant — i.e. most of the time, since a text selection
+/// is momentary. Deliberately understated (a single icon + short label,
+/// not a full row of controls) so it doesn't read as more important than
+/// the body text it sits above.
+class _VoiceRecorderTrigger extends StatelessWidget {
+  const _VoiceRecorderTrigger({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            Icon(Icons.mic_none_outlined, size: 18, color: colorScheme.onSurfaceVariant),
+            const SizedBox(width: 8),
+            Text(
+              l.recordVoiceNoteTooltip,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _FormattingToolbar extends StatelessWidget {
   const _FormattingToolbar({
     required this.onBold,
@@ -1350,6 +2184,68 @@ class _FormattingToolbar extends StatelessWidget {
   }
 }
 
+/// Sits above [_ChecklistEditor] — a checklist has no read-only view to
+/// also appear in (see [_NoteEditorScreenState.initState]'s `_editing`
+/// default), so this is always in an editing context: a "N of M done"
+/// progress line, a hide/show-completed toggle, and a "delete completed"
+/// action.
+class _ChecklistToolbar extends StatelessWidget {
+  const _ChecklistToolbar({
+    required this.doneCount,
+    required this.totalCount,
+    required this.hideCompleted,
+    required this.onToggleHideCompleted,
+    required this.onDeleteCompleted,
+  });
+
+  final int doneCount;
+  final int totalCount;
+  final bool hideCompleted;
+  final VoidCallback onToggleHideCompleted;
+  final VoidCallback onDeleteCompleted;
+
+  @override
+  Widget build(BuildContext context) {
+    if (totalCount == 0) return const SizedBox.shrink();
+    final l = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              l.checklistProgress(doneCount, totalCount),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+            ),
+          ),
+          if (doneCount > 0) ...[
+            IconButton(
+              icon: Icon(
+                hideCompleted ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                size: 20,
+              ),
+              tooltip: hideCompleted ? l.showCompletedItemsTooltip : l.hideCompletedItemsTooltip,
+              visualDensity: VisualDensity.compact,
+              onPressed: onToggleHideCompleted,
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_sweep_outlined, size: 20),
+              tooltip: l.deleteCompletedItemsButton,
+              visualDensity: VisualDensity.compact,
+              onPressed: onDeleteCompleted,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _ChecklistEditor extends StatelessWidget {
   const _ChecklistEditor({
     required this.doneFlags,
@@ -1359,6 +2255,7 @@ class _ChecklistEditor extends StatelessWidget {
     required this.onSubmitted,
     required this.onRemove,
     required this.onAddItem,
+    this.hideCompleted = false,
   });
 
   final List<bool> doneFlags;
@@ -1369,7 +2266,7 @@ class _ChecklistEditor extends StatelessWidget {
   final void Function(int index, bool done) onToggleDone;
 
   /// Called with the row index when the keyboard's return/next key is
-  /// pressed in that row's field — inserts and focuses the next row.
+  /// pressed in that row's field — inserts and focuses the new row.
   final void Function(int index) onSubmitted;
 
   /// Called with the row index when its delete button is tapped.
@@ -1377,14 +2274,31 @@ class _ChecklistEditor extends StatelessWidget {
 
   final VoidCallback onAddItem;
 
+  /// See [_ChecklistToolbar]'s toggle — every row still exists at its same
+  /// index in [doneFlags]/[controllers]/[focusNodes] regardless, only
+  /// which ones get a [Row] built for them changes.
+  final bool hideCompleted;
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final doneTextColor = Theme.of(context).disabledColor;
+    final visibleIndices = [
+      for (var i = 0; i < controllers.length; i++)
+        if (!hideCompleted || !doneFlags[i]) i,
+    ];
 
     return Column(
       children: [
-        for (var i = 0; i < controllers.length; i++)
+        if (hideCompleted && visibleIndices.isEmpty && controllers.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              l.allChecklistItemsCompletedHidden,
+              style: TextStyle(color: doneTextColor),
+            ),
+          ),
+        for (final i in visibleIndices)
           Row(
             children: [
               Checkbox(
@@ -1434,51 +2348,3 @@ class _ChecklistEditor extends StatelessWidget {
   }
 }
 
-/// [_ChecklistEditor]'s read-only counterpart, shown in
-/// [_NoteEditorScreenState._buildViewBody]: same checked/unchecked +
-/// strikethrough look, but plain [Icon]s and [Text] instead of interactive
-/// [Checkbox]/[TextField] rows — any tap on it falls through to the
-/// enclosing view's "tap anywhere to edit" gesture (see
-/// [_NoteEditorScreenState._enterEditMode]) rather than toggling an item
-/// in place, keeping the read view's "nothing here mutates state" model
-/// simple instead of having to auto-save a single toggled checkbox.
-class _ReadOnlyChecklist extends StatelessWidget {
-  const _ReadOnlyChecklist({required this.doneFlags, required this.texts});
-
-  final List<bool> doneFlags;
-  final List<String> texts;
-
-  @override
-  Widget build(BuildContext context) {
-    final doneTextColor = Theme.of(context).disabledColor;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (var i = 0; i < texts.length; i++)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  doneFlags[i] ? Icons.check_box_outlined : Icons.check_box_outline_blank,
-                  size: 20,
-                  color: doneTextColor,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    texts[i],
-                    style: TextStyle(
-                      decoration: doneFlags[i] ? TextDecoration.lineThrough : TextDecoration.none,
-                      color: doneFlags[i] ? doneTextColor : null,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-}

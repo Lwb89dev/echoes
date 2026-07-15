@@ -46,4 +46,13 @@ class Formatter {
     if (diff == 1) return l.diaryYesterday;
     return DateFormat.yMMMMd(locale.toString()).format(date);
   }
+
+  /// A voice note's manually-set timestamp (see `Attachment.recordedAt`),
+  /// formatted compactly ("12 Jul, 14:30") for display right under its
+  /// bubble — deliberately not reusing [diaryDateLabel]'s "Today"/
+  /// "Yesterday" wording, since a specific time-of-day matters here in a
+  /// way it doesn't for a diary entry's whole-day date.
+  static String voiceTimestampLabel(DateTime dateTime, Locale locale) {
+    return DateFormat.MMMd(locale.toString()).add_Hm().format(dateTime);
+  }
 }

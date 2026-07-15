@@ -31,6 +31,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsTooltip => 'Nastavení';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Zatím žádné poznámky. Klepnutím na + vytvoříte novou.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get unlockButton => 'Odemknout';
 
   @override
-  String get newNoteTitle => 'Nová poznámka';
-
-  @override
-  String get editNoteTitle => 'Upravit poznámku';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Uložit';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsCs extends AppLocalizations {
   String get addItemButton => 'Přidat položku';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Přidat obrázek';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Nahrát hlasovou poznámku';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Zastavit nahrávání';
 
   @override
   String get cancelRecordingTooltip => 'Zrušit nahrávání';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -259,10 +322,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Rozvržení seznamu poznámek';
-
-  @override
-  String get noteLayoutToggleSubtitle =>
-      'Přepínání mezi zobrazením seznamu a mřížky';
 
   @override
   String get manageRelaysTitle => 'Spravovat relé';

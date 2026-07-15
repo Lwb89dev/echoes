@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'auth_provider.dart';
+import 'notes_provider.dart';
 import 'relay_provider.dart';
 import 'service_providers.dart';
 import 'upload_settings_provider.dart';
@@ -33,7 +34,24 @@ final syncLifecycleProvider = Provider<void>((ref) {
       'syncLifecycleProvider: (re)starting auto-sync for ${author.publicKeyHex}',
       name: 'syncLifecycleProvider',
     );
-    syncService.startAutoSync(author: author, relays: relays, uploadProvider: uploadProvider);
+    syncService.startAutoSync(
+      author: author,
+      relays: relays,
+      uploadProvider: uploadProvider,
+      // Background cycles write uploaded-attachment state and fetched
+      // notes straight to storage; the in-memory list must be told or the
+      // home screen (and editors opened from it) keep serving pre-sync
+      // snapshots. Guarded on `exists`: forcing notesProvider into
+      // existence here would run its build() — which throws while the
+      // encrypted box is still locked — and cache that error state for
+      // the UI to trip over after unlocking. If nothing has created the
+      // provider yet, there is no stale in-memory copy to refresh anyway.
+      onCycleCompleted: () {
+        if (ref.exists(notesProvider)) {
+          ref.read(notesProvider.notifier).reloadFromLocal();
+        }
+      },
+    );
   }
 
   ref.listen(authProvider, (previous, next) => restart(), fireImmediately: true);

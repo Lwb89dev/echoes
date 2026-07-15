@@ -190,6 +190,30 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTooltip;
 
+  /// No description provided for @searchTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchTooltip;
+
+  /// No description provided for @closeSearchTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get closeSearchTooltip;
+
+  /// No description provided for @searchNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search notes'**
+  String get searchNotesHint;
+
+  /// No description provided for @noSearchResultsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches.'**
+  String get noSearchResultsMessage;
+
   /// No description provided for @emptyNotesMessage.
   ///
   /// In en, this message translates to:
@@ -328,30 +352,6 @@ abstract class AppLocalizations {
   /// **'Unlock'**
   String get unlockButton;
 
-  /// No description provided for @newNoteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'New note'**
-  String get newNoteTitle;
-
-  /// No description provided for @editNoteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit note'**
-  String get editNoteTitle;
-
-  /// No description provided for @newDiaryEntryTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'New diary entry'**
-  String get newDiaryEntryTitle;
-
-  /// No description provided for @editDiaryEntryTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit diary entry'**
-  String get editDiaryEntryTitle;
-
   /// No description provided for @saveTooltip.
   ///
   /// In en, this message translates to:
@@ -388,17 +388,119 @@ abstract class AppLocalizations {
   /// **'Add item'**
   String get addItemButton;
 
+  /// No description provided for @checklistProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String checklistProgress(int done, int total);
+
+  /// No description provided for @showCompletedItemsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Show completed items'**
+  String get showCompletedItemsTooltip;
+
+  /// No description provided for @hideCompletedItemsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide completed items'**
+  String get hideCompletedItemsTooltip;
+
+  /// No description provided for @allChecklistItemsCompletedHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'All items are completed and hidden.'**
+  String get allChecklistItemsCompletedHidden;
+
+  /// No description provided for @deleteCompletedItemsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete completed items'**
+  String get deleteCompletedItemsButton;
+
+  /// No description provided for @deleteCompletedItemsConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete completed items?'**
+  String get deleteCompletedItemsConfirmTitle;
+
+  /// No description provided for @deleteCompletedItemsConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes {count} checked-off item(s) from this checklist. This can\'t be undone.'**
+  String deleteCompletedItemsConfirmBody(int count);
+
   /// No description provided for @addImageButton.
   ///
   /// In en, this message translates to:
   /// **'Add image'**
   String get addImageButton;
 
+  /// No description provided for @noteColorButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Note color'**
+  String get noteColorButton;
+
+  /// No description provided for @noteColorDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get noteColorDefault;
+
+  /// No description provided for @noteColorYellow.
+  ///
+  /// In en, this message translates to:
+  /// **'Yellow'**
+  String get noteColorYellow;
+
+  /// No description provided for @noteColorRed.
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get noteColorRed;
+
+  /// No description provided for @noteColorPurple.
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get noteColorPurple;
+
+  /// No description provided for @noteColorBlue.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue'**
+  String get noteColorBlue;
+
+  /// No description provided for @noteColorGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get noteColorGreen;
+
+  /// No description provided for @noteColorOrange.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get noteColorOrange;
+
+  /// No description provided for @noteColorWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get noteColorWhite;
+
   /// No description provided for @recordVoiceNoteTooltip.
   ///
   /// In en, this message translates to:
   /// **'Record a voice note'**
   String get recordVoiceNoteTooltip;
+
+  /// No description provided for @recordVoiceNoteInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the red button to start recording, or ✕ to cancel.'**
+  String get recordVoiceNoteInstructions;
 
   /// No description provided for @stopRecordingTooltip.
   ///
@@ -411,6 +513,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel recording'**
   String get cancelRecordingTooltip;
+
+  /// No description provided for @addVoiceTimestampButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add timestamp'**
+  String get addVoiceTimestampButton;
+
+  /// No description provided for @editVoiceTimestampButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit timestamp'**
+  String get editVoiceTimestampButton;
 
   /// No description provided for @formatBoldTooltip.
   ///
@@ -601,14 +715,8 @@ abstract class AppLocalizations {
   /// No description provided for @noteLayoutToggleTitle.
   ///
   /// In en, this message translates to:
-  /// **'Note list layout'**
-  String get noteLayoutToggleTitle;
-
-  /// No description provided for @noteLayoutToggleSubtitle.
-  ///
-  /// In en, this message translates to:
   /// **'Switch between list and grid view'**
-  String get noteLayoutToggleSubtitle;
+  String get noteLayoutToggleTitle;
 
   /// No description provided for @manageRelaysTitle.
   ///

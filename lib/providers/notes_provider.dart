@@ -33,15 +33,40 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     final current = state.value ?? const <Note>[];
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      await ref.read(localStorageServiceProvider).saveNote(note);
-      final index = current.indexWhere((n) => n.id == note.id);
+      // What comes back may differ from what went in: the storage layer
+      // upgrades any attachment a concurrent sync already uploaded (see
+      // LocalStorageService.saveNote) — the in-memory list must reflect
+      // the stored truth, not the possibly-stale input.
+      final stored = await ref.read(localStorageServiceProvider).saveNote(note);
+      final index = current.indexWhere((n) => n.id == stored.id);
       if (index >= 0) {
         return [
-          for (final n in current) n.id == note.id ? note : n,
+          for (final n in current) n.id == stored.id ? stored : n,
         ];
       }
-      return [note, ...current];
+      return [stored, ...current];
     });
+  }
+
+  /// Re-reads the note list from local storage without touching the
+  /// relays — called after a background auto-sync cycle (see
+  /// `syncLifecycleProvider`), which writes uploaded-attachment state and
+  /// remote-fetched notes straight to storage behind this provider's back.
+  /// Without this, the home list (and anything opened from it) keeps
+  /// serving pre-sync snapshots whose attachments still claim a
+  /// `localPath` the upload already deleted.
+  ///
+  /// Best-effort on purpose: if the box is locked (user locked notes while
+  /// a cycle was in flight) the current state is simply kept — never
+  /// replaced with an error over a background refresh nobody asked for.
+  Future<void> reloadFromLocal() async {
+    developer.log('NotesNotifier.reloadFromLocal called', name: 'NotesNotifier');
+    try {
+      final notes = await ref.read(localStorageServiceProvider).loadNotes();
+      state = AsyncData(notes);
+    } catch (e) {
+      developer.log('reloadFromLocal skipped: $e', name: 'NotesNotifier');
+    }
   }
 
   /// Deletes [note] from local storage, and — if it had ever been synced —

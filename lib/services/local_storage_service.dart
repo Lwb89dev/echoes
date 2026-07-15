@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/attachment.dart';
 import '../models/note.dart';
 import '../models/relay.dart';
 import '../models/user.dart';
@@ -63,11 +64,82 @@ class LocalStorageService {
   }
 
   /// Creates or updates a note in the local cache. Idempotent on [Note.id].
-  Future<void> saveNote(Note note) async {
+  ///
+  /// Returns the note as actually stored, which may differ from [note] in
+  /// one deliberate way: an attachment that the *stored* copy already has
+  /// as uploaded (url + decryption key set) is never regressed back to
+  /// pending by an incoming copy of the same attachment id — see
+  /// [_mergeAttachmentUploadState]. Callers keeping an in-memory copy
+  /// (e.g. `NotesNotifier`) should use the returned note, not [note].
+  Future<Note> saveNote(Note note) async {
     developer.log('LocalStorageService.saveNote called: ${note.id}', name: 'LocalStorageService');
     final box = _requireNotesBox;
-    final stored = await _encodeForStorage(jsonEncode(note.toJson()));
+    final noteToStore = await _mergeAttachmentUploadState(note);
+    final stored = await _encodeForStorage(jsonEncode(noteToStore.toJson()));
     await box.put(note.id, stored);
+    return noteToStore;
+  }
+
+  /// Upgrades any still-pending attachment on [incoming] to the uploaded
+  /// version (url + decryption key/nonce + hash) the currently *stored*
+  /// copy of the same note already has for that attachment id, if any.
+  ///
+  /// This is the storage-level backstop for a race that otherwise loses
+  /// attachments irrecoverably: a background sync cycle uploads a pending
+  /// attachment (deleting its local plaintext file — see
+  /// `AttachmentUploadService.upload`) and saves the note with the url and
+  /// decryption key... and then a concurrent writer still holding the
+  /// *pre-upload* snapshot (most likely the editor's debounced autosave)
+  /// writes that stale copy back over it. Without this merge, that final
+  /// write discards the only copy of the decryption key in existence while
+  /// the plaintext file is already gone — the attachment's bytes still sit
+  /// encrypted on the file host, permanently undecryptable. Enforcing
+  /// "uploaded never regresses to pending" here, at the single choke point
+  /// every write goes through, protects every current and future writer at
+  /// once instead of each of them having to re-discover this race.
+  ///
+  /// Deliberately does *not* resurrect attachments absent from [incoming]:
+  /// removing an attachment is a legitimate edit, and its id simply not
+  /// being in the incoming list is how that looks.
+  Future<Note> _mergeAttachmentUploadState(Note incoming) async {
+    if (incoming.attachments.every((a) => a.isUploaded)) return incoming;
+    final storedRaw = _requireNotesBox.get(incoming.id);
+    if (storedRaw == null) return incoming;
+
+    final Note existing;
+    try {
+      final json = await _decodeStoredNote(storedRaw);
+      existing = Note.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    } catch (e) {
+      // Undecodable stored copy (corrupt, or the encryption key was
+      // rotated out from under it) — nothing usable to merge from.
+      developer.log('Could not decode stored note ${incoming.id} for merge: $e', name: 'LocalStorageService');
+      return incoming;
+    }
+
+    final uploadedById = {
+      for (final attachment in existing.attachments)
+        if (attachment.isUploaded) attachment.id: attachment,
+    };
+    if (uploadedById.isEmpty) return incoming;
+
+    var upgradedCount = 0;
+    final merged = <Attachment>[];
+    for (final attachment in incoming.attachments) {
+      final uploaded = uploadedById[attachment.id];
+      if (!attachment.isUploaded && uploaded != null) {
+        merged.add(uploaded);
+        upgradedCount++;
+      } else {
+        merged.add(attachment);
+      }
+    }
+    if (upgradedCount == 0) return incoming;
+    developer.log(
+      'Preserved uploaded state for $upgradedCount attachment(s) on note ${incoming.id}',
+      name: 'LocalStorageService',
+    );
+    return incoming.copyWith(attachments: merged);
   }
 
   /// Removes a note from the local cache.

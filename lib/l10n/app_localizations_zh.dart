@@ -30,6 +30,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsTooltip => '设置';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage => '还没有笔记。点击 + 创建一条。';
 
   @override
@@ -111,18 +123,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get unlockButton => '解锁';
 
   @override
-  String get newNoteTitle => '新建笔记';
-
-  @override
-  String get editNoteTitle => '编辑笔记';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => '保存';
 
   @override
@@ -141,16 +141,79 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addItemButton => '添加项目';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => '添加图片';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => '录制语音笔记';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => '停止录音';
 
   @override
   String get cancelRecordingTooltip => '取消录音';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -252,9 +315,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => '笔记列表布局';
-
-  @override
-  String get noteLayoutToggleSubtitle => '在列表视图和网格视图之间切换';
 
   @override
   String get manageRelaysTitle => '管理中继';

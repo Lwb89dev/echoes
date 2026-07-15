@@ -31,6 +31,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsTooltip => 'Impostazioni';
 
   @override
+  String get searchTooltip => 'Cerca';
+
+  @override
+  String get closeSearchTooltip => 'Chiudi ricerca';
+
+  @override
+  String get searchNotesHint => 'Cerca nelle note';
+
+  @override
+  String get noSearchResultsMessage => 'Nessun risultato.';
+
+  @override
   String get emptyNotesMessage => 'Nessuna nota. Tocca + per crearne una.';
 
   @override
@@ -115,18 +127,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get unlockButton => 'Sblocca';
 
   @override
-  String get newNoteTitle => 'Nuova nota';
-
-  @override
-  String get editNoteTitle => 'Modifica nota';
-
-  @override
-  String get newDiaryEntryTitle => 'Nuova voce di diario';
-
-  @override
-  String get editDiaryEntryTitle => 'Modifica voce di diario';
-
-  @override
   String get saveTooltip => 'Salva';
 
   @override
@@ -145,16 +145,80 @@ class AppLocalizationsIt extends AppLocalizations {
   String get addItemButton => 'Aggiungi elemento';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done di $total completati';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Mostra elementi completati';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Nascondi elementi completati';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'Tutti gli elementi sono completati e nascosti.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Elimina elementi completati';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle =>
+      'Eliminare gli elementi completati?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'Verranno rimossi $count elemento/i spuntati da questa checklist. Non può essere annullato.';
+  }
+
+  @override
   String get addImageButton => 'Aggiungi immagine';
 
   @override
+  String get noteColorButton => 'Colore nota';
+
+  @override
+  String get noteColorDefault => 'Predefinito';
+
+  @override
+  String get noteColorYellow => 'Giallo';
+
+  @override
+  String get noteColorRed => 'Rosso';
+
+  @override
+  String get noteColorPurple => 'Viola';
+
+  @override
+  String get noteColorBlue => 'Blu';
+
+  @override
+  String get noteColorGreen => 'Verde';
+
+  @override
+  String get noteColorOrange => 'Arancione';
+
+  @override
+  String get noteColorWhite => 'Bianco';
+
+  @override
   String get recordVoiceNoteTooltip => 'Registra una nota vocale';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tocca il pulsante rosso per iniziare a registrare, oppure ✕ per annullare.';
 
   @override
   String get stopRecordingTooltip => 'Interrompi registrazione';
 
   @override
   String get cancelRecordingTooltip => 'Annulla registrazione';
+
+  @override
+  String get addVoiceTimestampButton => 'Aggiungi timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Modifica timestamp';
 
   @override
   String get formatBoldTooltip => 'Grassetto';
@@ -259,10 +323,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Usa una combinazione di colori chiara invece che scura';
 
   @override
-  String get noteLayoutToggleTitle => 'Layout elenco note';
-
-  @override
-  String get noteLayoutToggleSubtitle =>
+  String get noteLayoutToggleTitle =>
       'Passa dalla vista elenco alla vista griglia';
 
   @override

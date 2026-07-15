@@ -31,6 +31,18 @@ class AppLocalizationsHr extends AppLocalizations {
   String get settingsTooltip => 'Postavke';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Još nema bilješki. Dodirnite + za izradu nove.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsHr extends AppLocalizations {
   String get unlockButton => 'Otključaj';
 
   @override
-  String get newNoteTitle => 'Nova bilješka';
-
-  @override
-  String get editNoteTitle => 'Uredi bilješku';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Spremi';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsHr extends AppLocalizations {
   String get addItemButton => 'Dodaj stavku';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Dodaj sliku';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Snimi glasovnu bilješku';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Zaustavi snimanje';
 
   @override
   String get cancelRecordingTooltip => 'Otkaži snimanje';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -259,10 +322,6 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Prikaz popisa bilješki';
-
-  @override
-  String get noteLayoutToggleSubtitle =>
-      'Prebacivanje između prikaza popisa i mreže';
 
   @override
   String get manageRelaysTitle => 'Upravljanje relejima';

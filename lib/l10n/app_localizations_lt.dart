@@ -31,6 +31,18 @@ class AppLocalizationsLt extends AppLocalizations {
   String get settingsTooltip => 'Nustatymai';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Užrašų dar nėra. Palieskite +, kad sukurtumėte naują.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsLt extends AppLocalizations {
   String get unlockButton => 'Atrakinti';
 
   @override
-  String get newNoteTitle => 'Naujas užrašas';
-
-  @override
-  String get editNoteTitle => 'Redaguoti užrašą';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Išsaugoti';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsLt extends AppLocalizations {
   String get addItemButton => 'Pridėti elementą';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Pridėti vaizdą';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Įrašyti balso užrašą';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Sustabdyti įrašymą';
 
   @override
   String get cancelRecordingTooltip => 'Atšaukti įrašymą';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -259,10 +322,6 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Užrašų sąrašo išdėstymas';
-
-  @override
-  String get noteLayoutToggleSubtitle =>
-      'Perjungti tarp sąrašo ir tinklelio rodinio';
 
   @override
   String get manageRelaysTitle => 'Tvarkyti reles';

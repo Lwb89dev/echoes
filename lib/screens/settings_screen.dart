@@ -12,7 +12,6 @@ import '../models/upload_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/locale_provider.dart';
 import '../providers/note_encryption_provider.dart';
-import '../providers/note_layout_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/profile_provider.dart';
 import '../providers/relay_provider.dart';
@@ -470,7 +469,6 @@ class _AppearanceSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final themeMode = ref.watch(themeModeProvider);
-    final noteLayout = ref.watch(noteLayoutProvider);
 
     return Column(
       children: [
@@ -481,20 +479,6 @@ class _AppearanceSection extends ConsumerWidget {
           onChanged: (value) => ref
               .read(themeModeProvider.notifier)
               .setThemeMode(value ? ThemeMode.light : ThemeMode.dark),
-        ),
-        ListTile(
-          title: Text(l.noteLayoutToggleTitle),
-          subtitle: Text(l.noteLayoutToggleSubtitle),
-          trailing: SegmentedButton<NoteLayout>(
-            segments: [
-              ButtonSegment(value: NoteLayout.list, icon: const Icon(Icons.view_list_outlined)),
-              ButtonSegment(value: NoteLayout.grid, icon: const Icon(Icons.grid_view_outlined)),
-            ],
-            selected: {noteLayout},
-            showSelectedIcon: false,
-            onSelectionChanged: (selection) =>
-                ref.read(noteLayoutProvider.notifier).setLayout(selection.first),
-          ),
         ),
       ],
     );

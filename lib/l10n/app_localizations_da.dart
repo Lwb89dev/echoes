@@ -31,6 +31,18 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsTooltip => 'Indstillinger';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Ingen noter endnu. Tryk på + for at oprette en.';
 
@@ -115,18 +127,6 @@ class AppLocalizationsDa extends AppLocalizations {
   String get unlockButton => 'Lås op';
 
   @override
-  String get newNoteTitle => 'Ny note';
-
-  @override
-  String get editNoteTitle => 'Rediger note';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Gem';
 
   @override
@@ -145,16 +145,79 @@ class AppLocalizationsDa extends AppLocalizations {
   String get addItemButton => 'Tilføj punkt';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Tilføj billede';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Optag en talenote';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Stop optagelse';
 
   @override
   String get cancelRecordingTooltip => 'Annuller optagelse';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -259,9 +322,6 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Layout for notatliste';
-
-  @override
-  String get noteLayoutToggleSubtitle => 'Skift mellem liste- og gittervisning';
 
   @override
   String get manageRelaysTitle => 'Administrer relæer';

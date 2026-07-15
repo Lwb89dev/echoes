@@ -32,6 +32,21 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    // Per-ABI split release APKs (app-armeabi-v7a-release.apk,
+    // app-arm64-v8a-release.apk) alongside the universal one, instead of a
+    // single "fat" APK carrying every ABI's native libraries — smaller
+    // downloads for direct/sideloaded distribution (e.g. GitHub releases).
+    // x86_64 deliberately left out: it only matters for emulators/rare
+    // x86 tablets, not real phones.
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a")
+            isUniversalApk = true
+        }
+    }
 }
 
 kotlin {

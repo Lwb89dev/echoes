@@ -1,3 +1,4 @@
+import '../utils/note_colors.dart';
 import 'attachment.dart';
 
 /// A single checklist entry (used when [Note.isChecklist] is true).
@@ -64,6 +65,12 @@ class Note {
   /// meaningful when [isDiaryEntry] is true; null for regular notes.
   final DateTime? entryDate;
 
+  /// User-chosen background color for this specific note (see
+  /// [NoteColor]), independent of the app's light/dark theme — Google
+  /// Keep-style. Null means no override: rendered with the app's normal
+  /// surface color, same as before this existed.
+  final NoteColor? color;
+
   const Note({
     required this.id,
     required this.title,
@@ -77,6 +84,7 @@ class Note {
     this.nostrEventId,
     this.isDiaryEntry = false,
     this.entryDate,
+    this.color,
   });
 
   /// Short text preview for the list view (title excluded, no newlines).
@@ -115,6 +123,7 @@ class Note {
     Object? nostrEventId = _unset,
     bool? isDiaryEntry,
     Object? entryDate = _unset,
+    Object? color = _unset,
   }) {
     return Note(
       id: id ?? this.id,
@@ -129,6 +138,7 @@ class Note {
       nostrEventId: identical(nostrEventId, _unset) ? this.nostrEventId : nostrEventId as String?,
       isDiaryEntry: isDiaryEntry ?? this.isDiaryEntry,
       entryDate: identical(entryDate, _unset) ? this.entryDate : entryDate as DateTime?,
+      color: identical(color, _unset) ? this.color : color as NoteColor?,
     );
   }
 
@@ -145,6 +155,7 @@ class Note {
         'nostrEventId': nostrEventId,
         'isDiaryEntry': isDiaryEntry,
         'entryDate': entryDate?.toIso8601String(),
+        'color': color?.name,
       };
 
   factory Note.fromJson(Map<String, dynamic> json) {
@@ -165,6 +176,7 @@ class Note {
       nostrEventId: json['nostrEventId'] as String?,
       isDiaryEntry: json['isDiaryEntry'] as bool? ?? false,
       entryDate: json['entryDate'] != null ? DateTime.parse(json['entryDate'] as String) : null,
+      color: json['color'] != null ? NoteColor.values.byName(json['color'] as String) : null,
     );
   }
 }

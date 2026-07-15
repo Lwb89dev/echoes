@@ -65,4 +65,4 @@ lib/
 
 ## License
 
-No license has been chosen yet — all rights reserved by default until one is added.
+Echoes is licensed under the [GNU General Public License v3.0](LICENSE) (GPL-3.0-or-later).

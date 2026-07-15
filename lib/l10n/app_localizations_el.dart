@@ -31,6 +31,18 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsTooltip => 'Ρυθμίσεις';
 
   @override
+  String get searchTooltip => 'Search';
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchNotesHint => 'Search notes';
+
+  @override
+  String get noSearchResultsMessage => 'No matches.';
+
+  @override
   String get emptyNotesMessage =>
       'Δεν υπάρχουν ακόμη σημειώσεις. Πατήστε + για να δημιουργήσετε μία.';
 
@@ -116,18 +128,6 @@ class AppLocalizationsEl extends AppLocalizations {
   String get unlockButton => 'Ξεκλείδωμα';
 
   @override
-  String get newNoteTitle => 'Νέα σημείωση';
-
-  @override
-  String get editNoteTitle => 'Επεξεργασία σημείωσης';
-
-  @override
-  String get newDiaryEntryTitle => 'New diary entry';
-
-  @override
-  String get editDiaryEntryTitle => 'Edit diary entry';
-
-  @override
   String get saveTooltip => 'Αποθήκευση';
 
   @override
@@ -146,16 +146,79 @@ class AppLocalizationsEl extends AppLocalizations {
   String get addItemButton => 'Προσθήκη στοιχείου';
 
   @override
+  String checklistProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get showCompletedItemsTooltip => 'Show completed items';
+
+  @override
+  String get hideCompletedItemsTooltip => 'Hide completed items';
+
+  @override
+  String get allChecklistItemsCompletedHidden =>
+      'All items are completed and hidden.';
+
+  @override
+  String get deleteCompletedItemsButton => 'Delete completed items';
+
+  @override
+  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+
+  @override
+  String deleteCompletedItemsConfirmBody(int count) {
+    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+  }
+
+  @override
   String get addImageButton => 'Προσθήκη εικόνας';
 
   @override
+  String get noteColorButton => 'Note color';
+
+  @override
+  String get noteColorDefault => 'Default';
+
+  @override
+  String get noteColorYellow => 'Yellow';
+
+  @override
+  String get noteColorRed => 'Red';
+
+  @override
+  String get noteColorPurple => 'Purple';
+
+  @override
+  String get noteColorBlue => 'Blue';
+
+  @override
+  String get noteColorGreen => 'Green';
+
+  @override
+  String get noteColorOrange => 'Orange';
+
+  @override
+  String get noteColorWhite => 'White';
+
+  @override
   String get recordVoiceNoteTooltip => 'Ηχογράφηση φωνητικής σημείωσης';
+
+  @override
+  String get recordVoiceNoteInstructions =>
+      'Tap the red button to start recording, or ✕ to cancel.';
 
   @override
   String get stopRecordingTooltip => 'Διακοπή ηχογράφησης';
 
   @override
   String get cancelRecordingTooltip => 'Ακύρωση ηχογράφησης';
+
+  @override
+  String get addVoiceTimestampButton => 'Add timestamp';
+
+  @override
+  String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -262,10 +325,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get noteLayoutToggleTitle => 'Διάταξη λίστας σημειώσεων';
-
-  @override
-  String get noteLayoutToggleSubtitle =>
-      'Εναλλαγή μεταξύ προβολής λίστας και πλέγματος';
 
   @override
   String get manageRelaysTitle => 'Διαχείριση relay';

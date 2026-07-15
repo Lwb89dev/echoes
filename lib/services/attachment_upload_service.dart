@@ -78,9 +78,19 @@ class AttachmentUploadService {
     if (localPath == null) {
       throw StateError('Attachment ${pending.id} has no local file to upload.');
     }
+    final localFile = File(localPath);
+    if (!await localFile.exists()) {
+      // Distinct from the null case above so sync-failure logs say *why*:
+      // the pending attachment's only copy is gone from disk (OS purged a
+      // cache-dir file from an older version, or the note came from a
+      // different device where that path was never valid here).
+      throw StateError(
+        'Attachment ${pending.id} original file no longer exists at $localPath — it cannot be uploaded.',
+      );
+    }
     developer.log('AttachmentUploadService.upload called: ${pending.id}', name: 'AttachmentUploadService');
 
-    final plainBytes = await File(localPath).readAsBytes();
+    final plainBytes = await localFile.readAsBytes();
     final key = _randomBytes(32);
     final nonce = _randomBytes(12);
     final secretBox = await _aesGcm.encrypt(plainBytes, secretKey: SecretKey(key), nonce: nonce);
