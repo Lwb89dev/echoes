@@ -1,15 +1,22 @@
 {
   "@@locale": "es",
-
   "loginSubtitle": "Inicia sesión con tu cuenta de Nostr",
   "loginWithAmberButton": "Iniciar sesión con Amber",
   "importAccountButton": "Importar cuenta de Nostr",
   "importAccountFieldLabel": "Clave privada (nsec) de tu cuenta de Nostr",
   "importButton": "Importar",
-
   "relaysTitle": "Relays",
   "settingsTooltip": "Ajustes",
+  "searchTooltip": "Buscar",
+  "closeSearchTooltip": "Cerrar búsqueda",
+  "searchNotesHint": "Buscar en las notas",
+  "noSearchResultsMessage": "Sin coincidencias.",
   "emptyNotesMessage": "Aún no hay notas. Toca + para crear una.",
+  "notesTabLabel": "Notas",
+  "diaryTabLabel": "Diario",
+  "emptyDiaryMessage": "Aún no hay entradas de diario. Toca + para escribir una.",
+  "diaryToday": "Hoy",
+  "diaryYesterday": "Ayer",
   "newPlainNoteOption": "Nota",
   "newChecklistOption": "Lista de tareas",
   "newVoiceNoteOption": "Nota de voz",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "¿Eliminar {count} notas?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Esto no se puede deshacer. Si alguna de estas notas estaba sincronizada, también se eliminará de tus relés.",
   "selectionCount": "{count} seleccionadas",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(sin título)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "hace {count} d",
   "notesLockedTitle": "Las notas están protegidas con una contraseña",
   "unlockButton": "Desbloquear",
-
-  "newNoteTitle": "Nueva nota",
-  "editNoteTitle": "Editar nota",
   "saveTooltip": "Guardar",
   "titleFieldLabel": "Título",
-  "checklistLabel": "Lista de tareas",
   "bodyFieldHint": "Escribe aquí... (se admite markdown)",
   "checklistItemHint": "Elemento de la lista",
   "addItemButton": "Añadir elemento",
+  "checklistProgress": "{done} de {total} completados",
+  "showCompletedItemsTooltip": "Mostrar elementos completados",
+  "hideCompletedItemsTooltip": "Ocultar elementos completados",
+  "allChecklistItemsCompletedHidden": "Todos los elementos están completados y ocultos.",
+  "deleteCompletedItemsButton": "Eliminar elementos completados",
+  "deleteCompletedItemsConfirmTitle": "¿Eliminar los elementos completados?",
+  "deleteCompletedItemsConfirmBody": "Se eliminarán {count} elementos marcados de esta lista. No se puede deshacer.",
   "addImageButton": "Añadir imagen",
+  "noteColorButton": "Color de la nota",
+  "noteColorDefault": "Predeterminado",
+  "noteColorYellow": "Amarillo",
+  "noteColorRed": "Rojo",
+  "noteColorPurple": "Morado",
+  "noteColorBlue": "Azul",
+  "noteColorGreen": "Verde",
+  "noteColorOrange": "Naranja",
+  "noteColorWhite": "Blanco",
   "recordVoiceNoteTooltip": "Grabar una nota de voz",
+  "recordVoiceNoteInstructions": "Toca el botón rojo para empezar a grabar, o ✕ para cancelar.",
   "stopRecordingTooltip": "Detener grabación",
   "cancelRecordingTooltip": "Cancelar grabación",
-  "previewBodyTooltip": "Vista previa",
-  "editBodyTooltip": "Editar",
+  "addVoiceTimestampButton": "Añadir marca de tiempo",
+  "editVoiceTimestampButton": "Editar marca de tiempo",
+  "voiceNoteUnsupportedOnPlatform": "Las notas de voz no son compatibles con este dispositivo",
+  "formatBoldTooltip": "Negrita",
+  "formatItalicTooltip": "Cursiva",
+  "formatHeadingTooltip": "Encabezado",
+  "formatListTooltip": "Lista con viñetas",
+  "formatLinkTooltip": "Enlace",
   "imageSizeSmall": "Pequeña",
   "imageSizeMedium": "Mediana",
   "imageSizeFull": "Ancho completo",
   "removeImageButton": "Eliminar imagen",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Aún no hay ningún relay configurado.",
   "relaysCount": "{count} relés",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Ajustes",
   "sectionSecurity": "Seguridad",
   "loadingLabel": "Cargando…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Apariencia",
   "lightThemeToggleTitle": "Tema claro",
   "lightThemeToggleSubtitle": "Usar un esquema de color claro en lugar de oscuro",
-  "noteLayoutToggleTitle": "Diseño de la lista de notas",
-  "noteLayoutToggleSubtitle": "Cambiar entre vista de lista y de cuadrícula",
+  "noteLayoutToggleTitle": "Cambiar entre vista de lista y cuadrícula",
   "manageRelaysTitle": "Gestionar relés",
+  "republishAllNotesButton": "Volver a publicar todas las notas sincronizadas",
+  "republishAllNotesSubtitle": "Rellena cada relé de arriba con notas ya compartidas en otros — útil justo después de añadir uno, p. ej. un relé de respaldo autoalojado",
+  "republishAllNotesSuccess": "Se volvieron a publicar {count} notas",
+  "republishAllNotesError": "No se pudieron volver a publicar las notas: {error}",
+  "forceFullResyncButton": "Forzar resincronización completa",
+  "forceFullResyncSubtitle": "Vuelve a consultar los relés en busca del historial completo de una nota en lugar de solo lo nuevo — útil si la sincronización parece estancada y omite notas antiguas, por ejemplo tras solucionar un relé inaccesible",
+  "forceFullResyncSuccess": "Notas actualizadas desde los relés",
+  "forceFullResyncError": "No se pudieron resincronizar las notas: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Confirmar",
-
   "sectionLanguage": "Idioma",
   "langSystem": "Predeterminado del sistema",
-
   "sectionAccount": "Cuenta",
   "accountLocalOnlyMessage": "Usando Echoes localmente — sin sincronizar con Nostr",
   "accountSignInButton": "Iniciar sesión",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Cerrar sesión",
   "accountSignOutConfirmTitle": "¿Cerrar sesión?",
   "accountSignOutConfirmBody": "Tus notas permanecerán en este dispositivo. Puedes volver a iniciar sesión en cualquier momento.",
-
   "onboardingWelcomeTitle": "Bienvenido a Echoes",
   "onboardingIntroLocalTitle": "Tus notas, siempre en tu dispositivo",
   "onboardingIntroLocalBody": "Cada nota se guarda primero localmente, así que la aplicación funciona totalmente sin conexión. Nada sale de tu dispositivo a menos que elijas sincronizarlo.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Elige relays para sincronizar",
   "onboardingRelayBody": "Los relays son donde se almacenan tus notas cifradas al sincronizar. Añade uno o más — estos populares son un buen comienzo:",
   "onboardingFinishButton": "Empezar",
-
   "syncNoteTooltip": "Sincronizar esta nota",
   "unsyncNoteTooltip": "Quitar de los relés",
   "syncSelectedTooltip": "Sincronizar notas seleccionadas",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Introduce tu contraseña",
   "exportSetPasswordDialogTitle": "Establece una contraseña para esta exportación",
   "importPasswordDialogTitle": "Introduce la contraseña de la exportación",
-
   "sectionData": "Datos",
   "exportNotesButton": "Exportar notas",
   "exportNotesSubtitle": "Guarda todas tus notas en un archivo que podrás volver a importar más tarde",
@@ -149,16 +188,14 @@
   "exportNotesError": "No se pudieron exportar las notas: {error}",
   "importNotesSuccess": "Se importaron {count} notas",
   "importNotesError": "No se pudieron importar las notas: {error}",
-
   "sectionAttachments": "Adjuntos",
   "attachmentProviderSubtitle": "Dónde se suben las imágenes y notas de voz cifradas al sincronizar",
   "attachmentProviderCustom": "Personalizado…",
   "attachmentCustomUrlLabel": "URL del servidor",
-
+  "attachmentProviderHint": "Algunos servidores públicos (p. ej. Primal, nostr.build) rechazan las subidas cifradas — validan contenido de imagen real, algo que los datos cifrados nunca son. Prefiere un servidor Blossom que guarde datos opacos, o apunta Personalizado… a uno autoalojado.",
   "sectionSupport": "Apoyo",
   "supportEchoesTitle": "Apoya a Echoes",
   "lightningAddressCopied": "⚡ {address} copiada al portapapeles",
-
   "cancelButton": "Cancelar",
   "passwordLabel": "Contraseña",
   "invalidPrivateKeyError": "La clave privada no es válida. Introduce una clave nsec o hex válida.",

@@ -31,35 +31,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsTooltip => 'Einstellungen';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Suchen';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Suche schließen';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Notizen durchsuchen';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Keine Treffer.';
 
   @override
   String get emptyNotesMessage =>
       'Noch keine Notizen. Tippe auf +, um eine zu erstellen.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Notizen';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Tagebuch';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Noch keine Tagebucheinträge. Tippe auf +, um einen zu schreiben.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Heute';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Gestern';
 
   @override
   String get newPlainNoteOption => 'Notiz';
@@ -133,9 +134,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get titleFieldLabel => 'Titel';
 
   @override
-  String get checklistLabel => 'Checkliste';
-
-  @override
   String get bodyFieldHint => 'Hier schreiben... (Markdown wird unterstützt)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done von $total erledigt';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Erledigte Einträge anzeigen';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Erledigte Einträge ausblenden';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Alle Einträge sind erledigt und ausgeblendet.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Erledigte Einträge löschen';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Erledigte Einträge löschen?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Dadurch werden $count abgehakte Einträge aus dieser Checkliste entfernt. Das kann nicht rückgängig gemacht werden.';
   }
 
   @override
   String get addImageButton => 'Bild hinzufügen';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Notizfarbe';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Standard';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Gelb';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Rot';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Violett';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Blau';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Grün';
 
   @override
   String get noteColorOrange => 'Orange';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Weiß';
 
   @override
   String get recordVoiceNoteTooltip => 'Sprachnotiz aufnehmen';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Tippe auf den roten Knopf, um die Aufnahme zu starten, oder auf ✕ zum Abbrechen.';
 
   @override
   String get stopRecordingTooltip => 'Aufnahme stoppen';
@@ -214,22 +212,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancelRecordingTooltip => 'Aufnahme abbrechen';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Zeitstempel hinzufügen';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Zeitstempel bearbeiten';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Sprachnotizen werden auf diesem Gerät nicht unterstützt';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Fett';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Kursiv';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Überschrift';
+
+  @override
+  String get formatListTooltip => 'Aufzählung';
 
   @override
   String get formatLinkTooltip => 'Link';
@@ -322,26 +324,44 @@ class AppLocalizationsDe extends AppLocalizations {
       'Helles statt dunkles Farbschema verwenden';
 
   @override
-  String get noteLayoutToggleTitle => 'Notizlisten-Layout';
+  String get noteLayoutToggleTitle =>
+      'Zwischen Listen- und Rasteransicht wechseln';
 
   @override
   String get manageRelaysTitle => 'Relais verwalten';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Alle synchronisierten Notizen erneut veröffentlichen';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Füllt jedes Relais oben mit bereits anderswo geteilten Notizen auf — nützlich direkt nach dem Hinzufügen eines neuen, z. B. eines selbst gehosteten Backup-Relais';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return '$count Notizen erneut veröffentlicht';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Notizen konnten nicht erneut veröffentlicht werden: $error';
+  }
+
+  @override
+  String get forceFullResyncButton =>
+      'Vollständige Neusynchronisierung erzwingen';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Prüft Relays erneut auf die komplette Verlaufshistorie einer Notiz statt nur auf Neues — nützlich, wenn die Synchronisierung feststeckt und ältere Notizen überspringt, z. B. nach der Behebung eines nicht erreichbaren Relays';
+
+  @override
+  String get forceFullResyncSuccess => 'Notizen von Relays aktualisiert';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Notizen konnten nicht neu synchronisiert werden: $error';
   }
 
   @override
@@ -563,7 +583,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Manche öffentlichen Hosts (z. B. Primal, nostr.build) lehnen verschlüsselte Uploads grundsätzlich ab — sie prüfen auf echten Bildinhalt, was verschlüsselte Daten nie sind. Bevorzuge einen Blossom-Host, der beliebige Daten speichert, oder richte „Benutzerdefiniert…“ auf einen selbst gehosteten.';
 
   @override
   String get sectionSupport => 'Unterstützung';

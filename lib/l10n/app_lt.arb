@@ -1,15 +1,22 @@
 {
   "@@locale": "lt",
-
   "loginSubtitle": "Prisijunkite naudodami savo Nostr paskyrą",
   "loginWithAmberButton": "Prisijungti su Amber",
   "importAccountButton": "Importuoti Nostr paskyrą",
   "importAccountFieldLabel": "Jūsų Nostr paskyros privatus raktas (nsec)",
   "importButton": "Importuoti",
-
   "relaysTitle": "Relės",
   "settingsTooltip": "Nustatymai",
+  "searchTooltip": "Ieškoti",
+  "closeSearchTooltip": "Užverti paiešką",
+  "searchNotesHint": "Ieškoti užrašuose",
+  "noSearchResultsMessage": "Atitikmenų nėra.",
   "emptyNotesMessage": "Užrašų dar nėra. Palieskite +, kad sukurtumėte naują.",
+  "notesTabLabel": "Užrašai",
+  "diaryTabLabel": "Dienoraštis",
+  "emptyDiaryMessage": "Dienoraščio įrašų dar nėra. Palieskite +, kad parašytumėte.",
+  "diaryToday": "Šiandien",
+  "diaryYesterday": "Vakar",
   "newPlainNoteOption": "Užrašas",
   "newChecklistOption": "Kontrolinis sąrašas",
   "newVoiceNoteOption": "Balso užrašas",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Ištrinti {count} užrašus?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Šio veiksmo anuliuoti negalima. Jei bet kuris iš šių užrašų buvo sinchronizuotas, jis taip pat bus pašalintas iš jūsų relių.",
   "selectionCount": "Pasirinkta: {count}",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(be pavadinimo)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "prieš {count} d",
   "notesLockedTitle": "Užrašai apsaugoti slaptažodžiu",
   "unlockButton": "Atrakinti",
-
-  "newNoteTitle": "Naujas užrašas",
-  "editNoteTitle": "Redaguoti užrašą",
   "saveTooltip": "Išsaugoti",
   "titleFieldLabel": "Pavadinimas",
-  "checklistLabel": "Kontrolinis sąrašas",
   "bodyFieldHint": "Rašykite čia... (palaikoma markdown)",
   "checklistItemHint": "Sąrašo elementas",
   "addItemButton": "Pridėti elementą",
+  "checklistProgress": "Atlikta {done} iš {total}",
+  "showCompletedItemsTooltip": "Rodyti atliktus punktus",
+  "hideCompletedItemsTooltip": "Slėpti atliktus punktus",
+  "allChecklistItemsCompletedHidden": "Visi punktai atlikti ir paslėpti.",
+  "deleteCompletedItemsButton": "Ištrinti atliktus punktus",
+  "deleteCompletedItemsConfirmTitle": "Ištrinti atliktus punktus?",
+  "deleteCompletedItemsConfirmBody": "Iš šio sąrašo bus pašalinta {count} pažymėtų punktų. To atšaukti negalima.",
   "addImageButton": "Pridėti vaizdą",
+  "noteColorButton": "Užrašo spalva",
+  "noteColorDefault": "Numatytoji",
+  "noteColorYellow": "Geltona",
+  "noteColorRed": "Raudona",
+  "noteColorPurple": "Violetinė",
+  "noteColorBlue": "Mėlyna",
+  "noteColorGreen": "Žalia",
+  "noteColorOrange": "Oranžinė",
+  "noteColorWhite": "Balta",
   "recordVoiceNoteTooltip": "Įrašyti balso užrašą",
+  "recordVoiceNoteInstructions": "Palieskite raudoną mygtuką, kad pradėtumėte įrašymą, arba ✕, kad atšauktumėte.",
   "stopRecordingTooltip": "Sustabdyti įrašymą",
   "cancelRecordingTooltip": "Atšaukti įrašymą",
-  "previewBodyTooltip": "Peržiūra",
-  "editBodyTooltip": "Redaguoti",
+  "addVoiceTimestampButton": "Pridėti laiko žymą",
+  "editVoiceTimestampButton": "Redaguoti laiko žymą",
+  "voiceNoteUnsupportedOnPlatform": "Balso įrašai šiame įrenginyje nepalaikomi",
+  "formatBoldTooltip": "Pusjuodis",
+  "formatItalicTooltip": "Kursyvas",
+  "formatHeadingTooltip": "Antraštė",
+  "formatListTooltip": "Sąrašas su ženkleliais",
+  "formatLinkTooltip": "Nuoroda",
   "imageSizeSmall": "Mažas",
   "imageSizeMedium": "Vidutinis",
   "imageSizeFull": "Visas plotis",
   "removeImageButton": "Pašalinti paveikslėlį",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Kol kas nesukonfigūruota nė viena relė.",
   "relaysCount": "{count} relės",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Nustatymai",
   "sectionSecurity": "Sauga",
   "loadingLabel": "Įkeliama…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Išvaizda",
   "lightThemeToggleTitle": "Šviesi tema",
   "lightThemeToggleSubtitle": "Naudoti šviesią spalvų schemą vietoj tamsios",
-  "noteLayoutToggleTitle": "Užrašų sąrašo išdėstymas",
-  "noteLayoutToggleSubtitle": "Perjungti tarp sąrašo ir tinklelio rodinio",
+  "noteLayoutToggleTitle": "Perjungti tarp sąrašo ir tinklelio rodinio",
   "manageRelaysTitle": "Tvarkyti reles",
+  "republishAllNotesButton": "Iš naujo paskelbti visus sinchronizuotus užrašus",
+  "republishAllNotesSubtitle": "Papildo kiekvieną aukščiau esančią relę užrašais, jau pasidalytais kitur — naudinga iškart pridėjus naują, pvz., savo atsarginę relę",
+  "republishAllNotesSuccess": "Iš naujo paskelbta {count} užrašų",
+  "republishAllNotesError": "Nepavyko iš naujo paskelbti užrašų: {error}",
+  "forceFullResyncButton": "Priverstinis pilnas persinchronizavimas",
+  "forceFullResyncSubtitle": "Iš naujo tikrina relėse visą užrašo istoriją, o ne tik naujus — naudinga, jei sinchronizavimas atrodo įstrigęs ir praleidžia senesnius užrašus, pvz., pataisius nepasiekiamą relę",
+  "forceFullResyncSuccess": "Užrašai atnaujinti iš relių",
+  "forceFullResyncError": "Nepavyko persinchronizuoti užrašų: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Patvirtinti",
-
   "sectionLanguage": "Kalba",
   "langSystem": "Sistemos numatytoji",
-
   "sectionAccount": "Paskyra",
   "accountLocalOnlyMessage": "„Echoes“ naudojama vietoje — nesinchronizuojama su Nostr",
   "accountSignInButton": "Prisijungti",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Atsijungti",
   "accountSignOutConfirmTitle": "Atsijungti?",
   "accountSignOutConfirmBody": "Jūsų užrašai lieka šiame įrenginyje. Bet kada galite prisijungti iš naujo.",
-
   "onboardingWelcomeTitle": "Sveiki atvykę į „Echoes“",
   "onboardingIntroLocalTitle": "Jūsų užrašai visada jūsų įrenginyje",
   "onboardingIntroLocalBody": "Kiekvienas užrašas pirmiausia išsaugomas vietoje, todėl programėlė veikia visiškai neprisijungus. Niekas nepalieka jūsų įrenginio, nebent pasirinksite sinchronizuoti.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Pasirinkite sinchronizavimo reles",
   "onboardingRelayBody": "Relėse saugomi jūsų šifruoti užrašai sinchronizavimo metu. Pridėkite vieną ar daugiau — šios populiarios yra geras pradžios taškas:",
   "onboardingFinishButton": "Pradėti",
-
   "syncNoteTooltip": "Sinchronizuoti šį užrašą",
   "unsyncNoteTooltip": "Pašalinti iš relių",
   "syncSelectedTooltip": "Sinchronizuoti pasirinktus užrašus",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Įveskite slaptažodį",
   "exportSetPasswordDialogTitle": "Nustatykite šio eksporto slaptažodį",
   "importPasswordDialogTitle": "Įveskite eksporto slaptažodį",
-
   "sectionData": "Duomenys",
   "exportNotesButton": "Eksportuoti užrašus",
   "exportNotesSubtitle": "Išsaugokite visus savo užrašus faile, kurį vėliau galėsite vėl importuoti",
@@ -149,16 +188,14 @@
   "exportNotesError": "Nepavyko eksportuoti užrašų: {error}",
   "importNotesSuccess": "Importuota {count} užrašų",
   "importNotesError": "Nepavyko importuoti užrašų: {error}",
-
   "sectionAttachments": "Priedai",
   "attachmentProviderSubtitle": "Kur įkeliami šifruoti vaizdai ir balso užrašai sinchronizuojant",
   "attachmentProviderCustom": "Pasirinktinis…",
   "attachmentCustomUrlLabel": "Serverio URL",
-
+  "attachmentProviderHint": "Kai kurie vieši serveriai (pvz., Primal, nostr.build) atmeta šifruotus įkėlimus — jie tikrina tikrą vaizdo turinį, kuo šifruoti duomenys niekada nebūna. Rinkitės Blossom serverį, saugantį neskaidrius duomenis, arba nukreipkite „Pasirinktinis…“ į savo serverį.",
   "sectionSupport": "Parama",
   "supportEchoesTitle": "Paremkite Echoes",
   "lightningAddressCopied": "⚡ {address} nukopijuotas į iškarpinę",
-
   "cancelButton": "Atšaukti",
   "passwordLabel": "Slaptažodis",
   "invalidPrivateKeyError": "Privatusis raktas negalioja. Įveskite galiojantį nsec arba hex raktą.",

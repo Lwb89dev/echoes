@@ -1,15 +1,22 @@
 {
   "@@locale": "sl",
-
   "loginSubtitle": "Prijavite se s svojim računom Nostr",
   "loginWithAmberButton": "Prijava z Amber",
   "importAccountButton": "Uvozi račun Nostr",
   "importAccountFieldLabel": "Zasebni ključ (nsec) vašega računa Nostr",
   "importButton": "Uvozi",
-
   "relaysTitle": "Releji",
   "settingsTooltip": "Nastavitve",
+  "searchTooltip": "Išči",
+  "closeSearchTooltip": "Zapri iskanje",
+  "searchNotesHint": "Išči po zapiskih",
+  "noSearchResultsMessage": "Ni zadetkov.",
   "emptyNotesMessage": "Še ni zabeležk. Dotaknite se +, da ustvarite novo.",
+  "notesTabLabel": "Zapiski",
+  "diaryTabLabel": "Dnevnik",
+  "emptyDiaryMessage": "V dnevniku še ni vnosov. Tapnite +, da ga napišete.",
+  "diaryToday": "Danes",
+  "diaryYesterday": "Včeraj",
   "newPlainNoteOption": "Zabeležka",
   "newChecklistOption": "Kontrolni seznam",
   "newVoiceNoteOption": "Glasovna zabeležka",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Izbrišem {count} zabeležk?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Tega dejanja ni mogoče razveljaviti. Če je bila katera od teh zabeležk sinhronizirana, bo odstranjena tudi z vaših relejev.",
   "selectionCount": "Izbranih: {count}",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(brez naslova)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "pred {count} dnevi",
   "notesLockedTitle": "Zabeležke so zaščitene z geslom",
   "unlockButton": "Odkleni",
-
-  "newNoteTitle": "Nova zabeležka",
-  "editNoteTitle": "Uredi zabeležko",
   "saveTooltip": "Shrani",
   "titleFieldLabel": "Naslov",
-  "checklistLabel": "Kontrolni seznam",
   "bodyFieldHint": "Pišite tukaj... (markdown je podprt)",
   "checklistItemHint": "Postavka seznama",
   "addItemButton": "Dodaj postavko",
+  "checklistProgress": "Dokončano {done} od {total}",
+  "showCompletedItemsTooltip": "Pokaži dokončane postavke",
+  "hideCompletedItemsTooltip": "Skrij dokončane postavke",
+  "allChecklistItemsCompletedHidden": "Vse postavke so dokončane in skrite.",
+  "deleteCompletedItemsButton": "Izbriši dokončane postavke",
+  "deleteCompletedItemsConfirmTitle": "Izbrišem dokončane postavke?",
+  "deleteCompletedItemsConfirmBody": "S tem se s seznama odstrani {count} odkljukanih postavk. Tega ni mogoče razveljaviti.",
   "addImageButton": "Dodaj sliko",
+  "noteColorButton": "Barva zapiska",
+  "noteColorDefault": "Privzeto",
+  "noteColorYellow": "Rumena",
+  "noteColorRed": "Rdeča",
+  "noteColorPurple": "Vijolična",
+  "noteColorBlue": "Modra",
+  "noteColorGreen": "Zelena",
+  "noteColorOrange": "Oranžna",
+  "noteColorWhite": "Bela",
   "recordVoiceNoteTooltip": "Posnemi glasovno zabeležko",
+  "recordVoiceNoteInstructions": "Tapnite rdeči gumb za začetek snemanja ali ✕ za preklic.",
   "stopRecordingTooltip": "Ustavi snemanje",
   "cancelRecordingTooltip": "Prekliči snemanje",
-  "previewBodyTooltip": "Predogled",
-  "editBodyTooltip": "Uredi",
+  "addVoiceTimestampButton": "Dodaj časovni žig",
+  "editVoiceTimestampButton": "Uredi časovni žig",
+  "voiceNoteUnsupportedOnPlatform": "Glasovni zapiski niso podprti v tej napravi",
+  "formatBoldTooltip": "Krepko",
+  "formatItalicTooltip": "Ležeče",
+  "formatHeadingTooltip": "Naslov",
+  "formatListTooltip": "Označen seznam",
+  "formatLinkTooltip": "Povezava",
   "imageSizeSmall": "Majhna",
   "imageSizeMedium": "Srednja",
   "imageSizeFull": "Polna širina",
   "removeImageButton": "Odstrani sliko",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Še ni konfiguriranega releja.",
   "relaysCount": "{count} relejev",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Nastavitve",
   "sectionSecurity": "Varnost",
   "loadingLabel": "Nalaganje…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Videz",
   "lightThemeToggleTitle": "Svetla tema",
   "lightThemeToggleSubtitle": "Uporabi svetlo barvno shemo namesto temne",
-  "noteLayoutToggleTitle": "Postavitev seznama zabeležk",
-  "noteLayoutToggleSubtitle": "Preklopi med prikazom seznama in mreže",
+  "noteLayoutToggleTitle": "Preklop med pogledom seznama in mreže",
   "manageRelaysTitle": "Upravljanje relejev",
+  "republishAllNotesButton": "Znova objavi vse sinhronizirane zapiske",
+  "republishAllNotesSubtitle": "Vsak zgornji rele dopolni z zapiski, ki so drugje že deljeni — koristno takoj po dodajanju novega, npr. lastnega varnostnega releja",
+  "republishAllNotesSuccess": "Znova objavljenih {count} zapiskov",
+  "republishAllNotesError": "Zapiskov ni bilo mogoče znova objaviti: {error}",
+  "forceFullResyncButton": "Vsili popolno ponovno sinhronizacijo",
+  "forceFullResyncSubtitle": "Ponovno preveri releje za celotno zgodovino zapiska namesto samo novosti — uporabno, če je sinhronizacija videti zataknjena in preskoči starejše zapiske, npr. po odpravi nedosegljivega releja",
+  "forceFullResyncSuccess": "Zapiski osveženi iz relejev",
+  "forceFullResyncError": "Zapiskov ni bilo mogoče ponovno sinhronizirati: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Potrdi",
-
   "sectionLanguage": "Jezik",
   "langSystem": "Privzeto v sistemu",
-
   "sectionAccount": "Račun",
   "accountLocalOnlyMessage": "Echoes se uporablja lokalno — ni sinhronizirano z Nostr",
   "accountSignInButton": "Prijava",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Odjava",
   "accountSignOutConfirmTitle": "Se želite odjaviti?",
   "accountSignOutConfirmBody": "Vaše zabeležke ostanejo na tej napravi. Kadar koli se lahko znova prijavite.",
-
   "onboardingWelcomeTitle": "Dobrodošli v Echoes",
   "onboardingIntroLocalTitle": "Vaše zabeležke, vedno na vaši napravi",
   "onboardingIntroLocalBody": "Vsaka zabeležka je najprej shranjena lokalno, zato aplikacija deluje popolnoma brez povezave. Nič ne zapusti vaše naprave, razen če se odločite za sinhronizacijo.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Izberite releje za sinhronizacijo",
   "onboardingRelayBody": "Releji so mesto, kjer so shranjene vaše šifrirane zabeležke ob sinhronizaciji. Dodajte enega ali več — ti priljubljeni so dober začetek:",
   "onboardingFinishButton": "Začni",
-
   "syncNoteTooltip": "Sinhroniziraj to zabeležko",
   "unsyncNoteTooltip": "Odstrani z relejev",
   "syncSelectedTooltip": "Sinhroniziraj izbrane zabeležke",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Vnesite svoje geslo",
   "exportSetPasswordDialogTitle": "Nastavite geslo za ta izvoz",
   "importPasswordDialogTitle": "Vnesite geslo izvoza",
-
   "sectionData": "Podatki",
   "exportNotesButton": "Izvozi zabeležke",
   "exportNotesSubtitle": "Shranite vse svoje zabeležke v datoteko, ki jo lahko pozneje znova uvozite",
@@ -149,16 +188,14 @@
   "exportNotesError": "Zabeležk ni bilo mogoče izvoziti: {error}",
   "importNotesSuccess": "Uvoženih {count} zabeležk",
   "importNotesError": "Zabeležk ni bilo mogoče uvoziti: {error}",
-
   "sectionAttachments": "Priloge",
   "attachmentProviderSubtitle": "Kam se naložijo šifrirane slike in glasovne zabeležke ob sinhronizaciji",
   "attachmentProviderCustom": "Po meri…",
   "attachmentCustomUrlLabel": "URL strežnika",
-
+  "attachmentProviderHint": "Nekateri javni strežniki (npr. Primal, nostr.build) šifrirane prenose zavrnejo — preverjajo pravo slikovno vsebino, kar šifrirani podatki nikoli niso. Raje izberite strežnik Blossom, ki shranjuje neprozorne podatke, ali usmerite Po meri… na lastnega.",
   "sectionSupport": "Podpora",
   "supportEchoesTitle": "Podpri Echoes",
   "lightningAddressCopied": "⚡ {address} kopirano v odložišče",
-
   "cancelButton": "Prekliči",
   "passwordLabel": "Geslo",
   "invalidPrivateKeyError": "Zasebni ključ ni veljaven. Vnesite veljaven ključ nsec ali hex.",

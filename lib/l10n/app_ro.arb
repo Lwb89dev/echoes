@@ -1,15 +1,22 @@
 {
   "@@locale": "ro",
-
   "loginSubtitle": "Conectează-te cu contul tău Nostr",
   "loginWithAmberButton": "Conectare cu Amber",
   "importAccountButton": "Importă cont Nostr",
   "importAccountFieldLabel": "Cheia privată (nsec) a contului tău Nostr",
   "importButton": "Importă",
-
   "relaysTitle": "Relee",
   "settingsTooltip": "Setări",
+  "searchTooltip": "Caută",
+  "closeSearchTooltip": "Închide căutarea",
+  "searchNotesHint": "Caută în notițe",
+  "noSearchResultsMessage": "Nicio potrivire.",
   "emptyNotesMessage": "Încă nu ai notițe. Atinge + pentru a crea una.",
+  "notesTabLabel": "Notițe",
+  "diaryTabLabel": "Jurnal",
+  "emptyDiaryMessage": "Încă nu există intrări în jurnal. Atinge + pentru a scrie una.",
+  "diaryToday": "Azi",
+  "diaryYesterday": "Ieri",
   "newPlainNoteOption": "Notiță",
   "newChecklistOption": "Listă de verificare",
   "newVoiceNoteOption": "Notiță vocală",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Ștergeți {count} note?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Această acțiune nu poate fi anulată. Dacă oricare dintre aceste note a fost sincronizată, va fi eliminată și de pe releele tale.",
   "selectionCount": "{count} selectate",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(fără titlu)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "acum {count} zile",
   "notesLockedTitle": "Notițele sunt protejate cu o parolă",
   "unlockButton": "Deblochează",
-
-  "newNoteTitle": "Notiță nouă",
-  "editNoteTitle": "Editează notița",
   "saveTooltip": "Salvează",
   "titleFieldLabel": "Titlu",
-  "checklistLabel": "Listă de verificare",
   "bodyFieldHint": "Scrie aici... (markdown acceptat)",
   "checklistItemHint": "Element din listă",
   "addItemButton": "Adaugă element",
+  "checklistProgress": "{done} din {total} finalizate",
+  "showCompletedItemsTooltip": "Arată elementele finalizate",
+  "hideCompletedItemsTooltip": "Ascunde elementele finalizate",
+  "allChecklistItemsCompletedHidden": "Toate elementele sunt finalizate și ascunse.",
+  "deleteCompletedItemsButton": "Șterge elementele finalizate",
+  "deleteCompletedItemsConfirmTitle": "Ștergi elementele finalizate?",
+  "deleteCompletedItemsConfirmBody": "Se vor elimina {count} elemente bifate din această listă. Nu se poate anula.",
   "addImageButton": "Adaugă imagine",
+  "noteColorButton": "Culoarea notiței",
+  "noteColorDefault": "Implicit",
+  "noteColorYellow": "Galben",
+  "noteColorRed": "Roșu",
+  "noteColorPurple": "Mov",
+  "noteColorBlue": "Albastru",
+  "noteColorGreen": "Verde",
+  "noteColorOrange": "Portocaliu",
+  "noteColorWhite": "Alb",
   "recordVoiceNoteTooltip": "Înregistrează o notiță vocală",
+  "recordVoiceNoteInstructions": "Atinge butonul roșu pentru a începe înregistrarea, sau ✕ pentru a anula.",
   "stopRecordingTooltip": "Oprește înregistrarea",
   "cancelRecordingTooltip": "Anulează înregistrarea",
-  "previewBodyTooltip": "Previzualizare",
-  "editBodyTooltip": "Editare",
+  "addVoiceTimestampButton": "Adaugă marcaj de timp",
+  "editVoiceTimestampButton": "Editează marcajul de timp",
+  "voiceNoteUnsupportedOnPlatform": "Notele vocale nu sunt acceptate pe acest dispozitiv",
+  "formatBoldTooltip": "Aldin",
+  "formatItalicTooltip": "Cursiv",
+  "formatHeadingTooltip": "Titlu",
+  "formatListTooltip": "Listă cu marcatori",
+  "formatLinkTooltip": "Legătură",
   "imageSizeSmall": "Mică",
   "imageSizeMedium": "Medie",
   "imageSizeFull": "Lățime completă",
   "removeImageButton": "Elimină imaginea",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Niciun releu configurat încă.",
   "relaysCount": "{count} relee",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Setări",
   "sectionSecurity": "Securitate",
   "loadingLabel": "Se încarcă…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Aspect",
   "lightThemeToggleTitle": "Temă deschisă",
   "lightThemeToggleSubtitle": "Utilizează o schemă de culori deschisă în loc de întunecată",
-  "noteLayoutToggleTitle": "Aspectul listei de notițe",
-  "noteLayoutToggleSubtitle": "Comută între vizualizarea listă și grilă",
+  "noteLayoutToggleTitle": "Comută între vizualizarea listă și grilă",
   "manageRelaysTitle": "Gestionează releele",
+  "republishAllNotesButton": "Republică toate notițele sincronizate",
+  "republishAllNotesSubtitle": "Completează fiecare releu de mai sus cu notițe deja partajate în altă parte — util imediat după adăugarea unuia nou, de ex. un releu de rezervă auto-găzduit",
+  "republishAllNotesSuccess": "{count} notițe republicate",
+  "republishAllNotesError": "Notițele nu au putut fi republicate: {error}",
+  "forceFullResyncButton": "Forțează resincronizarea completă",
+  "forceFullResyncSubtitle": "Reverifică releele pentru întregul istoric al unei notițe, nu doar ce e nou — util dacă sincronizarea pare blocată și omite notițe mai vechi, de exemplu după rezolvarea unui releu inaccesibil",
+  "forceFullResyncSuccess": "Notițe actualizate din relee",
+  "forceFullResyncError": "Notițele nu au putut fi resincronizate: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Confirmă",
-
   "sectionLanguage": "Limbă",
   "langSystem": "Implicit sistem",
-
   "sectionAccount": "Cont",
   "accountLocalOnlyMessage": "Echoes este folosit local — nesincronizat cu Nostr",
   "accountSignInButton": "Conectare",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Deconectare",
   "accountSignOutConfirmTitle": "Te deconectezi?",
   "accountSignOutConfirmBody": "Notițele tale rămân pe acest dispozitiv. Te poți conecta din nou oricând.",
-
   "onboardingWelcomeTitle": "Bine ai venit în Echoes",
   "onboardingIntroLocalTitle": "Notițele tale, mereu pe dispozitivul tău",
   "onboardingIntroLocalBody": "Fiecare notiță este salvată mai întâi local, astfel încât aplicația funcționează complet offline. Nimic nu părăsește dispozitivul tău decât dacă alegi să sincronizezi.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Alege relee pentru sincronizare",
   "onboardingRelayBody": "Releele sunt locul unde sunt stocate notițele tale criptate atunci când sincronizezi. Adaugă unul sau mai multe — acestea populare sunt un bun început:",
   "onboardingFinishButton": "Începe",
-
   "syncNoteTooltip": "Sincronizează această notiță",
   "unsyncNoteTooltip": "Elimină de pe relee",
   "syncSelectedTooltip": "Sincronizează notele selectate",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Introdu parola ta",
   "exportSetPasswordDialogTitle": "Setează o parolă pentru această exportare",
   "importPasswordDialogTitle": "Introdu parola exportului",
-
   "sectionData": "Date",
   "exportNotesButton": "Exportă notițele",
   "exportNotesSubtitle": "Salvează toate notițele într-un fișier pe care îl poți importa din nou mai târziu",
@@ -149,16 +188,14 @@
   "exportNotesError": "Notițele nu au putut fi exportate: {error}",
   "importNotesSuccess": "S-au importat {count} notițe",
   "importNotesError": "Notițele nu au putut fi importate: {error}",
-
   "sectionAttachments": "Atașamente",
   "attachmentProviderSubtitle": "Unde sunt încărcate imaginile și notele vocale criptate la sincronizare",
   "attachmentProviderCustom": "Personalizat…",
   "attachmentCustomUrlLabel": "URL server",
-
+  "attachmentProviderHint": "Unele servere publice (de ex. Primal, nostr.build) resping încărcările criptate — verifică conținut real de imagine, ceea ce datele criptate nu sunt niciodată. Preferă un server Blossom care stochează date opace, sau indică Personalizat… către unul auto-găzduit.",
   "sectionSupport": "Susținere",
   "supportEchoesTitle": "Susține Echoes",
   "lightningAddressCopied": "⚡ {address} copiat în clipboard",
-
   "cancelButton": "Anulează",
   "passwordLabel": "Parolă",
   "invalidPrivateKeyError": "Cheia privată nu este validă. Introduceți o cheie nsec sau hex validă.",

@@ -2,7 +2,7 @@ name: echoes
 description: "Echoes - offline-first note-taking app on the Nostr protocol."
 publish_to: 'none'
 
-version: 0.2.0+1
+version: 0.3.0+3
 
 environment:
   sdk: ^3.12.2
@@ -10,8 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^1.0.8
 
   # State management: Riverpod chosen over Provider because AsyncNotifier/
   # AsyncValue model async sync/fetch operations against relays better
@@ -154,6 +152,14 @@ flutter_launcher_icons:
     generate: true
     background_color: "#00796B"
     theme_color: "#00796B"
+  # Windows: generates windows/runner/resources/app_icon.ico from the same
+  # source image. Linux has no equivalent step here — its icon comes from
+  # the hicolor-themed PNG referenced by the Flatpak manifest instead (see
+  # org.echoes.echoes.json / org.echoes.echoes.appdata.xml).
+  windows:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    icon_size: 256
 
 # Native splash screen (same symbol, teal background in both light and
 # dark, dark-mode-friendly by design). Regenerate with:

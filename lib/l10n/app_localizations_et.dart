@@ -30,35 +30,36 @@ class AppLocalizationsEt extends AppLocalizations {
   String get settingsTooltip => 'Seaded';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Otsi';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Sulge otsing';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Otsi märkmetest';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Vasteid pole.';
 
   @override
   String get emptyNotesMessage =>
       'Märkmeid pole veel. Uue loomiseks puuduta +.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Märkmed';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Päevik';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Päevikus pole veel sissekandeid. Puuduta +, et üks kirjutada.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Täna';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Eile';
 
   @override
   String get newPlainNoteOption => 'Märge';
@@ -132,9 +133,6 @@ class AppLocalizationsEt extends AppLocalizations {
   String get titleFieldLabel => 'Pealkiri';
 
   @override
-  String get checklistLabel => 'Kontrollnimekiri';
-
-  @override
   String get bodyFieldHint => 'Kirjuta siia... (markdown on toetatud)';
 
   @override
@@ -145,66 +143,67 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done/$total tehtud';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Näita tehtud üksusi';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Peida tehtud üksused';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Kõik üksused on tehtud ja peidetud.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Kustuta tehtud üksused';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle =>
+      'Kas kustutada tehtud üksused?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'See eemaldab loendist $count märgitud üksust. Seda ei saa tagasi võtta.';
   }
 
   @override
   String get addImageButton => 'Lisa pilt';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Märkme värv';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Vaikimisi';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Kollane';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Punane';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Lilla';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Sinine';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Roheline';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Oranž';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Valge';
 
   @override
   String get recordVoiceNoteTooltip => 'Salvesta häälmärge';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Salvestamise alustamiseks puuduta punast nuppu, tühistamiseks ✕.';
 
   @override
   String get stopRecordingTooltip => 'Peata salvestamine';
@@ -213,22 +212,26 @@ class AppLocalizationsEt extends AppLocalizations {
   String get cancelRecordingTooltip => 'Tühista salvestamine';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Lisa ajatempel';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Muuda ajatemplit';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Häälmärkmed ei ole selles seadmes toetatud';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Paks';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Kaldkiri';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Pealkiri';
+
+  @override
+  String get formatListTooltip => 'Täpploend';
 
   @override
   String get formatLinkTooltip => 'Link';
@@ -320,26 +323,42 @@ class AppLocalizationsEt extends AppLocalizations {
       'Kasuta tumeda asemel heledat värviskeemi';
 
   @override
-  String get noteLayoutToggleTitle => 'Märkmeloendi paigutus';
+  String get noteLayoutToggleTitle => 'Lülitu loendi- ja ruudustikuvaate vahel';
 
   @override
   String get manageRelaysTitle => 'Halda releesid';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Avalda kõik sünkroonitud märkmed uuesti';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Täidab iga ülaloleva relee mujal juba jagatud märkmetega — kasulik kohe pärast uue lisamist, nt oma varureleed';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Uuesti avaldatud $count märget';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Märkmeid ei õnnestunud uuesti avaldada: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Sunni täielik taassünkroonimine';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Kontrollib relaysid uuesti märkme kogu ajaloo, mitte ainult uue osas — kasulik, kui sünkroonimine tundub kinni jäävat ja jätab vanemad märkmed vahele, nt pärast kättesaamatu relay parandamist';
+
+  @override
+  String get forceFullResyncSuccess => 'Märkmed värskendatud relaydelt';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Märkmete taassünkroonimine ebaõnnestus: $error';
   }
 
   @override
@@ -559,7 +578,7 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Mõned avalikud serverid (nt Primal, nostr.build) lükkavad krüptitud üleslaadimised tagasi — nad kontrollivad päris pildisisu, mida krüptitud andmed kunagi pole. Eelista Blossomi serverit, mis salvestab läbipaistmatuid andmeid, või suuna „Kohandatud…“ oma serverile.';
 
   @override
   String get sectionSupport => 'Toetus';

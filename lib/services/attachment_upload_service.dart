@@ -187,6 +187,35 @@ class AttachmentUploadService {
     return null;
   }
 
+  /// Removes every locally stored trace of [attachment]'s content: the
+  /// original (pre-upload) file, if it still exists, and the decrypted
+  /// copy [getDecrypted] may have cached. Called when the *note* owning it
+  /// is deleted — retracting the encrypted blob from the remote host is a
+  /// separate concern (Blossom's delete endpoint isn't wired up), but the
+  /// plaintext must not keep sitting on this device's disk after the user
+  /// deleted the note it belonged to. Best-effort on both fronts: file
+  /// cleanup can't be allowed to fail a deletion that already happened.
+  Future<void> discardLocalData(Attachment attachment) async {
+    developer.log('AttachmentUploadService.discardLocalData called: ${attachment.id}', name: 'AttachmentUploadService');
+    final localPath = attachment.localPath;
+    if (localPath != null) {
+      try {
+        final file = File(localPath);
+        if (await file.exists()) await file.delete();
+      } catch (e) {
+        developer.log('Could not delete local attachment file: $e', name: 'AttachmentUploadService');
+      }
+    }
+    // Mirrors [getDecrypted]'s own cache-key derivation, including the
+    // legacy url-hash fallback for attachments that predate
+    // `sha256OfEncrypted`.
+    final url = attachment.url;
+    final cacheKey = attachment.sha256OfEncrypted ?? (url != null ? sha256.convert(utf8.encode(url)).toString() : null);
+    if (cacheKey != null) {
+      await _fileCacheService.remove(cacheKey);
+    }
+  }
+
   /// Downloads, hash-verifies, and decrypts [attachment]'s blob, caching
   /// the *decrypted* bytes on disk so this only ever happens once per
   /// attachment (see [FileCacheService]) — never the ciphertext, since the

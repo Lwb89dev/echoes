@@ -30,34 +30,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsTooltip => '設定';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => '検索';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => '検索を閉じる';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'メモを検索';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => '一致するものがありません。';
 
   @override
   String get emptyNotesMessage => 'まだメモがありません。+をタップして作成してください。';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'メモ';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => '日記';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage => 'まだ日記がありません。+ をタップして書きましょう。';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => '今日';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => '昨日';
 
   @override
   String get newPlainNoteOption => 'メモ';
@@ -131,9 +131,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get titleFieldLabel => 'タイトル';
 
   @override
-  String get checklistLabel => 'チェックリスト';
-
-  @override
   String get bodyFieldHint => 'ここに入力...（markdown対応）';
 
   @override
@@ -144,66 +141,64 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$total件中$done件完了';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => '完了した項目を表示';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => '完了した項目を非表示';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+  String get allChecklistItemsCompletedHidden => 'すべての項目が完了し、非表示になっています。';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => '完了した項目を削除';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => '完了した項目を削除しますか？';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'このチェックリストからチェック済みの$count件を削除します。元に戻せません。';
   }
 
   @override
   String get addImageButton => '画像を追加';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'メモの色';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'デフォルト';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => '黄';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => '赤';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => '紫';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => '青';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => '緑';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'オレンジ';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => '白';
 
   @override
   String get recordVoiceNoteTooltip => '音声メモを録音';
 
   @override
-  String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+  String get recordVoiceNoteInstructions => '赤いボタンをタップで録音開始、✕ でキャンセル。';
 
   @override
   String get stopRecordingTooltip => '録音を停止';
@@ -212,25 +207,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get cancelRecordingTooltip => '録音をキャンセル';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'タイムスタンプを追加';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'タイムスタンプを編集';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform => 'このデバイスではボイスメモはサポートされていません';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => '太字';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => '斜体';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => '見出し';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => '箇条書き';
+
+  @override
+  String get formatLinkTooltip => 'リンク';
 
   @override
   String get imageSizeSmall => '小';
@@ -316,26 +314,41 @@ class AppLocalizationsJa extends AppLocalizations {
   String get lightThemeToggleSubtitle => 'ダークの代わりにライトカラーを使用します';
 
   @override
-  String get noteLayoutToggleTitle => 'メモリストのレイアウト';
+  String get noteLayoutToggleTitle => 'リスト表示とグリッド表示を切り替え';
 
   @override
   String get manageRelaysTitle => 'リレーを管理';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton => '同期済みのメモをすべて再公開';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      '上のすべてのリレーに、他で共有済みのメモを補充します — 新しいリレー（例：セルフホストのバックアップリレー）を追加した直後に便利です';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return '$count件のメモを再公開しました';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'メモを再公開できませんでした: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => '完全な再同期を強制';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      '新しい分だけでなく、メモの全履歴をリレーに再確認します — 同期が止まって古いメモをスキップしているように見える場合に便利です（例: 到達できないリレーを修正した後など）';
+
+  @override
+  String get forceFullResyncSuccess => 'リレーからメモを更新しました';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'メモの再同期に失敗しました: $error';
   }
 
   @override
@@ -547,7 +560,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      '一部の公開ホスト（例: Primal、nostr.build）は暗号化されたアップロードを拒否します — 実際の画像内容を検証するため、暗号化データは通りません。不透明なデータを保存するBlossomホストを選ぶか、「カスタム…」でセルフホストを指定してください。';
 
   @override
   String get sectionSupport => 'サポート';

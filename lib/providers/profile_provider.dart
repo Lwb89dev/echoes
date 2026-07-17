@@ -78,6 +78,15 @@ final profileProvider = AsyncNotifierProvider<ProfileNotifier, NostrProfile?>(Pr
 /// (missing image, network error, non-200 response): [_AccountSection]
 /// falls back to a plain icon in that case, same as "no avatar set".
 final avatarFileProvider = FutureProvider.family<File?, String>((ref, url) async {
+  // The `picture` field is unvalidated data off a relay. Refusing non-HTTPS
+  // here matters doubly since the app's Android network config permits
+  // cleartext app-wide (for user-configured `ws://` LAN relays — see
+  // network_security_config.xml): without this check, that OS-level
+  // allowance would silently extend to plain-HTTP avatar fetches too.
+  // Same policy as attachments (`AttachmentUploadService._requireHttps`),
+  // just non-throwing — no avatar is a fine outcome, it's decorative.
+  if (!url.startsWith('https://')) return null;
+
   final cacheService = ref.watch(fileCacheServiceProvider);
   final key = sha256.convert(utf8.encode(url)).toString();
 
@@ -85,7 +94,7 @@ final avatarFileProvider = FutureProvider.family<File?, String>((ref, url) async
   if (cached != null) return cached;
 
   try {
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 15));
     if (response.statusCode != 200) return null;
     return await cacheService.put(key, response.bodyBytes);
   } catch (e) {

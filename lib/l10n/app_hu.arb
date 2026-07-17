@@ -1,15 +1,22 @@
 {
   "@@locale": "hu",
-
   "loginSubtitle": "Jelentkezz be Nostr-fiókoddal",
   "loginWithAmberButton": "Bejelentkezés Amberrel",
   "importAccountButton": "Nostr-fiók importálása",
   "importAccountFieldLabel": "Nostr-fiókod privát kulcsa (nsec)",
   "importButton": "Importálás",
-
   "relaysTitle": "Relék",
   "settingsTooltip": "Beállítások",
+  "searchTooltip": "Keresés",
+  "closeSearchTooltip": "Keresés bezárása",
+  "searchNotesHint": "Keresés a jegyzetekben",
+  "noSearchResultsMessage": "Nincs találat.",
   "emptyNotesMessage": "Még nincsenek jegyzetek. Koppints a + gombra újhoz.",
+  "notesTabLabel": "Jegyzetek",
+  "diaryTabLabel": "Napló",
+  "emptyDiaryMessage": "Még nincs naplóbejegyzés. Koppints a + gombra egy írásához.",
+  "diaryToday": "Ma",
+  "diaryYesterday": "Tegnap",
   "newPlainNoteOption": "Jegyzet",
   "newChecklistOption": "Ellenőrzőlista",
   "newVoiceNoteOption": "Hangjegyzet",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Törli ezt a {count} jegyzetet?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Ez nem vonható vissza. Ha ezek közül bármelyik jegyzet szinkronizálva volt, a relékről is eltávolításra kerül.",
   "selectionCount": "{count} kiválasztva",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(névtelen)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} napja",
   "notesLockedTitle": "A jegyzetek jelszóval védettek",
   "unlockButton": "Feloldás",
-
-  "newNoteTitle": "Új jegyzet",
-  "editNoteTitle": "Jegyzet szerkesztése",
   "saveTooltip": "Mentés",
   "titleFieldLabel": "Cím",
-  "checklistLabel": "Ellenőrzőlista",
   "bodyFieldHint": "Írj ide... (markdown támogatott)",
   "checklistItemHint": "Listaelem",
   "addItemButton": "Elem hozzáadása",
+  "checklistProgress": "{done}/{total} kész",
+  "showCompletedItemsTooltip": "Kész elemek megjelenítése",
+  "hideCompletedItemsTooltip": "Kész elemek elrejtése",
+  "allChecklistItemsCompletedHidden": "Minden elem kész és el van rejtve.",
+  "deleteCompletedItemsButton": "Kész elemek törlése",
+  "deleteCompletedItemsConfirmTitle": "Törlöd a kész elemeket?",
+  "deleteCompletedItemsConfirmBody": "Ez {count} kipipált elemet távolít el a listáról. Nem vonható vissza.",
   "addImageButton": "Kép hozzáadása",
+  "noteColorButton": "Jegyzet színe",
+  "noteColorDefault": "Alapértelmezett",
+  "noteColorYellow": "Sárga",
+  "noteColorRed": "Piros",
+  "noteColorPurple": "Lila",
+  "noteColorBlue": "Kék",
+  "noteColorGreen": "Zöld",
+  "noteColorOrange": "Narancs",
+  "noteColorWhite": "Fehér",
   "recordVoiceNoteTooltip": "Hangjegyzet rögzítése",
+  "recordVoiceNoteInstructions": "Koppints a piros gombra a felvétel indításához, vagy a ✕ gombra a megszakításhoz.",
   "stopRecordingTooltip": "Felvétel leállítása",
   "cancelRecordingTooltip": "Felvétel megszakítása",
-  "previewBodyTooltip": "Előnézet",
-  "editBodyTooltip": "Szerkesztés",
+  "addVoiceTimestampButton": "Időbélyeg hozzáadása",
+  "editVoiceTimestampButton": "Időbélyeg szerkesztése",
+  "voiceNoteUnsupportedOnPlatform": "A hangjegyzetek nem támogatottak ezen az eszközön",
+  "formatBoldTooltip": "Félkövér",
+  "formatItalicTooltip": "Dőlt",
+  "formatHeadingTooltip": "Címsor",
+  "formatListTooltip": "Felsorolás",
+  "formatLinkTooltip": "Hivatkozás",
   "imageSizeSmall": "Kicsi",
   "imageSizeMedium": "Közepes",
   "imageSizeFull": "Teljes szélesség",
   "removeImageButton": "Kép eltávolítása",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Még nincs beállítva relé.",
   "relaysCount": "{count} relé",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Beállítások",
   "sectionSecurity": "Biztonság",
   "loadingLabel": "Betöltés…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Megjelenés",
   "lightThemeToggleTitle": "Világos téma",
   "lightThemeToggleSubtitle": "Világos színséma használata sötét helyett",
-  "noteLayoutToggleTitle": "Jegyzetlista elrendezése",
-  "noteLayoutToggleSubtitle": "Váltás lista- és rácsnézet között",
+  "noteLayoutToggleTitle": "Váltás lista- és rácsnézet között",
   "manageRelaysTitle": "Relék kezelése",
+  "republishAllNotesButton": "Minden szinkronizált jegyzet újraközzététele",
+  "republishAllNotesSubtitle": "Feltölti a fenti reléket a máshol már megosztott jegyzetekkel — hasznos közvetlenül egy új, pl. saját üzemeltetésű tartalék relé hozzáadása után",
+  "republishAllNotesSuccess": "{count} jegyzet újraközzétéve",
+  "republishAllNotesError": "A jegyzeteket nem sikerült újraközzétenni: {error}",
+  "forceFullResyncButton": "Teljes újraszinkronizálás kényszerítése",
+  "forceFullResyncSubtitle": "Újra lekérdezi a relayktől egy jegyzet teljes előzményét ahelyett, hogy csak az újakat kérné — hasznos, ha a szinkronizálás elakadtnak tűnik és kihagyja a régebbi jegyzeteket, pl. egy elérhetetlen relay javítása után",
+  "forceFullResyncSuccess": "Jegyzetek frissítve a relayktől",
+  "forceFullResyncError": "A jegyzetek újraszinkronizálása nem sikerült: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Megerősítés",
-
   "sectionLanguage": "Nyelv",
   "langSystem": "Rendszer alapértelmezése",
-
   "sectionAccount": "Fiók",
   "accountLocalOnlyMessage": "Echoes helyi használatban — nincs szinkronizálva a Nostrral",
   "accountSignInButton": "Bejelentkezés",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Kijelentkezés",
   "accountSignOutConfirmTitle": "Kijelentkezel?",
   "accountSignOutConfirmBody": "A jegyzeteid ezen az eszközön maradnak. Bármikor újra bejelentkezhetsz.",
-
   "onboardingWelcomeTitle": "Üdvözlünk az Echoesban",
   "onboardingIntroLocalTitle": "A jegyzeteid mindig az eszközödön",
   "onboardingIntroLocalBody": "Minden jegyzet először helyben kerül mentésre, így az alkalmazás teljesen offline is működik. Semmi sem hagyja el az eszközödet, hacsak nem választod a szinkronizálást.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Válassz relékat a szinkronizáláshoz",
   "onboardingRelayBody": "A relék azok a helyek, ahol a titkosított jegyzeteid tárolódnak szinkronizáláskor. Adj hozzá egyet vagy többet — ezek a népszerűek jó kezdésnek számítanak:",
   "onboardingFinishButton": "Kezdés",
-
   "syncNoteTooltip": "Jegyzet szinkronizálása",
   "unsyncNoteTooltip": "Eltávolítás a relékről",
   "syncSelectedTooltip": "Kiválasztott jegyzetek szinkronizálása",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Add meg a jelszavad",
   "exportSetPasswordDialogTitle": "Állíts be jelszót ehhez az exporthoz",
   "importPasswordDialogTitle": "Add meg az export jelszavát",
-
   "sectionData": "Adatok",
   "exportNotesButton": "Jegyzetek exportálása",
   "exportNotesSubtitle": "Mentsd el az összes jegyzetedet egy fájlba, amelyet később újra importálhatsz",
@@ -149,16 +188,14 @@
   "exportNotesError": "A jegyzeteket nem sikerült exportálni: {error}",
   "importNotesSuccess": "{count} jegyzet importálva",
   "importNotesError": "A jegyzeteket nem sikerült importálni: {error}",
-
   "sectionAttachments": "Mellékletek",
   "attachmentProviderSubtitle": "Hova töltődnek fel a titkosított képek és hangjegyzetek szinkronizáláskor",
   "attachmentProviderCustom": "Egyéni…",
   "attachmentCustomUrlLabel": "Szerver URL",
-
+  "attachmentProviderHint": "Egyes nyilvános kiszolgálók (pl. Primal, nostr.build) eleve elutasítják a titkosított feltöltéseket — valódi képtartalmat ellenőriznek, ami a titkosított adat sosem. Válassz olyan Blossom kiszolgálót, amely nyers adatokat tárol, vagy állítsd az Egyéni… opciót sajátra.",
   "sectionSupport": "Támogatás",
   "supportEchoesTitle": "Támogasd az Echoest",
   "lightningAddressCopied": "⚡ {address} vágólapra másolva",
-
   "cancelButton": "Mégse",
   "passwordLabel": "Jelszó",
   "invalidPrivateKeyError": "A privát kulcs érvénytelen. Adjon meg érvényes nsec vagy hex kulcsot.",

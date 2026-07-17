@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as developer;
 
@@ -359,16 +360,36 @@ class NostrService {
   /// to [Note]s. Events that fail to decrypt or parse (e.g. corrupted, or
   /// encrypted for a different key) are skipped rather than failing the
   /// whole fetch.
-  Future<List<Note>> fetchNotesFromRelay({
+  ///
+  /// The result's `complete` flag is false when [timeout] was hit before
+  /// *every* relay sent its own EOSE ("end of stored events"). This matters
+  /// because `dart_nostr`'s own `startEventsSubscriptionAsync` doesn't make
+  /// that distinction: it resolves as soon as the *first* relay of however
+  /// many are configured says it's done, silently discarding whatever the
+  /// others were still mid-delivery on. That could truncate a large first
+  /// sync to a brand-new device — a lot of history to backfill in one
+  /// shot, over however many relays (a self-hosted one in particular could
+  /// be the slow one to finish) — and [runSyncCycle] used to move its
+  /// `since` bookmark forward regardless, so whatever got cut off then fell
+  /// permanently behind that cutoff, never refetched again. This instead
+  /// waits for every configured relay's own EOSE (or [timeout], whichever
+  /// comes first) and reports whether it actually finished, so the caller
+  /// knows whether it's safe to advance that bookmark.
+  Future<({List<Note> notes, bool complete})> fetchNotesFromRelay({
     required User author,
     required List<Relay> relays,
     DateTime? since,
+    Duration timeout = const Duration(seconds: 20),
   }) async {
     developer.log('NostrService.fetchNotesFromRelay called for ${author.publicKeyHex}', name: 'NostrService');
-    if (relays.isEmpty) return const [];
+    if (relays.isEmpty) return (notes: const <Note>[], complete: true);
     await connectToRelays(relays);
 
-    final events = await _nostr.relays.startEventsSubscriptionAsync(
+    final pendingRelays = relays.map((r) => r.url).toSet();
+    final rawEvents = <NostrEvent>[];
+    final allEoseCompleter = Completer<void>();
+
+    final subscription = _nostr.relays.startEventsSubscription(
       request: NostrRequest(
         filters: [
           NostrFilter(
@@ -378,16 +399,32 @@ class NostrService {
           ),
         ],
       ),
-      timeout: const Duration(seconds: 10),
-      shouldThrowErrorOnTimeoutWithoutEose: false,
+      onEose: (relay, eose) {
+        pendingRelays.remove(relay);
+        if (pendingRelays.isEmpty && !allEoseCompleter.isCompleted) {
+          allEoseCompleter.complete();
+        }
+      },
     );
+    final eventsSubscription = subscription.stream.listen(rawEvents.add);
+    await Future.any([allEoseCompleter.future, Future.delayed(timeout)]);
+    await eventsSubscription.cancel();
+    subscription.close();
+    if (pendingRelays.isNotEmpty) {
+      developer.log(
+        'fetchNotesFromRelay: timed out waiting for EOSE from: $pendingRelays '
+        '(often means those relays are unreachable from this network) — '
+        'returning ${rawEvents.length} event(s) from the relays that did respond',
+        name: 'NostrService',
+      );
+    }
 
     final notes = <Note>[];
-    for (final event in events) {
+    for (final event in rawEvents) {
       final note = await _decryptNoteEvent(event, author);
       if (note != null) notes.add(note);
     }
-    return notes;
+    return (notes: notes, complete: pendingRelays.isEmpty);
   }
 
   /// Pushes every local note that isn't synced yet ([Note.synced] ==
@@ -491,6 +528,29 @@ class NostrService {
     final content = event.content;
     final eventId = event.id;
     if (content == null || content.isEmpty || eventId == null) return null;
+    // Cheapest check first: an oversized `content` is either a broken or a
+    // hostile relay wasting CPU/memory on hashing and decryption attempts
+    // that were never going to succeed — see [AppConstants.maxNoteEventContentChars].
+    if (content.length > AppConstants.maxNoteEventContentChars) {
+      developer.log('Note event $eventId content exceeds the size cap — dropped', name: 'NostrService');
+      return null;
+    }
+    // Relays are untrusted: recompute the id from the event's own fields
+    // and check the signature against it before trusting anything about
+    // this event, in particular `eventId` itself — which becomes
+    // `Note.nostrEventId`, later used to target a NIP-09 deletion. Without
+    // this, a malicious relay could hand back a real (validly-encrypted,
+    // genuinely decryptable) ciphertext under a *different* id of its own
+    // choosing; the note would decrypt and look legitimate, but deleting it
+    // later would retract the wrong event — the real one would silently
+    // survive on every honest relay. The content itself doesn't strictly
+    // need this (NIP-44 self-encryption already means a relay can't forge
+    // decryptable content without the private key), but the outer envelope
+    // (id, tags, created_at as delivered) isn't otherwise checked at all.
+    if (!_isVerifiedEvent(event)) {
+      developer.log('Note event $eventId failed id/signature verification — dropped', name: 'NostrService');
+      return null;
+    }
 
     try {
       final String plaintext;
@@ -519,6 +579,32 @@ class NostrService {
     } catch (e) {
       developer.log('Could not decrypt/parse note event $eventId: $e', name: 'NostrService');
       return null;
+    }
+  }
+
+  /// True when [event]'s `id` matches the canonical NIP-01 hash of its own
+  /// fields AND its `sig` is a valid signature over that id by `pubkey` —
+  /// i.e. the event is exactly what its signer actually signed, not a
+  /// relay-tampered mix of a genuine id/sig with substituted content/tags.
+  /// Never throws: any malformed event (missing field, bad hex, ...) is
+  /// simply not verified.
+  bool _isVerifiedEvent(NostrEvent event) {
+    try {
+      final id = event.id;
+      final kind = event.kind;
+      final createdAt = event.createdAt;
+      if (id == null || kind == null || createdAt == null) return false;
+      final recomputedId = NostrEvent.getEventId(
+        kind: kind,
+        content: event.content ?? '',
+        createdAt: createdAt,
+        tags: event.tags ?? const [],
+        pubkey: event.pubkey,
+      );
+      if (recomputedId != id) return false;
+      return event.isVerified();
+    } catch (_) {
+      return false;
     }
   }
 

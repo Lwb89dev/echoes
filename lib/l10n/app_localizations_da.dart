@@ -31,35 +31,36 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsTooltip => 'Indstillinger';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Søg';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Luk søgning';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Søg i noter';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Ingen resultater.';
 
   @override
   String get emptyNotesMessage =>
       'Ingen noter endnu. Tryk på + for at oprette en.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Noter';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Dagbog';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Ingen dagbogsindlæg endnu. Tryk på + for at skrive et.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'I dag';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'I går';
 
   @override
   String get newPlainNoteOption => 'Note';
@@ -133,9 +134,6 @@ class AppLocalizationsDa extends AppLocalizations {
   String get titleFieldLabel => 'Titel';
 
   @override
-  String get checklistLabel => 'Tjekliste';
-
-  @override
   String get bodyFieldHint => 'Skriv her... (markdown understøttes)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done af $total fuldført';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Vis fuldførte punkter';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Skjul fuldførte punkter';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Alle punkter er fuldført og skjult.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Slet fuldførte punkter';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Slet fuldførte punkter?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Dette fjerner $count afkrydsede punkter fra denne tjekliste. Kan ikke fortrydes.';
   }
 
   @override
   String get addImageButton => 'Tilføj billede';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Notefarve';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Standard';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Gul';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Rød';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Lilla';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Blå';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Grøn';
 
   @override
   String get noteColorOrange => 'Orange';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Hvid';
 
   @override
   String get recordVoiceNoteTooltip => 'Optag en talenote';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Tryk på den røde knap for at starte optagelsen, eller ✕ for at annullere.';
 
   @override
   String get stopRecordingTooltip => 'Stop optagelse';
@@ -214,22 +212,26 @@ class AppLocalizationsDa extends AppLocalizations {
   String get cancelRecordingTooltip => 'Annuller optagelse';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Tilføj tidsstempel';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Rediger tidsstempel';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Talebeskeder understøttes ikke på denne enhed';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Fed';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Kursiv';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Overskrift';
+
+  @override
+  String get formatListTooltip => 'Punktliste';
 
   @override
   String get formatLinkTooltip => 'Link';
@@ -321,26 +323,41 @@ class AppLocalizationsDa extends AppLocalizations {
       'Brug et lyst farveskema i stedet for mørkt';
 
   @override
-  String get noteLayoutToggleTitle => 'Layout for notatliste';
+  String get noteLayoutToggleTitle => 'Skift mellem liste- og gittervisning';
 
   @override
   String get manageRelaysTitle => 'Administrer relæer';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton => 'Genudgiv alle synkroniserede noter';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Udfylder hvert relæ ovenfor med noter, der allerede er delt andre steder — nyttigt lige efter tilføjelse af et nyt, f.eks. et selvhostet backup-relæ';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Genudgav $count noter';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Noterne kunne ikke genudgives: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Gennemtving fuld gensynkronisering';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Tjekker relays igen for en notes fulde historik i stedet for kun det nye — nyttigt hvis synkronisering ser ud til at sidde fast og springer ældre noter over, fx efter at have løst en utilgængelig relay';
+
+  @override
+  String get forceFullResyncSuccess => 'Noter opdateret fra relays';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Kunne ikke gensynkronisere noter: $error';
   }
 
   @override
@@ -559,7 +576,7 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Nogle offentlige værter (f.eks. Primal, nostr.build) afviser krypterede uploads — de validerer ægte billedindhold, hvilket krypterede data aldrig er. Foretræk en Blossom-vært, der gemmer rå data, eller peg Tilpasset… på en selvhostet.';
 
   @override
   String get sectionSupport => 'Støtte';

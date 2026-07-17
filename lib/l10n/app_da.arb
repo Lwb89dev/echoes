@@ -1,15 +1,22 @@
 {
   "@@locale": "da",
-
   "loginSubtitle": "Log ind med din Nostr-konto",
   "loginWithAmberButton": "Log ind med Amber",
   "importAccountButton": "Importér Nostr-konto",
   "importAccountFieldLabel": "Privat nøgle (nsec) til din Nostr-konto",
   "importButton": "Importér",
-
   "relaysTitle": "Relæer",
   "settingsTooltip": "Indstillinger",
+  "searchTooltip": "Søg",
+  "closeSearchTooltip": "Luk søgning",
+  "searchNotesHint": "Søg i noter",
+  "noSearchResultsMessage": "Ingen resultater.",
   "emptyNotesMessage": "Ingen noter endnu. Tryk på + for at oprette en.",
+  "notesTabLabel": "Noter",
+  "diaryTabLabel": "Dagbog",
+  "emptyDiaryMessage": "Ingen dagbogsindlæg endnu. Tryk på + for at skrive et.",
+  "diaryToday": "I dag",
+  "diaryYesterday": "I går",
   "newPlainNoteOption": "Note",
   "newChecklistOption": "Tjekliste",
   "newVoiceNoteOption": "Talenote",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Slet {count} noter?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Dette kan ikke fortrydes. Hvis nogen af disse noter var synkroniseret, fjernes de også fra dine reléer.",
   "selectionCount": "{count} valgt",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(uden titel)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "for {count} dage siden",
   "notesLockedTitle": "Noter er beskyttet med en adgangskode",
   "unlockButton": "Lås op",
-
-  "newNoteTitle": "Ny note",
-  "editNoteTitle": "Rediger note",
   "saveTooltip": "Gem",
   "titleFieldLabel": "Titel",
-  "checklistLabel": "Tjekliste",
   "bodyFieldHint": "Skriv her... (markdown understøttes)",
   "checklistItemHint": "Punkt på tjekliste",
   "addItemButton": "Tilføj punkt",
+  "checklistProgress": "{done} af {total} fuldført",
+  "showCompletedItemsTooltip": "Vis fuldførte punkter",
+  "hideCompletedItemsTooltip": "Skjul fuldførte punkter",
+  "allChecklistItemsCompletedHidden": "Alle punkter er fuldført og skjult.",
+  "deleteCompletedItemsButton": "Slet fuldførte punkter",
+  "deleteCompletedItemsConfirmTitle": "Slet fuldførte punkter?",
+  "deleteCompletedItemsConfirmBody": "Dette fjerner {count} afkrydsede punkter fra denne tjekliste. Kan ikke fortrydes.",
   "addImageButton": "Tilføj billede",
+  "noteColorButton": "Notefarve",
+  "noteColorDefault": "Standard",
+  "noteColorYellow": "Gul",
+  "noteColorRed": "Rød",
+  "noteColorPurple": "Lilla",
+  "noteColorBlue": "Blå",
+  "noteColorGreen": "Grøn",
+  "noteColorOrange": "Orange",
+  "noteColorWhite": "Hvid",
   "recordVoiceNoteTooltip": "Optag en talenote",
+  "recordVoiceNoteInstructions": "Tryk på den røde knap for at starte optagelsen, eller ✕ for at annullere.",
   "stopRecordingTooltip": "Stop optagelse",
   "cancelRecordingTooltip": "Annuller optagelse",
-  "previewBodyTooltip": "Forhåndsvisning",
-  "editBodyTooltip": "Rediger",
+  "addVoiceTimestampButton": "Tilføj tidsstempel",
+  "editVoiceTimestampButton": "Rediger tidsstempel",
+  "voiceNoteUnsupportedOnPlatform": "Talebeskeder understøttes ikke på denne enhed",
+  "formatBoldTooltip": "Fed",
+  "formatItalicTooltip": "Kursiv",
+  "formatHeadingTooltip": "Overskrift",
+  "formatListTooltip": "Punktliste",
+  "formatLinkTooltip": "Link",
   "imageSizeSmall": "Lille",
   "imageSizeMedium": "Mellem",
   "imageSizeFull": "Fuld bredde",
   "removeImageButton": "Fjern billede",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Intet relæ konfigureret endnu.",
   "relaysCount": "{count} relæer",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Indstillinger",
   "sectionSecurity": "Sikkerhed",
   "loadingLabel": "Indlæser…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Udseende",
   "lightThemeToggleTitle": "Lyst tema",
   "lightThemeToggleSubtitle": "Brug et lyst farveskema i stedet for mørkt",
-  "noteLayoutToggleTitle": "Layout for notatliste",
-  "noteLayoutToggleSubtitle": "Skift mellem liste- og gittervisning",
+  "noteLayoutToggleTitle": "Skift mellem liste- og gittervisning",
   "manageRelaysTitle": "Administrer relæer",
+  "republishAllNotesButton": "Genudgiv alle synkroniserede noter",
+  "republishAllNotesSubtitle": "Udfylder hvert relæ ovenfor med noter, der allerede er delt andre steder — nyttigt lige efter tilføjelse af et nyt, f.eks. et selvhostet backup-relæ",
+  "republishAllNotesSuccess": "Genudgav {count} noter",
+  "republishAllNotesError": "Noterne kunne ikke genudgives: {error}",
+  "forceFullResyncButton": "Gennemtving fuld gensynkronisering",
+  "forceFullResyncSubtitle": "Tjekker relays igen for en notes fulde historik i stedet for kun det nye — nyttigt hvis synkronisering ser ud til at sidde fast og springer ældre noter over, fx efter at have løst en utilgængelig relay",
+  "forceFullResyncSuccess": "Noter opdateret fra relays",
+  "forceFullResyncError": "Kunne ikke gensynkronisere noter: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Bekræft",
-
   "sectionLanguage": "Sprog",
   "langSystem": "Systemstandard",
-
   "sectionAccount": "Konto",
   "accountLocalOnlyMessage": "Bruger Echoes lokalt — synkroniseres ikke med Nostr",
   "accountSignInButton": "Log ind",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Log ud",
   "accountSignOutConfirmTitle": "Log ud?",
   "accountSignOutConfirmBody": "Dine noter forbliver på denne enhed. Du kan altid logge ind igen.",
-
   "onboardingWelcomeTitle": "Velkommen til Echoes",
   "onboardingIntroLocalTitle": "Dine noter, altid på din enhed",
   "onboardingIntroLocalBody": "Hver note gemmes først lokalt, så appen fungerer helt offline. Intet forlader din enhed, medmindre du vælger at synkronisere det.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Vælg relæer til synkronisering",
   "onboardingRelayBody": "Relæer er der, hvor dine krypterede noter gemmes, når du synkroniserer. Tilføj et eller flere — disse populære er en god start:",
   "onboardingFinishButton": "Kom i gang",
-
   "syncNoteTooltip": "Synkronisér denne note",
   "unsyncNoteTooltip": "Fjern fra reléer",
   "syncSelectedTooltip": "Synkroniser valgte noter",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Indtast din adgangskode",
   "exportSetPasswordDialogTitle": "Angiv en adgangskode til denne eksport",
   "importPasswordDialogTitle": "Indtast eksportens adgangskode",
-
   "sectionData": "Data",
   "exportNotesButton": "Eksportér noter",
   "exportNotesSubtitle": "Gem alle dine noter i en fil, du kan importere igen senere",
@@ -149,16 +188,14 @@
   "exportNotesError": "Kunne ikke eksportere noter: {error}",
   "importNotesSuccess": "Importerede {count} noter",
   "importNotesError": "Kunne ikke importere noter: {error}",
-
   "sectionAttachments": "Vedhæftede filer",
   "attachmentProviderSubtitle": "Hvor krypterede billeder og talenoter uploades, når du synkroniserer",
   "attachmentProviderCustom": "Brugerdefineret…",
   "attachmentCustomUrlLabel": "Server-URL",
-
+  "attachmentProviderHint": "Nogle offentlige værter (f.eks. Primal, nostr.build) afviser krypterede uploads — de validerer ægte billedindhold, hvilket krypterede data aldrig er. Foretræk en Blossom-vært, der gemmer rå data, eller peg Tilpasset… på en selvhostet.",
   "sectionSupport": "Støtte",
   "supportEchoesTitle": "Støt Echoes",
   "lightningAddressCopied": "⚡ {address} kopieret til udklipsholderen",
-
   "cancelButton": "Annullér",
   "passwordLabel": "Adgangskode",
   "invalidPrivateKeyError": "Den private nøgle er ikke gyldig. Indtast en gyldig nsec- eller hex-nøgle.",

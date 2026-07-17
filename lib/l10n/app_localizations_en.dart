@@ -132,9 +132,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get titleFieldLabel => 'Title';
 
   @override
-  String get checklistLabel => 'Checklist';
-
-  @override
   String get bodyFieldHint => 'Write here... (markdown supported)';
 
   @override
@@ -217,6 +214,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editVoiceTimestampButton => 'Edit timestamp';
+
+  @override
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Voice notes aren\'t supported on this device';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -340,6 +341,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String republishAllNotesError(String error) {
     return 'Could not republish notes: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Force full resync';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Re-checks relays for a note\'s entire history instead of just what\'s new — useful if syncing seems stuck skipping older notes, e.g. after fixing an unreachable relay';
+
+  @override
+  String get forceFullResyncSuccess => 'Notes refreshed from relays';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Could not resync notes: $error';
   }
 
   @override

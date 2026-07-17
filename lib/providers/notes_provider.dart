@@ -88,6 +88,16 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
       return current.where((n) => n.id != note.id).toList();
     });
 
+    // Deleting the note's record must also delete its attachments' local
+    // traces (a pending recording's only copy, a decrypted-cache image) —
+    // "deleted" can't mean "the text is gone but the photo is still on
+    // disk for anyone with filesystem access". Best-effort, like the
+    // relay retraction below: the note is already gone either way.
+    final uploadService = ref.read(attachmentUploadServiceProvider);
+    for (final attachment in note.attachments) {
+      await uploadService.discardLocalData(attachment);
+    }
+
     final author = ref.read(authProvider).value;
     if (note.nostrEventId != null && author != null) {
       final relays = ref.read(relayProvider).value ?? const [];
@@ -193,6 +203,19 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
 
     state = await AsyncValue.guard(localStorageService.loadNotes);
     if (syncError != null) throw syncError;
+  }
+
+  /// Rewinds the pull-side sync bookmark back to "never synced" and
+  /// refreshes right away — for when it's stuck skipping over notes that
+  /// are actually still out there (see
+  /// [LocalStorageService.clearLastSyncTime]), e.g. after fixing an
+  /// unreachable relay that was configured before the bookmark first
+  /// managed to fetch everything a relay-reachability problem caused it to
+  /// pull.
+  Future<void> forceFullResync() async {
+    developer.log('NotesNotifier.forceFullResync called', name: 'NotesNotifier');
+    await ref.read(localStorageServiceProvider).clearLastSyncTime();
+    await refreshFromRelays();
   }
 
   /// Republishes every previously-synced note to every currently configured

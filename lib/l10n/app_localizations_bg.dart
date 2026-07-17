@@ -31,35 +31,36 @@ class AppLocalizationsBg extends AppLocalizations {
   String get settingsTooltip => 'Настройки';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Търсене';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Затвори търсенето';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Търсене в бележките';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Няма съвпадения.';
 
   @override
   String get emptyNotesMessage =>
       'Все още няма бележки. Докоснете +, за да създадете нова.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Бележки';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Дневник';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Все още няма записи в дневника. Докоснете +, за да напишете.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Днес';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Вчера';
 
   @override
   String get newPlainNoteOption => 'Бележка';
@@ -133,9 +134,6 @@ class AppLocalizationsBg extends AppLocalizations {
   String get titleFieldLabel => 'Заглавие';
 
   @override
-  String get checklistLabel => 'Списък със задачи';
-
-  @override
   String get bodyFieldHint => 'Пишете тук... (поддържа се markdown)';
 
   @override
@@ -146,66 +144,67 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done от $total завършени';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Покажи завършените елементи';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Скрий завършените елементи';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Всички елементи са завършени и скрити.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Изтрий завършените елементи';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle =>
+      'Да се изтрият ли завършените елементи?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Това премахва $count отметнати елемента от този списък. Не може да бъде отменено.';
   }
 
   @override
   String get addImageButton => 'Добави изображение';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Цвят на бележката';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'По подразбиране';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Жълто';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Червено';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Лилаво';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Синьо';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Зелено';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Оранжево';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Бяло';
 
   @override
   String get recordVoiceNoteTooltip => 'Запиши гласова бележка';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Докоснете червения бутон, за да започнете запис, или ✕ за отказ.';
 
   @override
   String get stopRecordingTooltip => 'Спри записа';
@@ -214,25 +213,29 @@ class AppLocalizationsBg extends AppLocalizations {
   String get cancelRecordingTooltip => 'Отмени записа';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Добави времево клеймо';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Редактирай времевото клеймо';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Гласовите бележки не се поддържат на това устройство';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Удебелен';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Курсив';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Заглавие';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Списък с точки';
+
+  @override
+  String get formatLinkTooltip => 'Връзка';
 
   @override
   String get imageSizeSmall => 'Малко';
@@ -322,26 +325,43 @@ class AppLocalizationsBg extends AppLocalizations {
       'Използвайте светла цветова схема вместо тъмна';
 
   @override
-  String get noteLayoutToggleTitle => 'Оформление на списъка с бележки';
+  String get noteLayoutToggleTitle =>
+      'Превключване между изглед списък и мрежа';
 
   @override
   String get manageRelaysTitle => 'Управление на релета';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Публикувай отново всички синхронизирани бележки';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Допълва всяко реле по-горе с бележки, вече споделени другаде — полезно веднага след добавяне на ново, напр. собствено резервно реле';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Публикувани отново $count бележки';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Бележките не можаха да бъдат публикувани отново: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Пълна ресинхронизация';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Проверява отново релейте за цялата история на бележка, вместо само новото — полезно, ако синхронизацията изглежда заседнала и пропуска по-стари бележки, напр. след отстраняване на недостъпен релей';
+
+  @override
+  String get forceFullResyncSuccess => 'Бележките са опреснени от релейте';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Ресинхронизацията на бележките не бе възможна: $error';
   }
 
   @override
@@ -561,7 +581,7 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Някои публични сървъри (напр. Primal, nostr.build) отхвърлят шифрованите качвания — те проверяват дали съдържанието е истинско изображение, а шифрованите данни никога не са. Предпочетете Blossom сървър, който съхранява непрозрачни данни, или насочете „Персонализиран…“ към собствен сървър.';
 
   @override
   String get sectionSupport => 'Подкрепа';

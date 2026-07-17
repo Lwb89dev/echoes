@@ -1,15 +1,22 @@
 {
   "@@locale": "el",
-
   "loginSubtitle": "Συνδεθείτε με τον λογαριασμό σας Nostr",
   "loginWithAmberButton": "Σύνδεση με Amber",
   "importAccountButton": "Εισαγωγή λογαριασμού Nostr",
   "importAccountFieldLabel": "Ιδιωτικό κλειδί (nsec) του λογαριασμού σας Nostr",
   "importButton": "Εισαγωγή",
-
   "relaysTitle": "Relays",
   "settingsTooltip": "Ρυθμίσεις",
+  "searchTooltip": "Αναζήτηση",
+  "closeSearchTooltip": "Κλείσιμο αναζήτησης",
+  "searchNotesHint": "Αναζήτηση στις σημειώσεις",
+  "noSearchResultsMessage": "Δεν βρέθηκαν αποτελέσματα.",
   "emptyNotesMessage": "Δεν υπάρχουν ακόμη σημειώσεις. Πατήστε + για να δημιουργήσετε μία.",
+  "notesTabLabel": "Σημειώσεις",
+  "diaryTabLabel": "Ημερολόγιο",
+  "emptyDiaryMessage": "Δεν υπάρχουν ακόμη καταχωρήσεις. Πατήστε + για να γράψετε μία.",
+  "diaryToday": "Σήμερα",
+  "diaryYesterday": "Χθες",
   "newPlainNoteOption": "Σημείωση",
   "newChecklistOption": "Λίστα ελέγχου",
   "newVoiceNoteOption": "Φωνητική σημείωση",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Διαγραφή {count} σημειώσεων;",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Αυτό δεν μπορεί να αναιρεθεί. Αν κάποια από αυτές τις σημειώσεις ήταν συγχρονισμένη, θα αφαιρεθεί και από τα relay σας.",
   "selectionCount": "{count} επιλεγμένες",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(χωρίς τίτλο)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "πριν {count} η",
   "notesLockedTitle": "Οι σημειώσεις προστατεύονται με κωδικό πρόσβασης",
   "unlockButton": "Ξεκλείδωμα",
-
-  "newNoteTitle": "Νέα σημείωση",
-  "editNoteTitle": "Επεξεργασία σημείωσης",
   "saveTooltip": "Αποθήκευση",
   "titleFieldLabel": "Τίτλος",
-  "checklistLabel": "Λίστα ελέγχου",
   "bodyFieldHint": "Γράψτε εδώ... (υποστηρίζεται markdown)",
   "checklistItemHint": "Στοιχείο λίστας",
   "addItemButton": "Προσθήκη στοιχείου",
+  "checklistProgress": "{done} από {total} ολοκληρώθηκαν",
+  "showCompletedItemsTooltip": "Εμφάνιση ολοκληρωμένων στοιχείων",
+  "hideCompletedItemsTooltip": "Απόκρυψη ολοκληρωμένων στοιχείων",
+  "allChecklistItemsCompletedHidden": "Όλα τα στοιχεία έχουν ολοκληρωθεί και είναι κρυμμένα.",
+  "deleteCompletedItemsButton": "Διαγραφή ολοκληρωμένων στοιχείων",
+  "deleteCompletedItemsConfirmTitle": "Διαγραφή ολοκληρωμένων στοιχείων;",
+  "deleteCompletedItemsConfirmBody": "Θα αφαιρεθούν {count} επιλεγμένα στοιχεία από αυτή τη λίστα. Δεν μπορεί να αναιρεθεί.",
   "addImageButton": "Προσθήκη εικόνας",
+  "noteColorButton": "Χρώμα σημείωσης",
+  "noteColorDefault": "Προεπιλογή",
+  "noteColorYellow": "Κίτρινο",
+  "noteColorRed": "Κόκκινο",
+  "noteColorPurple": "Μοβ",
+  "noteColorBlue": "Μπλε",
+  "noteColorGreen": "Πράσινο",
+  "noteColorOrange": "Πορτοκαλί",
+  "noteColorWhite": "Λευκό",
   "recordVoiceNoteTooltip": "Ηχογράφηση φωνητικής σημείωσης",
+  "recordVoiceNoteInstructions": "Πατήστε το κόκκινο κουμπί για έναρξη εγγραφής ή ✕ για ακύρωση.",
   "stopRecordingTooltip": "Διακοπή ηχογράφησης",
   "cancelRecordingTooltip": "Ακύρωση ηχογράφησης",
-  "previewBodyTooltip": "Προεπισκόπηση",
-  "editBodyTooltip": "Επεξεργασία",
+  "addVoiceTimestampButton": "Προσθήκη χρονικής σήμανσης",
+  "editVoiceTimestampButton": "Επεξεργασία χρονικής σήμανσης",
+  "voiceNoteUnsupportedOnPlatform": "Οι φωνητικές σημειώσεις δεν υποστηρίζονται σε αυτή τη συσκευή",
+  "formatBoldTooltip": "Έντονα",
+  "formatItalicTooltip": "Πλάγια",
+  "formatHeadingTooltip": "Επικεφαλίδα",
+  "formatListTooltip": "Λίστα με κουκκίδες",
+  "formatLinkTooltip": "Σύνδεσμος",
   "imageSizeSmall": "Μικρό",
   "imageSizeMedium": "Μεσαίο",
   "imageSizeFull": "Πλήρες πλάτος",
   "removeImageButton": "Αφαίρεση εικόνας",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Δεν έχει διαμορφωθεί ακόμη κανένα relay.",
   "relaysCount": "{count} relay",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Ρυθμίσεις",
   "sectionSecurity": "Ασφάλεια",
   "loadingLabel": "Φόρτωση…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Εμφάνιση",
   "lightThemeToggleTitle": "Ανοιχτόχρωμο θέμα",
   "lightThemeToggleSubtitle": "Χρήση ανοιχτόχρωμου συνδυασμού χρωμάτων αντί για σκούρο",
-  "noteLayoutToggleTitle": "Διάταξη λίστας σημειώσεων",
-  "noteLayoutToggleSubtitle": "Εναλλαγή μεταξύ προβολής λίστας και πλέγματος",
+  "noteLayoutToggleTitle": "Εναλλαγή μεταξύ προβολής λίστας και πλέγματος",
   "manageRelaysTitle": "Διαχείριση relay",
+  "republishAllNotesButton": "Αναδημοσίευση όλων των συγχρονισμένων σημειώσεων",
+  "republishAllNotesSubtitle": "Συμπληρώνει κάθε relay παραπάνω με σημειώσεις ήδη κοινοποιημένες αλλού — χρήσιμο αμέσως μετά την προσθήκη ενός, π.χ. ενός self-hosted εφεδρικού relay",
+  "republishAllNotesSuccess": "Αναδημοσιεύτηκαν {count} σημειώσεις",
+  "republishAllNotesError": "Αδυναμία αναδημοσίευσης σημειώσεων: {error}",
+  "forceFullResyncButton": "Εξαναγκασμός πλήρους επανασυγχρονισμού",
+  "forceFullResyncSubtitle": "Ελέγχει ξανά τους relay για ολόκληρο το ιστορικό μιας σημείωσης αντί μόνο για ό,τι είναι νέο — χρήσιμο αν ο συγχρονισμός φαίνεται κολλημένος και παραλείπει παλαιότερες σημειώσεις, π.χ. μετά την επιδιόρθωση ενός μη προσβάσιμου relay",
+  "forceFullResyncSuccess": "Οι σημειώσεις ανανεώθηκαν από τους relay",
+  "forceFullResyncError": "Δεν ήταν δυνατός ο επανασυγχρονισμός των σημειώσεων: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Επιβεβαίωση",
-
   "sectionLanguage": "Γλώσσα",
   "langSystem": "Προεπιλογή συστήματος",
-
   "sectionAccount": "Λογαριασμός",
   "accountLocalOnlyMessage": "Χρήση του Echoes τοπικά — χωρίς συγχρονισμό με το Nostr",
   "accountSignInButton": "Σύνδεση",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Αποσύνδεση",
   "accountSignOutConfirmTitle": "Αποσύνδεση;",
   "accountSignOutConfirmBody": "Οι σημειώσεις σας παραμένουν σε αυτή τη συσκευή. Μπορείτε να συνδεθείτε ξανά όποτε θέλετε.",
-
   "onboardingWelcomeTitle": "Καλώς ήρθατε στο Echoes",
   "onboardingIntroLocalTitle": "Οι σημειώσεις σας, πάντα στη συσκευή σας",
   "onboardingIntroLocalBody": "Κάθε σημείωση αποθηκεύεται πρώτα τοπικά, ώστε η εφαρμογή να λειτουργεί πλήρως εκτός σύνδεσης. Τίποτα δεν φεύγει από τη συσκευή σας εκτός αν επιλέξετε να το συγχρονίσετε.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Επιλέξτε relays για συγχρονισμό",
   "onboardingRelayBody": "Τα relays είναι το σημείο όπου αποθηκεύονται οι κρυπτογραφημένες σημειώσεις σας κατά τον συγχρονισμό. Προσθέστε ένα ή περισσότερα — αυτά τα δημοφιλή είναι ένα καλό ξεκίνημα:",
   "onboardingFinishButton": "Ξεκινήστε",
-
   "syncNoteTooltip": "Συγχρονισμός αυτής της σημείωσης",
   "unsyncNoteTooltip": "Αφαίρεση από τα relay",
   "syncSelectedTooltip": "Συγχρονισμός επιλεγμένων σημειώσεων",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Εισαγάγετε τον κωδικό πρόσβασής σας",
   "exportSetPasswordDialogTitle": "Ορίστε κωδικό πρόσβασης για αυτήν την εξαγωγή",
   "importPasswordDialogTitle": "Εισαγάγετε τον κωδικό πρόσβασης της εξαγωγής",
-
   "sectionData": "Δεδομένα",
   "exportNotesButton": "Εξαγωγή σημειώσεων",
   "exportNotesSubtitle": "Αποθηκεύστε όλες τις σημειώσεις σας σε ένα αρχείο που μπορείτε να εισαγάγετε ξανά αργότερα",
@@ -149,16 +188,14 @@
   "exportNotesError": "Δεν ήταν δυνατή η εξαγωγή των σημειώσεων: {error}",
   "importNotesSuccess": "Εισήχθησαν {count} σημειώσεις",
   "importNotesError": "Δεν ήταν δυνατή η εισαγωγή των σημειώσεων: {error}",
-
   "sectionAttachments": "Συνημμένα",
   "attachmentProviderSubtitle": "Πού μεταφορτώνονται οι κρυπτογραφημένες εικόνες και οι φωνητικές σημειώσεις κατά τον συγχρονισμό",
   "attachmentProviderCustom": "Προσαρμοσμένο…",
   "attachmentCustomUrlLabel": "URL διακομιστή",
-
+  "attachmentProviderHint": "Ορισμένοι δημόσιοι διακομιστές (π.χ. Primal, nostr.build) απορρίπτουν τα κρυπτογραφημένα ανεβάσματα — ελέγχουν για πραγματικό περιεχόμενο εικόνας, κάτι που τα κρυπτογραφημένα δεδομένα δεν είναι ποτέ. Προτιμήστε έναν διακομιστή Blossom που αποθηκεύει αδιαφανή δεδομένα ή ορίστε το «Προσαρμοσμένο…» σε έναν δικό σας.",
   "sectionSupport": "Υποστήριξη",
   "supportEchoesTitle": "Υποστηρίξτε το Echoes",
   "lightningAddressCopied": "⚡ Το {address} αντιγράφηκε στο πρόχειρο",
-
   "cancelButton": "Άκυρο",
   "passwordLabel": "Κωδικός πρόσβασης",
   "invalidPrivateKeyError": "Το ιδιωτικό κλειδί δεν είναι έγκυρο. Εισαγάγετε έγκυρο κλειδί nsec ή hex.",

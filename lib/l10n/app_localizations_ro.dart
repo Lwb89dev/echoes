@@ -31,35 +31,36 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsTooltip => 'Setări';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Caută';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Închide căutarea';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Caută în notițe';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Nicio potrivire.';
 
   @override
   String get emptyNotesMessage =>
       'Încă nu ai notițe. Atinge + pentru a crea una.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Notițe';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Jurnal';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Încă nu există intrări în jurnal. Atinge + pentru a scrie una.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Azi';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Ieri';
 
   @override
   String get newPlainNoteOption => 'Notiță';
@@ -133,9 +134,6 @@ class AppLocalizationsRo extends AppLocalizations {
   String get titleFieldLabel => 'Titlu';
 
   @override
-  String get checklistLabel => 'Listă de verificare';
-
-  @override
   String get bodyFieldHint => 'Scrie aici... (markdown acceptat)';
 
   @override
@@ -146,66 +144,67 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done din $total finalizate';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Arată elementele finalizate';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Ascunde elementele finalizate';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Toate elementele sunt finalizate și ascunse.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Șterge elementele finalizate';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle =>
+      'Ștergi elementele finalizate?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Se vor elimina $count elemente bifate din această listă. Nu se poate anula.';
   }
 
   @override
   String get addImageButton => 'Adaugă imagine';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Culoarea notiței';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Implicit';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Galben';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Roșu';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Mov';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Albastru';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Verde';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Portocaliu';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Alb';
 
   @override
   String get recordVoiceNoteTooltip => 'Înregistrează o notiță vocală';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Atinge butonul roșu pentru a începe înregistrarea, sau ✕ pentru a anula.';
 
   @override
   String get stopRecordingTooltip => 'Oprește înregistrarea';
@@ -214,25 +213,29 @@ class AppLocalizationsRo extends AppLocalizations {
   String get cancelRecordingTooltip => 'Anulează înregistrarea';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Adaugă marcaj de timp';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Editează marcajul de timp';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Notele vocale nu sunt acceptate pe acest dispozitiv';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Aldin';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Cursiv';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Titlu';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Listă cu marcatori';
+
+  @override
+  String get formatLinkTooltip => 'Legătură';
 
   @override
   String get imageSizeSmall => 'Mică';
@@ -322,26 +325,42 @@ class AppLocalizationsRo extends AppLocalizations {
       'Utilizează o schemă de culori deschisă în loc de întunecată';
 
   @override
-  String get noteLayoutToggleTitle => 'Aspectul listei de notițe';
+  String get noteLayoutToggleTitle =>
+      'Comută între vizualizarea listă și grilă';
 
   @override
   String get manageRelaysTitle => 'Gestionează releele';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton => 'Republică toate notițele sincronizate';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Completează fiecare releu de mai sus cu notițe deja partajate în altă parte — util imediat după adăugarea unuia nou, de ex. un releu de rezervă auto-găzduit';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return '$count notițe republicate';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Notițele nu au putut fi republicate: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Forțează resincronizarea completă';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Reverifică releele pentru întregul istoric al unei notițe, nu doar ce e nou — util dacă sincronizarea pare blocată și omite notițe mai vechi, de exemplu după rezolvarea unui releu inaccesibil';
+
+  @override
+  String get forceFullResyncSuccess => 'Notițe actualizate din relee';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Notițele nu au putut fi resincronizate: $error';
   }
 
   @override
@@ -562,7 +581,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Unele servere publice (de ex. Primal, nostr.build) resping încărcările criptate — verifică conținut real de imagine, ceea ce datele criptate nu sunt niciodată. Preferă un server Blossom care stochează date opace, sau indică Personalizat… către unul auto-găzduit.';
 
   @override
   String get sectionSupport => 'Susținere';

@@ -290,7 +290,7 @@ class SyncService {
       }
 
       final since = await _localStorageService.loadLastSyncTime();
-      final remoteNotes = await _nostrService.fetchNotesFromRelay(
+      final fetchResult = await _nostrService.fetchNotesFromRelay(
         author: author,
         relays: relays,
         since: since,
@@ -299,26 +299,35 @@ class SyncService {
       final currentLocalById = {
         for (final note in await _localStorageService.loadNotes()) note.id: note,
       };
-      for (final remoteNote in remoteNotes) {
+      for (final remoteNote in fetchResult.notes) {
         final localNote = currentLocalById[remoteNote.id];
         if (localNote == null || remoteNote.updatedAt.isAfter(localNote.updatedAt)) {
           await _localStorageService.saveNote(remoteNote);
         }
       }
 
-      // Rewound by a safety margin, not the exact cycle start time:
-      // fetchNotesFromRelay times out waiting for EOSE after 10s and
-      // returns whatever it has *without erroring* (see its
-      // `shouldThrowErrorOnTimeoutWithoutEose: false`), so a slow relay can
-      // silently hand back a partial page. Saving the exact `now()` as the
-      // next `since` would then permanently skip whatever arrived after
-      // that page — the gap is never on the relay's radar again. A minute
-      // of overlap costs nothing (re-fetched notes just no-op against an
-      // already-up-to-date local copy, matched by id) and is comfortably
-      // wider than the fetch timeout above.
-      await _localStorageService.saveLastSyncTime(
-        DateTime.now().subtract(const Duration(minutes: 1)),
-      );
+      // Only move the bookmark forward when every relay actually confirmed
+      // it delivered everything it has (see `fetchNotesFromRelay`'s
+      // `complete` doc) — advancing it after a timed-out, only-partially-
+      // delivered fetch would permanently skip whatever didn't arrive in
+      // time, since the next cycle would never ask for anything before
+      // this point again. Rewound by a safety margin rather than the exact
+      // cycle start time even then: re-fetched notes just no-op against an
+      // already-up-to-date local copy (matched by id), so a minute of
+      // overlap costs nothing and is comfortably wider than any one
+      // relay's turnaround between "sent its last event" and "sent EOSE".
+      if (fetchResult.complete) {
+        await _localStorageService.saveLastSyncTime(
+          DateTime.now().subtract(const Duration(minutes: 1)),
+        );
+      } else {
+        developer.log(
+          'runSyncCycle: relay fetch timed out before every relay reported '
+          'done; leaving the sync bookmark where it was so the next cycle '
+          'retries the same window instead of silently skipping it',
+          name: 'SyncService',
+        );
+      }
     } catch (e) {
       developer.log('runSyncCycle failed${silent ? ', will retry next cycle' : ''}: $e', name: 'SyncService');
       if (!silent) rethrow;

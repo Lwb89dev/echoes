@@ -1,15 +1,22 @@
 {
   "@@locale": "lv",
-
   "loginSubtitle": "Pierakstieties ar savu Nostr kontu",
   "loginWithAmberButton": "Pierakstīties ar Amber",
   "importAccountButton": "Importēt Nostr kontu",
   "importAccountFieldLabel": "Jūsu Nostr konta privātā atslēga (nsec)",
   "importButton": "Importēt",
-
   "relaysTitle": "Releji",
   "settingsTooltip": "Iestatījumi",
+  "searchTooltip": "Meklēt",
+  "closeSearchTooltip": "Aizvērt meklēšanu",
+  "searchNotesHint": "Meklēt piezīmēs",
+  "noSearchResultsMessage": "Nav atbilstību.",
   "emptyNotesMessage": "Vēl nav piezīmju. Pieskarieties +, lai izveidotu jaunu.",
+  "notesTabLabel": "Piezīmes",
+  "diaryTabLabel": "Dienasgrāmata",
+  "emptyDiaryMessage": "Vēl nav dienasgrāmatas ierakstu. Pieskarieties +, lai uzrakstītu.",
+  "diaryToday": "Šodien",
+  "diaryYesterday": "Vakar",
   "newPlainNoteOption": "Piezīme",
   "newChecklistOption": "Kontrolsaraksts",
   "newVoiceNoteOption": "Balss piezīme",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Dzēst {count} piezīmes?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Šo darbību nevar atsaukt. Ja kāda no šīm piezīmēm bija sinhronizēta, tā tiks noņemta arī no jūsu relejiem.",
   "selectionCount": "Atlasītas: {count}",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(bez nosaukuma)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "pirms {count} d",
   "notesLockedTitle": "Piezīmes ir aizsargātas ar paroli",
   "unlockButton": "Atbloķēt",
-
-  "newNoteTitle": "Jauna piezīme",
-  "editNoteTitle": "Rediģēt piezīmi",
   "saveTooltip": "Saglabāt",
   "titleFieldLabel": "Nosaukums",
-  "checklistLabel": "Kontrolsaraksts",
   "bodyFieldHint": "Rakstiet šeit... (atbalstīts markdown)",
   "checklistItemHint": "Saraksta vienums",
   "addItemButton": "Pievienot vienumu",
+  "checklistProgress": "Pabeigti {done} no {total}",
+  "showCompletedItemsTooltip": "Rādīt pabeigtos punktus",
+  "hideCompletedItemsTooltip": "Slēpt pabeigtos punktus",
+  "allChecklistItemsCompletedHidden": "Visi punkti ir pabeigti un paslēpti.",
+  "deleteCompletedItemsButton": "Dzēst pabeigtos punktus",
+  "deleteCompletedItemsConfirmTitle": "Vai dzēst pabeigtos punktus?",
+  "deleteCompletedItemsConfirmBody": "Tas noņems {count} atzīmētus punktus no šī saraksta. To nevar atsaukt.",
   "addImageButton": "Pievienot attēlu",
+  "noteColorButton": "Piezīmes krāsa",
+  "noteColorDefault": "Noklusējums",
+  "noteColorYellow": "Dzeltena",
+  "noteColorRed": "Sarkana",
+  "noteColorPurple": "Violeta",
+  "noteColorBlue": "Zila",
+  "noteColorGreen": "Zaļa",
+  "noteColorOrange": "Oranža",
+  "noteColorWhite": "Balta",
   "recordVoiceNoteTooltip": "Ierakstīt balss piezīmi",
+  "recordVoiceNoteInstructions": "Pieskarieties sarkanajai pogai, lai sāktu ierakstu, vai ✕, lai atceltu.",
   "stopRecordingTooltip": "Apturēt ierakstīšanu",
   "cancelRecordingTooltip": "Atcelt ierakstīšanu",
-  "previewBodyTooltip": "Priekšskatījums",
-  "editBodyTooltip": "Rediģēt",
+  "addVoiceTimestampButton": "Pievienot laika zīmogu",
+  "editVoiceTimestampButton": "Rediģēt laika zīmogu",
+  "voiceNoteUnsupportedOnPlatform": "Balss piezīmes šajā ierīcē netiek atbalstītas",
+  "formatBoldTooltip": "Treknraksts",
+  "formatItalicTooltip": "Slīpraksts",
+  "formatHeadingTooltip": "Virsraksts",
+  "formatListTooltip": "Saraksts ar aizzīmēm",
+  "formatLinkTooltip": "Saite",
   "imageSizeSmall": "Mazs",
   "imageSizeMedium": "Vidējs",
   "imageSizeFull": "Pilns platums",
   "removeImageButton": "Noņemt attēlu",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Vēl nav konfigurēts neviens relejs.",
   "relaysCount": "{count} releji",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Iestatījumi",
   "sectionSecurity": "Drošība",
   "loadingLabel": "Ielādē…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Izskats",
   "lightThemeToggleTitle": "Gaiša tēma",
   "lightThemeToggleSubtitle": "Izmantot gaišu krāsu shēmu tumšas vietā",
-  "noteLayoutToggleTitle": "Piezīmju saraksta izkārtojums",
-  "noteLayoutToggleSubtitle": "Pārslēgties starp saraksta un režģa skatu",
+  "noteLayoutToggleTitle": "Pārslēgties starp saraksta un režģa skatu",
   "manageRelaysTitle": "Pārvaldīt relejus",
+  "republishAllNotesButton": "Atkārtoti publicēt visas sinhronizētās piezīmes",
+  "republishAllNotesSubtitle": "Papildina katru augstāk esošo releju ar piezīmēm, kas jau kopīgotas citur — noderīgi uzreiz pēc jauna pievienošanas, piem., pašizvietota rezerves releja",
+  "republishAllNotesSuccess": "Atkārtoti publicētas {count} piezīmes",
+  "republishAllNotesError": "Piezīmes neizdevās atkārtoti publicēt: {error}",
+  "forceFullResyncButton": "Piespiest pilnu atkārtotu sinhronizāciju",
+  "forceFullResyncSubtitle": "Atkārtoti pārbauda releja serveros piezīmes pilnu vēsturi, nevis tikai jauno — noderīgi, ja sinhronizācija šķiet iestrēgusi un izlaiž vecākas piezīmes, piemēram, pēc nesasniedzama releja servera novēršanas",
+  "forceFullResyncSuccess": "Piezīmes atjauninātas no releja serveriem",
+  "forceFullResyncError": "Neizdevās atkārtoti sinhronizēt piezīmes: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Apstiprināt",
-
   "sectionLanguage": "Valoda",
   "langSystem": "Sistēmas noklusējums",
-
   "sectionAccount": "Konts",
   "accountLocalOnlyMessage": "Echoes tiek izmantots lokāli — bez sinhronizācijas ar Nostr",
   "accountSignInButton": "Pierakstīties",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Izrakstīties",
   "accountSignOutConfirmTitle": "Vai izrakstīties?",
   "accountSignOutConfirmBody": "Jūsu piezīmes paliks šajā ierīcē. Varat pierakstīties atkārtoti jebkurā laikā.",
-
   "onboardingWelcomeTitle": "Laipni lūdzam Echoes",
   "onboardingIntroLocalTitle": "Jūsu piezīmes vienmēr jūsu ierīcē",
   "onboardingIntroLocalBody": "Katra piezīme vispirms tiek saglabāta lokāli, tāpēc lietotne darbojas pilnībā bezsaistē. Nekas nepamet jūsu ierīci, ja vien neizvēlaties to sinhronizēt.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Izvēlieties relejus sinhronizācijai",
   "onboardingRelayBody": "Relejos tiek glabātas jūsu šifrētās piezīmes sinhronizācijas laikā. Pievienojiet vienu vai vairākus — šie populārie ir labs sākums:",
   "onboardingFinishButton": "Sākt",
-
   "syncNoteTooltip": "Sinhronizēt šo piezīmi",
   "unsyncNoteTooltip": "Noņemt no relejiem",
   "syncSelectedTooltip": "Sinhronizēt atlasītās piezīmes",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Ievadiet savu paroli",
   "exportSetPasswordDialogTitle": "Iestatiet paroli šim eksportam",
   "importPasswordDialogTitle": "Ievadiet eksporta paroli",
-
   "sectionData": "Dati",
   "exportNotesButton": "Eksportēt piezīmes",
   "exportNotesSubtitle": "Saglabājiet visas savas piezīmes failā, kuru vēlāk varēsiet atkārtoti importēt",
@@ -149,16 +188,14 @@
   "exportNotesError": "Neizdevās eksportēt piezīmes: {error}",
   "importNotesSuccess": "Importētas {count} piezīmes",
   "importNotesError": "Neizdevās importēt piezīmes: {error}",
-
   "sectionAttachments": "Pielikumi",
   "attachmentProviderSubtitle": "Kur tiek augšupielādēti šifrētie attēli un balss piezīmes sinhronizējot",
   "attachmentProviderCustom": "Pielāgots…",
   "attachmentCustomUrlLabel": "Servera URL",
-
+  "attachmentProviderHint": "Daži publiskie serveri (piem., Primal, nostr.build) noraida šifrētas augšupielādes — tie pārbauda īstu attēla saturu, kas šifrēti dati nekad nav. Izvēlieties Blossom serveri, kas glabā necaurspīdīgus datus, vai norādiet Pielāgots… uz savu serveri.",
   "sectionSupport": "Atbalsts",
   "supportEchoesTitle": "Atbalsti Echoes",
   "lightningAddressCopied": "⚡ {address} nokopēts starpliktuvē",
-
   "cancelButton": "Atcelt",
   "passwordLabel": "Parole",
   "invalidPrivateKeyError": "Privātā atslēga nav derīga. Ievadiet derīgu nsec vai hex atslēgu.",

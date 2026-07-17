@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:cryptography/cryptography.dart' show SecretBoxAuthenticationError;
+import 'package:cryptography/cryptography.dart'
+    show SecretBoxAuthenticationError;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
@@ -19,6 +20,7 @@ import '../providers/theme_provider.dart';
 import '../providers/upload_settings_provider.dart';
 import '../services/local_storage_service.dart';
 import '../utils/formatter.dart';
+import '../utils/responsive.dart';
 import 'login_screen.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/relay_widgets.dart';
@@ -35,36 +37,39 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(l.settingsTitle)),
-      body: ListView(
-        children: [
-          _SectionHeader(l.sectionAccount),
-          const _AccountSection(),
-          _SectionHeader(l.relaysTitle),
-          const _RelaySection(),
-          _SectionHeader(l.sectionSecurity),
-          encryptionState.when(
-            data: (state) => _EncryptionSection(state: state),
-            loading: () => ListTile(
-              leading: const CircularProgressIndicator(strokeWidth: 2),
-              title: Text(l.loadingLabel),
+      body: MaxWidthCenter(
+        maxWidth: 760,
+        child: ListView(
+          children: [
+            _SectionHeader(l.sectionAccount),
+            const _AccountSection(),
+            _SectionHeader(l.relaysTitle),
+            const _RelaySection(),
+            _SectionHeader(l.sectionSecurity),
+            encryptionState.when(
+              data: (state) => _EncryptionSection(state: state),
+              loading: () => ListTile(
+                leading: const CircularProgressIndicator(strokeWidth: 2),
+                title: Text(l.loadingLabel),
+              ),
+              error: (error, stackTrace) => ListTile(
+                leading: const Icon(Icons.error_outline),
+                title: Text(l.encryptionLoadError),
+                subtitle: Text('$error'),
+              ),
             ),
-            error: (error, stackTrace) => ListTile(
-              leading: const Icon(Icons.error_outline),
-              title: Text(l.encryptionLoadError),
-              subtitle: Text('$error'),
-            ),
-          ),
-          _SectionHeader(l.sectionAppearance),
-          const _AppearanceSection(),
-          _SectionHeader(l.sectionLanguage),
-          const _LanguageSection(),
-          _SectionHeader(l.sectionData),
-          const _DataSection(),
-          _SectionHeader(l.sectionAttachments),
-          const _AttachmentsSection(),
-          _SectionHeader(l.sectionSupport),
-          const _DonationTile(),
-        ],
+            _SectionHeader(l.sectionAppearance),
+            const _AppearanceSection(),
+            _SectionHeader(l.sectionLanguage),
+            const _LanguageSection(),
+            _SectionHeader(l.sectionData),
+            const _DataSection(),
+            _SectionHeader(l.sectionAttachments),
+            const _AttachmentsSection(),
+            _SectionHeader(l.sectionSupport),
+            const _DonationTile(),
+          ],
+        ),
       ),
     );
   }
@@ -87,9 +92,9 @@ class _AccountSection extends ConsumerWidget {
             leading: const Icon(Icons.person_outline),
             title: Text(l.accountLocalOnlyMessage),
             trailing: FilledButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              ),
+              onPressed: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const LoginScreen())),
               child: Text(l.accountSignInButton),
             ),
           );
@@ -101,13 +106,17 @@ class _AccountSection extends ConsumerWidget {
         // this row must never block on either.
         final profile = ref.watch(profileProvider).value;
         final avatarUrl = profile?.picture;
-        final avatarFile = avatarUrl != null ? ref.watch(avatarFileProvider(avatarUrl)).value : null;
+        final avatarFile = avatarUrl != null
+            ? ref.watch(avatarFileProvider(avatarUrl)).value
+            : null;
         final displayName = profile?.label ?? Formatter.truncateKey(user.npub);
 
         return ListTile(
           leading: CircleAvatar(
             backgroundImage: avatarFile != null ? FileImage(avatarFile) : null,
-            child: avatarFile == null ? const Icon(Icons.verified_user_outlined) : null,
+            child: avatarFile == null
+                ? const Icon(Icons.verified_user_outlined)
+                : null,
           ),
           title: Text(l.accountSignedInAs(displayName)),
           trailing: TextButton(
@@ -127,7 +136,11 @@ class _AccountSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _confirmSignOut(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+  Future<void> _confirmSignOut(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -215,6 +228,7 @@ class _RelaySection extends ConsumerWidget {
               ),
             ),
             const _RepublishAllTile(),
+            const _ForceFullResyncTile(),
           ],
         ),
       ],
@@ -246,7 +260,9 @@ class _RepublishAllTileState extends ConsumerState<_RepublishAllTile> {
     final l = AppLocalizations.of(context);
     setState(() => _running = true);
     try {
-      final count = await ref.read(notesProvider.notifier).republishAllToRelays();
+      final count = await ref
+          .read(notesProvider.notifier)
+          .republishAllToRelays();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l.republishAllNotesSuccess(count))),
@@ -282,6 +298,68 @@ class _RepublishAllTileState extends ConsumerState<_RepublishAllTile> {
   }
 }
 
+/// "Unstick the pull side" action: rewinds the sync bookmark back to
+/// "never synced" and refreshes immediately (see
+/// [NotesNotifier.forceFullResync]), so relays get asked for a note's
+/// entire history again instead of only whatever's newer than that
+/// bookmark. Meant for when syncing seems to have quietly stopped pulling
+/// down older notes — e.g. one relay was unreachable when the bookmark
+/// last advanced, so nothing it alone held ever made it down, and no
+/// amount of ordinary pull-to-refresh recovers that on its own once the
+/// bookmark has moved past those notes' timestamps.
+///
+/// Only shown once signed in, same as [_RepublishAllTile] — there is
+/// nothing to resync without a Nostr account.
+class _ForceFullResyncTile extends ConsumerStatefulWidget {
+  const _ForceFullResyncTile();
+
+  @override
+  ConsumerState<_ForceFullResyncTile> createState() => _ForceFullResyncTileState();
+}
+
+class _ForceFullResyncTileState extends ConsumerState<_ForceFullResyncTile> {
+  bool _running = false;
+
+  Future<void> _run() async {
+    final l = AppLocalizations.of(context);
+    setState(() => _running = true);
+    try {
+      await ref.read(notesProvider.notifier).forceFullResync();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.forceFullResyncSuccess)),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.forceFullResyncError(e.toString()))),
+      );
+    } finally {
+      if (mounted) setState(() => _running = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final hasNostrAccount = ref.watch(authProvider).value != null;
+    if (!hasNostrAccount) return const SizedBox.shrink();
+
+    return ListTile(
+      leading: _running
+          ? const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.history_outlined),
+      title: Text(l.forceFullResyncButton),
+      subtitle: Text(l.forceFullResyncSubtitle),
+      onTap: _running ? null : _run,
+    );
+  }
+}
+
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader(this.title);
 
@@ -294,8 +372,8 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
@@ -337,7 +415,11 @@ class _EncryptionSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _showEnableDialog(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+  Future<void> _showEnableDialog(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) async {
     final formKey = GlobalKey<FormState>();
     final passwordController = TextEditingController();
     final confirmController = TextEditingController();
@@ -359,26 +441,37 @@ class _EncryptionSection extends ConsumerWidget {
                   obscureText: true,
                   autofocus: true,
                   decoration: InputDecoration(labelText: l.passwordLabel),
-                  validator: (value) =>
-                      (value == null || value.length < 8) ? l.passwordTooShortError : null,
+                  validator: (value) => (value == null || value.length < 8)
+                      ? l.passwordTooShortError
+                      : null,
                 ),
                 TextFormField(
                   controller: confirmController,
                   obscureText: true,
-                  decoration: InputDecoration(labelText: l.confirmPasswordLabel),
-                  validator: (value) =>
-                      value != passwordController.text ? l.passwordsDoNotMatchError : null,
+                  decoration: InputDecoration(
+                    labelText: l.confirmPasswordLabel,
+                  ),
+                  validator: (value) => value != passwordController.text
+                      ? l.passwordsDoNotMatchError
+                      : null,
                 ),
                 if (errorText != null) ...[
                   const SizedBox(height: 8),
-                  Text(errorText!, style: TextStyle(color: Theme.of(dialogContext).colorScheme.error)),
+                  Text(
+                    errorText!,
+                    style: TextStyle(
+                      color: Theme.of(dialogContext).colorScheme.error,
+                    ),
+                  ),
                 ],
               ],
             ),
           ),
           actions: [
             TextButton(
-              onPressed: submitting ? null : () => Navigator.of(dialogContext).pop(),
+              onPressed: submitting
+                  ? null
+                  : () => Navigator.of(dialogContext).pop(),
               child: Text(l.cancelButton),
             ),
             FilledButton(
@@ -391,7 +484,9 @@ class _EncryptionSection extends ConsumerWidget {
                         await ref
                             .read(noteEncryptionProvider.notifier)
                             .enable(passwordController.text);
-                        if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+                        if (dialogContext.mounted) {
+                          Navigator.of(dialogContext).pop();
+                        }
                       } catch (e) {
                         setState(() {
                           submitting = false;
@@ -407,7 +502,11 @@ class _EncryptionSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _showDisableDialog(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+  Future<void> _showDisableDialog(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) async {
     final passwordController = TextEditingController();
     var submitting = false;
     String? errorText;
@@ -428,7 +527,9 @@ class _EncryptionSection extends ConsumerWidget {
           ),
           actions: [
             TextButton(
-              onPressed: submitting ? null : () => Navigator.of(dialogContext).pop(),
+              onPressed: submitting
+                  ? null
+                  : () => Navigator.of(dialogContext).pop(),
               child: Text(l.cancelButton),
             ),
             FilledButton(
@@ -443,7 +544,9 @@ class _EncryptionSection extends ConsumerWidget {
                         await ref
                             .read(noteEncryptionProvider.notifier)
                             .disable(passwordController.text);
-                        if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+                        if (dialogContext.mounted) {
+                          Navigator.of(dialogContext).pop();
+                        }
                       } catch (e) {
                         setState(() {
                           submitting = false;
@@ -545,25 +648,29 @@ class _LanguageSection extends ConsumerWidget {
           isExpanded: true,
           borderRadius: BorderRadius.circular(12),
           items: [
-            DropdownMenuItem<String?>(
-              value: null,
-              child: Text(l.langSystem),
-            ),
+            DropdownMenuItem<String?>(value: null, child: Text(l.langSystem)),
             ..._buildLanguageItems(_euOfficialLanguages),
             ..._buildLanguageItems(_additionalLanguages),
           ],
           onChanged: (code) {
-            ref.read(localeProvider.notifier).setLocale(code != null ? Locale(code) : null);
+            ref
+                .read(localeProvider.notifier)
+                .setLocale(code != null ? Locale(code) : null);
           },
         ),
       ),
     );
   }
 
-  List<DropdownMenuItem<String?>> _buildLanguageItems(Map<String, String> languages) {
-    final sorted = languages.entries.toList()..sort((a, b) => a.value.compareTo(b.value));
+  List<DropdownMenuItem<String?>> _buildLanguageItems(
+    Map<String, String> languages,
+  ) {
+    final sorted = languages.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
     return sorted
-        .map((e) => DropdownMenuItem<String?>(value: e.key, child: Text(e.value)))
+        .map(
+          (e) => DropdownMenuItem<String?>(value: e.key, child: Text(e.value)),
+        )
         .toList();
   }
 }
@@ -595,7 +702,11 @@ class _DataSection extends ConsumerWidget {
     );
   }
 
-  Future<void> _importNotes(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+  Future<void> _importNotes(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+  ) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -621,9 +732,9 @@ class _DataSection extends ConsumerWidget {
       }
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l.importNotesSuccess(count))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l.importNotesSuccess(count))));
       }
     } catch (e) {
       if (context.mounted) {
@@ -640,7 +751,12 @@ class _DataSection extends ConsumerWidget {
   /// [SecretBoxAuthenticationError]) rather than closing and forcing the
   /// whole file picker flow to be redone. Returns the imported-note count,
   /// or null if cancelled.
-  Future<int?> _importEncrypted(BuildContext context, WidgetRef ref, AppLocalizations l, String rawJson) async {
+  Future<int?> _importEncrypted(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l,
+    String rawJson,
+  ) async {
     final controller = TextEditingController();
     var submitting = false;
     String? errorText;
@@ -654,11 +770,16 @@ class _DataSection extends ConsumerWidget {
             controller: controller,
             obscureText: true,
             autofocus: true,
-            decoration: InputDecoration(labelText: l.passwordLabel, errorText: errorText),
+            decoration: InputDecoration(
+              labelText: l.passwordLabel,
+              errorText: errorText,
+            ),
           ),
           actions: [
             TextButton(
-              onPressed: submitting ? null : () => Navigator.of(dialogContext).pop(),
+              onPressed: submitting
+                  ? null
+                  : () => Navigator.of(dialogContext).pop(),
               child: Text(l.cancelButton),
             ),
             FilledButton(
@@ -673,7 +794,9 @@ class _DataSection extends ConsumerWidget {
                         final imported = await ref
                             .read(notesProvider.notifier)
                             .importNotes(rawJson, password: controller.text);
-                        if (dialogContext.mounted) Navigator.of(dialogContext).pop(imported);
+                        if (dialogContext.mounted) {
+                          Navigator.of(dialogContext).pop(imported);
+                        }
                       } on SecretBoxAuthenticationError {
                         setState(() {
                           submitting = false;
@@ -703,7 +826,8 @@ class _AttachmentsSection extends ConsumerStatefulWidget {
   const _AttachmentsSection();
 
   @override
-  ConsumerState<_AttachmentsSection> createState() => _AttachmentsSectionState();
+  ConsumerState<_AttachmentsSection> createState() =>
+      _AttachmentsSectionState();
 }
 
 class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
@@ -713,7 +837,9 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
   void initState() {
     super.initState();
     final current = ref.read(uploadProviderProvider);
-    _customUrlController = TextEditingController(text: current.id == 'custom' ? current.baseUrl : '');
+    _customUrlController = TextEditingController(
+      text: current.id == 'custom' ? current.baseUrl : '',
+    );
   }
 
   @override
@@ -724,11 +850,15 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
 
   void _selectCustom() {
     final current = ref.read(uploadProviderProvider);
-    ref.read(uploadProviderProvider.notifier).setProvider(
+    ref
+        .read(uploadProviderProvider.notifier)
+        .setProvider(
           UploadProviderOption(
             id: 'custom',
             label: _customUrlController.text.trim(),
-            protocol: current.id == 'custom' ? current.protocol : UploadProtocol.blossom,
+            protocol: current.id == 'custom'
+                ? current.protocol
+                : UploadProtocol.blossom,
             baseUrl: _customUrlController.text.trim(),
           ),
         );
@@ -746,7 +876,10 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(l.attachmentProviderSubtitle, style: Theme.of(context).textTheme.bodySmall),
+          child: Text(
+            l.attachmentProviderSubtitle,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
         const SizedBox(height: 8),
         Container(
@@ -763,8 +896,14 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
               borderRadius: BorderRadius.circular(12),
               items: [
                 for (final provider in builtInUploadProviders)
-                  DropdownMenuItem(value: provider.id, child: Text(provider.label)),
-                DropdownMenuItem(value: 'custom', child: Text(l.attachmentProviderCustom)),
+                  DropdownMenuItem(
+                    value: provider.id,
+                    child: Text(provider.label),
+                  ),
+                DropdownMenuItem(
+                  value: 'custom',
+                  child: Text(l.attachmentProviderCustom),
+                ),
               ],
               onChanged: (id) {
                 if (id == null) return;
@@ -772,7 +911,9 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
                   _selectCustom();
                   return;
                 }
-                final provider = builtInUploadProviders.firstWhere((p) => p.id == id);
+                final provider = builtInUploadProviders.firstWhere(
+                  (p) => p.id == id,
+                );
                 ref.read(uploadProviderProvider.notifier).setProvider(provider);
               },
             ),
@@ -782,10 +923,9 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
           child: Text(
             l.attachmentProviderHint,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: colorScheme.onSurfaceVariant),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
         if (isCustom) ...[
@@ -809,12 +949,20 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
                 const SizedBox(height: 8),
                 SegmentedButton<UploadProtocol>(
                   segments: const [
-                    ButtonSegment(value: UploadProtocol.blossom, label: Text('Blossom')),
-                    ButtonSegment(value: UploadProtocol.nip96, label: Text('NIP-96')),
+                    ButtonSegment(
+                      value: UploadProtocol.blossom,
+                      label: Text('Blossom'),
+                    ),
+                    ButtonSegment(
+                      value: UploadProtocol.nip96,
+                      label: Text('NIP-96'),
+                    ),
                   ],
                   selected: {selected.protocol},
                   onSelectionChanged: (protocols) {
-                    ref.read(uploadProviderProvider.notifier).setProvider(
+                    ref
+                        .read(uploadProviderProvider.notifier)
+                        .setProvider(
                           UploadProviderOption(
                             id: 'custom',
                             label: selected.label,
@@ -893,17 +1041,23 @@ class _DonationTile extends StatelessWidget {
                 children: [
                   Text(
                     l.supportEchoesTitle,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 2),
-                  Text(_lightningAddress, style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    _lightningAddress,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
-            Icon(Icons.open_in_new_rounded, size: 14, color: colorScheme.primary),
+            Icon(
+              Icons.open_in_new_rounded,
+              size: 14,
+              color: colorScheme.primary,
+            ),
           ],
         ),
       ),

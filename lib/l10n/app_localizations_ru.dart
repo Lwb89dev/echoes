@@ -31,35 +31,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsTooltip => 'Настройки';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Поиск';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Закрыть поиск';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Поиск по заметкам';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Совпадений нет.';
 
   @override
   String get emptyNotesMessage =>
       'Заметок пока нет. Нажмите +, чтобы создать новую.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Заметки';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Дневник';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Записей в дневнике пока нет. Нажмите +, чтобы написать.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Сегодня';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Вчера';
 
   @override
   String get newPlainNoteOption => 'Заметка';
@@ -133,9 +134,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get titleFieldLabel => 'Заголовок';
 
   @override
-  String get checklistLabel => 'Чек-лист';
-
-  @override
   String get bodyFieldHint => 'Пишите здесь... (поддерживается markdown)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return 'Выполнено $done из $total';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Показать выполненные пункты';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Скрыть выполненные пункты';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Все пункты выполнены и скрыты.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Удалить выполненные пункты';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Удалить выполненные пункты?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Из списка будет удалено $count отмеченных пунктов. Это нельзя отменить.';
   }
 
   @override
   String get addImageButton => 'Добавить изображение';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Цвет заметки';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'По умолчанию';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Жёлтый';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Красный';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Фиолетовый';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Синий';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Зелёный';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Оранжевый';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Белый';
 
   @override
   String get recordVoiceNoteTooltip => 'Записать голосовую заметку';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Нажмите красную кнопку, чтобы начать запись, или ✕ для отмены.';
 
   @override
   String get stopRecordingTooltip => 'Остановить запись';
@@ -214,25 +212,29 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cancelRecordingTooltip => 'Отменить запись';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Добавить метку времени';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Изменить метку времени';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Голосовые заметки не поддерживаются на этом устройстве';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Жирный';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Курсив';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Заголовок';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Маркированный список';
+
+  @override
+  String get formatLinkTooltip => 'Ссылка';
 
   @override
   String get imageSizeSmall => 'Маленький';
@@ -321,26 +323,42 @@ class AppLocalizationsRu extends AppLocalizations {
       'Использовать светлую цветовую схему вместо тёмной';
 
   @override
-  String get noteLayoutToggleTitle => 'Вид списка заметок';
+  String get noteLayoutToggleTitle => 'Переключение между списком и сеткой';
 
   @override
   String get manageRelaysTitle => 'Управление реле';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Переопубликовать все синхронизированные заметки';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Дополняет каждый релей выше заметками, уже опубликованными на других — полезно сразу после добавления нового, например собственного резервного релея';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Переопубликовано $count заметок';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Не удалось переопубликовать заметки: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Принудительная полная ресинхронизация';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Повторно запрашивает у реле всю историю заметки, а не только новое — полезно, если синхронизация выглядит застрявшей и пропускает старые заметки, например после устранения недоступного реле';
+
+  @override
+  String get forceFullResyncSuccess => 'Заметки обновлены с реле';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Не удалось ресинхронизировать заметки: $error';
   }
 
   @override
@@ -562,7 +580,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Некоторые публичные серверы (напр. Primal, nostr.build) отклоняют зашифрованные загрузки — они проверяют настоящее содержимое изображения, которым зашифрованные данные никогда не являются. Предпочтите Blossom-сервер, хранящий непрозрачные данные, или укажите «Свой…» на собственный сервер.';
 
   @override
   String get sectionSupport => 'Поддержка';

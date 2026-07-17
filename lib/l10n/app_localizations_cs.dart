@@ -31,35 +31,36 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsTooltip => 'Nastavení';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Hledat';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Zavřít hledání';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Hledat v poznámkách';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Žádné shody.';
 
   @override
   String get emptyNotesMessage =>
       'Zatím žádné poznámky. Klepnutím na + vytvoříte novou.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Poznámky';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Deník';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Zatím žádné záznamy v deníku. Klepnutím na + nějaký napište.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Dnes';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Včera';
 
   @override
   String get newPlainNoteOption => 'Poznámka';
@@ -133,9 +134,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get titleFieldLabel => 'Název';
 
   @override
-  String get checklistLabel => 'Kontrolní seznam';
-
-  @override
   String get bodyFieldHint => 'Pište sem... (podporuje markdown)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return 'Hotovo $done z $total';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Zobrazit dokončené položky';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Skrýt dokončené položky';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Všechny položky jsou dokončené a skryté.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Smazat dokončené položky';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Smazat dokončené položky?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Tím se z tohoto seznamu odstraní $count odškrtnutých položek. Nelze vrátit zpět.';
   }
 
   @override
   String get addImageButton => 'Přidat obrázek';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Barva poznámky';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Výchozí';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Žlutá';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Červená';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Fialová';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Modrá';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Zelená';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Oranžová';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Bílá';
 
   @override
   String get recordVoiceNoteTooltip => 'Nahrát hlasovou poznámku';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Klepnutím na červené tlačítko začnete nahrávat, ✕ zruší.';
 
   @override
   String get stopRecordingTooltip => 'Zastavit nahrávání';
@@ -214,25 +212,29 @@ class AppLocalizationsCs extends AppLocalizations {
   String get cancelRecordingTooltip => 'Zrušit nahrávání';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Přidat časové razítko';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Upravit časové razítko';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Hlasové poznámky nejsou na tomto zařízení podporovány';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Tučné';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Kurzíva';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Nadpis';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Odrážkový seznam';
+
+  @override
+  String get formatLinkTooltip => 'Odkaz';
 
   @override
   String get imageSizeSmall => 'Malé';
@@ -321,26 +323,42 @@ class AppLocalizationsCs extends AppLocalizations {
       'Použít světlé barevné schéma místo tmavého';
 
   @override
-  String get noteLayoutToggleTitle => 'Rozvržení seznamu poznámek';
+  String get noteLayoutToggleTitle => 'Přepnout mezi seznamem a mřížkou';
 
   @override
   String get manageRelaysTitle => 'Spravovat relé';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Znovu publikovat všechny synchronizované poznámky';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Doplní každé relé výše o poznámky již sdílené jinde — užitečné hned po přidání nového, např. vlastního záložního relé';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Znovu publikováno $count poznámek';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Poznámky se nepodařilo znovu publikovat: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Vynutit úplnou resynchronizaci';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Znovu zkontroluje relaye kvůli celé historii poznámky místo jen nového — užitečné, pokud se synchronizace zdá zaseknutá a přeskakuje starší poznámky, např. po opravě nedostupného relaye';
+
+  @override
+  String get forceFullResyncSuccess => 'Poznámky obnoveny z relayů';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Resynchronizaci poznámek se nezdařilo provést: $error';
   }
 
   @override
@@ -559,7 +577,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Některé veřejné servery (např. Primal, nostr.build) šifrovaná nahrání rovnou odmítají — ověřují skutečný obsah obrázku, kterým šifrovaná data nikdy nejsou. Zvolte Blossom server ukládající neprůhledná data, nebo nastavte „Vlastní…“ na vlastní server.';
 
   @override
   String get sectionSupport => 'Podpora';

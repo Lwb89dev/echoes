@@ -1,15 +1,22 @@
 {
   "@@locale": "mt",
-
   "loginSubtitle": "Idħol bil-kont Nostr tiegħek",
   "loginWithAmberButton": "Idħol b'Amber",
   "importAccountButton": "Importa kont Nostr",
   "importAccountFieldLabel": "Ċavetta privata (nsec) tal-kont Nostr tiegħek",
   "importButton": "Importa",
-
   "relaysTitle": "Relays",
   "settingsTooltip": "Settings",
+  "searchTooltip": "Fittex",
+  "closeSearchTooltip": "Agħlaq it-tfittxija",
+  "searchNotesHint": "Fittex fin-noti",
+  "noSearchResultsMessage": "L-ebda riżultat.",
   "emptyNotesMessage": "Għad m'hemm l-ebda nota. Mess + biex toħloq waħda.",
+  "notesTabLabel": "Noti",
+  "diaryTabLabel": "Djarju",
+  "emptyDiaryMessage": "Għad m'hemmx entrati fid-djarju. Għafas + biex tikteb waħda.",
+  "diaryToday": "Illum",
+  "diaryYesterday": "Ilbieraħ",
   "newPlainNoteOption": "Nota",
   "newChecklistOption": "Lista ta' kontroll",
   "newVoiceNoteOption": "Nota bil-vuċi",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Tħassar {count} noti?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Din ma tistax titħassar lura. Jekk kwalunkwe waħda minn dawn in-noti kienet sinkronizzata, titneħħa wkoll mir-relays tiegħek.",
   "selectionCount": "{count} magħżula",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(bla titlu)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} jum ilu",
   "notesLockedTitle": "In-noti huma protetti b'password",
   "unlockButton": "Iftaħ",
-
-  "newNoteTitle": "Nota ġdida",
-  "editNoteTitle": "Editja n-nota",
   "saveTooltip": "Issejvja",
   "titleFieldLabel": "Titlu",
-  "checklistLabel": "Lista ta' kontroll",
   "bodyFieldHint": "Ikteb hawn... (markdown appoġġjat)",
   "checklistItemHint": "Element tal-lista",
   "addItemButton": "Żid element",
+  "checklistProgress": "{done} minn {total} lesti",
+  "showCompletedItemsTooltip": "Uri l-elementi lesti",
+  "hideCompletedItemsTooltip": "Aħbi l-elementi lesti",
+  "allChecklistItemsCompletedHidden": "L-elementi kollha huma lesti u moħbija.",
+  "deleteCompletedItemsButton": "Ħassar l-elementi lesti",
+  "deleteCompletedItemsConfirmTitle": "Tħassar l-elementi lesti?",
+  "deleteCompletedItemsConfirmBody": "Dan ineħħi {count} elementi mmarkati minn din il-lista. Ma jistax jiġi annullat.",
   "addImageButton": "Żid ritratt",
+  "noteColorButton": "Kulur tan-nota",
+  "noteColorDefault": "Predefinit",
+  "noteColorYellow": "Isfar",
+  "noteColorRed": "Aħmar",
+  "noteColorPurple": "Vjola",
+  "noteColorBlue": "Blu",
+  "noteColorGreen": "Aħdar",
+  "noteColorOrange": "Oranġjo",
+  "noteColorWhite": "Abjad",
   "recordVoiceNoteTooltip": "Irrekordja nota bil-vuċi",
+  "recordVoiceNoteInstructions": "Għafas il-buttuna l-ħamra biex tibda tirrekordja, jew ✕ biex tikkanċella.",
   "stopRecordingTooltip": "Waqqaf ir-reġistrazzjoni",
   "cancelRecordingTooltip": "Ikkanċella r-reġistrazzjoni",
-  "previewBodyTooltip": "Anteprima",
-  "editBodyTooltip": "Editja",
+  "addVoiceTimestampButton": "Żid timbru tal-ħin",
+  "editVoiceTimestampButton": "Editja t-timbru tal-ħin",
+  "voiceNoteUnsupportedOnPlatform": "Noti bil-vuċi mhumiex sostnuti fuq dan l-apparat",
+  "formatBoldTooltip": "Grassett",
+  "formatItalicTooltip": "Korsiv",
+  "formatHeadingTooltip": "Intestatura",
+  "formatListTooltip": "Lista bil-punti",
+  "formatLinkTooltip": "Ħolqa",
   "imageSizeSmall": "Żgħir",
   "imageSizeMedium": "Medju",
   "imageSizeFull": "Wisa' sħiħa",
   "removeImageButton": "Neħħi l-istampa",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Għad m'hemm l-ebda relay konfigurat.",
   "relaysCount": "{count} relays",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Settings",
   "sectionSecurity": "Sigurtà",
   "loadingLabel": "Qed jgħabbi…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Dehra",
   "lightThemeToggleTitle": "Tema ċara",
   "lightThemeToggleSubtitle": "Uża skema ta' kuluri ċari minflok skura",
-  "noteLayoutToggleTitle": "Tqassim tal-lista tan-noti",
-  "noteLayoutToggleSubtitle": "Aqleb bejn il-vista tal-lista u l-grid",
+  "noteLayoutToggleTitle": "Aqleb bejn il-lista u l-gradilja",
   "manageRelaysTitle": "Immaniġġja r-relays",
+  "republishAllNotesButton": "Erġa' ippubblika n-noti sinkronizzati kollha",
+  "republishAllNotesSubtitle": "Jimla kull relay ta' fuq bin-noti diġà kondiviżi band'oħra — utli eżatt wara li żżid wieħed ġdid, eż. relay ta' backup self-hosted",
+  "republishAllNotesSuccess": "Reġgħu ġew ippubblikati {count} noti",
+  "republishAllNotesError": "In-noti ma setgħux jerġgħu jiġu ppubblikati: {error}",
+  "forceFullResyncButton": "Sforza risinkronizzazzjoni sħiħa",
+  "forceFullResyncSubtitle": "Jerġa' jiċċekkja mar-relays għall-istorja sħiħa ta' nota minflok dak li huwa ġdid biss — utli jekk is-sinkronizzazzjoni tidher imwaħħla u taqbeż noti eqdem, eż. wara li ssewwi relay li ma jintlaħaqx",
+  "forceFullResyncSuccess": "Noti aġġornati mir-relays",
+  "forceFullResyncError": "Ma setgħetx issir risinkronizzazzjoni tan-noti: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Ikkonferma",
-
   "sectionLanguage": "Lingwa",
   "langSystem": "Awtomatika tas-sistema",
-
   "sectionAccount": "Kont",
   "accountLocalOnlyMessage": "Qed tuża Echoes lokalment — mhux sinkronizzat ma' Nostr",
   "accountSignInButton": "Idħol",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Oħroġ",
   "accountSignOutConfirmTitle": "Toħroġ?",
   "accountSignOutConfirmBody": "In-noti tiegħek jibqgħu f'dan l-apparat. Tista' terġa' tidħol fi kwalunkwe ħin.",
-
   "onboardingWelcomeTitle": "Merħba f'Echoes",
   "onboardingIntroLocalTitle": "In-noti tiegħek, dejjem fuq l-apparat tiegħek",
   "onboardingIntroLocalBody": "Kull nota tiġi salvata lokalment l-ewwel, biex l-app taħdem kompletament offline. Xejn ma jitlaq mill-apparat tiegħek sakemm ma tagħżilx li tissinkronizzah.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Agħżel relays għas-sinkronizzazzjoni",
   "onboardingRelayBody": "Ir-relays huma fejn jinħażnu n-noti kriptati tiegħek meta tissinkronizza. Żid wieħed jew aktar — dawn popolari huma bidu tajjeb:",
   "onboardingFinishButton": "Ibda",
-
   "syncNoteTooltip": "Sinkronizza din in-nota",
   "unsyncNoteTooltip": "Neħħi mir-relays",
   "syncSelectedTooltip": "Sinkronizza n-noti magħżula",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Daħħal il-password tiegħek",
   "exportSetPasswordDialogTitle": "Issettja password għal din l-esportazzjoni",
   "importPasswordDialogTitle": "Daħħal il-password tal-esportazzjoni",
-
   "sectionData": "Data",
   "exportNotesButton": "Esporta n-noti",
   "exportNotesSubtitle": "Issejvja n-noti kollha tiegħek f'fajl li tista' terġa' timporta aktar tard",
@@ -149,16 +188,14 @@
   "exportNotesError": "Ma setgħux jiġu esportati n-noti: {error}",
   "importNotesSuccess": "Ġew importati {count} noti",
   "importNotesError": "Ma setgħux jiġu importati n-noti: {error}",
-
   "sectionAttachments": "Mehmuż",
   "attachmentProviderSubtitle": "Fejn jitgħabbew ir-ritratti kriptati u n-noti bil-vuċi meta tissinkronizza",
   "attachmentProviderCustom": "Personalizzat…",
   "attachmentCustomUrlLabel": "URL tas-server",
-
+  "attachmentProviderHint": "Xi servers pubbliċi (eż. Primal, nostr.build) jirrifjutaw uploads kriptati — jivverifikaw kontenut ta' immaġni reali, li data kriptata qatt ma hi. Ippreferi server Blossom li jaħżen data opaka, jew ippunta Personalizzat… lejn wieħed self-hosted.",
   "sectionSupport": "Appoġġ",
   "supportEchoesTitle": "Appoġġja lil Echoes",
   "lightningAddressCopied": "⚡ {address} ikkupjat fil-clipboard",
-
   "cancelButton": "Ikkanċella",
   "passwordLabel": "Password",
   "invalidPrivateKeyError": "Iċ-ċavetta privata mhijiex valida. Daħħal ċavetta nsec jew hex valida.",

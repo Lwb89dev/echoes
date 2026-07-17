@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Echoes
+GenericName=Notes
+Comment=Offline-first, end-to-end encrypted notes synced over Nostr
+Exec=echoes
+Icon=org.echoes.echoes
+Terminal=false
+Categories=Office;
+Keywords=notes;encrypted;nostr;diary;checklist;
+# The GTK application ID baked into the Linux runner (see
+# linux/CMakeLists.txt's APPLICATION_ID) is "com.echoes.echoes", set before
+# this app had a Flatpak ID of its own — the two don't match, so the window
+# manager needs this to associate the running window with this launcher/icon.
+StartupWMClass=com.echoes.echoes

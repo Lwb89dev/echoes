@@ -31,35 +31,36 @@ class AppLocalizationsEl extends AppLocalizations {
   String get settingsTooltip => 'Ρυθμίσεις';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Αναζήτηση';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Κλείσιμο αναζήτησης';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Αναζήτηση στις σημειώσεις';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Δεν βρέθηκαν αποτελέσματα.';
 
   @override
   String get emptyNotesMessage =>
       'Δεν υπάρχουν ακόμη σημειώσεις. Πατήστε + για να δημιουργήσετε μία.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Σημειώσεις';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Ημερολόγιο';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Δεν υπάρχουν ακόμη καταχωρήσεις. Πατήστε + για να γράψετε μία.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Σήμερα';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Χθες';
 
   @override
   String get newPlainNoteOption => 'Σημείωση';
@@ -134,9 +135,6 @@ class AppLocalizationsEl extends AppLocalizations {
   String get titleFieldLabel => 'Τίτλος';
 
   @override
-  String get checklistLabel => 'Λίστα ελέγχου';
-
-  @override
   String get bodyFieldHint => 'Γράψτε εδώ... (υποστηρίζεται markdown)';
 
   @override
@@ -147,66 +145,67 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done από $total ολοκληρώθηκαν';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Εμφάνιση ολοκληρωμένων στοιχείων';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Απόκρυψη ολοκληρωμένων στοιχείων';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Όλα τα στοιχεία έχουν ολοκληρωθεί και είναι κρυμμένα.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Διαγραφή ολοκληρωμένων στοιχείων';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle =>
+      'Διαγραφή ολοκληρωμένων στοιχείων;';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Θα αφαιρεθούν $count επιλεγμένα στοιχεία από αυτή τη λίστα. Δεν μπορεί να αναιρεθεί.';
   }
 
   @override
   String get addImageButton => 'Προσθήκη εικόνας';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Χρώμα σημείωσης';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Προεπιλογή';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Κίτρινο';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Κόκκινο';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Μοβ';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Μπλε';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Πράσινο';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Πορτοκαλί';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Λευκό';
 
   @override
   String get recordVoiceNoteTooltip => 'Ηχογράφηση φωνητικής σημείωσης';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Πατήστε το κόκκινο κουμπί για έναρξη εγγραφής ή ✕ για ακύρωση.';
 
   @override
   String get stopRecordingTooltip => 'Διακοπή ηχογράφησης';
@@ -215,25 +214,29 @@ class AppLocalizationsEl extends AppLocalizations {
   String get cancelRecordingTooltip => 'Ακύρωση ηχογράφησης';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Προσθήκη χρονικής σήμανσης';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Επεξεργασία χρονικής σήμανσης';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Οι φωνητικές σημειώσεις δεν υποστηρίζονται σε αυτή τη συσκευή';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Έντονα';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Πλάγια';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Επικεφαλίδα';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Λίστα με κουκκίδες';
+
+  @override
+  String get formatLinkTooltip => 'Σύνδεσμος';
 
   @override
   String get imageSizeSmall => 'Μικρό';
@@ -324,26 +327,44 @@ class AppLocalizationsEl extends AppLocalizations {
       'Χρήση ανοιχτόχρωμου συνδυασμού χρωμάτων αντί για σκούρο';
 
   @override
-  String get noteLayoutToggleTitle => 'Διάταξη λίστας σημειώσεων';
+  String get noteLayoutToggleTitle =>
+      'Εναλλαγή μεταξύ προβολής λίστας και πλέγματος';
 
   @override
   String get manageRelaysTitle => 'Διαχείριση relay';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Αναδημοσίευση όλων των συγχρονισμένων σημειώσεων';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Συμπληρώνει κάθε relay παραπάνω με σημειώσεις ήδη κοινοποιημένες αλλού — χρήσιμο αμέσως μετά την προσθήκη ενός, π.χ. ενός self-hosted εφεδρικού relay';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Αναδημοσιεύτηκαν $count σημειώσεις';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Αδυναμία αναδημοσίευσης σημειώσεων: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Εξαναγκασμός πλήρους επανασυγχρονισμού';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Ελέγχει ξανά τους relay για ολόκληρο το ιστορικό μιας σημείωσης αντί μόνο για ό,τι είναι νέο — χρήσιμο αν ο συγχρονισμός φαίνεται κολλημένος και παραλείπει παλαιότερες σημειώσεις, π.χ. μετά την επιδιόρθωση ενός μη προσβάσιμου relay';
+
+  @override
+  String get forceFullResyncSuccess =>
+      'Οι σημειώσεις ανανεώθηκαν από τους relay';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Δεν ήταν δυνατός ο επανασυγχρονισμός των σημειώσεων: $error';
   }
 
   @override
@@ -565,7 +586,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Ορισμένοι δημόσιοι διακομιστές (π.χ. Primal, nostr.build) απορρίπτουν τα κρυπτογραφημένα ανεβάσματα — ελέγχουν για πραγματικό περιεχόμενο εικόνας, κάτι που τα κρυπτογραφημένα δεδομένα δεν είναι ποτέ. Προτιμήστε έναν διακομιστή Blossom που αποθηκεύει αδιαφανή δεδομένα ή ορίστε το «Προσαρμοσμένο…» σε έναν δικό σας.';
 
   @override
   String get sectionSupport => 'Υποστήριξη';

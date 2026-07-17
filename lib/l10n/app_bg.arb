@@ -1,15 +1,22 @@
 {
   "@@locale": "bg",
-
   "loginSubtitle": "Влезте с вашия Nostr акаунт",
   "loginWithAmberButton": "Вход с Amber",
   "importAccountButton": "Импортиране на Nostr акаунт",
   "importAccountFieldLabel": "Частен ключ (nsec) на вашия Nostr акаунт",
   "importButton": "Импортиране",
-
   "relaysTitle": "Релета",
   "settingsTooltip": "Настройки",
+  "searchTooltip": "Търсене",
+  "closeSearchTooltip": "Затвори търсенето",
+  "searchNotesHint": "Търсене в бележките",
+  "noSearchResultsMessage": "Няма съвпадения.",
   "emptyNotesMessage": "Все още няма бележки. Докоснете +, за да създадете нова.",
+  "notesTabLabel": "Бележки",
+  "diaryTabLabel": "Дневник",
+  "emptyDiaryMessage": "Все още няма записи в дневника. Докоснете +, за да напишете.",
+  "diaryToday": "Днес",
+  "diaryYesterday": "Вчера",
   "newPlainNoteOption": "Бележка",
   "newChecklistOption": "Списък със задачи",
   "newVoiceNoteOption": "Гласова бележка",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Да се изтрият ли {count} бележки?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Това не може да бъде отменено. Ако някоя от тези бележки е била синхронизирана, тя ще бъде премахната и от релетата ви.",
   "selectionCount": "{count} избрани",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(без заглавие)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "преди {count} дни",
   "notesLockedTitle": "Бележките са защитени с парола",
   "unlockButton": "Отключване",
-
-  "newNoteTitle": "Нова бележка",
-  "editNoteTitle": "Редактиране на бележка",
   "saveTooltip": "Запазване",
   "titleFieldLabel": "Заглавие",
-  "checklistLabel": "Списък със задачи",
   "bodyFieldHint": "Пишете тук... (поддържа се markdown)",
   "checklistItemHint": "Елемент от списъка",
   "addItemButton": "Добавяне на елемент",
+  "checklistProgress": "{done} от {total} завършени",
+  "showCompletedItemsTooltip": "Покажи завършените елементи",
+  "hideCompletedItemsTooltip": "Скрий завършените елементи",
+  "allChecklistItemsCompletedHidden": "Всички елементи са завършени и скрити.",
+  "deleteCompletedItemsButton": "Изтрий завършените елементи",
+  "deleteCompletedItemsConfirmTitle": "Да се изтрият ли завършените елементи?",
+  "deleteCompletedItemsConfirmBody": "Това премахва {count} отметнати елемента от този списък. Не може да бъде отменено.",
   "addImageButton": "Добави изображение",
+  "noteColorButton": "Цвят на бележката",
+  "noteColorDefault": "По подразбиране",
+  "noteColorYellow": "Жълто",
+  "noteColorRed": "Червено",
+  "noteColorPurple": "Лилаво",
+  "noteColorBlue": "Синьо",
+  "noteColorGreen": "Зелено",
+  "noteColorOrange": "Оранжево",
+  "noteColorWhite": "Бяло",
   "recordVoiceNoteTooltip": "Запиши гласова бележка",
+  "recordVoiceNoteInstructions": "Докоснете червения бутон, за да започнете запис, или ✕ за отказ.",
   "stopRecordingTooltip": "Спри записа",
   "cancelRecordingTooltip": "Отмени записа",
-  "previewBodyTooltip": "Преглед",
-  "editBodyTooltip": "Редактиране",
+  "addVoiceTimestampButton": "Добави времево клеймо",
+  "editVoiceTimestampButton": "Редактирай времевото клеймо",
+  "voiceNoteUnsupportedOnPlatform": "Гласовите бележки не се поддържат на това устройство",
+  "formatBoldTooltip": "Удебелен",
+  "formatItalicTooltip": "Курсив",
+  "formatHeadingTooltip": "Заглавие",
+  "formatListTooltip": "Списък с точки",
+  "formatLinkTooltip": "Връзка",
   "imageSizeSmall": "Малко",
   "imageSizeMedium": "Средно",
   "imageSizeFull": "Цяла ширина",
   "removeImageButton": "Премахване на изображението",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Все още няма конфигурирано реле.",
   "relaysCount": "{count} релета",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Настройки",
   "sectionSecurity": "Сигурност",
   "loadingLabel": "Зареждане…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Външен вид",
   "lightThemeToggleTitle": "Светла тема",
   "lightThemeToggleSubtitle": "Използвайте светла цветова схема вместо тъмна",
-  "noteLayoutToggleTitle": "Оформление на списъка с бележки",
-  "noteLayoutToggleSubtitle": "Превключване между изглед списък и мрежа",
+  "noteLayoutToggleTitle": "Превключване между изглед списък и мрежа",
   "manageRelaysTitle": "Управление на релета",
+  "republishAllNotesButton": "Публикувай отново всички синхронизирани бележки",
+  "republishAllNotesSubtitle": "Допълва всяко реле по-горе с бележки, вече споделени другаде — полезно веднага след добавяне на ново, напр. собствено резервно реле",
+  "republishAllNotesSuccess": "Публикувани отново {count} бележки",
+  "republishAllNotesError": "Бележките не можаха да бъдат публикувани отново: {error}",
+  "forceFullResyncButton": "Пълна ресинхронизация",
+  "forceFullResyncSubtitle": "Проверява отново релейте за цялата история на бележка, вместо само новото — полезно, ако синхронизацията изглежда заседнала и пропуска по-стари бележки, напр. след отстраняване на недостъпен релей",
+  "forceFullResyncSuccess": "Бележките са опреснени от релейте",
+  "forceFullResyncError": "Ресинхронизацията на бележките не бе възможна: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Потвърди",
-
   "sectionLanguage": "Език",
   "langSystem": "По подразбиране на системата",
-
   "sectionAccount": "Акаунт",
   "accountLocalOnlyMessage": "Echoes се използва локално — без синхронизация с Nostr",
   "accountSignInButton": "Вход",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Изход",
   "accountSignOutConfirmTitle": "Изход от акаунта?",
   "accountSignOutConfirmBody": "Бележките ви остават на това устройство. Можете да влезете отново по всяко време.",
-
   "onboardingWelcomeTitle": "Добре дошли в Echoes",
   "onboardingIntroLocalTitle": "Вашите бележки, винаги на устройството ви",
   "onboardingIntroLocalBody": "Всяка бележка се запазва първо локално, така че приложението работи изцяло офлайн. Нищо не напуска устройството ви, освен ако не изберете да го синхронизирате.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Изберете релета за синхронизация",
   "onboardingRelayBody": "Релетата са мястото, където се съхраняват криптираните ви бележки при синхронизация. Добавете едно или повече — тези популярни са добро начало:",
   "onboardingFinishButton": "Започни",
-
   "syncNoteTooltip": "Синхронизирай тази бележка",
   "unsyncNoteTooltip": "Премахни от релетата",
   "syncSelectedTooltip": "Синхронизирай избраните бележки",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Въведете паролата си",
   "exportSetPasswordDialogTitle": "Задайте парола за този износ",
   "importPasswordDialogTitle": "Въведете паролата на износа",
-
   "sectionData": "Данни",
   "exportNotesButton": "Експортиране на бележки",
   "exportNotesSubtitle": "Запазете всички бележки във файл, който можете да импортирате отново по-късно",
@@ -149,16 +188,14 @@
   "exportNotesError": "Експортирането на бележките не бе успешно: {error}",
   "importNotesSuccess": "Импортирани {count} бележки",
   "importNotesError": "Импортирането на бележките не бе успешно: {error}",
-
   "sectionAttachments": "Прикачени файлове",
   "attachmentProviderSubtitle": "Къде се качват криптираните изображения и гласови бележки при синхронизиране",
   "attachmentProviderCustom": "По избор…",
   "attachmentCustomUrlLabel": "URL адрес на сървъра",
-
+  "attachmentProviderHint": "Някои публични сървъри (напр. Primal, nostr.build) отхвърлят шифрованите качвания — те проверяват дали съдържанието е истинско изображение, а шифрованите данни никога не са. Предпочетете Blossom сървър, който съхранява непрозрачни данни, или насочете „Персонализиран…“ към собствен сървър.",
   "sectionSupport": "Подкрепа",
   "supportEchoesTitle": "Подкрепете Echoes",
   "lightningAddressCopied": "⚡ {address} копиран в клипборда",
-
   "cancelButton": "Отказ",
   "passwordLabel": "Парола",
   "invalidPrivateKeyError": "Частният ключ не е валиден. Въведете валиден nsec или hex ключ.",

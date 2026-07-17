@@ -1,15 +1,22 @@
 {
   "@@locale": "fi",
-
   "loginSubtitle": "Kirjaudu sisään Nostr-tililläsi",
   "loginWithAmberButton": "Kirjaudu Amberilla",
   "importAccountButton": "Tuo Nostr-tili",
   "importAccountFieldLabel": "Nostr-tilisi yksityinen avain (nsec)",
   "importButton": "Tuo",
-
   "relaysTitle": "Relet",
   "settingsTooltip": "Asetukset",
+  "searchTooltip": "Hae",
+  "closeSearchTooltip": "Sulje haku",
+  "searchNotesHint": "Hae muistiinpanoista",
+  "noSearchResultsMessage": "Ei osumia.",
   "emptyNotesMessage": "Ei vielä muistiinpanoja. Luo uusi napauttamalla +.",
+  "notesTabLabel": "Muistiinpanot",
+  "diaryTabLabel": "Päiväkirja",
+  "emptyDiaryMessage": "Ei vielä päiväkirjamerkintöjä. Napauta + kirjoittaaksesi.",
+  "diaryToday": "Tänään",
+  "diaryYesterday": "Eilen",
   "newPlainNoteOption": "Muistiinpano",
   "newChecklistOption": "Tarkistuslista",
   "newVoiceNoteOption": "Äänimuistiinpano",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Poistetaanko {count} muistiinpanoa?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Tätä ei voi kumota. Jos jokin näistä muistiinpanoista oli synkronoitu, se poistetaan myös releiltäsi.",
   "selectionCount": "{count} valittu",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(nimetön)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} pv sitten",
   "notesLockedTitle": "Muistiinpanot on suojattu salasanalla",
   "unlockButton": "Avaa lukitus",
-
-  "newNoteTitle": "Uusi muistiinpano",
-  "editNoteTitle": "Muokkaa muistiinpanoa",
   "saveTooltip": "Tallenna",
   "titleFieldLabel": "Otsikko",
-  "checklistLabel": "Tarkistuslista",
   "bodyFieldHint": "Kirjoita tähän... (markdown tuettu)",
   "checklistItemHint": "Listan kohde",
   "addItemButton": "Lisää kohde",
+  "checklistProgress": "{done}/{total} valmiina",
+  "showCompletedItemsTooltip": "Näytä valmiit kohdat",
+  "hideCompletedItemsTooltip": "Piilota valmiit kohdat",
+  "allChecklistItemsCompletedHidden": "Kaikki kohdat ovat valmiita ja piilotettuja.",
+  "deleteCompletedItemsButton": "Poista valmiit kohdat",
+  "deleteCompletedItemsConfirmTitle": "Poistetaanko valmiit kohdat?",
+  "deleteCompletedItemsConfirmBody": "Tämä poistaa {count} merkittyä kohtaa tästä listasta. Ei voi kumota.",
   "addImageButton": "Lisää kuva",
+  "noteColorButton": "Muistiinpanon väri",
+  "noteColorDefault": "Oletus",
+  "noteColorYellow": "Keltainen",
+  "noteColorRed": "Punainen",
+  "noteColorPurple": "Violetti",
+  "noteColorBlue": "Sininen",
+  "noteColorGreen": "Vihreä",
+  "noteColorOrange": "Oranssi",
+  "noteColorWhite": "Valkoinen",
   "recordVoiceNoteTooltip": "Nauhoita äänimuistiinpano",
+  "recordVoiceNoteInstructions": "Aloita äänitys napauttamalla punaista painiketta, tai peruuta ✕.",
   "stopRecordingTooltip": "Lopeta nauhoitus",
   "cancelRecordingTooltip": "Peruuta nauhoitus",
-  "previewBodyTooltip": "Esikatselu",
-  "editBodyTooltip": "Muokkaa",
+  "addVoiceTimestampButton": "Lisää aikaleima",
+  "editVoiceTimestampButton": "Muokkaa aikaleimaa",
+  "voiceNoteUnsupportedOnPlatform": "Äänimuistiinpanoja ei tueta tällä laitteella",
+  "formatBoldTooltip": "Lihavointi",
+  "formatItalicTooltip": "Kursivointi",
+  "formatHeadingTooltip": "Otsikko",
+  "formatListTooltip": "Luettelo",
+  "formatLinkTooltip": "Linkki",
   "imageSizeSmall": "Pieni",
   "imageSizeMedium": "Keskikokoinen",
   "imageSizeFull": "Koko leveys",
   "removeImageButton": "Poista kuva",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Yhtään relettä ei ole vielä määritetty.",
   "relaysCount": "{count} relettä",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Asetukset",
   "sectionSecurity": "Tietoturva",
   "loadingLabel": "Ladataan…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Ulkoasu",
   "lightThemeToggleTitle": "Vaalea teema",
   "lightThemeToggleSubtitle": "Käytä vaaleaa väriteemaa tumman sijaan",
-  "noteLayoutToggleTitle": "Muistiinpanoluettelon asettelu",
-  "noteLayoutToggleSubtitle": "Vaihda luettelo- ja ruudukkonäkymän välillä",
+  "noteLayoutToggleTitle": "Vaihda luettelo- ja ruudukkonäkymän välillä",
   "manageRelaysTitle": "Hallitse releitä",
+  "republishAllNotesButton": "Julkaise kaikki synkronoidut muistiinpanot uudelleen",
+  "republishAllNotesSubtitle": "Täydentää jokaisen yllä olevan releen muualla jo jaetuilla muistiinpanoilla — hyödyllistä heti uuden lisäämisen jälkeen, esim. oman varareleen",
+  "republishAllNotesSuccess": "Julkaistiin uudelleen {count} muistiinpanoa",
+  "republishAllNotesError": "Muistiinpanoja ei voitu julkaista uudelleen: {error}",
+  "forceFullResyncButton": "Pakota täysi uudelleensynkronointi",
+  "forceFullResyncSubtitle": "Tarkistaa releiltä muistiinpanon koko historian pelkän uuden sijaan — hyödyllinen, jos synkronointi vaikuttaa jumiutuneen ja ohittaa vanhempia muistiinpanoja, esim. korjattuasi tavoittamattoman releen",
+  "forceFullResyncSuccess": "Muistiinpanot päivitetty releiltä",
+  "forceFullResyncError": "Muistiinpanojen uudelleensynkronointi epäonnistui: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Vahvista",
-
   "sectionLanguage": "Kieli",
   "langSystem": "Järjestelmän oletus",
-
   "sectionAccount": "Tili",
   "accountLocalOnlyMessage": "Echoesia käytetään paikallisesti — ei synkronoida Nostriin",
   "accountSignInButton": "Kirjaudu sisään",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Kirjaudu ulos",
   "accountSignOutConfirmTitle": "Kirjaudutaanko ulos?",
   "accountSignOutConfirmBody": "Muistiinpanosi säilyvät tässä laitteessa. Voit kirjautua sisään uudelleen milloin tahansa.",
-
   "onboardingWelcomeTitle": "Tervetuloa Echoesiin",
   "onboardingIntroLocalTitle": "Muistiinpanosi ovat aina laitteellasi",
   "onboardingIntroLocalBody": "Jokainen muistiinpano tallennetaan ensin paikallisesti, joten sovellus toimii täysin offline-tilassa. Mikään ei poistu laitteeltasi, ellet valitse synkronointia.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Valitse relet synkronointiin",
   "onboardingRelayBody": "Releihin tallennetaan salatut muistiinpanosi synkronoinnin yhteydessä. Lisää yksi tai useampi — nämä suositut ovat hyvä alku:",
   "onboardingFinishButton": "Aloita",
-
   "syncNoteTooltip": "Synkronoi tämä muistiinpano",
   "unsyncNoteTooltip": "Poista releiltä",
   "syncSelectedTooltip": "Synkronoi valitut muistiinpanot",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Anna salasanasi",
   "exportSetPasswordDialogTitle": "Aseta salasana tälle viennille",
   "importPasswordDialogTitle": "Anna viennin salasana",
-
   "sectionData": "Tiedot",
   "exportNotesButton": "Vie muistiinpanot",
   "exportNotesSubtitle": "Tallenna kaikki muistiinpanosi tiedostoon, jonka voit tuoda takaisin myöhemmin",
@@ -149,16 +188,14 @@
   "exportNotesError": "Muistiinpanoja ei voitu viedä: {error}",
   "importNotesSuccess": "Tuotiin {count} muistiinpanoa",
   "importNotesError": "Muistiinpanoja ei voitu tuoda: {error}",
-
   "sectionAttachments": "Liitteet",
   "attachmentProviderSubtitle": "Minne salatut kuvat ja ääniviestit ladataan synkronoinnin yhteydessä",
   "attachmentProviderCustom": "Mukautettu…",
   "attachmentCustomUrlLabel": "Palvelimen URL-osoite",
-
+  "attachmentProviderHint": "Jotkin julkiset palvelimet (esim. Primal, nostr.build) hylkäävät salatut lataukset suoraan — ne tarkistavat aidon kuvasisällön, jota salattu data ei koskaan ole. Suosi Blossom-palvelinta, joka tallentaa läpinäkymätöntä dataa, tai osoita Mukautettu… omaan palvelimeesi.",
   "sectionSupport": "Tuki",
   "supportEchoesTitle": "Tue Echoesia",
   "lightningAddressCopied": "⚡ {address} kopioitu leikepöydälle",
-
   "cancelButton": "Peruuta",
   "passwordLabel": "Salasana",
   "invalidPrivateKeyError": "Yksityinen avain ei ole kelvollinen. Anna kelvollinen nsec- tai hex-avain.",

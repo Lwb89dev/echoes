@@ -30,35 +30,36 @@ class AppLocalizationsHu extends AppLocalizations {
   String get settingsTooltip => 'Beállítások';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Keresés';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Keresés bezárása';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Keresés a jegyzetekben';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Nincs találat.';
 
   @override
   String get emptyNotesMessage =>
       'Még nincsenek jegyzetek. Koppints a + gombra újhoz.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Jegyzetek';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Napló';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Még nincs naplóbejegyzés. Koppints a + gombra egy írásához.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Ma';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Tegnap';
 
   @override
   String get newPlainNoteOption => 'Jegyzet';
@@ -132,9 +133,6 @@ class AppLocalizationsHu extends AppLocalizations {
   String get titleFieldLabel => 'Cím';
 
   @override
-  String get checklistLabel => 'Ellenőrzőlista';
-
-  @override
   String get bodyFieldHint => 'Írj ide... (markdown támogatott)';
 
   @override
@@ -145,66 +143,66 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done/$total kész';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Kész elemek megjelenítése';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Kész elemek elrejtése';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Minden elem kész és el van rejtve.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Kész elemek törlése';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Törlöd a kész elemeket?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Ez $count kipipált elemet távolít el a listáról. Nem vonható vissza.';
   }
 
   @override
   String get addImageButton => 'Kép hozzáadása';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Jegyzet színe';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Alapértelmezett';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Sárga';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Piros';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Lila';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Kék';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Zöld';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Narancs';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Fehér';
 
   @override
   String get recordVoiceNoteTooltip => 'Hangjegyzet rögzítése';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Koppints a piros gombra a felvétel indításához, vagy a ✕ gombra a megszakításhoz.';
 
   @override
   String get stopRecordingTooltip => 'Felvétel leállítása';
@@ -213,25 +211,29 @@ class AppLocalizationsHu extends AppLocalizations {
   String get cancelRecordingTooltip => 'Felvétel megszakítása';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Időbélyeg hozzáadása';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Időbélyeg szerkesztése';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'A hangjegyzetek nem támogatottak ezen az eszközön';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Félkövér';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Dőlt';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Címsor';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Felsorolás';
+
+  @override
+  String get formatLinkTooltip => 'Hivatkozás';
 
   @override
   String get imageSizeSmall => 'Kicsi';
@@ -321,26 +323,42 @@ class AppLocalizationsHu extends AppLocalizations {
       'Világos színséma használata sötét helyett';
 
   @override
-  String get noteLayoutToggleTitle => 'Jegyzetlista elrendezése';
+  String get noteLayoutToggleTitle => 'Váltás lista- és rácsnézet között';
 
   @override
   String get manageRelaysTitle => 'Relék kezelése';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Minden szinkronizált jegyzet újraközzététele';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Feltölti a fenti reléket a máshol már megosztott jegyzetekkel — hasznos közvetlenül egy új, pl. saját üzemeltetésű tartalék relé hozzáadása után';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return '$count jegyzet újraközzétéve';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'A jegyzeteket nem sikerült újraközzétenni: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Teljes újraszinkronizálás kényszerítése';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Újra lekérdezi a relayktől egy jegyzet teljes előzményét ahelyett, hogy csak az újakat kérné — hasznos, ha a szinkronizálás elakadtnak tűnik és kihagyja a régebbi jegyzeteket, pl. egy elérhetetlen relay javítása után';
+
+  @override
+  String get forceFullResyncSuccess => 'Jegyzetek frissítve a relayktől';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'A jegyzetek újraszinkronizálása nem sikerült: $error';
   }
 
   @override
@@ -562,7 +580,7 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Egyes nyilvános kiszolgálók (pl. Primal, nostr.build) eleve elutasítják a titkosított feltöltéseket — valódi képtartalmat ellenőriznek, ami a titkosított adat sosem. Válassz olyan Blossom kiszolgálót, amely nyers adatokat tárol, vagy állítsd az Egyéni… opciót sajátra.';
 
   @override
   String get sectionSupport => 'Támogatás';

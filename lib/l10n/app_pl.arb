@@ -1,15 +1,22 @@
 {
   "@@locale": "pl",
-
   "loginSubtitle": "Zaloguj się swoim kontem Nostr",
   "loginWithAmberButton": "Zaloguj się przez Amber",
   "importAccountButton": "Importuj konto Nostr",
   "importAccountFieldLabel": "Klucz prywatny (nsec) Twojego konta Nostr",
   "importButton": "Importuj",
-
   "relaysTitle": "Przekaźniki",
   "settingsTooltip": "Ustawienia",
+  "searchTooltip": "Szukaj",
+  "closeSearchTooltip": "Zamknij wyszukiwanie",
+  "searchNotesHint": "Szukaj w notatkach",
+  "noSearchResultsMessage": "Brak wyników.",
   "emptyNotesMessage": "Nie masz jeszcze żadnych notatek. Dotknij +, aby utworzyć nową.",
+  "notesTabLabel": "Notatki",
+  "diaryTabLabel": "Dziennik",
+  "emptyDiaryMessage": "Brak wpisów w dzienniku. Dotknij +, aby napisać.",
+  "diaryToday": "Dzisiaj",
+  "diaryYesterday": "Wczoraj",
   "newPlainNoteOption": "Notatka",
   "newChecklistOption": "Lista kontrolna",
   "newVoiceNoteOption": "Notatka głosowa",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Usunąć {count} notatek?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Tej czynności nie można cofnąć. Jeśli którakolwiek z tych notatek była zsynchronizowana, zostanie również usunięta z Twoich przekaźników.",
   "selectionCount": "Wybrano: {count}",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(bez tytułu)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} dni temu",
   "notesLockedTitle": "Notatki są chronione hasłem",
   "unlockButton": "Odblokuj",
-
-  "newNoteTitle": "Nowa notatka",
-  "editNoteTitle": "Edytuj notatkę",
   "saveTooltip": "Zapisz",
   "titleFieldLabel": "Tytuł",
-  "checklistLabel": "Lista kontrolna",
   "bodyFieldHint": "Pisz tutaj... (obsługiwany markdown)",
   "checklistItemHint": "Element listy",
   "addItemButton": "Dodaj element",
+  "checklistProgress": "Ukończono {done} z {total}",
+  "showCompletedItemsTooltip": "Pokaż ukończone pozycje",
+  "hideCompletedItemsTooltip": "Ukryj ukończone pozycje",
+  "allChecklistItemsCompletedHidden": "Wszystkie pozycje są ukończone i ukryte.",
+  "deleteCompletedItemsButton": "Usuń ukończone pozycje",
+  "deleteCompletedItemsConfirmTitle": "Usunąć ukończone pozycje?",
+  "deleteCompletedItemsConfirmBody": "Spowoduje to usunięcie {count} odhaczonych pozycji z tej listy. Nie można tego cofnąć.",
   "addImageButton": "Dodaj obraz",
+  "noteColorButton": "Kolor notatki",
+  "noteColorDefault": "Domyślny",
+  "noteColorYellow": "Żółty",
+  "noteColorRed": "Czerwony",
+  "noteColorPurple": "Fioletowy",
+  "noteColorBlue": "Niebieski",
+  "noteColorGreen": "Zielony",
+  "noteColorOrange": "Pomarańczowy",
+  "noteColorWhite": "Biały",
   "recordVoiceNoteTooltip": "Nagraj notatkę głosową",
+  "recordVoiceNoteInstructions": "Dotknij czerwonego przycisku, aby rozpocząć nagrywanie, lub ✕, aby anulować.",
   "stopRecordingTooltip": "Zatrzymaj nagrywanie",
   "cancelRecordingTooltip": "Anuluj nagrywanie",
-  "previewBodyTooltip": "Podgląd",
-  "editBodyTooltip": "Edytuj",
+  "addVoiceTimestampButton": "Dodaj znacznik czasu",
+  "editVoiceTimestampButton": "Edytuj znacznik czasu",
+  "voiceNoteUnsupportedOnPlatform": "Notatki głosowe nie są obsługiwane na tym urządzeniu",
+  "formatBoldTooltip": "Pogrubienie",
+  "formatItalicTooltip": "Kursywa",
+  "formatHeadingTooltip": "Nagłówek",
+  "formatListTooltip": "Lista punktowana",
+  "formatLinkTooltip": "Łącze",
   "imageSizeSmall": "Małe",
   "imageSizeMedium": "Średnie",
   "imageSizeFull": "Pełna szerokość",
   "removeImageButton": "Usuń obraz",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Nie skonfigurowano jeszcze żadnego przekaźnika.",
   "relaysCount": "{count} przekaźników",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Ustawienia",
   "sectionSecurity": "Bezpieczeństwo",
   "loadingLabel": "Wczytywanie…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Wygląd",
   "lightThemeToggleTitle": "Jasny motyw",
   "lightThemeToggleSubtitle": "Użyj jasnego schematu kolorów zamiast ciemnego",
-  "noteLayoutToggleTitle": "Układ listy notatek",
-  "noteLayoutToggleSubtitle": "Przełącz między widokiem listy a siatki",
+  "noteLayoutToggleTitle": "Przełącz między widokiem listy i siatki",
   "manageRelaysTitle": "Zarządzaj przekaźnikami",
+  "republishAllNotesButton": "Opublikuj ponownie wszystkie zsynchronizowane notatki",
+  "republishAllNotesSubtitle": "Uzupełnia każdy przekaźnik powyżej o notatki udostępnione już gdzie indziej — przydatne zaraz po dodaniu nowego, np. własnego zapasowego przekaźnika",
+  "republishAllNotesSuccess": "Ponownie opublikowano {count} notatek",
+  "republishAllNotesError": "Nie udało się ponownie opublikować notatek: {error}",
+  "forceFullResyncButton": "Wymuś pełną ponowną synchronizację",
+  "forceFullResyncSubtitle": "Ponownie sprawdza przekaźniki pod kątem całej historii notatki zamiast tylko nowości — przydatne, jeśli synchronizacja wydaje się utknąć i pomija starsze notatki, np. po naprawieniu nieosiągalnego przekaźnika",
+  "forceFullResyncSuccess": "Notatki odświeżone z przekaźników",
+  "forceFullResyncError": "Nie udało się ponownie zsynchronizować notatek: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Potwierdź",
-
   "sectionLanguage": "Język",
   "langSystem": "Domyślny systemowy",
-
   "sectionAccount": "Konto",
   "accountLocalOnlyMessage": "Echoes używane lokalnie — brak synchronizacji z Nostr",
   "accountSignInButton": "Zaloguj się",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Wyloguj się",
   "accountSignOutConfirmTitle": "Wylogować się?",
   "accountSignOutConfirmBody": "Twoje notatki pozostaną na tym urządzeniu. Możesz zalogować się ponownie w dowolnym momencie.",
-
   "onboardingWelcomeTitle": "Witamy w Echoes",
   "onboardingIntroLocalTitle": "Twoje notatki, zawsze na Twoim urządzeniu",
   "onboardingIntroLocalBody": "Każda notatka jest najpierw zapisywana lokalnie, dzięki czemu aplikacja działa w pełni offline. Nic nie opuszcza Twojego urządzenia, chyba że zdecydujesz się na synchronizację.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Wybierz przekaźniki do synchronizacji",
   "onboardingRelayBody": "Przekaźniki to miejsca, w których przechowywane są Twoje zaszyfrowane notatki podczas synchronizacji. Dodaj jeden lub więcej — te popularne to dobry początek:",
   "onboardingFinishButton": "Rozpocznij",
-
   "syncNoteTooltip": "Synchronizuj tę notatkę",
   "unsyncNoteTooltip": "Usuń z przekaźników",
   "syncSelectedTooltip": "Synchronizuj wybrane notatki",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Wprowadź swoje hasło",
   "exportSetPasswordDialogTitle": "Ustaw hasło dla tego eksportu",
   "importPasswordDialogTitle": "Wprowadź hasło eksportu",
-
   "sectionData": "Dane",
   "exportNotesButton": "Eksportuj notatki",
   "exportNotesSubtitle": "Zapisz wszystkie notatki do pliku, który będzie można później ponownie zaimportować",
@@ -149,16 +188,14 @@
   "exportNotesError": "Nie udało się wyeksportować notatek: {error}",
   "importNotesSuccess": "Zaimportowano {count} notatek",
   "importNotesError": "Nie udało się zaimportować notatek: {error}",
-
   "sectionAttachments": "Załączniki",
   "attachmentProviderSubtitle": "Gdzie przesyłane są zaszyfrowane obrazy i notatki głosowe podczas synchronizacji",
   "attachmentProviderCustom": "Niestandardowy…",
   "attachmentCustomUrlLabel": "Adres URL serwera",
-
+  "attachmentProviderHint": "Niektóre publiczne serwery (np. Primal, nostr.build) z góry odrzucają zaszyfrowane przesyłki — sprawdzają prawdziwą zawartość obrazu, którą zaszyfrowane dane nigdy nie są. Wybierz serwer Blossom przechowujący nieprzezroczyste dane albo wskaż Niestandardowy… na własny serwer.",
   "sectionSupport": "Wsparcie",
   "supportEchoesTitle": "Wesprzyj Echoes",
   "lightningAddressCopied": "⚡ Skopiowano {address} do schowka",
-
   "cancelButton": "Anuluj",
   "passwordLabel": "Hasło",
   "invalidPrivateKeyError": "Klucz prywatny jest nieprawidłowy. Wprowadź prawidłowy klucz nsec lub hex.",

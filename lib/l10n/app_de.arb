@@ -1,15 +1,22 @@
 {
   "@@locale": "de",
-
   "loginSubtitle": "Melde dich mit deinem Nostr-Konto an",
   "loginWithAmberButton": "Mit Amber anmelden",
   "importAccountButton": "Nostr-Konto importieren",
   "importAccountFieldLabel": "Privater Schlüssel (nsec) deines Nostr-Kontos",
   "importButton": "Importieren",
-
   "relaysTitle": "Relays",
   "settingsTooltip": "Einstellungen",
+  "searchTooltip": "Suchen",
+  "closeSearchTooltip": "Suche schließen",
+  "searchNotesHint": "Notizen durchsuchen",
+  "noSearchResultsMessage": "Keine Treffer.",
   "emptyNotesMessage": "Noch keine Notizen. Tippe auf +, um eine zu erstellen.",
+  "notesTabLabel": "Notizen",
+  "diaryTabLabel": "Tagebuch",
+  "emptyDiaryMessage": "Noch keine Tagebucheinträge. Tippe auf +, um einen zu schreiben.",
+  "diaryToday": "Heute",
+  "diaryYesterday": "Gestern",
   "newPlainNoteOption": "Notiz",
   "newChecklistOption": "Checkliste",
   "newVoiceNoteOption": "Sprachnotiz",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "{count} Notizen löschen?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Dies kann nicht rückgängig gemacht werden. Wenn eine dieser Notizen synchronisiert war, wird sie auch von deinen Relais entfernt.",
   "selectionCount": "{count} ausgewählt",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(ohne Titel)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "vor {count} Tg.",
   "notesLockedTitle": "Notizen sind mit einem Passwort geschützt",
   "unlockButton": "Entsperren",
-
-  "newNoteTitle": "Neue Notiz",
-  "editNoteTitle": "Notiz bearbeiten",
   "saveTooltip": "Speichern",
   "titleFieldLabel": "Titel",
-  "checklistLabel": "Checkliste",
   "bodyFieldHint": "Hier schreiben... (Markdown wird unterstützt)",
   "checklistItemHint": "Listeneintrag",
   "addItemButton": "Eintrag hinzufügen",
+  "checklistProgress": "{done} von {total} erledigt",
+  "showCompletedItemsTooltip": "Erledigte Einträge anzeigen",
+  "hideCompletedItemsTooltip": "Erledigte Einträge ausblenden",
+  "allChecklistItemsCompletedHidden": "Alle Einträge sind erledigt und ausgeblendet.",
+  "deleteCompletedItemsButton": "Erledigte Einträge löschen",
+  "deleteCompletedItemsConfirmTitle": "Erledigte Einträge löschen?",
+  "deleteCompletedItemsConfirmBody": "Dadurch werden {count} abgehakte Einträge aus dieser Checkliste entfernt. Das kann nicht rückgängig gemacht werden.",
   "addImageButton": "Bild hinzufügen",
+  "noteColorButton": "Notizfarbe",
+  "noteColorDefault": "Standard",
+  "noteColorYellow": "Gelb",
+  "noteColorRed": "Rot",
+  "noteColorPurple": "Violett",
+  "noteColorBlue": "Blau",
+  "noteColorGreen": "Grün",
+  "noteColorOrange": "Orange",
+  "noteColorWhite": "Weiß",
   "recordVoiceNoteTooltip": "Sprachnotiz aufnehmen",
+  "recordVoiceNoteInstructions": "Tippe auf den roten Knopf, um die Aufnahme zu starten, oder auf ✕ zum Abbrechen.",
   "stopRecordingTooltip": "Aufnahme stoppen",
   "cancelRecordingTooltip": "Aufnahme abbrechen",
-  "previewBodyTooltip": "Vorschau",
-  "editBodyTooltip": "Bearbeiten",
+  "addVoiceTimestampButton": "Zeitstempel hinzufügen",
+  "editVoiceTimestampButton": "Zeitstempel bearbeiten",
+  "voiceNoteUnsupportedOnPlatform": "Sprachnotizen werden auf diesem Gerät nicht unterstützt",
+  "formatBoldTooltip": "Fett",
+  "formatItalicTooltip": "Kursiv",
+  "formatHeadingTooltip": "Überschrift",
+  "formatListTooltip": "Aufzählung",
+  "formatLinkTooltip": "Link",
   "imageSizeSmall": "Klein",
   "imageSizeMedium": "Mittel",
   "imageSizeFull": "Volle Breite",
   "removeImageButton": "Bild entfernen",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Noch kein Relay konfiguriert.",
   "relaysCount": "{count} Relais",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Einstellungen",
   "sectionSecurity": "Sicherheit",
   "loadingLabel": "Wird geladen…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Erscheinungsbild",
   "lightThemeToggleTitle": "Helles Design",
   "lightThemeToggleSubtitle": "Helles statt dunkles Farbschema verwenden",
-  "noteLayoutToggleTitle": "Notizlisten-Layout",
-  "noteLayoutToggleSubtitle": "Zwischen Listen- und Rasteransicht wechseln",
+  "noteLayoutToggleTitle": "Zwischen Listen- und Rasteransicht wechseln",
   "manageRelaysTitle": "Relais verwalten",
+  "republishAllNotesButton": "Alle synchronisierten Notizen erneut veröffentlichen",
+  "republishAllNotesSubtitle": "Füllt jedes Relais oben mit bereits anderswo geteilten Notizen auf — nützlich direkt nach dem Hinzufügen eines neuen, z. B. eines selbst gehosteten Backup-Relais",
+  "republishAllNotesSuccess": "{count} Notizen erneut veröffentlicht",
+  "republishAllNotesError": "Notizen konnten nicht erneut veröffentlicht werden: {error}",
+  "forceFullResyncButton": "Vollständige Neusynchronisierung erzwingen",
+  "forceFullResyncSubtitle": "Prüft Relays erneut auf die komplette Verlaufshistorie einer Notiz statt nur auf Neues — nützlich, wenn die Synchronisierung feststeckt und ältere Notizen überspringt, z. B. nach der Behebung eines nicht erreichbaren Relays",
+  "forceFullResyncSuccess": "Notizen von Relays aktualisiert",
+  "forceFullResyncError": "Notizen konnten nicht neu synchronisiert werden: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Bestätigen",
-
   "sectionLanguage": "Sprache",
   "langSystem": "Systemstandard",
-
   "sectionAccount": "Konto",
   "accountLocalOnlyMessage": "Echoes wird lokal verwendet — keine Synchronisierung mit Nostr",
   "accountSignInButton": "Anmelden",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Abmelden",
   "accountSignOutConfirmTitle": "Abmelden?",
   "accountSignOutConfirmBody": "Deine Notizen bleiben auf diesem Gerät. Du kannst dich jederzeit wieder anmelden.",
-
   "onboardingWelcomeTitle": "Willkommen bei Echoes",
   "onboardingIntroLocalTitle": "Deine Notizen, immer auf deinem Gerät",
   "onboardingIntroLocalBody": "Jede Notiz wird zuerst lokal gespeichert, sodass die App vollständig offline funktioniert. Nichts verlässt dein Gerät, es sei denn, du entscheidest dich für die Synchronisierung.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Relays für die Synchronisierung wählen",
   "onboardingRelayBody": "Relays sind der Ort, an dem deine verschlüsselten Notizen bei der Synchronisierung gespeichert werden. Füge eines oder mehrere hinzu — diese beliebten sind ein guter Anfang:",
   "onboardingFinishButton": "Los geht's",
-
   "syncNoteTooltip": "Diese Notiz synchronisieren",
   "unsyncNoteTooltip": "Von Relais entfernen",
   "syncSelectedTooltip": "Ausgewählte Notizen synchronisieren",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Gib dein Passwort ein",
   "exportSetPasswordDialogTitle": "Lege ein Passwort für diesen Export fest",
   "importPasswordDialogTitle": "Gib das Passwort des Exports ein",
-
   "sectionData": "Daten",
   "exportNotesButton": "Notizen exportieren",
   "exportNotesSubtitle": "Speichere alle deine Notizen in einer Datei, die du später wieder importieren kannst",
@@ -149,16 +188,14 @@
   "exportNotesError": "Notizen konnten nicht exportiert werden: {error}",
   "importNotesSuccess": "{count} Notizen importiert",
   "importNotesError": "Notizen konnten nicht importiert werden: {error}",
-
   "sectionAttachments": "Anhänge",
   "attachmentProviderSubtitle": "Wohin verschlüsselte Bilder und Sprachnotizen beim Synchronisieren hochgeladen werden",
   "attachmentProviderCustom": "Benutzerdefiniert…",
   "attachmentCustomUrlLabel": "Server-URL",
-
+  "attachmentProviderHint": "Manche öffentlichen Hosts (z. B. Primal, nostr.build) lehnen verschlüsselte Uploads grundsätzlich ab — sie prüfen auf echten Bildinhalt, was verschlüsselte Daten nie sind. Bevorzuge einen Blossom-Host, der beliebige Daten speichert, oder richte „Benutzerdefiniert…“ auf einen selbst gehosteten.",
   "sectionSupport": "Unterstützung",
   "supportEchoesTitle": "Echoes unterstützen",
   "lightningAddressCopied": "⚡ {address} in die Zwischenablage kopiert",
-
   "cancelButton": "Abbrechen",
   "passwordLabel": "Passwort",
   "invalidPrivateKeyError": "Der private Schlüssel ist ungültig. Gib einen gültigen nsec- oder Hex-Schlüssel ein.",

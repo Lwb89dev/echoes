@@ -31,35 +31,36 @@ class AppLocalizationsGa extends AppLocalizations {
   String get settingsTooltip => 'Socruithe';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Cuardaigh';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Dún an cuardach';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Cuardaigh sna nótaí';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Gan torthaí.';
 
   @override
   String get emptyNotesMessage =>
       'Níl aon nótaí ann fós. Tapáil + chun ceann a chruthú.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Nótaí';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Dialann';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Níl aon iontráil dialainne fós. Tapáil + chun ceann a scríobh.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Inniu';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Inné';
 
   @override
   String get newPlainNoteOption => 'Nóta';
@@ -133,9 +134,6 @@ class AppLocalizationsGa extends AppLocalizations {
   String get titleFieldLabel => 'Teideal';
 
   @override
-  String get checklistLabel => 'Seicliosta';
-
-  @override
   String get bodyFieldHint => 'Scríobh anseo... (tacaítear le markdown)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done as $total déanta';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Taispeáin míreanna déanta';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Folaigh míreanna déanta';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Tá gach mír déanta agus folaithe.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Scrios míreanna déanta';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Míreanna déanta a scriosadh?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Bainfidh sé seo $count mír thiceáilte den liosta seo. Ní féidir é a chealú.';
   }
 
   @override
   String get addImageButton => 'Cuir íomhá leis';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Dath an nóta';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Réamhshocrú';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Buí';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Dearg';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Corcra';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Gorm';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Glas';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Oráiste';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Bán';
 
   @override
   String get recordVoiceNoteTooltip => 'Taifead nóta gutha';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Tapáil an cnaipe dearg chun taifeadadh a thosú, nó ✕ le cealú.';
 
   @override
   String get stopRecordingTooltip => 'Stop an taifeadadh';
@@ -214,25 +212,29 @@ class AppLocalizationsGa extends AppLocalizations {
   String get cancelRecordingTooltip => 'Cealaigh an taifeadadh';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Cuir stampa ama leis';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Cuir an stampa ama in eagar';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Ní thacaítear le nótaí gutha ar an bhfeiste seo';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Trom';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Iodálach';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Ceannteideal';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Liosta urchair';
+
+  @override
+  String get formatLinkTooltip => 'Nasc';
 
   @override
   String get imageSizeSmall => 'Beag';
@@ -322,26 +324,42 @@ class AppLocalizationsGa extends AppLocalizations {
       'Úsáid scéim dathanna gheal in ionad dorcha';
 
   @override
-  String get noteLayoutToggleTitle => 'Leagan amach liosta nótaí';
+  String get noteLayoutToggleTitle =>
+      'Athraigh idir amharc liosta agus greille';
 
   @override
   String get manageRelaysTitle => 'Bainistigh athsheachadáin';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton => 'Athfhoilsigh gach nóta sioncronaithe';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Líonann sé gach athsheachadán thuas le nótaí atá roinnte cheana in áiteanna eile — úsáideach díreach tar éis ceann nua a chur leis, m.sh. athsheachadán cúltaca féinóstáilte';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Athfhoilsíodh $count nóta';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Níorbh fhéidir na nótaí a athfhoilsiú: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Cuir iallach ar athshioncrónú iomlán';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Seiceálann sé na hathsheachadáin arís le haghaidh stair iomlán nóta seachas an méid atá nua amháin — úsáideach má tá cuma go bhfuil an sioncrónú greamaithe agus ag scipeáil nótaí níos sine, m.sh. tar éis athsheachadán dorochtana a shocrú';
+
+  @override
+  String get forceFullResyncSuccess => 'Nótaí athnuaite ó na hathsheachadáin';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Níorbh fhéidir na nótaí a athshioncrónú: $error';
   }
 
   @override
@@ -564,7 +582,7 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Diúltaíonn roinnt óstach poiblí (m.sh. Primal, nostr.build) d\'uaslódálacha criptithe — seiceálann siad fíorábhar íomhá, rud nach mbíonn sonraí criptithe riamh. Roghnaigh óstach Blossom a stórálann sonraí teimhneacha, nó dírigh Saincheaptha… ar cheann féinóstáilte.';
 
   @override
   String get sectionSupport => 'Tacaíocht';

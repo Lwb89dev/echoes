@@ -1,15 +1,22 @@
 {
   "@@locale": "cs",
-
   "loginSubtitle": "Přihlaste se svým účtem Nostr",
   "loginWithAmberButton": "Přihlásit se přes Amber",
   "importAccountButton": "Importovat účet Nostr",
   "importAccountFieldLabel": "Soukromý klíč (nsec) vašeho účtu Nostr",
   "importButton": "Importovat",
-
   "relaysTitle": "Relé",
   "settingsTooltip": "Nastavení",
+  "searchTooltip": "Hledat",
+  "closeSearchTooltip": "Zavřít hledání",
+  "searchNotesHint": "Hledat v poznámkách",
+  "noSearchResultsMessage": "Žádné shody.",
   "emptyNotesMessage": "Zatím žádné poznámky. Klepnutím na + vytvoříte novou.",
+  "notesTabLabel": "Poznámky",
+  "diaryTabLabel": "Deník",
+  "emptyDiaryMessage": "Zatím žádné záznamy v deníku. Klepnutím na + nějaký napište.",
+  "diaryToday": "Dnes",
+  "diaryYesterday": "Včera",
   "newPlainNoteOption": "Poznámka",
   "newChecklistOption": "Kontrolní seznam",
   "newVoiceNoteOption": "Hlasová poznámka",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Smazat {count} poznámek?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Tuto akci nelze vrátit zpět. Pokud byla některá z těchto poznámek synchronizována, bude odstraněna i z vašich relé.",
   "selectionCount": "Vybráno: {count}",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(bez názvu)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "před {count} dny",
   "notesLockedTitle": "Poznámky jsou chráněny heslem",
   "unlockButton": "Odemknout",
-
-  "newNoteTitle": "Nová poznámka",
-  "editNoteTitle": "Upravit poznámku",
   "saveTooltip": "Uložit",
   "titleFieldLabel": "Název",
-  "checklistLabel": "Kontrolní seznam",
   "bodyFieldHint": "Pište sem... (podporuje markdown)",
   "checklistItemHint": "Položka seznamu",
   "addItemButton": "Přidat položku",
+  "checklistProgress": "Hotovo {done} z {total}",
+  "showCompletedItemsTooltip": "Zobrazit dokončené položky",
+  "hideCompletedItemsTooltip": "Skrýt dokončené položky",
+  "allChecklistItemsCompletedHidden": "Všechny položky jsou dokončené a skryté.",
+  "deleteCompletedItemsButton": "Smazat dokončené položky",
+  "deleteCompletedItemsConfirmTitle": "Smazat dokončené položky?",
+  "deleteCompletedItemsConfirmBody": "Tím se z tohoto seznamu odstraní {count} odškrtnutých položek. Nelze vrátit zpět.",
   "addImageButton": "Přidat obrázek",
+  "noteColorButton": "Barva poznámky",
+  "noteColorDefault": "Výchozí",
+  "noteColorYellow": "Žlutá",
+  "noteColorRed": "Červená",
+  "noteColorPurple": "Fialová",
+  "noteColorBlue": "Modrá",
+  "noteColorGreen": "Zelená",
+  "noteColorOrange": "Oranžová",
+  "noteColorWhite": "Bílá",
   "recordVoiceNoteTooltip": "Nahrát hlasovou poznámku",
+  "recordVoiceNoteInstructions": "Klepnutím na červené tlačítko začnete nahrávat, ✕ zruší.",
   "stopRecordingTooltip": "Zastavit nahrávání",
   "cancelRecordingTooltip": "Zrušit nahrávání",
-  "previewBodyTooltip": "Náhled",
-  "editBodyTooltip": "Upravit",
+  "addVoiceTimestampButton": "Přidat časové razítko",
+  "editVoiceTimestampButton": "Upravit časové razítko",
+  "voiceNoteUnsupportedOnPlatform": "Hlasové poznámky nejsou na tomto zařízení podporovány",
+  "formatBoldTooltip": "Tučné",
+  "formatItalicTooltip": "Kurzíva",
+  "formatHeadingTooltip": "Nadpis",
+  "formatListTooltip": "Odrážkový seznam",
+  "formatLinkTooltip": "Odkaz",
   "imageSizeSmall": "Malé",
   "imageSizeMedium": "Střední",
   "imageSizeFull": "Celá šířka",
   "removeImageButton": "Odebrat obrázek",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Zatím není nakonfigurováno žádné relé.",
   "relaysCount": "{count} relé",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Nastavení",
   "sectionSecurity": "Zabezpečení",
   "loadingLabel": "Načítání…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Vzhled",
   "lightThemeToggleTitle": "Světlý motiv",
   "lightThemeToggleSubtitle": "Použít světlé barevné schéma místo tmavého",
-  "noteLayoutToggleTitle": "Rozvržení seznamu poznámek",
-  "noteLayoutToggleSubtitle": "Přepínání mezi zobrazením seznamu a mřížky",
+  "noteLayoutToggleTitle": "Přepnout mezi seznamem a mřížkou",
   "manageRelaysTitle": "Spravovat relé",
+  "republishAllNotesButton": "Znovu publikovat všechny synchronizované poznámky",
+  "republishAllNotesSubtitle": "Doplní každé relé výše o poznámky již sdílené jinde — užitečné hned po přidání nového, např. vlastního záložního relé",
+  "republishAllNotesSuccess": "Znovu publikováno {count} poznámek",
+  "republishAllNotesError": "Poznámky se nepodařilo znovu publikovat: {error}",
+  "forceFullResyncButton": "Vynutit úplnou resynchronizaci",
+  "forceFullResyncSubtitle": "Znovu zkontroluje relaye kvůli celé historii poznámky místo jen nového — užitečné, pokud se synchronizace zdá zaseknutá a přeskakuje starší poznámky, např. po opravě nedostupného relaye",
+  "forceFullResyncSuccess": "Poznámky obnoveny z relayů",
+  "forceFullResyncError": "Resynchronizaci poznámek se nezdařilo provést: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Potvrdit",
-
   "sectionLanguage": "Jazyk",
   "langSystem": "Výchozí podle systému",
-
   "sectionAccount": "Účet",
   "accountLocalOnlyMessage": "Echoes se používá pouze lokálně — bez synchronizace s Nostr",
   "accountSignInButton": "Přihlásit se",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Odhlásit se",
   "accountSignOutConfirmTitle": "Odhlásit se?",
   "accountSignOutConfirmBody": "Vaše poznámky zůstanou v tomto zařízení. Kdykoli se můžete přihlásit znovu.",
-
   "onboardingWelcomeTitle": "Vítejte v Echoes",
   "onboardingIntroLocalTitle": "Vaše poznámky vždy ve vašem zařízení",
   "onboardingIntroLocalBody": "Každá poznámka se nejprve uloží lokálně, takže aplikace funguje zcela offline. Nic neopustí vaše zařízení, pokud se nerozhodnete pro synchronizaci.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Vyberte relé pro synchronizaci",
   "onboardingRelayBody": "Relé jsou místa, kam se ukládají vaše šifrované poznámky při synchronizaci. Přidejte jedno nebo více — tato oblíbená jsou dobrým začátkem:",
   "onboardingFinishButton": "Začít",
-
   "syncNoteTooltip": "Synchronizovat tuto poznámku",
   "unsyncNoteTooltip": "Odebrat z relé",
   "syncSelectedTooltip": "Synchronizovat vybrané poznámky",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Zadejte své heslo",
   "exportSetPasswordDialogTitle": "Nastavte heslo pro tento export",
   "importPasswordDialogTitle": "Zadejte heslo exportu",
-
   "sectionData": "Data",
   "exportNotesButton": "Exportovat poznámky",
   "exportNotesSubtitle": "Uložte všechny poznámky do souboru, který můžete později znovu importovat",
@@ -149,16 +188,14 @@
   "exportNotesError": "Poznámky se nepodařilo exportovat: {error}",
   "importNotesSuccess": "Importováno {count} poznámek",
   "importNotesError": "Poznámky se nepodařilo importovat: {error}",
-
   "sectionAttachments": "Přílohy",
   "attachmentProviderSubtitle": "Kam se nahrávají šifrované obrázky a hlasové poznámky při synchronizaci",
   "attachmentProviderCustom": "Vlastní…",
   "attachmentCustomUrlLabel": "URL serveru",
-
+  "attachmentProviderHint": "Některé veřejné servery (např. Primal, nostr.build) šifrovaná nahrání rovnou odmítají — ověřují skutečný obsah obrázku, kterým šifrovaná data nikdy nejsou. Zvolte Blossom server ukládající neprůhledná data, nebo nastavte „Vlastní…“ na vlastní server.",
   "sectionSupport": "Podpora",
   "supportEchoesTitle": "Podpořte Echoes",
   "lightningAddressCopied": "⚡ {address} zkopírováno do schránky",
-
   "cancelButton": "Zrušit",
   "passwordLabel": "Heslo",
   "invalidPrivateKeyError": "Soukromý klíč není platný. Zadejte platný nsec nebo hex klíč.",

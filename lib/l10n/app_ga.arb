@@ -1,15 +1,22 @@
 {
   "@@locale": "ga",
-
   "loginSubtitle": "Sínigh isteach le do chuntas Nostr",
   "loginWithAmberButton": "Sínigh isteach le Amber",
   "importAccountButton": "Iompórtáil cuntas Nostr",
   "importAccountFieldLabel": "Eochair phríobháideach (nsec) do chuntais Nostr",
   "importButton": "Iompórtáil",
-
   "relaysTitle": "Athsheachadáin",
   "settingsTooltip": "Socruithe",
+  "searchTooltip": "Cuardaigh",
+  "closeSearchTooltip": "Dún an cuardach",
+  "searchNotesHint": "Cuardaigh sna nótaí",
+  "noSearchResultsMessage": "Gan torthaí.",
   "emptyNotesMessage": "Níl aon nótaí ann fós. Tapáil + chun ceann a chruthú.",
+  "notesTabLabel": "Nótaí",
+  "diaryTabLabel": "Dialann",
+  "emptyDiaryMessage": "Níl aon iontráil dialainne fós. Tapáil + chun ceann a scríobh.",
+  "diaryToday": "Inniu",
+  "diaryYesterday": "Inné",
   "newPlainNoteOption": "Nóta",
   "newChecklistOption": "Seicliosta",
   "newVoiceNoteOption": "Nóta gutha",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "{count} nóta a scriosadh?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Ní féidir é seo a chur ar ceal. Má bhí aon cheann de na nótaí seo sioncronaithe, bainfear iad ó do réalaithe freisin.",
   "selectionCount": "{count} roghnaithe",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(gan teideal)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} lá ó shin",
   "notesLockedTitle": "Tá na nótaí faoi chosaint ag focal faire",
   "unlockButton": "Díghlasáil",
-
-  "newNoteTitle": "Nóta nua",
-  "editNoteTitle": "Cuir nóta in eagar",
   "saveTooltip": "Sábháil",
   "titleFieldLabel": "Teideal",
-  "checklistLabel": "Seicliosta",
   "bodyFieldHint": "Scríobh anseo... (tacaítear le markdown)",
   "checklistItemHint": "Mír seicliosta",
   "addItemButton": "Cuir mír leis",
+  "checklistProgress": "{done} as {total} déanta",
+  "showCompletedItemsTooltip": "Taispeáin míreanna déanta",
+  "hideCompletedItemsTooltip": "Folaigh míreanna déanta",
+  "allChecklistItemsCompletedHidden": "Tá gach mír déanta agus folaithe.",
+  "deleteCompletedItemsButton": "Scrios míreanna déanta",
+  "deleteCompletedItemsConfirmTitle": "Míreanna déanta a scriosadh?",
+  "deleteCompletedItemsConfirmBody": "Bainfidh sé seo {count} mír thiceáilte den liosta seo. Ní féidir é a chealú.",
   "addImageButton": "Cuir íomhá leis",
+  "noteColorButton": "Dath an nóta",
+  "noteColorDefault": "Réamhshocrú",
+  "noteColorYellow": "Buí",
+  "noteColorRed": "Dearg",
+  "noteColorPurple": "Corcra",
+  "noteColorBlue": "Gorm",
+  "noteColorGreen": "Glas",
+  "noteColorOrange": "Oráiste",
+  "noteColorWhite": "Bán",
   "recordVoiceNoteTooltip": "Taifead nóta gutha",
+  "recordVoiceNoteInstructions": "Tapáil an cnaipe dearg chun taifeadadh a thosú, nó ✕ le cealú.",
   "stopRecordingTooltip": "Stop an taifeadadh",
   "cancelRecordingTooltip": "Cealaigh an taifeadadh",
-  "previewBodyTooltip": "Réamhamharc",
-  "editBodyTooltip": "Cuir in eagar",
+  "addVoiceTimestampButton": "Cuir stampa ama leis",
+  "editVoiceTimestampButton": "Cuir an stampa ama in eagar",
+  "voiceNoteUnsupportedOnPlatform": "Ní thacaítear le nótaí gutha ar an bhfeiste seo",
+  "formatBoldTooltip": "Trom",
+  "formatItalicTooltip": "Iodálach",
+  "formatHeadingTooltip": "Ceannteideal",
+  "formatListTooltip": "Liosta urchair",
+  "formatLinkTooltip": "Nasc",
   "imageSizeSmall": "Beag",
   "imageSizeMedium": "Meánmhéid",
   "imageSizeFull": "Leithead iomlán",
   "removeImageButton": "Bain an íomhá",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Níl aon athsheachadán cumraithe fós.",
   "relaysCount": "{count} athsheachadán",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Socruithe",
   "sectionSecurity": "Slándáil",
   "loadingLabel": "Á luchtú…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Cuma",
   "lightThemeToggleTitle": "Téama geal",
   "lightThemeToggleSubtitle": "Úsáid scéim dathanna gheal in ionad dorcha",
-  "noteLayoutToggleTitle": "Leagan amach liosta nótaí",
-  "noteLayoutToggleSubtitle": "Athraigh idir amharc liosta agus greille",
+  "noteLayoutToggleTitle": "Athraigh idir amharc liosta agus greille",
   "manageRelaysTitle": "Bainistigh athsheachadáin",
+  "republishAllNotesButton": "Athfhoilsigh gach nóta sioncronaithe",
+  "republishAllNotesSubtitle": "Líonann sé gach athsheachadán thuas le nótaí atá roinnte cheana in áiteanna eile — úsáideach díreach tar éis ceann nua a chur leis, m.sh. athsheachadán cúltaca féinóstáilte",
+  "republishAllNotesSuccess": "Athfhoilsíodh {count} nóta",
+  "republishAllNotesError": "Níorbh fhéidir na nótaí a athfhoilsiú: {error}",
+  "forceFullResyncButton": "Cuir iallach ar athshioncrónú iomlán",
+  "forceFullResyncSubtitle": "Seiceálann sé na hathsheachadáin arís le haghaidh stair iomlán nóta seachas an méid atá nua amháin — úsáideach má tá cuma go bhfuil an sioncrónú greamaithe agus ag scipeáil nótaí níos sine, m.sh. tar éis athsheachadán dorochtana a shocrú",
+  "forceFullResyncSuccess": "Nótaí athnuaite ó na hathsheachadáin",
+  "forceFullResyncError": "Níorbh fhéidir na nótaí a athshioncrónú: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Deimhnigh",
-
   "sectionLanguage": "Teanga",
   "langSystem": "Réamhshocrú an chórais",
-
   "sectionAccount": "Cuntas",
   "accountLocalOnlyMessage": "Echoes á úsáid go háitiúil — gan sioncronú le Nostr",
   "accountSignInButton": "Sínigh isteach",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Sínigh amach",
   "accountSignOutConfirmTitle": "Sínigh amach?",
   "accountSignOutConfirmBody": "Fanann do chuid nótaí ar an ngléas seo. Is féidir leat síniú isteach arís am ar bith.",
-
   "onboardingWelcomeTitle": "Fáilte go Echoes",
   "onboardingIntroLocalTitle": "Do chuid nótaí, i gcónaí ar do ghléas",
   "onboardingIntroLocalBody": "Sábháiltear gach nóta go háitiúil ar dtús, mar sin oibríonn an aip go hiomlán as líne. Ní fhágann tada do ghléas mura roghnaíonn tú é a shioncronú.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Roghnaigh athsheachadáin le haghaidh sioncronaithe",
   "onboardingRelayBody": "Is iad athsheachadáin an áit a stóráiltear do chuid nótaí criptithe nuair a shioncronaíonn tú. Cuir ceann amháin nó níos mó leis — is tús maith iad seo atá coitianta:",
   "onboardingFinishButton": "Tosaigh",
-
   "syncNoteTooltip": "Sioncronaigh an nóta seo",
   "unsyncNoteTooltip": "Bain de na réalaithe",
   "syncSelectedTooltip": "Sioncrónaigh na nótaí roghnaithe",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Cuir isteach do phasfhocal",
   "exportSetPasswordDialogTitle": "Socraigh pasfhocal don easpórtáil seo",
   "importPasswordDialogTitle": "Cuir isteach pasfhocal na heaspórtála",
-
   "sectionData": "Sonraí",
   "exportNotesButton": "Easpórtáil nótaí",
   "exportNotesSubtitle": "Sábháil do chuid nótaí uile i gcomhad ar féidir leat é a iompórtáil arís níos déanaí",
@@ -149,16 +188,14 @@
   "exportNotesError": "Níorbh fhéidir na nótaí a easpórtáil: {error}",
   "importNotesSuccess": "Iompórtáladh {count} nóta",
   "importNotesError": "Níorbh fhéidir na nótaí a iompórtáil: {error}",
-
   "sectionAttachments": "Ceangaltáin",
   "attachmentProviderSubtitle": "An áit a n-uaslódáiltear íomhánna criptithe agus nótaí gutha nuair a shioncrónaíonn tú",
   "attachmentProviderCustom": "Saincheaptha…",
   "attachmentCustomUrlLabel": "URL an fhreastalaí",
-
+  "attachmentProviderHint": "Diúltaíonn roinnt óstach poiblí (m.sh. Primal, nostr.build) d'uaslódálacha criptithe — seiceálann siad fíorábhar íomhá, rud nach mbíonn sonraí criptithe riamh. Roghnaigh óstach Blossom a stórálann sonraí teimhneacha, nó dírigh Saincheaptha… ar cheann féinóstáilte.",
   "sectionSupport": "Tacaíocht",
   "supportEchoesTitle": "Tacaigh le Echoes",
   "lightningAddressCopied": "⚡ Cóipeáladh {address} chuig an ngearrthaisce",
-
   "cancelButton": "Cealaigh",
   "passwordLabel": "Focal faire",
   "invalidPrivateKeyError": "Níl an eochair phríobháideach bailí. Cuir isteach eochair nsec nó hex bhailí.",

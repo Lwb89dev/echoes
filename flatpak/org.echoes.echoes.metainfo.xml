@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.echoes.echoes</id>
+  <name>Echoes</name>
+  <summary>Offline-first, end-to-end encrypted notes synced over Nostr</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer id="io.github.lwb89dev">
+    <name>Lwb89dev</name>
+  </developer>
+  <description>
+    <p>
+      Echoes is a notes app that treats the network as optional. Every note,
+      checklist, image, and voice memo is saved locally first and stays fully
+      usable with no connection at all. Syncing to Nostr relays is a
+      separate, explicit action — never automatic, never required — and
+      everything that leaves the device is encrypted before it goes: note
+      content is NIP-44 self-encrypted, and image/voice attachments are
+      AES-256-GCM encrypted client-side before upload, so relay operators and
+      file hosts only ever see opaque ciphertext.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Offline-first — notes stay readable and writable with no network</li>
+      <li>Private Nostr sync, opt-in per note or in bulk</li>
+      <li>Client-side encrypted image and voice attachments</li>
+      <li>Diary mode — date-tagged entries in a day-grouped timeline</li>
+      <li>Optional password-protected local storage</li>
+      <li>Bring your own relays and attachment host</li>
+      <li>List or masonry grid layouts, light/dark themes</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">org.echoes.echoes.desktop</launchable>
+  <url type="homepage">https://github.com/Lwb89dev/echoes</url>
+  <url type="bugtracker">https://github.com/Lwb89dev/echoes/issues</url>
+  <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.2.1" date="2026-07-16">
+      <description>
+        <p>Security/privacy hardening pass, complete translations for all 27 supported languages, and initial Windows/Linux desktop support.</p>
+      </description>
+    </release>
+  </releases>
+</component>

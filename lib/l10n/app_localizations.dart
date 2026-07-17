@@ -364,12 +364,6 @@ abstract class AppLocalizations {
   /// **'Title'**
   String get titleFieldLabel;
 
-  /// No description provided for @checklistLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Checklist'**
-  String get checklistLabel;
-
   /// No description provided for @bodyFieldHint.
   ///
   /// In en, this message translates to:
@@ -525,6 +519,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit timestamp'**
   String get editVoiceTimestampButton;
+
+  /// No description provided for @voiceNoteUnsupportedOnPlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice notes aren\'t supported on this device'**
+  String get voiceNoteUnsupportedOnPlatform;
 
   /// No description provided for @formatBoldTooltip.
   ///
@@ -747,6 +747,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not republish notes: {error}'**
   String republishAllNotesError(String error);
+
+  /// No description provided for @forceFullResyncButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Force full resync'**
+  String get forceFullResyncButton;
+
+  /// No description provided for @forceFullResyncSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-checks relays for a note\'s entire history instead of just what\'s new — useful if syncing seems stuck skipping older notes, e.g. after fixing an unreachable relay'**
+  String get forceFullResyncSubtitle;
+
+  /// No description provided for @forceFullResyncSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes refreshed from relays'**
+  String get forceFullResyncSuccess;
+
+  /// No description provided for @forceFullResyncError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not resync notes: {error}'**
+  String forceFullResyncError(String error);
 
   /// No description provided for @confirmButton.
   ///

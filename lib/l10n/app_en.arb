@@ -1,12 +1,10 @@
 {
   "@@locale": "en",
-
   "loginSubtitle": "Sign in with your Nostr account",
   "loginWithAmberButton": "Sign in with Amber",
   "importAccountButton": "Import Nostr account",
   "importAccountFieldLabel": "Private key (nsec) of your Nostr account",
   "importButton": "Import",
-
   "relaysTitle": "Relays",
   "settingsTooltip": "Settings",
   "searchTooltip": "Search",
@@ -28,56 +26,70 @@
   "deleteNotesConfirmTitle": "Delete {count} notes?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "This can't be undone. If any of these notes were synced, they will also be removed from your relays.",
   "selectionCount": "{count} selected",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(untitled)",
   "errorLoadingNotes": "Error loading notes: {error}",
   "@errorLoadingNotes": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "timeJustNow": "now",
   "timeMinutesAgo": "{count}m ago",
   "@timeMinutesAgo": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeHoursAgo": "{count}h ago",
   "@timeHoursAgo": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeDaysAgo": "{count}d ago",
   "@timeDaysAgo": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "notesLockedTitle": "Notes are protected with a password",
   "unlockButton": "Unlock",
-
   "saveTooltip": "Save",
   "titleFieldLabel": "Title",
-  "checklistLabel": "Checklist",
   "bodyFieldHint": "Write here... (markdown supported)",
   "checklistItemHint": "Checklist item",
   "addItemButton": "Add item",
   "checklistProgress": "{done} of {total} done",
   "@checklistProgress": {
     "placeholders": {
-      "done": { "type": "int" },
-      "total": { "type": "int" }
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "showCompletedItemsTooltip": "Show completed items",
@@ -88,7 +100,9 @@
   "deleteCompletedItemsConfirmBody": "This removes {count} checked-off item(s) from this checklist. This can't be undone.",
   "@deleteCompletedItemsConfirmBody": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addImageButton": "Add image",
@@ -107,6 +121,7 @@
   "cancelRecordingTooltip": "Cancel recording",
   "addVoiceTimestampButton": "Add timestamp",
   "editVoiceTimestampButton": "Edit timestamp",
+  "voiceNoteUnsupportedOnPlatform": "Voice notes aren't supported on this device",
   "formatBoldTooltip": "Bold",
   "formatItalicTooltip": "Italic",
   "formatHeadingTooltip": "Heading",
@@ -116,16 +131,16 @@
   "imageSizeMedium": "Medium",
   "imageSizeFull": "Full width",
   "removeImageButton": "Remove image",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "No relay configured yet.",
   "relaysCount": "{count} relays",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Settings",
   "sectionSecurity": "Security",
   "loadingLabel": "Loading…",
@@ -141,7 +156,9 @@
   "enableEncryptionError": "Could not enable encryption: {error}",
   "@enableEncryptionError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "enableButton": "Enable",
@@ -157,33 +174,47 @@
   "republishAllNotesSuccess": "Republished {count} note(s)",
   "@republishAllNotesSuccess": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "republishAllNotesError": "Could not republish notes: {error}",
   "@republishAllNotesError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "forceFullResyncButton": "Force full resync",
+  "forceFullResyncSubtitle": "Re-checks relays for a note's entire history instead of just what's new — useful if syncing seems stuck skipping older notes, e.g. after fixing an unreachable relay",
+  "forceFullResyncSuccess": "Notes refreshed from relays",
+  "forceFullResyncError": "Could not resync notes: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
   },
   "confirmButton": "Confirm",
-
   "sectionLanguage": "Language",
   "langSystem": "System default",
-
   "sectionAccount": "Account",
   "accountLocalOnlyMessage": "Using Echoes locally — not synced to Nostr",
   "accountSignInButton": "Sign in",
   "accountSignedInAs": "Signed in as {npub}",
   "@accountSignedInAs": {
     "placeholders": {
-      "npub": { "type": "String" }
+      "npub": {
+        "type": "String"
+      }
     }
   },
   "accountSignOutButton": "Sign out",
   "accountSignOutConfirmTitle": "Sign out?",
   "accountSignOutConfirmBody": "Your notes stay on this device. You can sign in again anytime.",
-
   "onboardingWelcomeTitle": "Welcome to Echoes",
   "onboardingIntroLocalTitle": "Your notes, always on your device",
   "onboardingIntroLocalBody": "Every note is saved locally first, so the app works fully offline. Nothing leaves your device unless you choose to sync it.",
@@ -201,7 +232,6 @@
   "onboardingRelayTitle": "Choose relays for syncing",
   "onboardingRelayBody": "Relays are where your encrypted notes get stored when you sync. Add one or more — these popular ones are a good start:",
   "onboardingFinishButton": "Get started",
-
   "syncNoteTooltip": "Sync this note",
   "unsyncNoteTooltip": "Remove from relays",
   "syncSelectedTooltip": "Sync selected notes",
@@ -210,40 +240,54 @@
   "syncNoteError": "Could not sync note: {error}",
   "@syncNoteError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "unsyncNoteError": "Could not remove note from relays: {error}",
   "@unsyncNoteError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "deleteNoteRelayError": "Note deleted locally, but could not remove it from relays: {error}",
   "@deleteNoteRelayError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "deleteNotesRelayError": "{count} note(s) deleted locally, but could not be removed from relays",
   "@deleteNotesRelayError": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deletingNotesTitle": "Deleting notes…",
   "deletingNotesProgress": "Deleting {completed} of {total}",
   "@deletingNotesProgress": {
     "placeholders": {
-      "completed": { "type": "int" },
-      "total": { "type": "int" }
+      "completed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "syncSelectedSuccess": "Notes synced",
   "syncSelectedPartialError": "Could not sync {count} note(s)",
   "@syncSelectedPartialError": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "exportConfirmTitle": "Export notes",
@@ -253,7 +297,6 @@
   "exportPasswordDialogTitle": "Enter your password",
   "exportSetPasswordDialogTitle": "Set a password for this export",
   "importPasswordDialogTitle": "Enter the export's password",
-
   "sectionData": "Data",
   "exportNotesButton": "Export notes",
   "exportNotesSubtitle": "Save all your notes to a file you can import again later",
@@ -264,26 +307,27 @@
   "importNotesSuccess": "Imported {count} note(s)",
   "@importNotesSuccess": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "importNotesError": "Could not import notes: {error}",
-
   "sectionAttachments": "Attachments",
   "attachmentProviderSubtitle": "Where encrypted images and voice notes are uploaded when you sync",
   "attachmentProviderCustom": "Custom…",
   "attachmentCustomUrlLabel": "Server URL",
   "attachmentProviderHint": "Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.",
-
   "sectionSupport": "Support",
   "supportEchoesTitle": "Support Echoes",
   "lightningAddressCopied": "⚡ {address} copied to clipboard",
   "@lightningAddressCopied": {
     "placeholders": {
-      "address": { "type": "String" }
+      "address": {
+        "type": "String"
+      }
     }
   },
-
   "cancelButton": "Cancel",
   "passwordLabel": "Password",
   "invalidPrivateKeyError": "The private key is not valid. Enter a valid nsec or hex key.",
@@ -291,7 +335,9 @@
   "genericErrorPrefix": "Error: {error}",
   "@genericErrorPrefix": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   }
 }

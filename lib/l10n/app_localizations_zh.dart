@@ -30,34 +30,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsTooltip => '设置';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => '搜索';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => '关闭搜索';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => '搜索笔记';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => '没有匹配项。';
 
   @override
   String get emptyNotesMessage => '还没有笔记。点击 + 创建一条。';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => '笔记';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => '日记';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage => '还没有日记。点按 + 写一篇。';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => '今天';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => '昨天';
 
   @override
   String get newPlainNoteOption => '笔记';
@@ -129,9 +129,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get titleFieldLabel => '标题';
 
   @override
-  String get checklistLabel => '清单';
-
-  @override
   String get bodyFieldHint => '在此输入...（支持 markdown）';
 
   @override
@@ -142,66 +139,64 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '已完成 $done/$total';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => '显示已完成项';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => '隐藏已完成项';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+  String get allChecklistItemsCompletedHidden => '所有项目均已完成并隐藏。';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => '删除已完成项';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => '删除已完成项？';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return '将从此清单中移除 $count 个已勾选的项目。此操作无法撤销。';
   }
 
   @override
   String get addImageButton => '添加图片';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => '笔记颜色';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => '默认';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => '黄色';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => '红色';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => '紫色';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => '蓝色';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => '绿色';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => '橙色';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => '白色';
 
   @override
   String get recordVoiceNoteTooltip => '录制语音笔记';
 
   @override
-  String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+  String get recordVoiceNoteInstructions => '点按红色按钮开始录音，或点按 ✕ 取消。';
 
   @override
   String get stopRecordingTooltip => '停止录音';
@@ -210,25 +205,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cancelRecordingTooltip => '取消录音';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => '添加时间戳';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => '编辑时间戳';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform => '此设备不支持语音笔记';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => '粗体';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => '斜体';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => '标题';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => '项目符号列表';
+
+  @override
+  String get formatLinkTooltip => '链接';
 
   @override
   String get imageSizeSmall => '小';
@@ -314,26 +312,41 @@ class AppLocalizationsZh extends AppLocalizations {
   String get lightThemeToggleSubtitle => '使用浅色配色方案而非深色';
 
   @override
-  String get noteLayoutToggleTitle => '笔记列表布局';
+  String get noteLayoutToggleTitle => '在列表和网格视图间切换';
 
   @override
   String get manageRelaysTitle => '管理中继';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton => '重新发布所有已同步的笔记';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      '用已在其他地方分享的笔记补齐上方每个中继 — 在刚添加新中继（如自托管备份中继）后很有用';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return '已重新发布 $count 条笔记';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return '无法重新发布笔记：$error';
+  }
+
+  @override
+  String get forceFullResyncButton => '强制完全重新同步';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      '重新向中继请求笔记的完整历史记录，而不仅仅是新内容——如果同步似乎卡住并跳过了较旧的笔记（例如修复无法访问的中继后），这很有用';
+
+  @override
+  String get forceFullResyncSuccess => '已从中继刷新笔记';
+
+  @override
+  String forceFullResyncError(String error) {
+    return '无法重新同步笔记：$error';
   }
 
   @override
@@ -544,7 +557,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      '部分公共主机（如 Primal、nostr.build）会直接拒绝加密上传 — 它们校验真实图片内容，而加密数据永远不是。请选择存储不透明数据的 Blossom 主机，或将「自定义…」指向自托管主机。';
 
   @override
   String get sectionSupport => '支持';

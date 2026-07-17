@@ -31,35 +31,36 @@ class AppLocalizationsLv extends AppLocalizations {
   String get settingsTooltip => 'Iestatījumi';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Meklēt';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Aizvērt meklēšanu';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Meklēt piezīmēs';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Nav atbilstību.';
 
   @override
   String get emptyNotesMessage =>
       'Vēl nav piezīmju. Pieskarieties +, lai izveidotu jaunu.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Piezīmes';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Dienasgrāmata';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Vēl nav dienasgrāmatas ierakstu. Pieskarieties +, lai uzrakstītu.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Šodien';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Vakar';
 
   @override
   String get newPlainNoteOption => 'Piezīme';
@@ -133,9 +134,6 @@ class AppLocalizationsLv extends AppLocalizations {
   String get titleFieldLabel => 'Nosaukums';
 
   @override
-  String get checklistLabel => 'Kontrolsaraksts';
-
-  @override
   String get bodyFieldHint => 'Rakstiet šeit... (atbalstīts markdown)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return 'Pabeigti $done no $total';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Rādīt pabeigtos punktus';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Slēpt pabeigtos punktus';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Visi punkti ir pabeigti un paslēpti.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Dzēst pabeigtos punktus';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Vai dzēst pabeigtos punktus?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Tas noņems $count atzīmētus punktus no šī saraksta. To nevar atsaukt.';
   }
 
   @override
   String get addImageButton => 'Pievienot attēlu';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Piezīmes krāsa';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Noklusējums';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Dzeltena';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Sarkana';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Violeta';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Zila';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Zaļa';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Oranža';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Balta';
 
   @override
   String get recordVoiceNoteTooltip => 'Ierakstīt balss piezīmi';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Pieskarieties sarkanajai pogai, lai sāktu ierakstu, vai ✕, lai atceltu.';
 
   @override
   String get stopRecordingTooltip => 'Apturēt ierakstīšanu';
@@ -214,25 +212,29 @@ class AppLocalizationsLv extends AppLocalizations {
   String get cancelRecordingTooltip => 'Atcelt ierakstīšanu';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Pievienot laika zīmogu';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Rediģēt laika zīmogu';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Balss piezīmes šajā ierīcē netiek atbalstītas';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Treknraksts';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Slīpraksts';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Virsraksts';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Saraksts ar aizzīmēm';
+
+  @override
+  String get formatLinkTooltip => 'Saite';
 
   @override
   String get imageSizeSmall => 'Mazs';
@@ -321,26 +323,45 @@ class AppLocalizationsLv extends AppLocalizations {
       'Izmantot gaišu krāsu shēmu tumšas vietā';
 
   @override
-  String get noteLayoutToggleTitle => 'Piezīmju saraksta izkārtojums';
+  String get noteLayoutToggleTitle =>
+      'Pārslēgties starp saraksta un režģa skatu';
 
   @override
   String get manageRelaysTitle => 'Pārvaldīt relejus';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Atkārtoti publicēt visas sinhronizētās piezīmes';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Papildina katru augstāk esošo releju ar piezīmēm, kas jau kopīgotas citur — noderīgi uzreiz pēc jauna pievienošanas, piem., pašizvietota rezerves releja';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Atkārtoti publicētas $count piezīmes';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Piezīmes neizdevās atkārtoti publicēt: $error';
+  }
+
+  @override
+  String get forceFullResyncButton =>
+      'Piespiest pilnu atkārtotu sinhronizāciju';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Atkārtoti pārbauda releja serveros piezīmes pilnu vēsturi, nevis tikai jauno — noderīgi, ja sinhronizācija šķiet iestrēgusi un izlaiž vecākas piezīmes, piemēram, pēc nesasniedzama releja servera novēršanas';
+
+  @override
+  String get forceFullResyncSuccess =>
+      'Piezīmes atjauninātas no releja serveriem';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Neizdevās atkārtoti sinhronizēt piezīmes: $error';
   }
 
   @override
@@ -559,7 +580,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Daži publiskie serveri (piem., Primal, nostr.build) noraida šifrētas augšupielādes — tie pārbauda īstu attēla saturu, kas šifrēti dati nekad nav. Izvēlieties Blossom serveri, kas glabā necaurspīdīgus datus, vai norādiet Pielāgots… uz savu serveri.';
 
   @override
   String get sectionSupport => 'Atbalsts';

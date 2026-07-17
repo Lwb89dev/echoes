@@ -31,35 +31,36 @@ class AppLocalizationsMt extends AppLocalizations {
   String get settingsTooltip => 'Settings';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Fittex';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Agħlaq it-tfittxija';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Fittex fin-noti';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'L-ebda riżultat.';
 
   @override
   String get emptyNotesMessage =>
       'Għad m\'hemm l-ebda nota. Mess + biex toħloq waħda.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Noti';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Djarju';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Għad m\'hemmx entrati fid-djarju. Għafas + biex tikteb waħda.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Illum';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Ilbieraħ';
 
   @override
   String get newPlainNoteOption => 'Nota';
@@ -133,9 +134,6 @@ class AppLocalizationsMt extends AppLocalizations {
   String get titleFieldLabel => 'Titlu';
 
   @override
-  String get checklistLabel => 'Lista ta\' kontroll';
-
-  @override
   String get bodyFieldHint => 'Ikteb hawn... (markdown appoġġjat)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsMt extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done minn $total lesti';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Uri l-elementi lesti';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Aħbi l-elementi lesti';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'L-elementi kollha huma lesti u moħbija.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Ħassar l-elementi lesti';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Tħassar l-elementi lesti?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Dan ineħħi $count elementi mmarkati minn din il-lista. Ma jistax jiġi annullat.';
   }
 
   @override
   String get addImageButton => 'Żid ritratt';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Kulur tan-nota';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Predefinit';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Isfar';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Aħmar';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Vjola';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Blu';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Aħdar';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Oranġjo';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Abjad';
 
   @override
   String get recordVoiceNoteTooltip => 'Irrekordja nota bil-vuċi';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Għafas il-buttuna l-ħamra biex tibda tirrekordja, jew ✕ biex tikkanċella.';
 
   @override
   String get stopRecordingTooltip => 'Waqqaf ir-reġistrazzjoni';
@@ -214,25 +212,29 @@ class AppLocalizationsMt extends AppLocalizations {
   String get cancelRecordingTooltip => 'Ikkanċella r-reġistrazzjoni';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Żid timbru tal-ħin';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Editja t-timbru tal-ħin';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Noti bil-vuċi mhumiex sostnuti fuq dan l-apparat';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Grassett';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Korsiv';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Intestatura';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Lista bil-punti';
+
+  @override
+  String get formatLinkTooltip => 'Ħolqa';
 
   @override
   String get imageSizeSmall => 'Żgħir';
@@ -322,26 +324,42 @@ class AppLocalizationsMt extends AppLocalizations {
       'Uża skema ta\' kuluri ċari minflok skura';
 
   @override
-  String get noteLayoutToggleTitle => 'Tqassim tal-lista tan-noti';
+  String get noteLayoutToggleTitle => 'Aqleb bejn il-lista u l-gradilja';
 
   @override
   String get manageRelaysTitle => 'Immaniġġja r-relays';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Erġa\' ippubblika n-noti sinkronizzati kollha';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Jimla kull relay ta\' fuq bin-noti diġà kondiviżi band\'oħra — utli eżatt wara li żżid wieħed ġdid, eż. relay ta\' backup self-hosted';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Reġgħu ġew ippubblikati $count noti';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'In-noti ma setgħux jerġgħu jiġu ppubblikati: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Sforza risinkronizzazzjoni sħiħa';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Jerġa\' jiċċekkja mar-relays għall-istorja sħiħa ta\' nota minflok dak li huwa ġdid biss — utli jekk is-sinkronizzazzjoni tidher imwaħħla u taqbeż noti eqdem, eż. wara li ssewwi relay li ma jintlaħaqx';
+
+  @override
+  String get forceFullResyncSuccess => 'Noti aġġornati mir-relays';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Ma setgħetx issir risinkronizzazzjoni tan-noti: $error';
   }
 
   @override
@@ -563,7 +581,7 @@ class AppLocalizationsMt extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Xi servers pubbliċi (eż. Primal, nostr.build) jirrifjutaw uploads kriptati — jivverifikaw kontenut ta\' immaġni reali, li data kriptata qatt ma hi. Ippreferi server Blossom li jaħżen data opaka, jew ippunta Personalizzat… lejn wieħed self-hosted.';
 
   @override
   String get sectionSupport => 'Appoġġ';

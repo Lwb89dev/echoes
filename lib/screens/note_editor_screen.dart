@@ -18,6 +18,8 @@ import '../providers/notes_provider.dart';
 import '../providers/service_providers.dart';
 import '../utils/formatter.dart';
 import '../utils/note_colors.dart';
+import '../utils/platform_support.dart';
+import '../utils/responsive.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/voice_recorder.dart';
 
@@ -130,7 +132,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// user already attached silently becomes inaccessible.
   List<Attachment> get _unreferencedImageAttachments {
     final body = _bodyController.text;
-    return _imageAttachments.where((a) => !body.contains('attachment://${a.id}')).toList();
+    return _imageAttachments
+        .where((a) => !body.contains('attachment://${a.id}'))
+        .toList();
   }
 
   /// Same idea as [_unreferencedImageAttachments], for voice notes: a new
@@ -141,7 +145,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// recorded before this existed still fall back to showing it here.
   List<Attachment> get _unreferencedAudioAttachments {
     final body = _bodyController.text;
-    return _audioAttachments.where((a) => !body.contains('attachment://${a.id}')).toList();
+    return _audioAttachments
+        .where((a) => !body.contains('attachment://${a.id}'))
+        .toList();
   }
 
   bool _showRecorder = false;
@@ -193,13 +199,17 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _isDiaryEntry = note?.isDiaryEntry ?? widget.isDiaryEntry;
     _entryDate = note?.entryDate ?? (_isDiaryEntry ? DateTime.now() : null);
     _color = note?.color;
-    _titleController = TextEditingController(text: note?.title ?? '')..addListener(_markDirty);
+    _titleController = TextEditingController(text: note?.title ?? '')
+      ..addListener(_markDirty);
     _bodyController = TextEditingController(text: note?.body ?? '')
       ..addListener(_markDirty)
       ..addListener(_onBodySelectionChanged);
     _isChecklist = note?.isChecklist ?? (_isNewNote && widget.startAsChecklist);
     _attachments.addAll(note?.attachments ?? const <Attachment>[]);
-    _showRecorder = _isNewNote && widget.startRecording;
+    _showRecorder =
+        _isNewNote &&
+        widget.startRecording &&
+        PlatformSupport.supportsVoiceNotes;
     // A checklist has nothing sensible to *read* — it's a working list,
     // not prose — so it skips the read-only view entirely and always
     // opens straight into editing, same as a brand-new note.
@@ -207,7 +217,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
     for (final item in note?.items ?? const <ChecklistItem>[]) {
       _checklistDone.add(item.done);
-      _checklistControllers.add(TextEditingController(text: item.text)..addListener(_markDirty));
+      _checklistControllers.add(
+        TextEditingController(text: item.text)..addListener(_markDirty),
+      );
       _checklistFocusNodes.add(FocusNode());
     }
 
@@ -288,7 +300,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// changing the *selection* alone (e.g. a long-press, or dragging a
   /// handle) still notifies a `TextEditingController`'s listeners.
   void _onBodySelectionChanged() {
-    final hasSelection = _bodyController.selection.isValid && !_bodyController.selection.isCollapsed;
+    final hasSelection =
+        _bodyController.selection.isValid &&
+        !_bodyController.selection.isCollapsed;
     if (hasSelection != _showFormattingToolbar) {
       setState(() => _showFormattingToolbar = hasSelection);
     }
@@ -353,7 +367,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final focusNode = FocusNode();
     setState(() {
       _checklistDone.insert(insertAt, false);
-      _checklistControllers.insert(insertAt, TextEditingController()..addListener(_markDirty));
+      _checklistControllers.insert(
+        insertAt,
+        TextEditingController()..addListener(_markDirty),
+      );
       _checklistFocusNodes.insert(insertAt, focusNode);
       _synced = false;
     });
@@ -399,7 +416,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l.deleteCompletedItemsConfirmTitle),
-        content: Text(l.deleteCompletedItemsConfirmBody(completedIndices.length)),
+        content: Text(
+          l.deleteCompletedItemsConfirmBody(completedIndices.length),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -470,7 +489,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// — used to update or remove it without disturbing any other text
   /// around it.
   RegExp _attachmentTokenPattern(String attachmentId) {
-    return RegExp('!\\[[^\\]]*\\]\\(attachment://${RegExp.escape(attachmentId)}(?:\\s+"[^"]*")?\\)');
+    return RegExp(
+      '!\\[[^\\]]*\\]\\(attachment://${RegExp.escape(attachmentId)}(?:\\s+"[^"]*")?\\)',
+    );
   }
 
   /// Inserts [token] at the current cursor position (or the end, if there
@@ -484,8 +505,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final selection = _bodyController.selection;
     final insertAt = selection.isValid ? selection.start : text.length;
     final needsLeadingNewline = insertAt > 0 && text[insertAt - 1] != '\n';
-    final needsTrailingNewline = insertAt < text.length && text[insertAt] != '\n';
-    final insertion = '${needsLeadingNewline ? '\n' : ''}$token${needsTrailingNewline ? '\n' : ''}';
+    final needsTrailingNewline =
+        insertAt < text.length && text[insertAt] != '\n';
+    final insertion =
+        '${needsLeadingNewline ? '\n' : ''}$token${needsTrailingNewline ? '\n' : ''}';
     _bodyController.text = text.replaceRange(insertAt, insertAt, insertion);
   }
 
@@ -520,7 +543,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// also cleans up the not-yet-uploaded local file, if any).
   void _removeInlineAttachment(Attachment attachment) {
     setState(() {
-      _bodyController.text = _bodyController.text.replaceFirst(_attachmentTokenPattern(attachment.id), '');
+      _bodyController.text = _bodyController.text.replaceFirst(
+        _attachmentTokenPattern(attachment.id),
+        '',
+      );
     });
     _removeAttachment(attachment);
   }
@@ -571,8 +597,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final lineEnd = nextNewline == -1 ? text.length : nextNewline;
 
     final block = text.substring(lineStart, lineEnd);
-    final prefixedBlock =
-        block.isEmpty ? prefix : block.split('\n').map((line) => '$prefix$line').join('\n');
+    final prefixedBlock = block.isEmpty
+        ? prefix
+        : block.split('\n').map((line) => '$prefix$line').join('\n');
     final addedLength = prefixedBlock.length - block.length;
 
     setState(() {
@@ -602,7 +629,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     setState(() {
       _bodyController.value = TextEditingValue(
         text: text.replaceRange(start, end, insertion),
-        selection: TextSelection(baseOffset: urlOffset, extentOffset: urlOffset + 3),
+        selection: TextSelection(
+          baseOffset: urlOffset,
+          extentOffset: urlOffset + 3,
+        ),
       );
     });
   }
@@ -615,7 +645,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// choice, so picking the wrong option isn't a one-tap commit with no
   /// way to reconsider. Returns the chosen size keyword, or null if the
   /// sheet was dismissed/cancelled without confirming.
-  Future<String?> _pickImageSize({required String? currentSize, VoidCallback? onRemove}) async {
+  Future<String?> _pickImageSize({
+    required String? currentSize,
+    VoidCallback? onRemove,
+  }) async {
     final l = AppLocalizations.of(context);
     var selected = currentSize ?? 'medium';
     return showModalBottomSheet<String>(
@@ -684,7 +717,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// Handles a tap on an already-inserted inline image (see
   /// [_MarkdownPreview]/[_InlineAttachmentImage]): offers the same
   /// small/medium/full size choices as adding one, plus removal.
-  Future<void> _editInlineImage(Attachment attachment, String? currentSize) async {
+  Future<void> _editInlineImage(
+    Attachment attachment,
+    String? currentSize,
+  ) async {
     final size = await _pickImageSize(
       currentSize: currentSize,
       onRemove: () => _removeInlineAttachment(attachment),
@@ -807,7 +843,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     );
     if (result == null) return; // Dismissed without picking anything.
 
-    final newColor = identical(result, noColorSentinel) ? null : result as NoteColor;
+    final newColor = identical(result, noColorSentinel)
+        ? null
+        : result as NoteColor;
     if (newColor == _color) return;
     setState(() {
       _color = newColor;
@@ -835,7 +873,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   Note _buildNote() {
     final items = <ChecklistItem>[
       for (var i = 0; i < _checklistControllers.length; i++)
-        ChecklistItem(text: _checklistControllers[i].text, done: _checklistDone[i]),
+        ChecklistItem(
+          text: _checklistControllers[i].text,
+          done: _checklistDone[i],
+        ),
     ];
 
     return Note(
@@ -939,9 +980,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         _synced = false;
         _syncing = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.syncNoteError(e.toString()))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.syncNoteError(e.toString()))));
     }
   }
 
@@ -966,9 +1007,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _syncing = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.unsyncNoteError(e.toString()))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.unsyncNoteError(e.toString()))));
     }
   }
 
@@ -1004,10 +1045,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         controller: _titleController,
         decoration: InputDecoration(
           hintText: l.titleFieldLabel,
-          hintStyle: color != null ? TextStyle(color: mutedTextColorOn(color.background)) : null,
+          hintStyle: color != null
+              ? TextStyle(color: mutedTextColorOn(color.background))
+              : null,
           border: InputBorder.none,
         ),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: titleColor),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(color: titleColor),
         cursorColor: titleColor,
       );
     }
@@ -1054,8 +1099,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ? null
             : SystemUiOverlayStyle(
                 statusBarColor: color.background,
-                statusBarIconBrightness: isLightNoteColor ? Brightness.dark : Brightness.light,
-                statusBarBrightness: isLightNoteColor ? Brightness.light : Brightness.dark,
+                statusBarIconBrightness: isLightNoteColor
+                    ? Brightness.dark
+                    : Brightness.light,
+                statusBarBrightness: isLightNoteColor
+                    ? Brightness.light
+                    : Brightness.dark,
               ),
         title: _buildAppBarTitle(l),
         actions: [
@@ -1086,14 +1135,22 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                       icon: Icon(
                         _synced
                             ? Icons.cloud_done_outlined
-                            : (_nostrEventId != null ? Icons.cloud_sync_outlined : Icons.cloud_off_outlined),
+                            : (_nostrEventId != null
+                                  ? Icons.cloud_sync_outlined
+                                  : Icons.cloud_off_outlined),
                       ),
-                      tooltip: _synced ? l.unsyncNoteTooltip : l.syncNoteTooltip,
+                      tooltip: _synced
+                          ? l.unsyncNoteTooltip
+                          : l.syncNoteTooltip,
                       style: IconButton.styleFrom(
                         side: BorderSide(
-                          color: _synced ? colorScheme.primary : colorScheme.outline,
+                          color: _synced
+                              ? colorScheme.primary
+                              : colorScheme.outline,
                         ),
-                        foregroundColor: _synced ? colorScheme.primary : colorScheme.outline,
+                        foregroundColor: _synced
+                            ? colorScheme.primary
+                            : colorScheme.outline,
                       ),
                       onPressed: _synced ? _unsyncNow : _syncNow,
                     ),
@@ -1141,8 +1198,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           // above) — only the actual content needs pushing back down
           // below the now-transparent app bar's real height, or it'd
           // render right underneath it.
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight),
-          child: _applyNoteColorTheme(_editing ? _buildEditBody(l) : _buildViewBody(l)),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kToolbarHeight,
+          ),
+          child: _applyNoteColorTheme(
+            _editing ? _buildEditBody(l) : _buildViewBody(l),
+          ),
         ),
       ),
     );
@@ -1179,8 +1240,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           onSurface: onColor,
           onSurfaceVariant: mutedColor,
         ),
-        textTheme: theme.textTheme.apply(bodyColor: onColor, displayColor: onColor),
-        primaryTextTheme: theme.primaryTextTheme.apply(bodyColor: onColor, displayColor: onColor),
+        textTheme: theme.textTheme.apply(
+          bodyColor: onColor,
+          displayColor: onColor,
+        ),
+        primaryTextTheme: theme.primaryTextTheme.apply(
+          bodyColor: onColor,
+          displayColor: onColor,
+        ),
         iconTheme: theme.iconTheme.copyWith(color: onColor),
         hintColor: mutedColor,
       ),
@@ -1195,61 +1262,71 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   Widget _buildEditBody(AppLocalizations l) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _pickEntryDate),
-          if (_isChecklist) ...[
-            _ChecklistToolbar(
-              doneCount: _checklistDone.where((done) => done).length,
-              totalCount: _checklistDone.length,
-              hideCompleted: _hideCompleted,
-              onToggleHideCompleted: () => setState(() => _hideCompleted = !_hideCompleted),
-              onDeleteCompleted: _deleteCompletedChecklistItems,
-            ),
-            _ChecklistEditor(
-              doneFlags: _checklistDone,
-              controllers: _checklistControllers,
-              focusNodes: _checklistFocusNodes,
-              onToggleDone: _setChecklistItemDone,
-              onSubmitted: _addChecklistItemAfter,
-              onRemove: _removeChecklistItem,
-              onAddItem: () => _addChecklistItemAfter(_checklistControllers.length - 1),
-              hideCompleted: _hideCompleted,
-            ),
-            const SizedBox(height: 8),
-            _voiceRecorderSlot(),
-          ] else ...[
-            _voiceRecorderSlot(),
-            TextField(
-              controller: _bodyController,
-              decoration: InputDecoration(
-                labelText: l.bodyFieldHint,
-                border: InputBorder.none,
+      child: MaxWidthCenter(
+        maxWidth: 760,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_isDiaryEntry)
+              _DiaryDateSelector(date: _entryDate!, onTap: _pickEntryDate),
+            if (_isChecklist) ...[
+              _ChecklistToolbar(
+                doneCount: _checklistDone.where((done) => done).length,
+                totalCount: _checklistDone.length,
+                hideCompleted: _hideCompleted,
+                onToggleHideCompleted: () =>
+                    setState(() => _hideCompleted = !_hideCompleted),
+                onDeleteCompleted: _deleteCompletedChecklistItems,
               ),
-              maxLines: null,
-              minLines: 10,
-            ),
+              _ChecklistEditor(
+                doneFlags: _checklistDone,
+                controllers: _checklistControllers,
+                focusNodes: _checklistFocusNodes,
+                onToggleDone: _setChecklistItemDone,
+                onSubmitted: _addChecklistItemAfter,
+                onRemove: _removeChecklistItem,
+                onAddItem: () =>
+                    _addChecklistItemAfter(_checklistControllers.length - 1),
+                hideCompleted: _hideCompleted,
+              ),
+              const SizedBox(height: 8),
+              _voiceRecorderSlot(),
+            ] else ...[
+              _voiceRecorderSlot(),
+              TextField(
+                controller: _bodyController,
+                decoration: InputDecoration(
+                  labelText: l.bodyFieldHint,
+                  border: InputBorder.none,
+                ),
+                maxLines: null,
+                minLines: 10,
+              ),
+            ],
+            const SizedBox(height: 12),
+            if (_unreferencedImageAttachments.isNotEmpty)
+              _AttachmentsStrip(
+                attachments: _unreferencedImageAttachments,
+                onRemove: _removeAttachment,
+              ),
+            // Voice notes get their own full-width "message" bubble (with a
+            // waveform, like Telegram) rather than being squeezed into the
+            // same small square thumbnail strip as images. Only ones not
+            // already embedded inline in the body (see [_insertVoiceToken])
+            // show up here — new recordings go straight into the text.
+            for (final attachment in _unreferencedAudioAttachments)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: _VoiceMessageBubble(
+                  key: ValueKey(attachment.id),
+                  attachment: attachment,
+                  onRemove: () => _removeAttachment(attachment),
+                  onSetTimestamp: (timestamp) =>
+                      _setAttachmentTimestamp(attachment.id, timestamp),
+                ),
+              ),
           ],
-          const SizedBox(height: 12),
-          if (_unreferencedImageAttachments.isNotEmpty)
-            _AttachmentsStrip(attachments: _unreferencedImageAttachments, onRemove: _removeAttachment),
-          // Voice notes get their own full-width "message" bubble (with a
-          // waveform, like Telegram) rather than being squeezed into the
-          // same small square thumbnail strip as images. Only ones not
-          // already embedded inline in the body (see [_insertVoiceToken])
-          // show up here — new recordings go straight into the text.
-          for (final attachment in _unreferencedAudioAttachments)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: _VoiceMessageBubble(
-                key: ValueKey(attachment.id),
-                attachment: attachment,
-                onRemove: () => _removeAttachment(attachment),
-                onSetTimestamp: (timestamp) => _setAttachmentTimestamp(attachment.id, timestamp),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }
@@ -1263,7 +1340,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// title like a Word ribbon — is what makes room for the recording
   /// trigger without needing a whole separate row of its own.
   Widget _voiceRecorderSlot() {
-    if (_showRecorder) {
+    if (_showRecorder && PlatformSupport.supportsVoiceNotes) {
       return VoiceRecorder(
         onRecorded: _onVoiceRecorded,
         onCancel: () => setState(() => _showRecorder = false),
@@ -1278,7 +1355,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         onLink: _insertLink,
       );
     }
-    return _VoiceRecorderTrigger(onTap: () => setState(() => _showRecorder = true));
+    // No recording trigger to fall back to on platforms where voice notes
+    // aren't supported (see [PlatformSupport.supportsVoiceNotes]) — the
+    // slot simply stays empty until there's a selection to format.
+    if (!PlatformSupport.supportsVoiceNotes) return const SizedBox.shrink();
+    return _VoiceRecorderTrigger(
+      onTap: () => setState(() => _showRecorder = true),
+    );
   }
 
   /// The read-only rendered view an existing note opens into: rendered
@@ -1300,38 +1383,49 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           padding: const EdgeInsets.all(16),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _enterEditMode),
-                _MarkdownPreview(
-                  text: _bodyController.text,
-                  attachments: _attachments,
-                  // Same resize/remove bottom sheet as while editing
-                  // (see [_editInlineImage]) rather than routing through
-                  // [_enterEditMode]: like voice playback and the diary
-                  // date chip above, this is a self-contained action
-                  // that doesn't need the full raw-text editor open.
-                  onTapImage: _editInlineImage,
-                  onRemoveVoice: _removeInlineAttachment,
-                  onSetVoiceTimestamp: (attachment, timestamp) =>
-                      _setAttachmentTimestamp(attachment.id, timestamp),
-                ),
-                if (_unreferencedImageAttachments.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  _AttachmentsStrip(attachments: _unreferencedImageAttachments, onRemove: null),
-                ],
-                for (final attachment in _unreferencedAudioAttachments)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: _VoiceMessageBubble(
-                      key: ValueKey(attachment.id),
-                      attachment: attachment,
-                      onRemove: null,
-                      onSetTimestamp: (timestamp) => _setAttachmentTimestamp(attachment.id, timestamp),
+            child: MaxWidthCenter(
+              maxWidth: 760,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isDiaryEntry)
+                    _DiaryDateSelector(
+                      date: _entryDate!,
+                      onTap: _enterEditMode,
                     ),
+                  _MarkdownPreview(
+                    text: _bodyController.text,
+                    attachments: _attachments,
+                    // Same resize/remove bottom sheet as while editing
+                    // (see [_editInlineImage]) rather than routing through
+                    // [_enterEditMode]: like voice playback and the diary
+                    // date chip above, this is a self-contained action
+                    // that doesn't need the full raw-text editor open.
+                    onTapImage: _editInlineImage,
+                    onRemoveVoice: _removeInlineAttachment,
+                    onSetVoiceTimestamp: (attachment, timestamp) =>
+                        _setAttachmentTimestamp(attachment.id, timestamp),
                   ),
-              ],
+                  if (_unreferencedImageAttachments.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    _AttachmentsStrip(
+                      attachments: _unreferencedImageAttachments,
+                      onRemove: null,
+                    ),
+                  ],
+                  for (final attachment in _unreferencedAudioAttachments)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: _VoiceMessageBubble(
+                        key: ValueKey(attachment.id),
+                        attachment: attachment,
+                        onRemove: null,
+                        onSetTimestamp: (timestamp) =>
+                            _setAttachmentTimestamp(attachment.id, timestamp),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1341,14 +1435,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 }
 
 String _noteColorLabel(NoteColor color, AppLocalizations l) => switch (color) {
-      NoteColor.yellow => l.noteColorYellow,
-      NoteColor.red => l.noteColorRed,
-      NoteColor.purple => l.noteColorPurple,
-      NoteColor.blue => l.noteColorBlue,
-      NoteColor.green => l.noteColorGreen,
-      NoteColor.orange => l.noteColorOrange,
-      NoteColor.white => l.noteColorWhite,
-    };
+  NoteColor.yellow => l.noteColorYellow,
+  NoteColor.red => l.noteColorRed,
+  NoteColor.purple => l.noteColorPurple,
+  NoteColor.blue => l.noteColorBlue,
+  NoteColor.green => l.noteColorGreen,
+  NoteColor.orange => l.noteColorOrange,
+  NoteColor.white => l.noteColorWhite,
+};
 
 /// A single swatch in [_NoteEditorScreenState._pickColor]'s bottom sheet:
 /// a colored circle (or, for [color] null, an outlined one with a "reset"
@@ -1388,13 +1482,19 @@ class _ColorSwatchOption extends StatelessWidget {
                 color: swatchColor ?? colorScheme.surface,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected ? colorScheme.primary : colorScheme.outlineVariant,
+                  color: selected
+                      ? colorScheme.primary
+                      : colorScheme.outlineVariant,
                   width: selected ? 3 : 1,
                 ),
               ),
               child: Icon(
-                swatchColor == null ? Icons.format_color_reset_outlined : Icons.check,
-                color: swatchColor == null ? iconColor : (selected ? iconColor : Colors.transparent),
+                swatchColor == null
+                    ? Icons.format_color_reset_outlined
+                    : Icons.check,
+                color: swatchColor == null
+                    ? iconColor
+                    : (selected ? iconColor : Colors.transparent),
                 size: 20,
               ),
             ),
@@ -1429,12 +1529,16 @@ class _NoteColorReveal extends StatefulWidget {
   State<_NoteColorReveal> createState() => _NoteColorRevealState();
 }
 
-class _NoteColorRevealState extends State<_NoteColorReveal> with SingleTickerProviderStateMixin {
+class _NoteColorRevealState extends State<_NoteColorReveal>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 450),
   );
-  late final Animation<double> _progress = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+  late final Animation<double> _progress = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutCubic,
+  );
 
   late Color _fromColor = widget.color;
   late Color _toColor = widget.color;
@@ -1497,12 +1601,15 @@ class _CircleRevealClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final maxRadius = center.distance; // (0,0) to center == any corner to center
-    return Path()..addOval(Rect.fromCircle(center: center, radius: maxRadius * fraction));
+    final maxRadius =
+        center.distance; // (0,0) to center == any corner to center
+    return Path()
+      ..addOval(Rect.fromCircle(center: center, radius: maxRadius * fraction));
   }
 
   @override
-  bool shouldReclip(covariant _CircleRevealClipper oldClipper) => oldClipper.fraction != fraction;
+  bool shouldReclip(covariant _CircleRevealClipper oldClipper) =>
+      oldClipper.fraction != fraction;
 }
 
 /// The date chip shown at the top of a diary entry (see
@@ -1536,14 +1643,21 @@ class _DiaryDateSelector extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.edit_calendar_outlined, size: 16, color: colorScheme.onPrimaryContainer),
+              Icon(
+                Icons.edit_calendar_outlined,
+                size: 16,
+                color: colorScheme.onPrimaryContainer,
+              ),
               const SizedBox(width: 6),
               Text(
-                Formatter.diaryDateLabel(date, l, Localizations.localeOf(context)),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(color: colorScheme.onPrimaryContainer),
+                Formatter.diaryDateLabel(
+                  date,
+                  l,
+                  Localizations.localeOf(context),
+                ),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: colorScheme.onPrimaryContainer,
+                ),
               ),
             ],
           ),
@@ -1646,16 +1760,21 @@ class _AttachmentChip extends ConsumerWidget {
 /// Caching the `Future` once per attachment identity (here, in State)
 /// lets it actually run to completion and settle.
 class _ImageAttachmentPreview extends ConsumerStatefulWidget {
-  const _ImageAttachmentPreview({required this.attachment, this.fit = BoxFit.cover});
+  const _ImageAttachmentPreview({
+    required this.attachment,
+    this.fit = BoxFit.cover,
+  });
 
   final Attachment attachment;
   final BoxFit fit;
 
   @override
-  ConsumerState<_ImageAttachmentPreview> createState() => _ImageAttachmentPreviewState();
+  ConsumerState<_ImageAttachmentPreview> createState() =>
+      _ImageAttachmentPreviewState();
 }
 
-class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview> {
+class _ImageAttachmentPreviewState
+    extends ConsumerState<_ImageAttachmentPreview> {
   /// The still-on-disk local original, when there is one — checked once
   /// per attachment identity (not on every build) in [_resolveSource].
   File? _localFile;
@@ -1690,9 +1809,13 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
   /// whose `localPath` never meant anything here.
   void _resolveSource() {
     final localPath = widget.attachment.localPath;
-    _localFile = localPath != null && File(localPath).existsSync() ? File(localPath) : null;
+    _localFile = localPath != null && File(localPath).existsSync()
+        ? File(localPath)
+        : null;
     _decryptFuture = _localFile == null && widget.attachment.isUploaded
-        ? ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)
+        ? ref
+              .read(attachmentUploadServiceProvider)
+              .getDecrypted(widget.attachment)
         : null;
   }
 
@@ -1702,7 +1825,10 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
       color: colorScheme.surfaceContainerHighest,
       padding: const EdgeInsets.all(12),
       child: Center(
-        child: Icon(Icons.image_not_supported_outlined, color: colorScheme.outline),
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          color: colorScheme.outline,
+        ),
       ),
     );
   }
@@ -1717,7 +1843,8 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
         // The file passing existsSync in [_resolveSource] doesn't
         // guarantee it decodes (truncated write, deleted since) — degrade
         // to the placeholder, never Flutter's red error box.
-        errorBuilder: (context, error, stackTrace) => _missingPlaceholder(context),
+        errorBuilder: (context, error, stackTrace) =>
+            _missingPlaceholder(context),
       );
     }
     if (_decryptFuture == null) {
@@ -1737,13 +1864,16 @@ class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview
                     icon: const Icon(Icons.refresh),
                     onPressed: () => setState(_resolveSource),
                   )
-                : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                : const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
           );
         }
         return Image.file(
           file,
           fit: widget.fit,
-          errorBuilder: (context, error, stackTrace) => _missingPlaceholder(context),
+          errorBuilder: (context, error, stackTrace) =>
+              _missingPlaceholder(context),
         );
       },
     );
@@ -1778,7 +1908,8 @@ class _MarkdownPreview extends StatelessWidget {
   /// used.
   final void Function(Attachment attachment) onRemoveVoice;
 
-  final void Function(Attachment attachment, DateTime timestamp) onSetVoiceTimestamp;
+  final void Function(Attachment attachment, DateTime timestamp)
+  onSetVoiceTimestamp;
 
   Attachment? _findAttachment(String id) {
     for (final attachment in attachments) {
@@ -1809,7 +1940,8 @@ class _MarkdownPreview extends StatelessWidget {
                 key: ValueKey(attachment.id),
                 attachment: attachment,
                 onRemove: () => onRemoveVoice(attachment),
-                onSetTimestamp: (timestamp) => onSetVoiceTimestamp(attachment, timestamp),
+                onSetTimestamp: (timestamp) =>
+                    onSetVoiceTimestamp(attachment, timestamp),
               ),
             ),
           );
@@ -1829,7 +1961,11 @@ class _MarkdownPreview extends StatelessWidget {
 /// full — see [_NoteEditorScreenState._pickImageSize]), tappable to change
 /// that size or remove it.
 class _InlineAttachmentImage extends StatelessWidget {
-  const _InlineAttachmentImage({required this.attachment, required this.widthKeyword, required this.onTap});
+  const _InlineAttachmentImage({
+    required this.attachment,
+    required this.widthKeyword,
+    required this.onTap,
+  });
 
   final Attachment attachment;
   final String? widthKeyword;
@@ -1849,7 +1985,10 @@ class _InlineAttachmentImage extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: _ImageAttachmentPreview(attachment: attachment, fit: BoxFit.contain),
+          child: _ImageAttachmentPreview(
+            attachment: attachment,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
@@ -1884,7 +2023,8 @@ class _VoiceMessageBubble extends ConsumerStatefulWidget {
   final VoidCallback? onRemove;
 
   @override
-  ConsumerState<_VoiceMessageBubble> createState() => _VoiceMessageBubbleState();
+  ConsumerState<_VoiceMessageBubble> createState() =>
+      _VoiceMessageBubbleState();
 }
 
 class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
@@ -1895,6 +2035,12 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
   @override
   void initState() {
     super.initState();
+    // `audio_waveforms` has no Linux/Windows implementation (see
+    // [PlatformSupport.supportsVoiceNotes]) — preparing the player there
+    // would just throw `MissingPluginException` on every attempt, so
+    // [build] shows a static "not supported here" bubble instead of an
+    // endless retry loop, and there's nothing to prepare.
+    if (!PlatformSupport.supportsVoiceNotes) return;
     // Fire-and-forget: the file needs a local path (waiting on a decrypt
     // download if not yet cached) before the player can prepare, both of
     // which are async — the widget renders a loading spinner in the
@@ -1905,6 +2051,7 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
   @override
   void didUpdateWidget(covariant _VoiceMessageBubble oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!PlatformSupport.supportsVoiceNotes) return;
     // The attachment can gain its `url` while this bubble is on screen (a
     // background sync uploading it — which also deletes the local file
     // the player was prepared from). Re-preparing from the decrypted
@@ -1920,7 +2067,9 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
 
   @override
   void dispose() {
-    _playerController.dispose();
+    // Never touched on unsupported platforms (see [initState]) — disposing
+    // it anyway would reach for the same missing native implementation.
+    if (PlatformSupport.supportsVoiceNotes) _playerController.dispose();
     super.dispose();
   }
 
@@ -1944,9 +2093,15 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
       if (localPath != null && File(localPath).existsSync()) {
         path = localPath;
       } else if (widget.attachment.isUploaded) {
-        path = (await ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)).path;
+        path =
+            (await ref
+                    .read(attachmentUploadServiceProvider)
+                    .getDecrypted(widget.attachment))
+                .path;
       } else {
-        throw StateError('Voice note file is missing locally and was never uploaded.');
+        throw StateError(
+          'Voice note file is missing locally and was never uploaded.',
+        );
       }
       await _playerController.preparePlayer(path: path, noOfSamples: 60);
       if (!mounted) return;
@@ -1985,7 +2140,11 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
       builder: (sheetContext) => SafeArea(
         child: ListTile(
           leading: const Icon(Icons.schedule_outlined),
-          title: Text(hasTimestamp ? l.editVoiceTimestampButton : l.addVoiceTimestampButton),
+          title: Text(
+            hasTimestamp
+                ? l.editVoiceTimestampButton
+                : l.addVoiceTimestampButton,
+          ),
           onTap: () {
             Navigator.of(sheetContext).pop();
             _pickTimestamp();
@@ -2011,18 +2170,91 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
       lastDate: now.add(const Duration(days: 1)),
     );
     if (date == null || !mounted) return;
-    final time = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(initial));
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(initial),
+    );
     if (time == null || !mounted) return;
-    widget.onSetTimestamp(DateTime(date.year, date.month, date.day, time.hour, time.minute));
+    widget.onSetTimestamp(
+      DateTime(date.year, date.month, date.day, time.hour, time.minute),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final onBubble = theme.colorScheme.onSecondaryContainer;
-    final playing = _playerController.playerState == PlayerState.playing;
     final duration = widget.attachment.durationSeconds;
     final recordedAt = widget.attachment.recordedAt;
+
+    // No playback backend on this platform (see [initState]) — still show
+    // the bubble (duration, timestamp, remove button all keep working; the
+    // attachment itself, and its encryption, is entirely unaffected), just
+    // without a play button or waveform that could never do anything.
+    if (!PlatformSupport.supportsVoiceNotes) {
+      return GestureDetector(
+        onLongPress: _showTimestampMenu,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Icon(Icons.mic_off_outlined, color: onBubble),
+                  ),
+                  Expanded(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).voiceNoteUnsupportedOnPlatform,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: onBubble,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (duration != null)
+                    Text(
+                      _formatDuration(duration),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: onBubble,
+                      ),
+                    ),
+                  if (widget.onRemove != null)
+                    IconButton(
+                      icon: Icon(Icons.close, size: 18, color: onBubble),
+                      onPressed: widget.onRemove,
+                    ),
+                ],
+              ),
+              if (recordedAt != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, bottom: 4),
+                  child: Text(
+                    Formatter.voiceTimestampLabel(
+                      recordedAt,
+                      Localizations.localeOf(context),
+                    ),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: onBubble.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final playing = _playerController.playerState == PlayerState.playing;
 
     return GestureDetector(
       onLongPress: _showTimestampMenu,
@@ -2041,12 +2273,17 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
                 IconButton(
                   icon: _error != null
                       ? Icon(Icons.error_outline, color: onBubble)
-                      : Icon(playing ? Icons.pause : Icons.play_arrow, color: onBubble),
+                      : Icon(
+                          playing ? Icons.pause : Icons.play_arrow,
+                          color: onBubble,
+                        ),
                   // Tapping the error state retries preparation instead of
                   // doing nothing — matches `_ImageAttachmentPreview`'s own
                   // retry-on-tap for the same "download/decrypt failed"
                   // situation.
-                  onPressed: _error != null ? _prepare : (_ready ? _toggle : null),
+                  onPressed: _error != null
+                      ? _prepare
+                      : (_ready ? _toggle : null),
                 ),
                 Expanded(
                   child: _ready
@@ -2072,14 +2309,19 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
                                 : const SizedBox(
                                     width: 16,
                                     height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
                                   ),
                           ),
                         ),
                 ),
                 const SizedBox(width: 8),
                 if (duration != null)
-                  Text(_formatDuration(duration), style: theme.textTheme.bodySmall?.copyWith(color: onBubble)),
+                  Text(
+                    _formatDuration(duration),
+                    style: theme.textTheme.bodySmall?.copyWith(color: onBubble),
+                  ),
                 if (widget.onRemove != null)
                   IconButton(
                     icon: Icon(Icons.close, size: 18, color: onBubble),
@@ -2091,8 +2333,13 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 4),
                 child: Text(
-                  Formatter.voiceTimestampLabel(recordedAt, Localizations.localeOf(context)),
-                  style: theme.textTheme.labelSmall?.copyWith(color: onBubble.withValues(alpha: 0.7)),
+                  Formatter.voiceTimestampLabel(
+                    recordedAt,
+                    Localizations.localeOf(context),
+                  ),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: onBubble.withValues(alpha: 0.7),
+                  ),
                 ),
               ),
           ],
@@ -2131,14 +2378,17 @@ class _VoiceRecorderTrigger extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            Icon(Icons.mic_none_outlined, size: 18, color: colorScheme.onSurfaceVariant),
+            Icon(
+              Icons.mic_none_outlined,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(width: 8),
             Text(
               l.recordVoiceNoteTooltip,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -2169,15 +2419,31 @@ class _FormattingToolbar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          IconButton(icon: const Icon(Icons.format_bold), tooltip: l.formatBoldTooltip, onPressed: onBold),
-          IconButton(icon: const Icon(Icons.format_italic), tooltip: l.formatItalicTooltip, onPressed: onItalic),
-          IconButton(icon: const Icon(Icons.title), tooltip: l.formatHeadingTooltip, onPressed: onHeading),
+          IconButton(
+            icon: const Icon(Icons.format_bold),
+            tooltip: l.formatBoldTooltip,
+            onPressed: onBold,
+          ),
+          IconButton(
+            icon: const Icon(Icons.format_italic),
+            tooltip: l.formatItalicTooltip,
+            onPressed: onItalic,
+          ),
+          IconButton(
+            icon: const Icon(Icons.title),
+            tooltip: l.formatHeadingTooltip,
+            onPressed: onHeading,
+          ),
           IconButton(
             icon: const Icon(Icons.format_list_bulleted),
             tooltip: l.formatListTooltip,
             onPressed: onList,
           ),
-          IconButton(icon: const Icon(Icons.link), tooltip: l.formatLinkTooltip, onPressed: onLink),
+          IconButton(
+            icon: const Icon(Icons.link),
+            tooltip: l.formatLinkTooltip,
+            onPressed: onLink,
+          ),
         ],
       ),
     );
@@ -2217,19 +2483,22 @@ class _ChecklistToolbar extends StatelessWidget {
           Expanded(
             child: Text(
               l.checklistProgress(doneCount, totalCount),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           if (doneCount > 0) ...[
             IconButton(
               icon: Icon(
-                hideCompleted ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                hideCompleted
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 size: 20,
               ),
-              tooltip: hideCompleted ? l.showCompletedItemsTooltip : l.hideCompletedItemsTooltip,
+              tooltip: hideCompleted
+                  ? l.showCompletedItemsTooltip
+                  : l.hideCompletedItemsTooltip,
               visualDensity: VisualDensity.compact,
               onPressed: onToggleHideCompleted,
             ),
@@ -2320,7 +2589,9 @@ class _ChecklistEditor extends StatelessWidget {
                   onEditingComplete: () {},
                   onSubmitted: (_) => onSubmitted(i),
                   style: TextStyle(
-                    decoration: doneFlags[i] ? TextDecoration.lineThrough : TextDecoration.none,
+                    decoration: doneFlags[i]
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
                     color: doneFlags[i] ? doneTextColor : null,
                   ),
                   decoration: InputDecoration(
@@ -2347,4 +2618,3 @@ class _ChecklistEditor extends StatelessWidget {
     );
   }
 }
-

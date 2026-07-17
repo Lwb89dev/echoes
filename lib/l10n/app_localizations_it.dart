@@ -133,9 +133,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get titleFieldLabel => 'Titolo';
 
   @override
-  String get checklistLabel => 'Checklist';
-
-  @override
   String get bodyFieldHint => 'Scrivi qui... (markdown supportato)';
 
   @override
@@ -219,6 +216,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get editVoiceTimestampButton => 'Modifica timestamp';
+
+  @override
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Le note vocali non sono supportate su questo dispositivo';
 
   @override
   String get formatBoldTooltip => 'Grassetto';
@@ -345,6 +346,21 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String republishAllNotesError(String error) {
     return 'Impossibile ripubblicare le note: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Forza risincronizzazione completa';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Ricontrolla i relay per l\'intera cronologia di una nota invece di ciò che è nuovo — utile se la sincronizzazione sembra bloccata e salta note più vecchie, ad esempio dopo aver risolto un relay irraggiungibile';
+
+  @override
+  String get forceFullResyncSuccess => 'Note aggiornate dai relay';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Impossibile risincronizzare le note: $error';
   }
 
   @override

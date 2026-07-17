@@ -1,12 +1,10 @@
 {
   "@@locale": "it",
-
   "loginSubtitle": "Accedi con il tuo account Nostr",
   "loginWithAmberButton": "Accedi con Amber",
   "importAccountButton": "Importa account Nostr",
   "importAccountFieldLabel": "Chiave privata (nsec) del tuo account Nostr",
   "importButton": "Importa",
-
   "relaysTitle": "Relay",
   "settingsTooltip": "Impostazioni",
   "searchTooltip": "Cerca",
@@ -28,14 +26,18 @@
   "deleteNotesConfirmTitle": "Eliminare {count} note?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Non può essere annullato. Se una di queste note era sincronizzata, verrà rimossa anche dai tuoi relay.",
   "selectionCount": "{count} selezionate",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(senza titolo)",
@@ -46,18 +48,20 @@
   "timeDaysAgo": "{count}g fa",
   "notesLockedTitle": "Le note sono protette da una password",
   "unlockButton": "Sblocca",
-
   "saveTooltip": "Salva",
   "titleFieldLabel": "Titolo",
-  "checklistLabel": "Checklist",
   "bodyFieldHint": "Scrivi qui... (markdown supportato)",
   "checklistItemHint": "Elemento checklist",
   "addItemButton": "Aggiungi elemento",
   "checklistProgress": "{done} di {total} completati",
   "@checklistProgress": {
     "placeholders": {
-      "done": { "type": "int" },
-      "total": { "type": "int" }
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "showCompletedItemsTooltip": "Mostra elementi completati",
@@ -68,7 +72,9 @@
   "deleteCompletedItemsConfirmBody": "Verranno rimossi {count} elemento/i spuntati da questa checklist. Non può essere annullato.",
   "@deleteCompletedItemsConfirmBody": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "addImageButton": "Aggiungi immagine",
@@ -87,6 +93,7 @@
   "cancelRecordingTooltip": "Annulla registrazione",
   "addVoiceTimestampButton": "Aggiungi timestamp",
   "editVoiceTimestampButton": "Modifica timestamp",
+  "voiceNoteUnsupportedOnPlatform": "Le note vocali non sono supportate su questo dispositivo",
   "formatBoldTooltip": "Grassetto",
   "formatItalicTooltip": "Corsivo",
   "formatHeadingTooltip": "Titolo",
@@ -96,16 +103,16 @@
   "imageSizeMedium": "Media",
   "imageSizeFull": "Larghezza intera",
   "removeImageButton": "Rimuovi immagine",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Nessun relay configurato.",
   "relaysCount": "{count} relay",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Impostazioni",
   "sectionSecurity": "Sicurezza",
   "loadingLabel": "Caricamento…",
@@ -132,20 +139,33 @@
   "republishAllNotesSuccess": "Ripubblicate {count} nota/e",
   "@republishAllNotesSuccess": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "republishAllNotesError": "Impossibile ripubblicare le note: {error}",
   "@republishAllNotesError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "forceFullResyncButton": "Forza risincronizzazione completa",
+  "forceFullResyncSubtitle": "Ricontrolla i relay per l'intera cronologia di una nota invece di ciò che è nuovo — utile se la sincronizzazione sembra bloccata e salta note più vecchie, ad esempio dopo aver risolto un relay irraggiungibile",
+  "forceFullResyncSuccess": "Note aggiornate dai relay",
+  "forceFullResyncError": "Impossibile risincronizzare le note: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
     }
   },
   "confirmButton": "Conferma",
-
   "sectionLanguage": "Lingua",
   "langSystem": "Predefinita di sistema",
-
   "sectionAccount": "Account",
   "accountLocalOnlyMessage": "Echoes in uso in locale — non sincronizzato con Nostr",
   "accountSignInButton": "Accedi",
@@ -153,7 +173,6 @@
   "accountSignOutButton": "Esci",
   "accountSignOutConfirmTitle": "Uscire dall'account?",
   "accountSignOutConfirmBody": "Le tue note restano su questo dispositivo. Puoi accedere di nuovo quando vuoi.",
-
   "onboardingWelcomeTitle": "Benvenuto in Echoes",
   "onboardingIntroLocalTitle": "Le tue note, sempre sul tuo dispositivo",
   "onboardingIntroLocalBody": "Ogni nota viene salvata prima in locale, quindi l'app funziona completamente offline. Niente lascia il tuo dispositivo a meno che tu non scelga di sincronizzarlo.",
@@ -171,7 +190,6 @@
   "onboardingRelayTitle": "Scegli i relay per la sincronizzazione",
   "onboardingRelayBody": "I relay sono dove vengono salvate le tue note cifrate quando sincronizzi. Aggiungine uno o più — questi, tra i più diffusi, sono un buon punto di partenza:",
   "onboardingFinishButton": "Inizia",
-
   "syncNoteTooltip": "Sincronizza questa nota",
   "unsyncNoteTooltip": "Rimuovi dai relay",
   "syncSelectedTooltip": "Sincronizza le note selezionate",
@@ -192,7 +210,6 @@
   "exportPasswordDialogTitle": "Inserisci la tua password",
   "exportSetPasswordDialogTitle": "Imposta una password per questa esportazione",
   "importPasswordDialogTitle": "Inserisci la password dell'esportazione",
-
   "sectionData": "Dati",
   "exportNotesButton": "Esporta note",
   "exportNotesSubtitle": "Salva tutte le tue note in un file che potrai importare di nuovo in seguito",
@@ -202,17 +219,14 @@
   "exportNotesError": "Impossibile esportare le note: {error}",
   "importNotesSuccess": "Importate {count} note",
   "importNotesError": "Impossibile importare le note: {error}",
-
   "sectionAttachments": "Allegati",
   "attachmentProviderSubtitle": "Dove vengono caricate le immagini e le note vocali cifrate quando sincronizzi",
   "attachmentProviderCustom": "Personalizzato…",
   "attachmentCustomUrlLabel": "URL del server",
   "attachmentProviderHint": "Alcuni host pubblici (es. Primal, nostr.build) rifiutano del tutto i caricamenti cifrati — validano il contenuto reale delle immagini, cosa che i dati cifrati non sono mai. Preferisci un host Blossom che memorizza blob opachi, oppure imposta Personalizzato… su uno self-hosted.",
-
   "sectionSupport": "Supporto",
   "supportEchoesTitle": "Sostieni Echoes",
   "lightningAddressCopied": "⚡ {address} copiato negli appunti",
-
   "cancelButton": "Annulla",
   "passwordLabel": "Password",
   "invalidPrivateKeyError": "La chiave privata non è valida. Inserisci una chiave nsec o hex valida.",

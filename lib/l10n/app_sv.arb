@@ -1,15 +1,22 @@
 {
   "@@locale": "sv",
-
   "loginSubtitle": "Logga in med ditt Nostr-konto",
   "loginWithAmberButton": "Logga in med Amber",
   "importAccountButton": "Importera Nostr-konto",
   "importAccountFieldLabel": "Privat nyckel (nsec) för ditt Nostr-konto",
   "importButton": "Importera",
-
   "relaysTitle": "Reläer",
   "settingsTooltip": "Inställningar",
+  "searchTooltip": "Sök",
+  "closeSearchTooltip": "Stäng sökningen",
+  "searchNotesHint": "Sök i anteckningar",
+  "noSearchResultsMessage": "Inga träffar.",
   "emptyNotesMessage": "Inga anteckningar än. Tryck på + för att skapa en.",
+  "notesTabLabel": "Anteckningar",
+  "diaryTabLabel": "Dagbok",
+  "emptyDiaryMessage": "Inga dagboksinlägg ännu. Tryck på + för att skriva ett.",
+  "diaryToday": "Idag",
+  "diaryYesterday": "Igår",
   "newPlainNoteOption": "Anteckning",
   "newChecklistOption": "Checklista",
   "newVoiceNoteOption": "Röstanteckning",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Ta bort {count} anteckningar?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Detta kan inte ångras. Om någon av dessa anteckningar var synkroniserad tas den även bort från dina reläer.",
   "selectionCount": "{count} markerade",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(utan titel)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count}d sedan",
   "notesLockedTitle": "Anteckningarna skyddas med ett lösenord",
   "unlockButton": "Lås upp",
-
-  "newNoteTitle": "Ny anteckning",
-  "editNoteTitle": "Redigera anteckning",
   "saveTooltip": "Spara",
   "titleFieldLabel": "Titel",
-  "checklistLabel": "Checklista",
   "bodyFieldHint": "Skriv här... (markdown stöds)",
   "checklistItemHint": "Checklisteobjekt",
   "addItemButton": "Lägg till objekt",
+  "checklistProgress": "{done} av {total} klara",
+  "showCompletedItemsTooltip": "Visa klara punkter",
+  "hideCompletedItemsTooltip": "Dölj klara punkter",
+  "allChecklistItemsCompletedHidden": "Alla punkter är klara och dolda.",
+  "deleteCompletedItemsButton": "Ta bort klara punkter",
+  "deleteCompletedItemsConfirmTitle": "Ta bort klara punkter?",
+  "deleteCompletedItemsConfirmBody": "Detta tar bort {count} avbockade punkter från listan. Kan inte ångras.",
   "addImageButton": "Lägg till bild",
+  "noteColorButton": "Anteckningens färg",
+  "noteColorDefault": "Standard",
+  "noteColorYellow": "Gul",
+  "noteColorRed": "Röd",
+  "noteColorPurple": "Lila",
+  "noteColorBlue": "Blå",
+  "noteColorGreen": "Grön",
+  "noteColorOrange": "Orange",
+  "noteColorWhite": "Vit",
   "recordVoiceNoteTooltip": "Spela in en röstanteckning",
+  "recordVoiceNoteInstructions": "Tryck på den röda knappen för att börja spela in, eller ✕ för att avbryta.",
   "stopRecordingTooltip": "Stoppa inspelning",
   "cancelRecordingTooltip": "Avbryt inspelning",
-  "previewBodyTooltip": "Förhandsgranska",
-  "editBodyTooltip": "Redigera",
+  "addVoiceTimestampButton": "Lägg till tidsstämpel",
+  "editVoiceTimestampButton": "Redigera tidsstämpel",
+  "voiceNoteUnsupportedOnPlatform": "Röstanteckningar stöds inte på den här enheten",
+  "formatBoldTooltip": "Fet",
+  "formatItalicTooltip": "Kursiv",
+  "formatHeadingTooltip": "Rubrik",
+  "formatListTooltip": "Punktlista",
+  "formatLinkTooltip": "Länk",
   "imageSizeSmall": "Liten",
   "imageSizeMedium": "Medium",
   "imageSizeFull": "Full bredd",
   "removeImageButton": "Ta bort bild",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Inget relä har konfigurerats än.",
   "relaysCount": "{count} reläer",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Inställningar",
   "sectionSecurity": "Säkerhet",
   "loadingLabel": "Läser in…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Utseende",
   "lightThemeToggleTitle": "Ljust tema",
   "lightThemeToggleSubtitle": "Använd ett ljust färgschema istället för mörkt",
-  "noteLayoutToggleTitle": "Layout för anteckningslista",
-  "noteLayoutToggleSubtitle": "Växla mellan list- och rutnätsvy",
+  "noteLayoutToggleTitle": "Växla mellan list- och rutnätsvy",
   "manageRelaysTitle": "Hantera reläer",
+  "republishAllNotesButton": "Publicera om alla synkroniserade anteckningar",
+  "republishAllNotesSubtitle": "Fyller på varje relä ovan med anteckningar som redan delats någon annanstans — användbart direkt efter att du lagt till ett nytt, t.ex. ett självhostat backup-relä",
+  "republishAllNotesSuccess": "{count} anteckningar publicerades om",
+  "republishAllNotesError": "Anteckningarna kunde inte publiceras om: {error}",
+  "forceFullResyncButton": "Tvinga fullständig omsynkronisering",
+  "forceFullResyncSubtitle": "Kontrollerar reläer igen efter en antecknings hela historik i stället för bara det nya — användbart om synkroniseringen verkar fastna och hoppar över äldre anteckningar, t.ex. efter att ha åtgärdat ett oåtkomligt relä",
+  "forceFullResyncSuccess": "Anteckningar uppdaterade från reläer",
+  "forceFullResyncError": "Det gick inte att omsynkronisera anteckningarna: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Bekräfta",
-
   "sectionLanguage": "Språk",
   "langSystem": "Systemstandard",
-
   "sectionAccount": "Konto",
   "accountLocalOnlyMessage": "Använder Echoes lokalt — synkroniseras inte med Nostr",
   "accountSignInButton": "Logga in",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Logga ut",
   "accountSignOutConfirmTitle": "Logga ut?",
   "accountSignOutConfirmBody": "Dina anteckningar finns kvar på den här enheten. Du kan logga in igen när som helst.",
-
   "onboardingWelcomeTitle": "Välkommen till Echoes",
   "onboardingIntroLocalTitle": "Dina anteckningar, alltid på din enhet",
   "onboardingIntroLocalBody": "Varje anteckning sparas först lokalt, så appen fungerar helt offline. Inget lämnar din enhet om du inte väljer att synkronisera det.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Välj reläer för synkronisering",
   "onboardingRelayBody": "Reläer är där dina krypterade anteckningar lagras när du synkroniserar. Lägg till en eller flera — dessa populära är en bra start:",
   "onboardingFinishButton": "Kom igång",
-
   "syncNoteTooltip": "Synkronisera denna anteckning",
   "unsyncNoteTooltip": "Ta bort från reläer",
   "syncSelectedTooltip": "Synkronisera markerade anteckningar",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Ange ditt lösenord",
   "exportSetPasswordDialogTitle": "Ange ett lösenord för denna export",
   "importPasswordDialogTitle": "Ange exportens lösenord",
-
   "sectionData": "Data",
   "exportNotesButton": "Exportera anteckningar",
   "exportNotesSubtitle": "Spara alla dina anteckningar i en fil som du kan importera igen senare",
@@ -149,16 +188,14 @@
   "exportNotesError": "Det gick inte att exportera anteckningarna: {error}",
   "importNotesSuccess": "{count} anteckningar importerade",
   "importNotesError": "Det gick inte att importera anteckningarna: {error}",
-
   "sectionAttachments": "Bilagor",
   "attachmentProviderSubtitle": "Var krypterade bilder och röstanteckningar laddas upp vid synkronisering",
   "attachmentProviderCustom": "Anpassad…",
   "attachmentCustomUrlLabel": "Server-URL",
-
+  "attachmentProviderHint": "Vissa publika värdar (t.ex. Primal, nostr.build) avvisar krypterade uppladdningar direkt — de validerar äkta bildinnehåll, vilket krypterad data aldrig är. Föredra en Blossom-värd som lagrar rå data, eller peka Anpassad… mot en självhostad.",
   "sectionSupport": "Stöd",
   "supportEchoesTitle": "Stöd Echoes",
   "lightningAddressCopied": "⚡ {address} kopierad till urklipp",
-
   "cancelButton": "Avbryt",
   "passwordLabel": "Lösenord",
   "invalidPrivateKeyError": "Den privata nyckeln är ogiltig. Ange en giltig nsec- eller hex-nyckel.",

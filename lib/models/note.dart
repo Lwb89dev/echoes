@@ -87,16 +87,20 @@ class Note {
     this.color,
   });
 
-  /// Short text preview for the list view (title excluded, no newlines).
-  /// Matches an inline attachment image token (see
-  /// `NoteEditorScreen._insertImageToken`) so [preview] can drop it rather
-  /// than showing raw `![](attachment://...)` markdown in the note list.
-  static final RegExp _inlineImageToken = RegExp(r'!\[[^\]]*\]\(attachment://[^)]*\)');
+  /// Matches an inline attachment token — image (`![](attachment://...)`)
+  /// or voice (`![voice](attachment://...)`) alike, see
+  /// `NoteEditorScreen._insertAttachmentToken` — so user-facing text
+  /// derivations can drop them rather than exposing raw internal markup.
+  static final RegExp _inlineAttachmentToken = RegExp(r'!\[[^\]]*\]\(attachment://[^)]*\)');
 
+  /// [body] with the internal attachment tokens stripped — what search and
+  /// [preview] should look at: neither matching nor showing "attachment"
+  /// or a UUID that the user never typed and can't see on screen.
+  String get bodyWithoutAttachmentTokens => body.replaceAll(_inlineAttachmentToken, '');
+
+  /// Short text preview for the list view (title excluded, no newlines).
   String get preview {
-    final source = isChecklist
-        ? items.map((e) => e.text).join(', ')
-        : body.replaceAll(_inlineImageToken, '');
+    final source = isChecklist ? items.map((e) => e.text).join(', ') : bodyWithoutAttachmentTokens;
     final singleLine = source.replaceAll('\n', ' ').trim();
     return singleLine.length <= 120
         ? singleLine

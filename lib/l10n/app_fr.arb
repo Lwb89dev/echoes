@@ -1,15 +1,22 @@
 {
   "@@locale": "fr",
-
   "loginSubtitle": "Connectez-vous avec votre compte Nostr",
   "loginWithAmberButton": "Se connecter avec Amber",
   "importAccountButton": "Importer un compte Nostr",
   "importAccountFieldLabel": "Clé privée (nsec) de votre compte Nostr",
   "importButton": "Importer",
-
   "relaysTitle": "Relais",
   "settingsTooltip": "Paramètres",
+  "searchTooltip": "Rechercher",
+  "closeSearchTooltip": "Fermer la recherche",
+  "searchNotesHint": "Rechercher dans les notes",
+  "noSearchResultsMessage": "Aucun résultat.",
   "emptyNotesMessage": "Aucune note pour l'instant. Appuyez sur + pour en créer une.",
+  "notesTabLabel": "Notes",
+  "diaryTabLabel": "Journal",
+  "emptyDiaryMessage": "Aucune entrée de journal pour l'instant. Touchez + pour en écrire une.",
+  "diaryToday": "Aujourd'hui",
+  "diaryYesterday": "Hier",
   "newPlainNoteOption": "Note",
   "newChecklistOption": "Liste de contrôle",
   "newVoiceNoteOption": "Note vocale",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Supprimer {count} notes ?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Cette action est irréversible. Si l'une de ces notes était synchronisée, elle sera également retirée de vos relais.",
   "selectionCount": "{count} sélectionnée(s)",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(sans titre)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "il y a {count} j",
   "notesLockedTitle": "Les notes sont protégées par un mot de passe",
   "unlockButton": "Déverrouiller",
-
-  "newNoteTitle": "Nouvelle note",
-  "editNoteTitle": "Modifier la note",
   "saveTooltip": "Enregistrer",
   "titleFieldLabel": "Titre",
-  "checklistLabel": "Liste de contrôle",
   "bodyFieldHint": "Écrivez ici... (markdown pris en charge)",
   "checklistItemHint": "Élément de la liste",
   "addItemButton": "Ajouter un élément",
+  "checklistProgress": "{done} sur {total} terminés",
+  "showCompletedItemsTooltip": "Afficher les éléments terminés",
+  "hideCompletedItemsTooltip": "Masquer les éléments terminés",
+  "allChecklistItemsCompletedHidden": "Tous les éléments sont terminés et masqués.",
+  "deleteCompletedItemsButton": "Supprimer les éléments terminés",
+  "deleteCompletedItemsConfirmTitle": "Supprimer les éléments terminés ?",
+  "deleteCompletedItemsConfirmBody": "Cela retire {count} éléments cochés de cette liste. Impossible d'annuler.",
   "addImageButton": "Ajouter une image",
+  "noteColorButton": "Couleur de la note",
+  "noteColorDefault": "Par défaut",
+  "noteColorYellow": "Jaune",
+  "noteColorRed": "Rouge",
+  "noteColorPurple": "Violet",
+  "noteColorBlue": "Bleu",
+  "noteColorGreen": "Vert",
+  "noteColorOrange": "Orange",
+  "noteColorWhite": "Blanc",
   "recordVoiceNoteTooltip": "Enregistrer une note vocale",
+  "recordVoiceNoteInstructions": "Touchez le bouton rouge pour démarrer l'enregistrement, ou ✕ pour annuler.",
   "stopRecordingTooltip": "Arrêter l'enregistrement",
   "cancelRecordingTooltip": "Annuler l'enregistrement",
-  "previewBodyTooltip": "Aperçu",
-  "editBodyTooltip": "Modifier",
+  "addVoiceTimestampButton": "Ajouter un horodatage",
+  "editVoiceTimestampButton": "Modifier l'horodatage",
+  "voiceNoteUnsupportedOnPlatform": "Les notes vocales ne sont pas prises en charge sur cet appareil",
+  "formatBoldTooltip": "Gras",
+  "formatItalicTooltip": "Italique",
+  "formatHeadingTooltip": "Titre",
+  "formatListTooltip": "Liste à puces",
+  "formatLinkTooltip": "Lien",
   "imageSizeSmall": "Petite",
   "imageSizeMedium": "Moyenne",
   "imageSizeFull": "Pleine largeur",
   "removeImageButton": "Supprimer l'image",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Aucun relais configuré pour l'instant.",
   "relaysCount": "{count} relais",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Paramètres",
   "sectionSecurity": "Sécurité",
   "loadingLabel": "Chargement…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Apparence",
   "lightThemeToggleTitle": "Thème clair",
   "lightThemeToggleSubtitle": "Utiliser un thème clair plutôt que sombre",
-  "noteLayoutToggleTitle": "Disposition de la liste de notes",
-  "noteLayoutToggleSubtitle": "Basculer entre l'affichage en liste et en grille",
+  "noteLayoutToggleTitle": "Basculer entre la vue liste et grille",
   "manageRelaysTitle": "Gérer les relais",
+  "republishAllNotesButton": "Republier toutes les notes synchronisées",
+  "republishAllNotesSubtitle": "Alimente chaque relais ci-dessus avec les notes déjà partagées ailleurs — utile juste après en avoir ajouté un, p. ex. un relais de sauvegarde auto-hébergé",
+  "republishAllNotesSuccess": "{count} notes republiées",
+  "republishAllNotesError": "Impossible de republier les notes : {error}",
+  "forceFullResyncButton": "Forcer une resynchronisation complète",
+  "forceFullResyncSubtitle": "Revérifie auprès des relais l'historique complet d'une note plutôt que seulement les nouveautés — utile si la synchronisation semble bloquée et saute d'anciennes notes, par exemple après avoir résolu un relais inaccessible",
+  "forceFullResyncSuccess": "Notes actualisées depuis les relais",
+  "forceFullResyncError": "Impossible de resynchroniser les notes : {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Confirmer",
-
   "sectionLanguage": "Langue",
   "langSystem": "Langue du système",
-
   "sectionAccount": "Compte",
   "accountLocalOnlyMessage": "Utilisation d'Echoes en local — non synchronisé avec Nostr",
   "accountSignInButton": "Se connecter",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Se déconnecter",
   "accountSignOutConfirmTitle": "Se déconnecter ?",
   "accountSignOutConfirmBody": "Vos notes restent sur cet appareil. Vous pouvez vous reconnecter à tout moment.",
-
   "onboardingWelcomeTitle": "Bienvenue sur Echoes",
   "onboardingIntroLocalTitle": "Vos notes, toujours sur votre appareil",
   "onboardingIntroLocalBody": "Chaque note est d'abord enregistrée localement, l'application fonctionne donc entièrement hors ligne. Rien ne quitte votre appareil, sauf si vous choisissez de synchroniser.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Choisissez des relais pour la synchronisation",
   "onboardingRelayBody": "Les relais sont l'endroit où vos notes chiffrées sont stockées lors de la synchronisation. Ajoutez-en un ou plusieurs — ceux-ci, très utilisés, sont un bon début :",
   "onboardingFinishButton": "Commencer",
-
   "syncNoteTooltip": "Synchroniser cette note",
   "unsyncNoteTooltip": "Retirer des relais",
   "syncSelectedTooltip": "Synchroniser les notes sélectionnées",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Saisissez votre mot de passe",
   "exportSetPasswordDialogTitle": "Définissez un mot de passe pour cet export",
   "importPasswordDialogTitle": "Saisissez le mot de passe de l'export",
-
   "sectionData": "Données",
   "exportNotesButton": "Exporter les notes",
   "exportNotesSubtitle": "Enregistrez toutes vos notes dans un fichier que vous pourrez réimporter plus tard",
@@ -149,16 +188,14 @@
   "exportNotesError": "Impossible d'exporter les notes : {error}",
   "importNotesSuccess": "{count} notes importées",
   "importNotesError": "Impossible d'importer les notes : {error}",
-
   "sectionAttachments": "Pièces jointes",
   "attachmentProviderSubtitle": "Où les images et notes vocales chiffrées sont téléversées lors de la synchronisation",
   "attachmentProviderCustom": "Personnalisé…",
   "attachmentCustomUrlLabel": "URL du serveur",
-
+  "attachmentProviderHint": "Certains hébergeurs publics (p. ex. Primal, nostr.build) rejettent d'emblée les envois chiffrés — ils vérifient un vrai contenu d'image, ce que des données chiffrées ne sont jamais. Préférez un hébergeur Blossom stockant des données opaques, ou pointez Personnalisé… vers un serveur auto-hébergé.",
   "sectionSupport": "Soutien",
   "supportEchoesTitle": "Soutenir Echoes",
   "lightningAddressCopied": "⚡ {address} copiée dans le presse-papiers",
-
   "cancelButton": "Annuler",
   "passwordLabel": "Mot de passe",
   "invalidPrivateKeyError": "La clé privée n'est pas valide. Saisissez une clé nsec ou hex valide.",

@@ -1,15 +1,22 @@
 {
   "@@locale": "et",
-
   "loginSubtitle": "Logi sisse oma Nostr kontoga",
   "loginWithAmberButton": "Logi sisse Amberiga",
   "importAccountButton": "Impordi Nostr konto",
   "importAccountFieldLabel": "Sinu Nostr konto privaatvõti (nsec)",
   "importButton": "Impordi",
-
   "relaysTitle": "Relee",
   "settingsTooltip": "Seaded",
+  "searchTooltip": "Otsi",
+  "closeSearchTooltip": "Sulge otsing",
+  "searchNotesHint": "Otsi märkmetest",
+  "noSearchResultsMessage": "Vasteid pole.",
   "emptyNotesMessage": "Märkmeid pole veel. Uue loomiseks puuduta +.",
+  "notesTabLabel": "Märkmed",
+  "diaryTabLabel": "Päevik",
+  "emptyDiaryMessage": "Päevikus pole veel sissekandeid. Puuduta +, et üks kirjutada.",
+  "diaryToday": "Täna",
+  "diaryYesterday": "Eile",
   "newPlainNoteOption": "Märge",
   "newChecklistOption": "Kontrollnimekiri",
   "newVoiceNoteOption": "Häälmärge",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Kustutada {count} märget?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Seda ei saa tagasi võtta. Kui mõni neist märgetest oli sünkroonitud, eemaldatakse see ka releedest.",
   "selectionCount": "{count} valitud",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(pealkirjata)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} p tagasi",
   "notesLockedTitle": "Märkmed on parooliga kaitstud",
   "unlockButton": "Ava lukust",
-
-  "newNoteTitle": "Uus märge",
-  "editNoteTitle": "Muuda märget",
   "saveTooltip": "Salvesta",
   "titleFieldLabel": "Pealkiri",
-  "checklistLabel": "Kontrollnimekiri",
   "bodyFieldHint": "Kirjuta siia... (markdown on toetatud)",
   "checklistItemHint": "Nimekirja punkt",
   "addItemButton": "Lisa punkt",
+  "checklistProgress": "{done}/{total} tehtud",
+  "showCompletedItemsTooltip": "Näita tehtud üksusi",
+  "hideCompletedItemsTooltip": "Peida tehtud üksused",
+  "allChecklistItemsCompletedHidden": "Kõik üksused on tehtud ja peidetud.",
+  "deleteCompletedItemsButton": "Kustuta tehtud üksused",
+  "deleteCompletedItemsConfirmTitle": "Kas kustutada tehtud üksused?",
+  "deleteCompletedItemsConfirmBody": "See eemaldab loendist {count} märgitud üksust. Seda ei saa tagasi võtta.",
   "addImageButton": "Lisa pilt",
+  "noteColorButton": "Märkme värv",
+  "noteColorDefault": "Vaikimisi",
+  "noteColorYellow": "Kollane",
+  "noteColorRed": "Punane",
+  "noteColorPurple": "Lilla",
+  "noteColorBlue": "Sinine",
+  "noteColorGreen": "Roheline",
+  "noteColorOrange": "Oranž",
+  "noteColorWhite": "Valge",
   "recordVoiceNoteTooltip": "Salvesta häälmärge",
+  "recordVoiceNoteInstructions": "Salvestamise alustamiseks puuduta punast nuppu, tühistamiseks ✕.",
   "stopRecordingTooltip": "Peata salvestamine",
   "cancelRecordingTooltip": "Tühista salvestamine",
-  "previewBodyTooltip": "Eelvaade",
-  "editBodyTooltip": "Muuda",
+  "addVoiceTimestampButton": "Lisa ajatempel",
+  "editVoiceTimestampButton": "Muuda ajatemplit",
+  "voiceNoteUnsupportedOnPlatform": "Häälmärkmed ei ole selles seadmes toetatud",
+  "formatBoldTooltip": "Paks",
+  "formatItalicTooltip": "Kaldkiri",
+  "formatHeadingTooltip": "Pealkiri",
+  "formatListTooltip": "Täpploend",
+  "formatLinkTooltip": "Link",
   "imageSizeSmall": "Väike",
   "imageSizeMedium": "Keskmine",
   "imageSizeFull": "Täislaius",
   "removeImageButton": "Eemalda pilt",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Ühtegi releed pole veel seadistatud.",
   "relaysCount": "{count} releed",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Seaded",
   "sectionSecurity": "Turvalisus",
   "loadingLabel": "Laadimine…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Välimus",
   "lightThemeToggleTitle": "Hele teema",
   "lightThemeToggleSubtitle": "Kasuta tumeda asemel heledat värviskeemi",
-  "noteLayoutToggleTitle": "Märkmeloendi paigutus",
-  "noteLayoutToggleSubtitle": "Lülitu loendi- ja ruudustikuvaate vahel",
+  "noteLayoutToggleTitle": "Lülitu loendi- ja ruudustikuvaate vahel",
   "manageRelaysTitle": "Halda releesid",
+  "republishAllNotesButton": "Avalda kõik sünkroonitud märkmed uuesti",
+  "republishAllNotesSubtitle": "Täidab iga ülaloleva relee mujal juba jagatud märkmetega — kasulik kohe pärast uue lisamist, nt oma varureleed",
+  "republishAllNotesSuccess": "Uuesti avaldatud {count} märget",
+  "republishAllNotesError": "Märkmeid ei õnnestunud uuesti avaldada: {error}",
+  "forceFullResyncButton": "Sunni täielik taassünkroonimine",
+  "forceFullResyncSubtitle": "Kontrollib relaysid uuesti märkme kogu ajaloo, mitte ainult uue osas — kasulik, kui sünkroonimine tundub kinni jäävat ja jätab vanemad märkmed vahele, nt pärast kättesaamatu relay parandamist",
+  "forceFullResyncSuccess": "Märkmed värskendatud relaydelt",
+  "forceFullResyncError": "Märkmete taassünkroonimine ebaõnnestus: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Kinnita",
-
   "sectionLanguage": "Keel",
   "langSystem": "Süsteemi vaikeseade",
-
   "sectionAccount": "Konto",
   "accountLocalOnlyMessage": "Echoes kasutamine kohalikult — Nostriga ei sünkroonita",
   "accountSignInButton": "Logi sisse",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Logi välja",
   "accountSignOutConfirmTitle": "Kas logida välja?",
   "accountSignOutConfirmBody": "Sinu märkmed jäävad sellesse seadmesse. Saad igal ajal uuesti sisse logida.",
-
   "onboardingWelcomeTitle": "Tere tulemast Echoesisse",
   "onboardingIntroLocalTitle": "Sinu märkmed on alati sinu seadmes",
   "onboardingIntroLocalBody": "Iga märge salvestatakse kõigepealt kohalikult, nii et rakendus töötab täielikult võrguühenduseta. Miski ei lahku sinu seadmest, kui sa ei vali sünkroonimist.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Vali sünkroonimiseks releed",
   "onboardingRelayBody": "Releed on kohad, kuhu sinu krüptitud märkmed sünkroonimisel salvestatakse. Lisa üks või mitu — need populaarsed on hea algus:",
   "onboardingFinishButton": "Alusta",
-
   "syncNoteTooltip": "Sünkrooni see märge",
   "unsyncNoteTooltip": "Eemalda releedest",
   "syncSelectedTooltip": "Sünkrooni valitud märked",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Sisestage oma parool",
   "exportSetPasswordDialogTitle": "Määrake selle ekspordi jaoks parool",
   "importPasswordDialogTitle": "Sisestage ekspordi parool",
-
   "sectionData": "Andmed",
   "exportNotesButton": "Ekspordi märkmed",
   "exportNotesSubtitle": "Salvesta kõik märkmed faili, mida saad hiljem uuesti importida",
@@ -149,16 +188,14 @@
   "exportNotesError": "Märkmeid ei õnnestunud eksportida: {error}",
   "importNotesSuccess": "Imporditi {count} märget",
   "importNotesError": "Märkmeid ei õnnestunud importida: {error}",
-
   "sectionAttachments": "Manused",
   "attachmentProviderSubtitle": "Kuhu laaditakse krüptitud pildid ja häälmärkmed sünkroonimisel",
   "attachmentProviderCustom": "Kohandatud…",
   "attachmentCustomUrlLabel": "Serveri URL",
-
+  "attachmentProviderHint": "Mõned avalikud serverid (nt Primal, nostr.build) lükkavad krüptitud üleslaadimised tagasi — nad kontrollivad päris pildisisu, mida krüptitud andmed kunagi pole. Eelista Blossomi serverit, mis salvestab läbipaistmatuid andmeid, või suuna „Kohandatud…“ oma serverile.",
   "sectionSupport": "Toetus",
   "supportEchoesTitle": "Toeta Echoesi",
   "lightningAddressCopied": "⚡ {address} kopeeriti lõikelauale",
-
   "cancelButton": "Tühista",
   "passwordLabel": "Parool",
   "invalidPrivateKeyError": "Privaatvõti ei ole kehtiv. Sisestage kehtiv nsec- või hex-võti.",

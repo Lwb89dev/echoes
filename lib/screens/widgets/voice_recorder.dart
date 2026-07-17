@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,6 +46,12 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
   Duration _elapsed = Duration.zero;
   _RecorderPhase _phase = _RecorderPhase.idle;
 
+  /// Where the current take is being written, from [_start] until it's
+  /// either handed off to [VoiceRecorder.onRecorded] (see [_stop]) or
+  /// deleted as abandoned (see [_deleteAbandonedRecording]). Null whenever
+  /// no take exists on disk that this recorder is still responsible for.
+  String? _recordingPath;
+
   /// Slides the whole panel in from the trailing edge on mount; reversing
   /// this (then waiting for it to finish) is what makes closing — either
   /// via [_cancel] or a completed [_stop] — animate back out instead of
@@ -68,6 +75,7 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
     }
     final dir = await getApplicationDocumentsDirectory();
     final path = '${dir.path}/echoes_recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    _recordingPath = path;
     await _recorder.start(const RecordConfig(encoder: AudioEncoder.aacLc), path: path);
     if (!mounted) return;
     // A recording in progress shouldn't be cut off (or need babysitting)
@@ -85,6 +93,9 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
     final path = await _recorder.stop();
     final elapsed = _elapsed;
     if (path != null) {
+      // Handed off: the file is the pending Attachment's problem now, not
+      // this recorder's — must not be cleaned up by [dispose] below.
+      _recordingPath = null;
       await _closeWith(() => widget.onRecorded(path, elapsed));
     } else {
       await _closeWith(widget.onCancel);
@@ -94,11 +105,29 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
   Future<void> _cancel() async {
     _ticker?.cancel();
     await WakelockPlus.disable();
-    // Discards the in-progress recording file too — cancelling really
-    // means "never mind", not "keep a silent/partial attachment around".
-    // Harmless to call even from the idle phase, before anything started.
+    // Discards the in-progress recording *file* too, not just the recorder
+    // session — cancelling really means "never mind", and a cancelled
+    // take must not keep sitting on disk as an orphaned audio file nobody
+    // can see or remove from the UI. Harmless from the idle phase, before
+    // anything started ([_recordingPath] still null).
     if (_phase == _RecorderPhase.recording) await _recorder.stop();
+    await _deleteAbandonedRecording();
     await _closeWith(widget.onCancel);
+  }
+
+  /// Removes the recording file of a take that will never become an
+  /// attachment (cancelled, or the whole screen torn down mid-recording).
+  /// Best-effort: a failed delete only means a stray file, never a failed
+  /// cancel.
+  Future<void> _deleteAbandonedRecording() async {
+    final path = _recordingPath;
+    _recordingPath = null;
+    if (path == null) return;
+    try {
+      await File(path).delete();
+    } catch (_) {
+      // Nothing useful to do with a cleanup failure here.
+    }
   }
 
   /// Plays the close (reverse slide) animation, then invokes [action] —
@@ -115,9 +144,11 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
     _recorder.dispose();
     _slideController.dispose();
     // Best-effort: if this screen is being torn down entirely (e.g. system
-    // back) mid-recording rather than through _stop/_cancel, the wakelock
-    // must not outlive it.
+    // back) mid-recording rather than through _stop/_cancel, neither the
+    // wakelock nor the half-written recording file must outlive it —
+    // an abandoned take is [_cancel]'s case, just without the animation.
     WakelockPlus.disable();
+    _deleteAbandonedRecording();
     super.dispose();
   }
 

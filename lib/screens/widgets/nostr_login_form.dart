@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
+import '../../utils/platform_support.dart';
 
 /// The Amber / import-nsec login controls, shared by [LoginScreen] and the
 /// onboarding carousel's login step. Calls [onLoggedIn] once [authProvider]
@@ -69,12 +70,15 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
               textAlign: TextAlign.center,
             ),
           ),
-        FilledButton.icon(
-          onPressed: isLoading ? null : _loginWithAmber,
-          icon: const Icon(Icons.shield_outlined),
-          label: Text(l.loginWithAmberButton),
-        ),
-        const SizedBox(height: 12),
+        // Amber (NIP-55) is Android-only — see [PlatformSupport.supportsAmber].
+        if (PlatformSupport.supportsAmber) ...[
+          FilledButton.icon(
+            onPressed: isLoading ? null : _loginWithAmber,
+            icon: const Icon(Icons.shield_outlined),
+            label: Text(l.loginWithAmberButton),
+          ),
+          const SizedBox(height: 12),
+        ],
         OutlinedButton.icon(
           onPressed: isLoading
               ? null

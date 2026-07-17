@@ -446,4 +446,18 @@ class LocalStorageService {
     final prefs = await _prefs;
     await prefs.setString(AppConstants.prefsLastSyncKey, time.toIso8601String());
   }
+
+  /// Rewinds the bookmark back to "never synced" so the next cycle asks
+  /// relays for a note's entire history again instead of only whatever's
+  /// newer than it. Recovery valve for [SyncService.runSyncCycle] leaving
+  /// it stuck in the past: e.g. one relay in the configured list being
+  /// unreachable means every cycle's fetch reports incomplete and correctly
+  /// never advances the bookmark, but if it *was* mistakenly advanced past
+  /// some notes before that relay ever entered the picture, nothing pulls
+  /// them back down until this runs — see Settings' "Force full resync".
+  Future<void> clearLastSyncTime() async {
+    developer.log('LocalStorageService.clearLastSyncTime called', name: 'LocalStorageService');
+    final prefs = await _prefs;
+    await prefs.remove(AppConstants.prefsLastSyncKey);
+  }
 }

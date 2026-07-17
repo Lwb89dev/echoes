@@ -63,6 +63,15 @@ class AppConstants {
   /// is in the foreground (fallback on top of the live websocket subscription).
   static const Duration syncPollInterval = Duration(minutes: 3);
 
+  /// Upper bound on a fetched note event's `content` length, checked before
+  /// any hashing/verification/decryption work runs on it. Legitimate content
+  /// is NIP-44 ciphertext of at most 65535 plaintext bytes (see
+  /// `Nip44._calcPaddedLen`'s own limit) — comfortably under 100 KB even
+  /// base64-encoded. Anything past this is a relay (malicious or just
+  /// broken) sending oversized junk that isn't worth spending CPU/memory
+  /// hashing and attempting to decrypt.
+  static const int maxNoteEventContentChars = 200000;
+
   /// Upper bound on how long we wait for Amber to respond to a signing
   /// request (get_public_key, sign_event, nip44_*).
   ///

@@ -31,35 +31,36 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settingsTooltip => 'Inställningar';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Sök';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Stäng sökningen';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Sök i anteckningar';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Inga träffar.';
 
   @override
   String get emptyNotesMessage =>
       'Inga anteckningar än. Tryck på + för att skapa en.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Anteckningar';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Dagbok';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Inga dagboksinlägg ännu. Tryck på + för att skriva ett.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Idag';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Igår';
 
   @override
   String get newPlainNoteOption => 'Anteckning';
@@ -133,9 +134,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get titleFieldLabel => 'Titel';
 
   @override
-  String get checklistLabel => 'Checklista';
-
-  @override
   String get bodyFieldHint => 'Skriv här... (markdown stöds)';
 
   @override
@@ -146,66 +144,66 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done av $total klara';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Visa klara punkter';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Dölj klara punkter';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Alla punkter är klara och dolda.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Ta bort klara punkter';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Ta bort klara punkter?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Detta tar bort $count avbockade punkter från listan. Kan inte ångras.';
   }
 
   @override
   String get addImageButton => 'Lägg till bild';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Anteckningens färg';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Standard';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Gul';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Röd';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Lila';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Blå';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Grön';
 
   @override
   String get noteColorOrange => 'Orange';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Vit';
 
   @override
   String get recordVoiceNoteTooltip => 'Spela in en röstanteckning';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Tryck på den röda knappen för att börja spela in, eller ✕ för att avbryta.';
 
   @override
   String get stopRecordingTooltip => 'Stoppa inspelning';
@@ -214,25 +212,29 @@ class AppLocalizationsSv extends AppLocalizations {
   String get cancelRecordingTooltip => 'Avbryt inspelning';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Lägg till tidsstämpel';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Redigera tidsstämpel';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Röstanteckningar stöds inte på den här enheten';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Fet';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Kursiv';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Rubrik';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Punktlista';
+
+  @override
+  String get formatLinkTooltip => 'Länk';
 
   @override
   String get imageSizeSmall => 'Liten';
@@ -322,26 +324,42 @@ class AppLocalizationsSv extends AppLocalizations {
       'Använd ett ljust färgschema istället för mörkt';
 
   @override
-  String get noteLayoutToggleTitle => 'Layout för anteckningslista';
+  String get noteLayoutToggleTitle => 'Växla mellan list- och rutnätsvy';
 
   @override
   String get manageRelaysTitle => 'Hantera reläer';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Publicera om alla synkroniserade anteckningar';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Fyller på varje relä ovan med anteckningar som redan delats någon annanstans — användbart direkt efter att du lagt till ett nytt, t.ex. ett självhostat backup-relä';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return '$count anteckningar publicerades om';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Anteckningarna kunde inte publiceras om: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Tvinga fullständig omsynkronisering';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Kontrollerar reläer igen efter en antecknings hela historik i stället för bara det nya — användbart om synkroniseringen verkar fastna och hoppar över äldre anteckningar, t.ex. efter att ha åtgärdat ett oåtkomligt relä';
+
+  @override
+  String get forceFullResyncSuccess => 'Anteckningar uppdaterade från reläer';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Det gick inte att omsynkronisera anteckningarna: $error';
   }
 
   @override
@@ -562,7 +580,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Vissa publika värdar (t.ex. Primal, nostr.build) avvisar krypterade uppladdningar direkt — de validerar äkta bildinnehåll, vilket krypterad data aldrig är. Föredra en Blossom-värd som lagrar rå data, eller peka Anpassad… mot en självhostad.';
 
   @override
   String get sectionSupport => 'Stöd';

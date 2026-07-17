@@ -1,15 +1,22 @@
 {
   "@@locale": "ja",
-
   "loginSubtitle": "Nostrアカウントでサインインしてください",
   "loginWithAmberButton": "Amberでサインイン",
   "importAccountButton": "Nostrアカウントをインポート",
   "importAccountFieldLabel": "Nostrアカウントの秘密鍵（nsec）",
   "importButton": "インポート",
-
   "relaysTitle": "リレー",
   "settingsTooltip": "設定",
+  "searchTooltip": "検索",
+  "closeSearchTooltip": "検索を閉じる",
+  "searchNotesHint": "メモを検索",
+  "noSearchResultsMessage": "一致するものがありません。",
   "emptyNotesMessage": "まだメモがありません。+をタップして作成してください。",
+  "notesTabLabel": "メモ",
+  "diaryTabLabel": "日記",
+  "emptyDiaryMessage": "まだ日記がありません。+ をタップして書きましょう。",
+  "diaryToday": "今日",
+  "diaryYesterday": "昨日",
   "newPlainNoteOption": "メモ",
   "newChecklistOption": "チェックリスト",
   "newVoiceNoteOption": "音声メモ",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "{count}件のメモを削除しますか?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "この操作は元に戻せません。これらのメモの一部が同期されていた場合、リレーからも削除されます。",
   "selectionCount": "{count}件選択中",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "（無題）",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count}日前",
   "notesLockedTitle": "メモはパスワードで保護されています",
   "unlockButton": "ロック解除",
-
-  "newNoteTitle": "新しいメモ",
-  "editNoteTitle": "メモを編集",
   "saveTooltip": "保存",
   "titleFieldLabel": "タイトル",
-  "checklistLabel": "チェックリスト",
   "bodyFieldHint": "ここに入力...（markdown対応）",
   "checklistItemHint": "チェックリスト項目",
   "addItemButton": "項目を追加",
+  "checklistProgress": "{total}件中{done}件完了",
+  "showCompletedItemsTooltip": "完了した項目を表示",
+  "hideCompletedItemsTooltip": "完了した項目を非表示",
+  "allChecklistItemsCompletedHidden": "すべての項目が完了し、非表示になっています。",
+  "deleteCompletedItemsButton": "完了した項目を削除",
+  "deleteCompletedItemsConfirmTitle": "完了した項目を削除しますか？",
+  "deleteCompletedItemsConfirmBody": "このチェックリストからチェック済みの{count}件を削除します。元に戻せません。",
   "addImageButton": "画像を追加",
+  "noteColorButton": "メモの色",
+  "noteColorDefault": "デフォルト",
+  "noteColorYellow": "黄",
+  "noteColorRed": "赤",
+  "noteColorPurple": "紫",
+  "noteColorBlue": "青",
+  "noteColorGreen": "緑",
+  "noteColorOrange": "オレンジ",
+  "noteColorWhite": "白",
   "recordVoiceNoteTooltip": "音声メモを録音",
+  "recordVoiceNoteInstructions": "赤いボタンをタップで録音開始、✕ でキャンセル。",
   "stopRecordingTooltip": "録音を停止",
   "cancelRecordingTooltip": "録音をキャンセル",
-  "previewBodyTooltip": "プレビュー",
-  "editBodyTooltip": "編集",
+  "addVoiceTimestampButton": "タイムスタンプを追加",
+  "editVoiceTimestampButton": "タイムスタンプを編集",
+  "voiceNoteUnsupportedOnPlatform": "このデバイスではボイスメモはサポートされていません",
+  "formatBoldTooltip": "太字",
+  "formatItalicTooltip": "斜体",
+  "formatHeadingTooltip": "見出し",
+  "formatListTooltip": "箇条書き",
+  "formatLinkTooltip": "リンク",
   "imageSizeSmall": "小",
   "imageSizeMedium": "中",
   "imageSizeFull": "全幅",
   "removeImageButton": "画像を削除",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "リレーがまだ設定されていません。",
   "relaysCount": "{count} 件のリレー",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "設定",
   "sectionSecurity": "セキュリティ",
   "loadingLabel": "読み込み中…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "外観",
   "lightThemeToggleTitle": "ライトテーマ",
   "lightThemeToggleSubtitle": "ダークの代わりにライトカラーを使用します",
-  "noteLayoutToggleTitle": "メモリストのレイアウト",
-  "noteLayoutToggleSubtitle": "リスト表示とグリッド表示を切り替えます",
+  "noteLayoutToggleTitle": "リスト表示とグリッド表示を切り替え",
   "manageRelaysTitle": "リレーを管理",
+  "republishAllNotesButton": "同期済みのメモをすべて再公開",
+  "republishAllNotesSubtitle": "上のすべてのリレーに、他で共有済みのメモを補充します — 新しいリレー（例：セルフホストのバックアップリレー）を追加した直後に便利です",
+  "republishAllNotesSuccess": "{count}件のメモを再公開しました",
+  "republishAllNotesError": "メモを再公開できませんでした: {error}",
+  "forceFullResyncButton": "完全な再同期を強制",
+  "forceFullResyncSubtitle": "新しい分だけでなく、メモの全履歴をリレーに再確認します — 同期が止まって古いメモをスキップしているように見える場合に便利です（例: 到達できないリレーを修正した後など）",
+  "forceFullResyncSuccess": "リレーからメモを更新しました",
+  "forceFullResyncError": "メモの再同期に失敗しました: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "確認",
-
   "sectionLanguage": "言語",
   "langSystem": "システムのデフォルト",
-
   "sectionAccount": "アカウント",
   "accountLocalOnlyMessage": "Echoesをローカルで使用中 — Nostrとは同期していません",
   "accountSignInButton": "サインイン",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "サインアウト",
   "accountSignOutConfirmTitle": "サインアウトしますか？",
   "accountSignOutConfirmBody": "メモはこの端末に残ります。いつでも再度サインインできます。",
-
   "onboardingWelcomeTitle": "Echoesへようこそ",
   "onboardingIntroLocalTitle": "あなたのメモは、常に端末上に",
   "onboardingIntroLocalBody": "すべてのメモはまずローカルに保存されるため、アプリは完全にオフラインでも動作します。同期を選択しない限り、データが端末から出ることはありません。",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "同期用のリレーを選択",
   "onboardingRelayBody": "リレーは同期時に暗号化されたメモが保存される場所です。1つ以上追加してください — 以下の人気リレーから始めるのがおすすめです：",
   "onboardingFinishButton": "はじめる",
-
   "syncNoteTooltip": "このメモを同期",
   "unsyncNoteTooltip": "リレーから削除",
   "syncSelectedTooltip": "選択したメモを同期",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "パスワードを入力",
   "exportSetPasswordDialogTitle": "このエクスポート用のパスワードを設定",
   "importPasswordDialogTitle": "エクスポートのパスワードを入力",
-
   "sectionData": "データ",
   "exportNotesButton": "メモをエクスポート",
   "exportNotesSubtitle": "すべてのメモをファイルに保存し、後で再度インポートできます",
@@ -149,16 +188,14 @@
   "exportNotesError": "メモをエクスポートできませんでした: {error}",
   "importNotesSuccess": "{count} 件のメモをインポートしました",
   "importNotesError": "メモをインポートできませんでした: {error}",
-
   "sectionAttachments": "添付ファイル",
   "attachmentProviderSubtitle": "同期時に暗号化された画像や音声メモがアップロードされる場所",
   "attachmentProviderCustom": "カスタム…",
   "attachmentCustomUrlLabel": "サーバーURL",
-
+  "attachmentProviderHint": "一部の公開ホスト（例: Primal、nostr.build）は暗号化されたアップロードを拒否します — 実際の画像内容を検証するため、暗号化データは通りません。不透明なデータを保存するBlossomホストを選ぶか、「カスタム…」でセルフホストを指定してください。",
   "sectionSupport": "サポート",
   "supportEchoesTitle": "Echoesを応援する",
   "lightningAddressCopied": "⚡ {address} をクリップボードにコピーしました",
-
   "cancelButton": "キャンセル",
   "passwordLabel": "パスワード",
   "invalidPrivateKeyError": "秘密鍵が無効です。有効な nsec または hex キーを入力してください。",

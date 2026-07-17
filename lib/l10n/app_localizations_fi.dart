@@ -30,35 +30,36 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settingsTooltip => 'Asetukset';
 
   @override
-  String get searchTooltip => 'Search';
+  String get searchTooltip => 'Hae';
 
   @override
-  String get closeSearchTooltip => 'Close search';
+  String get closeSearchTooltip => 'Sulje haku';
 
   @override
-  String get searchNotesHint => 'Search notes';
+  String get searchNotesHint => 'Hae muistiinpanoista';
 
   @override
-  String get noSearchResultsMessage => 'No matches.';
+  String get noSearchResultsMessage => 'Ei osumia.';
 
   @override
   String get emptyNotesMessage =>
       'Ei vielä muistiinpanoja. Luo uusi napauttamalla +.';
 
   @override
-  String get notesTabLabel => 'Notes';
+  String get notesTabLabel => 'Muistiinpanot';
 
   @override
-  String get diaryTabLabel => 'Diary';
+  String get diaryTabLabel => 'Päiväkirja';
 
   @override
-  String get emptyDiaryMessage => 'No diary entries yet. Tap + to write one.';
+  String get emptyDiaryMessage =>
+      'Ei vielä päiväkirjamerkintöjä. Napauta + kirjoittaaksesi.';
 
   @override
-  String get diaryToday => 'Today';
+  String get diaryToday => 'Tänään';
 
   @override
-  String get diaryYesterday => 'Yesterday';
+  String get diaryYesterday => 'Eilen';
 
   @override
   String get newPlainNoteOption => 'Muistiinpano';
@@ -132,9 +133,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get titleFieldLabel => 'Otsikko';
 
   @override
-  String get checklistLabel => 'Tarkistuslista';
-
-  @override
   String get bodyFieldHint => 'Kirjoita tähän... (markdown tuettu)';
 
   @override
@@ -145,66 +143,66 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String checklistProgress(int done, int total) {
-    return '$done of $total done';
+    return '$done/$total valmiina';
   }
 
   @override
-  String get showCompletedItemsTooltip => 'Show completed items';
+  String get showCompletedItemsTooltip => 'Näytä valmiit kohdat';
 
   @override
-  String get hideCompletedItemsTooltip => 'Hide completed items';
+  String get hideCompletedItemsTooltip => 'Piilota valmiit kohdat';
 
   @override
   String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+      'Kaikki kohdat ovat valmiita ja piilotettuja.';
 
   @override
-  String get deleteCompletedItemsButton => 'Delete completed items';
+  String get deleteCompletedItemsButton => 'Poista valmiit kohdat';
 
   @override
-  String get deleteCompletedItemsConfirmTitle => 'Delete completed items?';
+  String get deleteCompletedItemsConfirmTitle => 'Poistetaanko valmiit kohdat?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
-    return 'This removes $count checked-off item(s) from this checklist. This can\'t be undone.';
+    return 'Tämä poistaa $count merkittyä kohtaa tästä listasta. Ei voi kumota.';
   }
 
   @override
   String get addImageButton => 'Lisää kuva';
 
   @override
-  String get noteColorButton => 'Note color';
+  String get noteColorButton => 'Muistiinpanon väri';
 
   @override
-  String get noteColorDefault => 'Default';
+  String get noteColorDefault => 'Oletus';
 
   @override
-  String get noteColorYellow => 'Yellow';
+  String get noteColorYellow => 'Keltainen';
 
   @override
-  String get noteColorRed => 'Red';
+  String get noteColorRed => 'Punainen';
 
   @override
-  String get noteColorPurple => 'Purple';
+  String get noteColorPurple => 'Violetti';
 
   @override
-  String get noteColorBlue => 'Blue';
+  String get noteColorBlue => 'Sininen';
 
   @override
-  String get noteColorGreen => 'Green';
+  String get noteColorGreen => 'Vihreä';
 
   @override
-  String get noteColorOrange => 'Orange';
+  String get noteColorOrange => 'Oranssi';
 
   @override
-  String get noteColorWhite => 'White';
+  String get noteColorWhite => 'Valkoinen';
 
   @override
   String get recordVoiceNoteTooltip => 'Nauhoita äänimuistiinpano';
 
   @override
   String get recordVoiceNoteInstructions =>
-      'Tap the red button to start recording, or ✕ to cancel.';
+      'Aloita äänitys napauttamalla punaista painiketta, tai peruuta ✕.';
 
   @override
   String get stopRecordingTooltip => 'Lopeta nauhoitus';
@@ -213,25 +211,29 @@ class AppLocalizationsFi extends AppLocalizations {
   String get cancelRecordingTooltip => 'Peruuta nauhoitus';
 
   @override
-  String get addVoiceTimestampButton => 'Add timestamp';
+  String get addVoiceTimestampButton => 'Lisää aikaleima';
 
   @override
-  String get editVoiceTimestampButton => 'Edit timestamp';
+  String get editVoiceTimestampButton => 'Muokkaa aikaleimaa';
 
   @override
-  String get formatBoldTooltip => 'Bold';
+  String get voiceNoteUnsupportedOnPlatform =>
+      'Äänimuistiinpanoja ei tueta tällä laitteella';
 
   @override
-  String get formatItalicTooltip => 'Italic';
+  String get formatBoldTooltip => 'Lihavointi';
 
   @override
-  String get formatHeadingTooltip => 'Heading';
+  String get formatItalicTooltip => 'Kursivointi';
 
   @override
-  String get formatListTooltip => 'Bulleted list';
+  String get formatHeadingTooltip => 'Otsikko';
 
   @override
-  String get formatLinkTooltip => 'Link';
+  String get formatListTooltip => 'Luettelo';
+
+  @override
+  String get formatLinkTooltip => 'Linkki';
 
   @override
   String get imageSizeSmall => 'Pieni';
@@ -320,26 +322,43 @@ class AppLocalizationsFi extends AppLocalizations {
       'Käytä vaaleaa väriteemaa tumman sijaan';
 
   @override
-  String get noteLayoutToggleTitle => 'Muistiinpanoluettelon asettelu';
+  String get noteLayoutToggleTitle =>
+      'Vaihda luettelo- ja ruudukkonäkymän välillä';
 
   @override
   String get manageRelaysTitle => 'Hallitse releitä';
 
   @override
-  String get republishAllNotesButton => 'Republish all synced notes';
+  String get republishAllNotesButton =>
+      'Julkaise kaikki synkronoidut muistiinpanot uudelleen';
 
   @override
   String get republishAllNotesSubtitle =>
-      'Backfills every relay above with notes already shared elsewhere — useful right after adding one, e.g. a self-hosted backup relay';
+      'Täydentää jokaisen yllä olevan releen muualla jo jaetuilla muistiinpanoilla — hyödyllistä heti uuden lisäämisen jälkeen, esim. oman varareleen';
 
   @override
   String republishAllNotesSuccess(int count) {
-    return 'Republished $count note(s)';
+    return 'Julkaistiin uudelleen $count muistiinpanoa';
   }
 
   @override
   String republishAllNotesError(String error) {
-    return 'Could not republish notes: $error';
+    return 'Muistiinpanoja ei voitu julkaista uudelleen: $error';
+  }
+
+  @override
+  String get forceFullResyncButton => 'Pakota täysi uudelleensynkronointi';
+
+  @override
+  String get forceFullResyncSubtitle =>
+      'Tarkistaa releiltä muistiinpanon koko historian pelkän uuden sijaan — hyödyllinen, jos synkronointi vaikuttaa jumiutuneen ja ohittaa vanhempia muistiinpanoja, esim. korjattuasi tavoittamattoman releen';
+
+  @override
+  String get forceFullResyncSuccess => 'Muistiinpanot päivitetty releiltä';
+
+  @override
+  String forceFullResyncError(String error) {
+    return 'Muistiinpanojen uudelleensynkronointi epäonnistui: $error';
   }
 
   @override
@@ -560,7 +579,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get attachmentProviderHint =>
-      'Some public hosts (e.g. Primal, nostr.build) reject encrypted uploads outright — they validate real image content, which ciphertext never is. Prefer a Blossom host that stores opaque blobs, or point Custom… at a self-hosted one.';
+      'Jotkin julkiset palvelimet (esim. Primal, nostr.build) hylkäävät salatut lataukset suoraan — ne tarkistavat aidon kuvasisällön, jota salattu data ei koskaan ole. Suosi Blossom-palvelinta, joka tallentaa läpinäkymätöntä dataa, tai osoita Mukautettu… omaan palvelimeesi.';
 
   @override
   String get sectionSupport => 'Tuki';

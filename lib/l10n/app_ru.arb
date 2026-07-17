@@ -1,15 +1,22 @@
 {
   "@@locale": "ru",
-
   "loginSubtitle": "Войдите с помощью учётной записи Nostr",
   "loginWithAmberButton": "Войти через Amber",
   "importAccountButton": "Импортировать учётную запись Nostr",
   "importAccountFieldLabel": "Приватный ключ (nsec) вашей учётной записи Nostr",
   "importButton": "Импортировать",
-
   "relaysTitle": "Реле",
   "settingsTooltip": "Настройки",
+  "searchTooltip": "Поиск",
+  "closeSearchTooltip": "Закрыть поиск",
+  "searchNotesHint": "Поиск по заметкам",
+  "noSearchResultsMessage": "Совпадений нет.",
   "emptyNotesMessage": "Заметок пока нет. Нажмите +, чтобы создать новую.",
+  "notesTabLabel": "Заметки",
+  "diaryTabLabel": "Дневник",
+  "emptyDiaryMessage": "Записей в дневнике пока нет. Нажмите +, чтобы написать.",
+  "diaryToday": "Сегодня",
+  "diaryYesterday": "Вчера",
   "newPlainNoteOption": "Заметка",
   "newChecklistOption": "Чек-лист",
   "newVoiceNoteOption": "Голосовая заметка",
@@ -19,14 +26,18 @@
   "deleteNotesConfirmTitle": "Удалить {count} заметок?",
   "@deleteNotesConfirmTitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "deleteNotesConfirmBody": "Это действие нельзя отменить. Если какая-либо из этих заметок была синхронизирована, она также будет удалена с ваших реле.",
   "selectionCount": "Выбрано: {count}",
   "@selectionCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "untitledNote": "(без названия)",
@@ -37,35 +48,54 @@
   "timeDaysAgo": "{count} дн назад",
   "notesLockedTitle": "Заметки защищены паролем",
   "unlockButton": "Разблокировать",
-
-  "newNoteTitle": "Новая заметка",
-  "editNoteTitle": "Редактировать заметку",
   "saveTooltip": "Сохранить",
   "titleFieldLabel": "Заголовок",
-  "checklistLabel": "Чек-лист",
   "bodyFieldHint": "Пишите здесь... (поддерживается markdown)",
   "checklistItemHint": "Пункт списка",
   "addItemButton": "Добавить пункт",
+  "checklistProgress": "Выполнено {done} из {total}",
+  "showCompletedItemsTooltip": "Показать выполненные пункты",
+  "hideCompletedItemsTooltip": "Скрыть выполненные пункты",
+  "allChecklistItemsCompletedHidden": "Все пункты выполнены и скрыты.",
+  "deleteCompletedItemsButton": "Удалить выполненные пункты",
+  "deleteCompletedItemsConfirmTitle": "Удалить выполненные пункты?",
+  "deleteCompletedItemsConfirmBody": "Из списка будет удалено {count} отмеченных пунктов. Это нельзя отменить.",
   "addImageButton": "Добавить изображение",
+  "noteColorButton": "Цвет заметки",
+  "noteColorDefault": "По умолчанию",
+  "noteColorYellow": "Жёлтый",
+  "noteColorRed": "Красный",
+  "noteColorPurple": "Фиолетовый",
+  "noteColorBlue": "Синий",
+  "noteColorGreen": "Зелёный",
+  "noteColorOrange": "Оранжевый",
+  "noteColorWhite": "Белый",
   "recordVoiceNoteTooltip": "Записать голосовую заметку",
+  "recordVoiceNoteInstructions": "Нажмите красную кнопку, чтобы начать запись, или ✕ для отмены.",
   "stopRecordingTooltip": "Остановить запись",
   "cancelRecordingTooltip": "Отменить запись",
-  "previewBodyTooltip": "Просмотр",
-  "editBodyTooltip": "Редактировать",
+  "addVoiceTimestampButton": "Добавить метку времени",
+  "editVoiceTimestampButton": "Изменить метку времени",
+  "voiceNoteUnsupportedOnPlatform": "Голосовые заметки не поддерживаются на этом устройстве",
+  "formatBoldTooltip": "Жирный",
+  "formatItalicTooltip": "Курсив",
+  "formatHeadingTooltip": "Заголовок",
+  "formatListTooltip": "Маркированный список",
+  "formatLinkTooltip": "Ссылка",
   "imageSizeSmall": "Маленький",
   "imageSizeMedium": "Средний",
   "imageSizeFull": "Полная ширина",
   "removeImageButton": "Удалить изображение",
-
   "relayUrlHint": "wss://relay.example.com",
   "noRelaysMessage": "Пока не настроено ни одного реле.",
   "relaysCount": "{count} реле",
   "@relaysCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "settingsTitle": "Настройки",
   "sectionSecurity": "Безопасность",
   "loadingLabel": "Загрузка…",
@@ -85,14 +115,26 @@
   "sectionAppearance": "Внешний вид",
   "lightThemeToggleTitle": "Светлая тема",
   "lightThemeToggleSubtitle": "Использовать светлую цветовую схему вместо тёмной",
-  "noteLayoutToggleTitle": "Вид списка заметок",
-  "noteLayoutToggleSubtitle": "Переключение между списком и сеткой",
+  "noteLayoutToggleTitle": "Переключение между списком и сеткой",
   "manageRelaysTitle": "Управление реле",
+  "republishAllNotesButton": "Переопубликовать все синхронизированные заметки",
+  "republishAllNotesSubtitle": "Дополняет каждый релей выше заметками, уже опубликованными на других — полезно сразу после добавления нового, например собственного резервного релея",
+  "republishAllNotesSuccess": "Переопубликовано {count} заметок",
+  "republishAllNotesError": "Не удалось переопубликовать заметки: {error}",
+  "forceFullResyncButton": "Принудительная полная ресинхронизация",
+  "forceFullResyncSubtitle": "Повторно запрашивает у реле всю историю заметки, а не только новое — полезно, если синхронизация выглядит застрявшей и пропускает старые заметки, например после устранения недоступного реле",
+  "forceFullResyncSuccess": "Заметки обновлены с реле",
+  "forceFullResyncError": "Не удалось ресинхронизировать заметки: {error}",
+  "@forceFullResyncError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "confirmButton": "Подтвердить",
-
   "sectionLanguage": "Язык",
   "langSystem": "Системный по умолчанию",
-
   "sectionAccount": "Аккаунт",
   "accountLocalOnlyMessage": "Echoes используется локально — без синхронизации с Nostr",
   "accountSignInButton": "Войти",
@@ -100,7 +142,6 @@
   "accountSignOutButton": "Выйти",
   "accountSignOutConfirmTitle": "Выйти из аккаунта?",
   "accountSignOutConfirmBody": "Ваши заметки останутся на этом устройстве. Вы можете войти снова в любое время.",
-
   "onboardingWelcomeTitle": "Добро пожаловать в Echoes",
   "onboardingIntroLocalTitle": "Ваши заметки всегда на вашем устройстве",
   "onboardingIntroLocalBody": "Каждая заметка сначала сохраняется локально, поэтому приложение полностью работает offline. Ничего не покидает ваше устройство, если вы не решите синхронизировать данные.",
@@ -118,7 +159,6 @@
   "onboardingRelayTitle": "Выберите реле для синхронизации",
   "onboardingRelayBody": "Реле — это место, где хранятся ваши зашифрованные заметки при синхронизации. Добавьте одно или несколько — эти популярные реле станут хорошим началом:",
   "onboardingFinishButton": "Начать",
-
   "syncNoteTooltip": "Синхронизировать эту заметку",
   "unsyncNoteTooltip": "Удалить с реле",
   "syncSelectedTooltip": "Синхронизировать выбранные заметки",
@@ -139,7 +179,6 @@
   "exportPasswordDialogTitle": "Введите свой пароль",
   "exportSetPasswordDialogTitle": "Установите пароль для этого экспорта",
   "importPasswordDialogTitle": "Введите пароль экспорта",
-
   "sectionData": "Данные",
   "exportNotesButton": "Экспортировать заметки",
   "exportNotesSubtitle": "Сохраните все свои заметки в файл, который позже можно будет снова импортировать",
@@ -149,16 +188,14 @@
   "exportNotesError": "Не удалось экспортировать заметки: {error}",
   "importNotesSuccess": "Импортировано заметок: {count}",
   "importNotesError": "Не удалось импортировать заметки: {error}",
-
   "sectionAttachments": "Вложения",
   "attachmentProviderSubtitle": "Куда загружаются зашифрованные изображения и голосовые заметки при синхронизации",
   "attachmentProviderCustom": "Свой вариант…",
   "attachmentCustomUrlLabel": "URL сервера",
-
+  "attachmentProviderHint": "Некоторые публичные серверы (напр. Primal, nostr.build) отклоняют зашифрованные загрузки — они проверяют настоящее содержимое изображения, которым зашифрованные данные никогда не являются. Предпочтите Blossom-сервер, хранящий непрозрачные данные, или укажите «Свой…» на собственный сервер.",
   "sectionSupport": "Поддержка",
   "supportEchoesTitle": "Поддержать Echoes",
   "lightningAddressCopied": "⚡ {address} скопирован в буфер обмена",
-
   "cancelButton": "Отмена",
   "passwordLabel": "Пароль",
   "invalidPrivateKeyError": "Закрытый ключ недействителен. Введите действительный ключ nsec или hex.",

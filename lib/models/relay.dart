@@ -23,10 +23,17 @@ class Relay {
 
 /// Default relays suggested during onboarding and in Settings' relay
 /// section.
+///
+/// Deliberately does NOT include relay.nostr.band: unlike a plain storage
+/// relay, it's a search/indexing service — subscribing to it with an
+/// `authors: [pubkey]` filter (which every fetch here does) hands a
+/// network-wide indexer "this pubkey is active right now, from this IP",
+/// a presence beacon a note-storage relay has no reason to also be. It's
+/// otherwise unremarkable as a relay, so if a user adds it back manually
+/// that's an informed choice — it's only excluded from what's *suggested*.
 const List<String> defaultRelayUrls = [
   'wss://relay.damus.io',
   'wss://nos.lol',
-  'wss://relay.nostr.band',
 ];
 
 /// Always queried *in addition to* the user's configured relays when

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/onboarding_provider.dart';
 import '../providers/relay_provider.dart';
+import '../utils/platform_support.dart';
+import '../utils/responsive.dart';
 import 'widgets/nostr_login_form.dart';
 import 'widgets/relay_widgets.dart';
 
@@ -115,20 +117,32 @@ class _OnboardingBottomBar extends StatelessWidget {
             width: 72,
             child: isFirst
                 ? null
-                : TextButton(onPressed: onBack, child: Text(l.onboardingBackButton)),
+                : TextButton(
+                    onPressed: onBack,
+                    child: Text(l.onboardingBackButton),
+                  ),
           ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(pageCount, (i) => _Dot(active: i == page)),
+              children: List.generate(
+                pageCount,
+                (i) => _Dot(active: i == page),
+              ),
             ),
           ),
           if (isLast)
-            FilledButton(onPressed: onFinish, child: Text(l.onboardingFinishButton))
+            FilledButton(
+              onPressed: onFinish,
+              child: Text(l.onboardingFinishButton),
+            )
           else if (page == 1)
             TextButton(onPressed: onSkip, child: Text(l.onboardingSkipButton))
           else
-            FilledButton(onPressed: onNext, child: Text(l.onboardingNextButton)),
+            FilledButton(
+              onPressed: onNext,
+              child: Text(l.onboardingNextButton),
+            ),
         ],
       ),
     );
@@ -168,46 +182,62 @@ class _IntroPage extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.graphic_eq, size: 56, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(height: 16),
-          Text(l.onboardingWelcomeTitle, style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 24),
-          _FeatureRow(
-            icon: Icons.smartphone,
-            title: l.onboardingIntroLocalTitle,
-            body: l.onboardingIntroLocalBody,
-          ),
-          _FeatureRow(
-            icon: Icons.sync,
-            title: l.onboardingIntroSyncTitle,
-            body: l.onboardingIntroSyncBody,
-          ),
-          _FeatureRow(
-            icon: Icons.lock_outline,
-            title: l.onboardingIntroEncryptionTitle,
-            body: l.onboardingIntroEncryptionBody,
-          ),
-          _FeatureRow(
-            icon: Icons.shield_outlined,
-            title: l.onboardingIntroAmberTitle,
-            body: l.onboardingIntroAmberBody,
-          ),
-          _FeatureRow(
-            icon: Icons.security,
-            title: l.onboardingIntroSecurityTitle,
-            body: l.onboardingIntroSecurityBody,
-          ),
-        ],
+      child: MaxWidthCenter(
+        maxWidth: 560,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.graphic_eq,
+              size: 56,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l.onboardingWelcomeTitle,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 24),
+            _FeatureRow(
+              icon: Icons.smartphone,
+              title: l.onboardingIntroLocalTitle,
+              body: l.onboardingIntroLocalBody,
+            ),
+            _FeatureRow(
+              icon: Icons.sync,
+              title: l.onboardingIntroSyncTitle,
+              body: l.onboardingIntroSyncBody,
+            ),
+            _FeatureRow(
+              icon: Icons.lock_outline,
+              title: l.onboardingIntroEncryptionTitle,
+              body: l.onboardingIntroEncryptionBody,
+            ),
+            // Amber (NIP-55) is Android-only — see [PlatformSupport.supportsAmber].
+            if (PlatformSupport.supportsAmber)
+              _FeatureRow(
+                icon: Icons.shield_outlined,
+                title: l.onboardingIntroAmberTitle,
+                body: l.onboardingIntroAmberBody,
+              ),
+            _FeatureRow(
+              icon: Icons.security,
+              title: l.onboardingIntroSecurityTitle,
+              body: l.onboardingIntroSecurityBody,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class _FeatureRow extends StatelessWidget {
-  const _FeatureRow({required this.icon, required this.title, required this.body});
+  const _FeatureRow({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
 
   final IconData icon;
   final String title;
@@ -251,19 +281,26 @@ class _LoginPage extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Icon(Icons.key, size: 48, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(height: 16),
-          Text(
-            l.loginSubtitle,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          NostrLoginForm(onLoggedIn: onAdvance),
-        ],
+      child: MaxWidthCenter(
+        maxWidth: 480,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Icon(
+              Icons.key,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l.loginSubtitle,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            NostrLoginForm(onLoggedIn: onAdvance),
+          ],
+        ),
       ),
     );
   }
@@ -281,26 +318,41 @@ class _RelaySetupPage extends ConsumerWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.dns_outlined, size: 48, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(height: 16),
-          Text(l.onboardingRelayTitle, style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
-          Text(l.onboardingRelayBody, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 16),
-          const RelayUrlInput(),
-          const SizedBox(height: 8),
-          const SuggestedRelayList(),
-          const SizedBox(height: 8),
-          relaysState.when(
-            data: (relays) =>
-                relays.isEmpty ? const SizedBox.shrink() : RelayListView(relays: relays, shrinkWrap: true),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stackTrace) => Text(l.genericErrorPrefix(error.toString())),
-          ),
-        ],
+      child: MaxWidthCenter(
+        maxWidth: 560,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.dns_outlined,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l.onboardingRelayTitle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l.onboardingRelayBody,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            const RelayUrlInput(),
+            const SizedBox(height: 8),
+            const SuggestedRelayList(),
+            const SizedBox(height: 8),
+            relaysState.when(
+              data: (relays) => relays.isEmpty
+                  ? const SizedBox.shrink()
+                  : RelayListView(relays: relays, shrinkWrap: true),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stackTrace) =>
+                  Text(l.genericErrorPrefix(error.toString())),
+            ),
+          ],
+        ),
       ),
     );
   }

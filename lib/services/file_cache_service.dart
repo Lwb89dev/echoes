@@ -42,4 +42,20 @@ class FileCacheService {
     final file = File('${dir.path}/$key$extension');
     return file.writeAsBytes(bytes, flush: true);
   }
+
+  /// Deletes the cached file for [key], if any. Best-effort: the cache is
+  /// re-derivable by design, so a failed removal is never worth failing
+  /// the caller's own operation over — but a *deliberate* removal matters
+  /// for privacy (e.g. a deleted note's decrypted attachments must not
+  /// keep sitting on disk until the OS happens to purge the cache dir).
+  Future<void> remove(String key, {String extension = ''}) async {
+    developer.log('FileCacheService.remove called: $key', name: 'FileCacheService');
+    final dir = await _dir;
+    final file = File('${dir.path}/$key$extension');
+    try {
+      if (await file.exists()) await file.delete();
+    } catch (e) {
+      developer.log('Could not remove cached file $key: $e', name: 'FileCacheService');
+    }
+  }
 }
