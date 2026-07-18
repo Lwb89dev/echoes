@@ -36,6 +36,11 @@
   <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.4.2" date="2026-07-18">
+      <description>
+        <p>Android signing identity migrated to a dedicated release key (existing Android installs must be reinstalled once — sync or export notes first). Sync cycles are now serialized, fixing a race that could upload attachments twice.</p>
+      </description>
+    </release>
     <release version="0.4.1" date="2026-07-18">
       <description>
         <p>Fixes a UI freeze and crash while typing in the share sheet's recipient search (signature verification moved off the UI thread; contact list no longer refetched on every keystroke).</p>
