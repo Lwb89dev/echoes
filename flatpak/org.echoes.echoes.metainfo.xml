@@ -36,6 +36,11 @@
   <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.4.1" date="2026-07-18">
+      <description>
+        <p>Fixes a UI freeze and crash while typing in the share sheet's recipient search (signature verification moved off the UI thread; contact list no longer refetched on every keystroke).</p>
+      </description>
+    </release>
     <release version="0.4.0" date="2026-07-18">
       <description>
         <p>Multi-user note sharing over Nostr with end-to-end encryption per recipient, NIP-05 recipient lookup, contact autocomplete with visual identity confirmation, and a security hardening pass on all profile/contact fetching.</p>

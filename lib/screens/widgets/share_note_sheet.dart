@@ -441,6 +441,13 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
   }
 
   List<Widget> _ownerView(AppLocalizations l) {
+    // Watched unconditionally, on every build of the open sheet: this is
+    // what keeps the autoDispose [contactsProvider] alive (and its one
+    // fetch running to completion) for the sheet's whole lifetime — see
+    // [_matchingContacts] for why the watch must not live down a
+    // sometimes-skipped branch. Also means the fetch starts the moment the
+    // sheet opens, so suggestions are usually ready by the first keystroke.
+    final contacts = ref.watch(contactsProvider).value ?? const <NostrProfile>[];
     return [
       Text(l.shareNoteTitle, style: Theme.of(context).textTheme.titleLarge),
       const SizedBox(height: 16),
@@ -489,7 +496,7 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
               : KeyedSubtree(key: ValueKey('preview:${_preview!.hex}'), child: _previewCard(_preview!)),
         ),
       ] else
-        ..._contactSuggestions(),
+        ..._contactSuggestions(contacts),
       const SizedBox(height: 20),
       Text(l.shareRecipientsHeader, style: Theme.of(context).textTheme.titleSmall),
       const SizedBox(height: 4),
@@ -542,9 +549,17 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
   /// comment for why that boundary matters here. Empty while the field is
   /// empty or already looks like a complete identifier (that path goes
   /// through the live-resolve preview instead, not suggestions).
-  List<NostrProfile> _matchingContacts(String q) {
+  ///
+  /// [contacts] is passed in from [_ownerView], which is the one place that
+  /// watches [contactsProvider] — deliberately NOT watched here. This method
+  /// is only reached on some builds (not while a preview/spinner shows, not
+  /// while the field is empty), and an autoDispose provider whose only watch
+  /// lives on such a conditional path gets disposed mid-fetch every time a
+  /// build skips it, then restarted from scratch by the next keystroke — the
+  /// fetch never completes and suggestions never appear. The watch has to sit
+  /// on a code path that runs on *every* build of the open sheet.
+  List<NostrProfile> _matchingContacts(List<NostrProfile> contacts, String q) {
     if (q.isEmpty || _looksResolvable(q)) return const [];
-    final contacts = ref.watch(contactsProvider).value ?? const [];
     final needle = q.toLowerCase();
     final service = ref.read(nostrServiceProvider);
     return contacts.where((c) {
@@ -558,8 +573,8 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
     }).take(5).toList();
   }
 
-  List<Widget> _contactSuggestions() {
-    final matches = _matchingContacts(_recipientController.text.trim());
+  List<Widget> _contactSuggestions(List<NostrProfile> contacts) {
+    final matches = _matchingContacts(contacts, _recipientController.text.trim());
     if (matches.isEmpty) return const [];
     return [
       const SizedBox(height: 8),

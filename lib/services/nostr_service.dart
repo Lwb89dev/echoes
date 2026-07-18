@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'dart:isolate';
 
 import 'package:amberflutter/amberflutter.dart';
 import 'package:dart_nostr/dart_nostr.dart';
@@ -355,13 +356,64 @@ class NostrService {
   /// so a hostile relay shipping huge events would otherwise get free CPU
   /// out of the verifier itself (same cheapest-check-first ordering as
   /// [_decryptNoteEvent]).
-  List<NostrEvent> _attributedEvents(List<NostrEvent> events, Set<String> expectedAuthors) {
-    return events
+  ///
+  /// Runs the actual verification on a **background isolate**: schnorr
+  /// verification in pure Dart costs tens of milliseconds per event, and
+  /// this path can face a whole contact list's worth of kind-0s at once
+  /// (~hundreds). Done inline that arithmetic adds up to seconds of blocked
+  /// UI thread — frozen typing, and on Android long enough for an ANR kill.
+  /// Only primitive maps cross the isolate boundary (rebuilt into events on
+  /// the far side via [_nostrEventFromMap]) and only kept *indexes* come
+  /// back, so nothing non-sendable is ever transferred.
+  Future<List<NostrEvent>> _attributedEvents(
+      List<NostrEvent> events, Set<String> expectedAuthors) async {
+    if (events.isEmpty) return const [];
+    // Events missing any field required for verification can be dropped
+    // right here — they could never pass — which also guarantees the wire
+    // maps below are fully non-null for the isolate-side rebuild.
+    final candidates = events
         .where((e) =>
+            e.id != null &&
+            e.sig != null &&
+            e.kind != null &&
+            e.createdAt != null &&
             (e.content?.length ?? 0) <= AppConstants.maxNoteEventContentChars &&
-            expectedAuthors.contains(e.pubkey) &&
-            _isVerifiedEvent(e))
+            expectedAuthors.contains(e.pubkey))
         .toList();
+    if (candidates.isEmpty) return const [];
+
+    final wireMaps = [
+      for (final e in candidates)
+        {
+          'id': e.id!,
+          'kind': e.kind!,
+          'content': e.content ?? '',
+          'sig': e.sig!,
+          'pubkey': e.pubkey,
+          'created_at': e.createdAt!.millisecondsSinceEpoch ~/ 1000,
+          'tags': [
+            for (final tag in e.tags ?? const <List<String>>[]) List<String>.of(tag),
+          ],
+        },
+    ];
+    final keptIndexes = await Isolate.run(() => _verifiedIndexes(wireMaps));
+    return [for (final i in keptIndexes) candidates[i]];
+  }
+
+  /// Isolate entry point for [_attributedEvents]: rebuilds each wire map
+  /// into a [NostrEvent] and returns the indexes of the ones whose id and
+  /// signature verify. Static and touching no instance state — it must be
+  /// callable from a background isolate.
+  static List<int> _verifiedIndexes(List<Map<String, dynamic>> wireMaps) {
+    final kept = <int>[];
+    for (var i = 0; i < wireMaps.length; i++) {
+      try {
+        if (_isVerifiedEvent(_nostrEventFromMap(wireMaps[i]))) kept.add(i);
+      } catch (_) {
+        // Malformed map — simply not verified.
+      }
+    }
+    return kept;
   }
 
   /// Fetches [publicKeyHex]'s public profile card (kind 0), if any relay
@@ -408,7 +460,7 @@ class NostrService {
     // Attribution check before anything else: this name/avatar is what the
     // user will *recognise a person by* in the share flow, so a relay must
     // not be able to attach an arbitrary profile to this pubkey.
-    final events = _attributedEvents(gathered.events, {publicKeyHex});
+    final events = await _attributedEvents(gathered.events, {publicKeyHex});
     if (events.isEmpty) return null;
 
     // Relays are not required to enforce "one kind-0 per author" or return
@@ -459,7 +511,7 @@ class NostrService {
     // autocomplete with pubkeys the user never followed — the exact
     // "trusted suggestions" surface this feature leans on. Only an event
     // provably signed by the user's own key counts as their follow list.
-    final events = _attributedEvents(gathered.events, {publicKeyHex});
+    final events = await _attributedEvents(gathered.events, {publicKeyHex});
     if (events.isEmpty) return const [];
 
     final epoch = DateTime.fromMillisecondsSinceEpoch(0);
@@ -515,7 +567,7 @@ class NostrService {
     // proceed: without the membership check, a relay could volunteer
     // validly-signed profiles of complete strangers and have them surface
     // as "contacts" in the share autocomplete.
-    final trusted = _attributedEvents(gathered.events, publicKeyHexes.toSet());
+    final trusted = await _attributedEvents(gathered.events, publicKeyHexes.toSet());
 
     // Relays may return more than one kind-0 per author (an older event
     // alongside its replacement) — keep only the most recent.
@@ -1174,8 +1226,9 @@ class NostrService {
   /// i.e. the event is exactly what its signer actually signed, not a
   /// relay-tampered mix of a genuine id/sig with substituted content/tags.
   /// Never throws: any malformed event (missing field, bad hex, ...) is
-  /// simply not verified.
-  bool _isVerifiedEvent(NostrEvent event) {
+  /// simply not verified. Static (no instance state) so it can also run on
+  /// the background isolate spawned by [_attributedEvents].
+  static bool _isVerifiedEvent(NostrEvent event) {
     try {
       final id = event.id;
       final kind = event.kind;
@@ -1195,7 +1248,9 @@ class NostrService {
     }
   }
 
-  NostrEvent _nostrEventFromMap(Map<String, dynamic> map) {
+  /// Static (no instance state) so it can also run on the background
+  /// isolate spawned by [_attributedEvents].
+  static NostrEvent _nostrEventFromMap(Map<String, dynamic> map) {
     return NostrEvent(
       id: map['id'] as String,
       kind: map['kind'] as int,

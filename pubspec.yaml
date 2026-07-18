@@ -2,7 +2,7 @@ name: echoes
 description: "Echoes - offline-first note-taking app on the Nostr protocol."
 publish_to: 'none'
 
-version: 0.4.0+4
+version: 0.4.1+5
 
 environment:
   sdk: ^3.12.2
