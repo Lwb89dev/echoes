@@ -2,7 +2,7 @@
 
 **Offline-first, end-to-end encrypted notes — synced privately over [Nostr](https://nostr.com), on your terms.**
 
-Echoes is a Flutter notes app that treats the network as optional. Every note, checklist, image, and voice memo is saved locally first and stays fully usable with no connection at all. Syncing to Nostr relays is a separate, explicit action — never automatic, never required — and everything that leaves the device is encrypted before it goes: note content is NIP-44 self-encrypted, and image/voice attachments are AES-256-GCM encrypted client-side before upload, so relay operators and file hosts only ever see opaque ciphertext.
+Echoes is a Flutter notes app that treats the network as optional. Every note, checklist, image, and voice memo is saved locally first and stays fully usable with no connection at all. Nothing is ever published without an explicit opt-in: a note only starts syncing after you sync it once yourself — from then on, *that* note's updates ride the background sync (periodic + on-reconnect), while everything else stays local-only. Everything that leaves the device is encrypted before it goes: note content is NIP-44 self-encrypted, and image/voice attachments are AES-256-GCM encrypted client-side before upload, so relay operators and file hosts only ever see opaque ciphertext.
 
 ## Features
 
@@ -23,7 +23,7 @@ Echoes is a Flutter notes app that treats the network as optional. Every note, c
 2. Publishing is explicit: the cloud button on a single note, a bulk "sync selected" action, or an automatic background cycle (poll + on-reconnect) that only ever touches notes already opted into syncing.
 3. Notes are Nostr kind `30078` events (NIP-78, parameterized-replaceable via a `d` tag), content NIP-44-encrypted to the author's own pubkey. Deleting a synced note publishes a NIP-09 retraction.
 4. Any attachment still pending upload is encrypted and uploaded *before* the note is published, so a relay never receives a reference to a file that only exists on one device.
-5. Pulling from relays merges by `updatedAt` (newest wins), so concurrent edits on different devices don't clobber each other silently.
+5. Pulling from relays merges by `updatedAt` — last write wins. Simple and predictable, with the honest trade-off that if the same note is edited on two devices while offline, the older of the two edits is discarded on merge (there is no conflict-keeping).
 
 ## Tech stack
 

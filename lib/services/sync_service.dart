@@ -484,8 +484,38 @@ class SyncService {
     bool silent = true,
   }) async {
     developer.log('SyncService.runSyncCycle called', name: 'SyncService');
+    // Serialize cycles: the poll timer, the connectivity listener (which can
+    // fire several events in a burst when a network comes back) and
+    // pull-to-refresh can all request a cycle at the same time. Overlapping
+    // cycles would race: the same pending attachment uploaded twice, the
+    // same note published twice, and two interleaved writers of the sync
+    // bookmark. A caller arriving while a cycle is in flight *joins* that
+    // cycle (same session, same effective params) instead of starting
+    // another; error handling stays per-caller — the shared cycle completes
+    // with its error, and each joiner independently swallows (silent) or
+    // rethrows (explicit refresh) it.
+    final cycle = _cycleInFlight ??=
+        _runSyncCycleExclusive(author: author, relays: relays, uploadProvider: uploadProvider)
+            .whenComplete(() => _cycleInFlight = null);
+    try {
+      await cycle;
+    } catch (e) {
+      developer.log('runSyncCycle failed${silent ? ', will retry next cycle' : ''}: $e', name: 'SyncService');
+      if (!silent) rethrow;
+    }
+  }
+
+  Future<void>? _cycleInFlight;
+
+  /// The actual cycle body, run at most once at a time (see [runSyncCycle]).
+  /// Always throws on failure — the caller-facing wrapper decides per
+  /// caller whether that surfaces or just gets logged.
+  Future<void> _runSyncCycleExclusive({
+    required User author,
+    required List<Relay> relays,
+    required UploadProviderOption uploadProvider,
+  }) async {
     if (!await isOnline()) {
-      if (silent) return;
       throw StateError('No network connection.');
     }
     // Without this check, an empty relay list makes every step below a
@@ -493,11 +523,10 @@ class SyncService {
     // zero relays) — the cycle "succeeds" having synced nothing, with no
     // way to tell that apart from "everything was already up to date".
     if (relays.isEmpty) {
-      if (silent) return;
       throw StateError('No relay configured for syncing.');
     }
 
-    try {
+    {
       final localNotes = await _localStorageService.loadNotes();
 
       // Any note about to be (re)published that still has a pending
@@ -588,9 +617,6 @@ class SyncService {
           name: 'SyncService',
         );
       }
-    } catch (e) {
-      developer.log('runSyncCycle failed${silent ? ', will retry next cycle' : ''}: $e', name: 'SyncService');
-      if (!silent) rethrow;
     }
   }
 
