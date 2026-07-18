@@ -200,5 +200,48 @@
   "passwordLabel": "Parool",
   "invalidPrivateKeyError": "Privaatvõti ei ole kehtiv. Sisestage kehtiv nsec- või hex-võti.",
   "wrongPasswordError": "Vale parool",
-  "genericErrorPrefix": "Viga: {error}"
+  "genericErrorPrefix": "Viga: {error}",
+  "shareNoteTooltip": "Jaga",
+  "shareNoteTitle": "Jaga märkust",
+  "shareRecipientFieldLabel": "Saaja npub või avalik võti",
+  "shareAddRecipientButton": "Lisa",
+  "shareInvalidRecipientError": "See pole kehtiv npub ega avalik võti",
+  "shareRecipientNotFoundError": "Selle nimega Nostri kontot ei leitud",
+  "shareConfirmTitle": "Kas jagada seda märkust?",
+  "shareConfirmButton": "Jaga",
+  "shareAlreadyRecipientError": "Selle inimesega on juba jagatud",
+  "shareCannotShareWithSelfError": "Sa ei saa märkust iseendaga jagada",
+  "shareRecipientsHeader": "Jagatud kasutajaga",
+  "shareNoRecipientsMessage": "Pole veel kellegagi jagatud.",
+  "stopSharingTooltip": "Lõpeta selle inimesega jagamine",
+  "shareRevocationNote": "Igaüks, kellega jagad, saab lugeda seda märkust oma seadmes. Kellegi eemaldamine peatab tulevased uuendused, kuid ei saa kustutada juba saadut.",
+  "shareError": "Jagamise uuendamine ebaõnnestus: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Sinuga jagatud",
+  "sharedByLabel": "Jagas {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Saad seda märkust muuta; su muudatused sünkroonitakse tagasi omanikule, kes need liidab.",
+  "abandonSharedNoteButton": "Lahku sellest jagatud märkusest",
+  "abandonSharedNoteConfirmTitle": "Kas lahkuda sellest jagatud märkusest?",
+  "abandonSharedNoteConfirmBody": "See eemaldatakse sellest seadmest ja sa ei saa enam uuendusi. Seda ei saa tagasi võtta — sa ei saa hiljem uuesti liituda.",
+  "abandonSharedNoteError": "Lahkumine ebaõnnestus: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

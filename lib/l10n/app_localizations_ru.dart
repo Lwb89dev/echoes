@@ -610,4 +610,82 @@ class AppLocalizationsRu extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Ошибка: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Поделиться';
+
+  @override
+  String get shareNoteTitle => 'Поделиться заметкой';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub или открытый ключ получателя';
+
+  @override
+  String get shareAddRecipientButton => 'Добавить';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Это не действительный npub или открытый ключ';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Учётная запись Nostr для этого имени не найдена';
+
+  @override
+  String get shareConfirmTitle => 'Поделиться этой заметкой?';
+
+  @override
+  String get shareConfirmButton => 'Поделиться';
+
+  @override
+  String get shareAlreadyRecipientError => 'Уже предоставлено этому человеку';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Нельзя поделиться заметкой с самим собой';
+
+  @override
+  String get shareRecipientsHeader => 'Доступно для';
+
+  @override
+  String get shareNoRecipientsMessage => 'Пока никому не предоставлено.';
+
+  @override
+  String get stopSharingTooltip => 'Прекратить доступ для этого человека';
+
+  @override
+  String get shareRevocationNote =>
+      'Любой, кому вы предоставили доступ, может читать эту заметку на своём устройстве. Удаление кого-либо прекращает будущие обновления, но не может стереть уже полученное.';
+
+  @override
+  String shareError(String error) {
+    return 'Не удалось обновить доступ: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Доступно вам';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Поделился $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Вы можете редактировать эту заметку; ваши изменения синхронизируются обратно владельцу, который их объединяет.';
+
+  @override
+  String get abandonSharedNoteButton => 'Покинуть эту общую заметку';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Покинуть эту общую заметку?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Она будет удалена с этого устройства, и вы перестанете получать обновления. Отменить нельзя — вы не сможете присоединиться снова.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Не удалось покинуть: $error';
+  }
 }

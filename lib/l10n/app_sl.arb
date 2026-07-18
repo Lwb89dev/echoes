@@ -200,5 +200,48 @@
   "passwordLabel": "Geslo",
   "invalidPrivateKeyError": "Zasebni ključ ni veljaven. Vnesite veljaven ključ nsec ali hex.",
   "wrongPasswordError": "Napačno geslo",
-  "genericErrorPrefix": "Napaka: {error}"
+  "genericErrorPrefix": "Napaka: {error}",
+  "shareNoteTooltip": "Deli",
+  "shareNoteTitle": "Deli zapisek",
+  "shareRecipientFieldLabel": "npub ali javni ključ prejemnika",
+  "shareAddRecipientButton": "Dodaj",
+  "shareInvalidRecipientError": "To ni veljaven npub ali javni ključ",
+  "shareRecipientNotFoundError": "Za to ime ni bilo najdenega računa Nostr",
+  "shareConfirmTitle": "Deliti to opombo?",
+  "shareConfirmButton": "Deli",
+  "shareAlreadyRecipientError": "S to osebo je že deljeno",
+  "shareCannotShareWithSelfError": "Zapiska ne morete deliti s samim seboj",
+  "shareRecipientsHeader": "Deljeno z",
+  "shareNoRecipientsMessage": "Še ni deljeno z nikomer.",
+  "stopSharingTooltip": "Prenehaj deliti s to osebo",
+  "shareRevocationNote": "Vsak, s komer delite, lahko bere ta zapisek na svoji napravi. Odstranitev nekoga ustavi prihodnje posodobitve, ne more pa izbrisati že prejetega.",
+  "shareError": "Deljenja ni bilo mogoče posodobiti: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Deljeno z vami",
+  "sharedByLabel": "Delil(a) {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Ta zapisek lahko urejate; vaše spremembe se sinhronizirajo nazaj lastniku, ki jih združi.",
+  "abandonSharedNoteButton": "Zapusti ta deljeni zapisek",
+  "abandonSharedNoteConfirmTitle": "Zapustiti ta deljeni zapisek?",
+  "abandonSharedNoteConfirmBody": "Odstranjen bo iz te naprave in ne boste več prejemali posodobitev. Tega ni mogoče razveljaviti — pozneje se ne boste mogli znova pridružiti.",
+  "abandonSharedNoteError": "Ni bilo mogoče zapustiti: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

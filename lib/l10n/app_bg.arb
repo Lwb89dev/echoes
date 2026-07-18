@@ -200,5 +200,48 @@
   "passwordLabel": "Парола",
   "invalidPrivateKeyError": "Частният ключ не е валиден. Въведете валиден nsec или hex ключ.",
   "wrongPasswordError": "Грешна парола",
-  "genericErrorPrefix": "Грешка: {error}"
+  "genericErrorPrefix": "Грешка: {error}",
+  "shareNoteTooltip": "Споделяне",
+  "shareNoteTitle": "Споделяне на бележка",
+  "shareRecipientFieldLabel": "npub или публичен ключ на получателя",
+  "shareAddRecipientButton": "Добави",
+  "shareInvalidRecipientError": "Това не е валиден npub или публичен ключ",
+  "shareRecipientNotFoundError": "Не е намерен Nostr акаунт за това име",
+  "shareConfirmTitle": "Споделяне на тази бележка?",
+  "shareConfirmButton": "Споделяне",
+  "shareAlreadyRecipientError": "Вече е споделена с този човек",
+  "shareCannotShareWithSelfError": "Не можете да споделите бележка със себе си",
+  "shareRecipientsHeader": "Споделена с",
+  "shareNoRecipientsMessage": "Още не е споделена с никого.",
+  "stopSharingTooltip": "Спри споделянето с този човек",
+  "shareRevocationNote": "Всеки, с когото споделяте, може да чете тази бележка на своето устройство. Премахването на някого спира бъдещите актуализации към него, но не може да изтрие вече полученото.",
+  "shareError": "Неуспешно обновяване на споделянето: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Споделена с вас",
+  "sharedByLabel": "Споделена от {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Можете да редактирате тази бележка; промените ви се синхронизират обратно към собственика, който ги обединява.",
+  "abandonSharedNoteButton": "Напусни тази споделена бележка",
+  "abandonSharedNoteConfirmTitle": "Да напуснете тази споделена бележка?",
+  "abandonSharedNoteConfirmBody": "Ще бъде премахната от това устройство и ще спрете да получавате актуализации. Това не може да се отмени — няма да можете да се присъедините отново.",
+  "abandonSharedNoteError": "Неуспешно напускане: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

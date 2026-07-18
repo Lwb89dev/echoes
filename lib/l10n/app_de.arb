@@ -200,5 +200,48 @@
   "passwordLabel": "Passwort",
   "invalidPrivateKeyError": "Der private Schlüssel ist ungültig. Gib einen gültigen nsec- oder Hex-Schlüssel ein.",
   "wrongPasswordError": "Falsches Passwort",
-  "genericErrorPrefix": "Fehler: {error}"
+  "genericErrorPrefix": "Fehler: {error}",
+  "shareNoteTooltip": "Teilen",
+  "shareNoteTitle": "Notiz teilen",
+  "shareRecipientFieldLabel": "npub oder öffentlicher Schlüssel des Empfängers",
+  "shareAddRecipientButton": "Hinzufügen",
+  "shareInvalidRecipientError": "Das ist kein gültiger npub oder öffentlicher Schlüssel",
+  "shareRecipientNotFoundError": "Kein Nostr-Konto für diesen Namen gefunden",
+  "shareConfirmTitle": "Diese Notiz teilen?",
+  "shareConfirmButton": "Teilen",
+  "shareAlreadyRecipientError": "Bereits mit dieser Person geteilt",
+  "shareCannotShareWithSelfError": "Du kannst eine Notiz nicht mit dir selbst teilen",
+  "shareRecipientsHeader": "Geteilt mit",
+  "shareNoRecipientsMessage": "Noch mit niemandem geteilt.",
+  "stopSharingTooltip": "Teilen mit dieser Person beenden",
+  "shareRevocationNote": "Jeder, mit dem du teilst, kann diese Notiz auf seinem Gerät lesen. Jemanden zu entfernen stoppt künftige Aktualisierungen an ihn, kann aber bereits Erhaltenes nicht löschen.",
+  "shareError": "Freigabe konnte nicht aktualisiert werden: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Mit dir geteilt",
+  "sharedByLabel": "Geteilt von {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Du kannst diese Notiz bearbeiten; deine Änderungen werden zurück an den Eigentümer synchronisiert, der sie zusammenführt.",
+  "abandonSharedNoteButton": "Diese geteilte Notiz verlassen",
+  "abandonSharedNoteConfirmTitle": "Diese geteilte Notiz verlassen?",
+  "abandonSharedNoteConfirmBody": "Sie wird von diesem Gerät entfernt und du erhältst keine Aktualisierungen mehr. Das kann nicht rückgängig gemacht werden — du kannst später nicht wieder beitreten.",
+  "abandonSharedNoteError": "Verlassen fehlgeschlagen: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

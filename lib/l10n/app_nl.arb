@@ -200,5 +200,48 @@
   "passwordLabel": "Wachtwoord",
   "invalidPrivateKeyError": "De privésleutel is ongeldig. Voer een geldige nsec- of hex-sleutel in.",
   "wrongPasswordError": "Onjuist wachtwoord",
-  "genericErrorPrefix": "Fout: {error}"
+  "genericErrorPrefix": "Fout: {error}",
+  "shareNoteTooltip": "Delen",
+  "shareNoteTitle": "Notitie delen",
+  "shareRecipientFieldLabel": "npub of publieke sleutel van de ontvanger",
+  "shareAddRecipientButton": "Toevoegen",
+  "shareInvalidRecipientError": "Dat is geen geldige npub of publieke sleutel",
+  "shareRecipientNotFoundError": "Geen Nostr-account gevonden voor die naam",
+  "shareConfirmTitle": "Deze notitie delen?",
+  "shareConfirmButton": "Delen",
+  "shareAlreadyRecipientError": "Al gedeeld met deze persoon",
+  "shareCannotShareWithSelfError": "Je kunt een notitie niet met jezelf delen",
+  "shareRecipientsHeader": "Gedeeld met",
+  "shareNoRecipientsMessage": "Nog met niemand gedeeld.",
+  "stopSharingTooltip": "Delen met deze persoon stoppen",
+  "shareRevocationNote": "Iedereen met wie je deelt, kan deze notitie op zijn apparaat lezen. Iemand verwijderen stopt toekomstige updates, maar kan niet wissen wat al is ontvangen.",
+  "shareError": "Delen kon niet worden bijgewerkt: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Met jou gedeeld",
+  "sharedByLabel": "Gedeeld door {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Je kunt deze notitie bewerken; je wijzigingen worden teruggesynchroniseerd naar de eigenaar, die ze samenvoegt.",
+  "abandonSharedNoteButton": "Deze gedeelde notitie verlaten",
+  "abandonSharedNoteConfirmTitle": "Deze gedeelde notitie verlaten?",
+  "abandonSharedNoteConfirmBody": "Hij wordt van dit apparaat verwijderd en je ontvangt geen updates meer. Dit kan niet ongedaan worden gemaakt — je kunt later niet opnieuw deelnemen.",
+  "abandonSharedNoteError": "Verlaten mislukt: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

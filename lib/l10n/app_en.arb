@@ -339,5 +339,48 @@
         "type": "String"
       }
     }
+  },
+  "shareNoteTooltip": "Share",
+  "shareNoteTitle": "Share note",
+  "shareRecipientFieldLabel": "Recipient npub or public key",
+  "shareAddRecipientButton": "Add",
+  "shareInvalidRecipientError": "That's not a valid npub or public key",
+  "shareRecipientNotFoundError": "No Nostr account found for that name",
+  "shareConfirmTitle": "Share this note?",
+  "shareConfirmButton": "Share",
+  "shareAlreadyRecipientError": "Already shared with this person",
+  "shareCannotShareWithSelfError": "You can't share a note with yourself",
+  "shareRecipientsHeader": "Shared with",
+  "shareNoRecipientsMessage": "Not shared with anyone yet.",
+  "stopSharingTooltip": "Stop sharing with this person",
+  "shareRevocationNote": "Anyone you share with can read this note on their device. Removing someone stops future updates reaching them, but can't erase what they already received.",
+  "shareError": "Could not update sharing: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Shared with you",
+  "sharedByLabel": "Shared by {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "You can edit this note; your changes sync back to the owner, who merges them.",
+  "abandonSharedNoteButton": "Leave this shared note",
+  "abandonSharedNoteConfirmTitle": "Leave this shared note?",
+  "abandonSharedNoteConfirmBody": "It'll be removed from this device and you'll stop receiving updates. This can't be undone — you won't be able to rejoin it later.",
+  "abandonSharedNoteError": "Could not leave: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 }

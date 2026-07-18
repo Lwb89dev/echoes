@@ -200,5 +200,48 @@
   "passwordLabel": "Heslo",
   "invalidPrivateKeyError": "Súkromný kľúč nie je platný. Zadajte platný nsec alebo hex kľúč.",
   "wrongPasswordError": "Nesprávne heslo",
-  "genericErrorPrefix": "Chyba: {error}"
+  "genericErrorPrefix": "Chyba: {error}",
+  "shareNoteTooltip": "Zdieľať",
+  "shareNoteTitle": "Zdieľať poznámku",
+  "shareRecipientFieldLabel": "npub alebo verejný kľúč príjemcu",
+  "shareAddRecipientButton": "Pridať",
+  "shareInvalidRecipientError": "To nie je platný npub ani verejný kľúč",
+  "shareRecipientNotFoundError": "Pre toto meno sa nenašiel žiadny účet Nostr",
+  "shareConfirmTitle": "Zdieľať túto poznámku?",
+  "shareConfirmButton": "Zdieľať",
+  "shareAlreadyRecipientError": "S touto osobou je už zdieľané",
+  "shareCannotShareWithSelfError": "Poznámku nemôžete zdieľať sami so sebou",
+  "shareRecipientsHeader": "Zdieľané s",
+  "shareNoRecipientsMessage": "Zatiaľ s nikým nezdieľané.",
+  "stopSharingTooltip": "Prestať zdieľať s touto osobou",
+  "shareRevocationNote": "Ktokoľvek, s kým zdieľate, si môže túto poznámku prečítať na svojom zariadení. Odstránenie niekoho zastaví budúce aktualizácie, ale nemôže vymazať to, čo už dostal.",
+  "shareError": "Nepodarilo sa aktualizovať zdieľanie: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Zdieľané s vami",
+  "sharedByLabel": "Zdieľal(a) {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Túto poznámku môžete upravovať; vaše zmeny sa synchronizujú späť vlastníkovi, ktorý ich zlúči.",
+  "abandonSharedNoteButton": "Opustiť túto zdieľanú poznámku",
+  "abandonSharedNoteConfirmTitle": "Opustiť túto zdieľanú poznámku?",
+  "abandonSharedNoteConfirmBody": "Bude odstránená z tohto zariadenia a prestanete dostávať aktualizácie. Toto sa nedá vrátiť — neskôr sa nebudete môcť znova pripojiť.",
+  "abandonSharedNoteError": "Nepodarilo sa opustiť: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

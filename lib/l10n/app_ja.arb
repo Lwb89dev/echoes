@@ -200,5 +200,48 @@
   "passwordLabel": "パスワード",
   "invalidPrivateKeyError": "秘密鍵が無効です。有効な nsec または hex キーを入力してください。",
   "wrongPasswordError": "パスワードが違います",
-  "genericErrorPrefix": "エラー: {error}"
+  "genericErrorPrefix": "エラー: {error}",
+  "shareNoteTooltip": "共有",
+  "shareNoteTitle": "メモを共有",
+  "shareRecipientFieldLabel": "受信者の npub または公開鍵",
+  "shareAddRecipientButton": "追加",
+  "shareInvalidRecipientError": "有効な npub または公開鍵ではありません",
+  "shareRecipientNotFoundError": "その名前の Nostr アカウントが見つかりません",
+  "shareConfirmTitle": "このノートを共有しますか?",
+  "shareConfirmButton": "共有",
+  "shareAlreadyRecipientError": "この相手とはすでに共有しています",
+  "shareCannotShareWithSelfError": "自分自身とメモを共有することはできません",
+  "shareRecipientsHeader": "共有先",
+  "shareNoRecipientsMessage": "まだ誰とも共有していません。",
+  "stopSharingTooltip": "この相手との共有を停止",
+  "shareRevocationNote": "共有した相手は自分の端末でこのメモを読めます。相手を削除すると今後の更新は届かなくなりますが、すでに受け取った内容は消せません。",
+  "shareError": "共有を更新できませんでした: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "あなたと共有中",
+  "sharedByLabel": "{npub} が共有",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "このメモを編集できます。変更は所有者に同期され、所有者がマージします。",
+  "abandonSharedNoteButton": "この共有メモから退出",
+  "abandonSharedNoteConfirmTitle": "この共有メモから退出しますか？",
+  "abandonSharedNoteConfirmBody": "この端末から削除され、更新を受け取らなくなります。取り消せません — 後で再参加はできません。",
+  "abandonSharedNoteError": "退出できませんでした: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

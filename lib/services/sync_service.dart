@@ -9,6 +9,7 @@ import '../models/relay.dart';
 import '../models/upload_provider.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
+import '../utils/note_sharing.dart';
 import 'attachment_upload_service.dart';
 import 'local_storage_service.dart';
 import 'nostr_service.dart';
@@ -215,6 +216,252 @@ class SyncService {
     return unsyncedNote;
   }
 
+  // -------------------------------------------------------------------
+  // Note sharing (see [NoteSharing])
+  // -------------------------------------------------------------------
+
+  /// Shares [note] (which the local user must own) with [recipients] (hex
+  /// pubkeys), publishing immediately: attachments uploaded first (recipients
+  /// download them from the file host), then the owner's self copy (so the
+  /// owner's own devices learn the note is shared and with whom), then one
+  /// NIP-44 copy encrypted per recipient. Recipients already on the note are
+  /// merged in, and the owner's own pubkey is never added as a recipient.
+  Future<Note> shareNote({
+    required Note note,
+    required List<String> recipients,
+    required User author,
+    required List<Relay> relays,
+    required UploadProviderOption uploadProvider,
+  }) async {
+    developer.log('SyncService.shareNote called: ${note.id}', name: 'SyncService');
+    if (note.ownerPubkey != null) {
+      throw StateError('Only the owner can share this note.');
+    }
+    if (!await isOnline()) throw StateError('No network connection.');
+    if (relays.isEmpty) throw StateError('No relay configured for syncing.');
+
+    final merged = {...note.sharedWith, ...recipients}..remove(author.publicKeyHex);
+    final updated = note.copyWith(sharedWith: merged.toList());
+    final uploaded = await _uploadPendingAttachments(note: updated, author: author, uploadProvider: uploadProvider);
+
+    final selfEvent = await _nostrService.createNoteEvent(uploaded, author);
+    final eventId = await _nostrService.publishNote(selfEvent, relays);
+    final result = uploaded.copyWith(synced: true, nostrEventId: eventId);
+
+    for (final recipient in result.sharedWith) {
+      final shareEvent = await _nostrService.createSharedNoteEvent(
+        note: result,
+        author: author,
+        recipientPubHex: recipient,
+      );
+      await _nostrService.publishNote(shareEvent, relays);
+    }
+    await _localStorageService.saveNote(result);
+    return result;
+  }
+
+  /// Stops sharing [note] with [recipientPubHex]: deletes that recipient's
+  /// copy from the relays (NIP-09) so future updates never reach them, and
+  /// republishes the owner's self copy with the shortened recipient list.
+  /// Whatever the recipient already decrypted locally is beyond recall —
+  /// only future updates are cut off.
+  Future<Note> stopSharingWith({
+    required Note note,
+    required String recipientPubHex,
+    required User author,
+    required List<Relay> relays,
+  }) async {
+    developer.log('SyncService.stopSharingWith called: ${note.id}', name: 'SyncService');
+    if (note.ownerPubkey != null) {
+      throw StateError('Only the owner can change sharing.');
+    }
+    if (!await isOnline()) throw StateError('No network connection.');
+    if (relays.isEmpty) throw StateError('No relay configured for syncing.');
+
+    await _nostrService.deleteSharedNoteEvent(
+      noteId: note.id,
+      recipientPubHex: recipientPubHex,
+      author: author,
+      relays: relays,
+    );
+
+    final remaining = note.sharedWith.where((r) => r != recipientPubHex).toList();
+    final updated = note.copyWith(sharedWith: remaining);
+    final selfEvent = await _nostrService.createNoteEvent(updated, author);
+    final eventId = await _nostrService.publishNote(selfEvent, relays);
+    final result = updated.copyWith(synced: true, nostrEventId: eventId);
+    await _localStorageService.saveNote(result);
+    return result;
+  }
+
+  /// Abandons a note that was shared *with* the local user: tombstones its id
+  /// first (local, unconditional — this is what makes it permanent, so the
+  /// note can never re-hook even if the owner keeps publishing to us) and
+  /// then, best-effort, tells the owner to drop us. Deletion of the local
+  /// copy (and its attachment traces) is the caller's job afterwards.
+  Future<void> abandonSharedNote({
+    required Note note,
+    required User author,
+    required List<Relay> relays,
+  }) async {
+    developer.log('SyncService.abandonSharedNote called: ${note.id}', name: 'SyncService');
+    await _localStorageService.addAbandonedShareId(note.id);
+
+    final owner = note.ownerPubkey;
+    if (owner != null && relays.isNotEmpty && await isOnline()) {
+      try {
+        final leaveEvent = await _nostrService.createLeaveControlEvent(
+          noteId: note.id,
+          author: author,
+          ownerPubHex: owner,
+        );
+        await _nostrService.publishNote(leaveEvent, relays);
+      } catch (e) {
+        // The tombstone above already guarantees we can't re-hook; the
+        // owner-side drop is a bonus, not required for correctness.
+        developer.log('Abandon leave-signal failed (tombstone still applies): $e', name: 'SyncService');
+      }
+    }
+  }
+
+  /// Fetches everything addressed to me and applies it, with strict
+  /// authorization so an untrusted relay (or a stranger) can't inject or
+  /// hijack notes. Runs inside [runSyncCycle].
+  Future<void> _processIncomingShares({
+    required User author,
+    required List<Relay> relays,
+  }) async {
+    final since = await _localStorageService.loadLastShareSyncTime();
+    final fetch = await _nostrService.fetchSharesAddressedTo(me: author, relays: relays, since: since);
+    if (fetch.items.isEmpty) {
+      if (fetch.complete) {
+        await _localStorageService.saveLastShareSyncTime(DateTime.now().subtract(const Duration(minutes: 1)));
+      }
+      return;
+    }
+
+    final abandoned = await _localStorageService.loadAbandonedShareIds();
+
+    // Newest-first, capped: bounds how much a flood of unsolicited shares
+    // (anyone can publish an event addressed to me) can make one cycle do,
+    // without letting old spam crowd out a genuinely recent share.
+    final items = [...fetch.items]..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final bounded = items.take(AppConstants.maxIncomingSharesPerCycle);
+
+    for (final item in bounded) {
+      try {
+        if (item.isControl) {
+          await _applyControl(item, author: author, relays: relays);
+          continue;
+        }
+        final note = item.note!;
+        if (abandoned.contains(note.id)) continue; // Permanently left — never re-hook.
+        await _applyIncomingNote(note: note, sender: item.sender, author: author);
+      } catch (e) {
+        developer.log('Skipped a bad incoming shared item from ${item.sender}: $e', name: 'SyncService');
+      }
+    }
+
+    // Advance the bookmark only when every relay finished AND we didn't hit
+    // the per-cycle cap: if there were more items than we applied, some are
+    // still unprocessed and moving the bookmark past them would drop them
+    // for good. Leaving it lets the next cycle pick up the remainder.
+    if (fetch.complete && items.length <= AppConstants.maxIncomingSharesPerCycle) {
+      await _localStorageService.saveLastShareSyncTime(DateTime.now().subtract(const Duration(minutes: 1)));
+    }
+  }
+
+  Note? _noteById(List<Note> notes, String id) {
+    for (final note in notes) {
+      if (note.id == id) return note;
+    }
+    return null;
+  }
+
+  /// Applies one decrypted, signature-verified inbound note per the
+  /// authorization rules. `sender` is the note event's *signed* author.
+  Future<void> _applyIncomingNote({
+    required Note note,
+    required String sender,
+    required User author,
+  }) async {
+    final existing = _noteById(await _localStorageService.loadNotes(), note.id);
+
+    if (existing == null) {
+      // Brand-new note shared with me. Owner = the signer; strip any
+      // sharing/sync bookkeeping the payload might carry and store it as
+      // shared-in, up to date with what I just received.
+      final stored = note.copyWith(
+        ownerPubkey: sender,
+        sharedWith: const [],
+        synced: true,
+        nostrEventId: null,
+      );
+      await _localStorageService.saveNote(stored);
+      return;
+    }
+
+    if (existing.ownerPubkey == null) {
+      // I own this note. The only inbound events allowed to touch it are
+      // edit proposals from an actual current recipient of it.
+      if (!existing.sharedWith.contains(sender)) {
+        developer.log('Rejected inbound edit for owned note ${note.id} from non-recipient $sender', name: 'SyncService');
+        return;
+      }
+      if (!note.updatedAt.isAfter(existing.updatedAt)) return; // Not newer: keep mine.
+      // Adopt the recipient's content but stay the owner and keep my
+      // recipient list; synced=false makes the next cycle re-publish the
+      // merged version to the self copy and every recipient (convergence).
+      final merged = note.copyWith(
+        ownerPubkey: null,
+        sharedWith: existing.sharedWith,
+        synced: false,
+        nostrEventId: existing.nostrEventId,
+      );
+      await _localStorageService.saveNote(merged);
+      return;
+    }
+
+    // I hold this as a note shared with me. Only its real owner may update it.
+    if (existing.ownerPubkey != sender) {
+      developer.log('Rejected inbound update for ${note.id}: sender $sender is not owner ${existing.ownerPubkey}', name: 'SyncService');
+      return;
+    }
+    if (!note.updatedAt.isAfter(existing.updatedAt)) return; // My local edit (or copy) is newer: keep it.
+    await _localStorageService.saveNote(note.copyWith(
+      ownerPubkey: sender,
+      sharedWith: const [],
+      synced: true,
+      nostrEventId: null,
+    ));
+  }
+
+  /// Applies a control message (currently only "leave"): if I own the note
+  /// and the sender really is one of its recipients, drop them and delete
+  /// their copy from the relays.
+  Future<void> _applyControl(IncomingShare item, {required User author, required List<Relay> relays}) async {
+    if (item.controlType != NoteSharing.controlLeave) return;
+    final noteId = item.controlNoteId!;
+    final owned = _noteById(await _localStorageService.loadNotes(), noteId);
+    if (owned == null || owned.ownerPubkey != null || !owned.sharedWith.contains(item.sender)) return;
+
+    final remaining = owned.sharedWith.where((r) => r != item.sender).toList();
+    // synced=false so the next cycle republishes the self copy with the
+    // shortened recipient list — that's how my *other* devices learn the
+    // recipient left, too.
+    await _localStorageService.saveNote(owned.copyWith(sharedWith: remaining, synced: false));
+    try {
+      await _nostrService.deleteSharedNoteEvent(
+        noteId: noteId,
+        recipientPubHex: item.sender,
+        author: author,
+        relays: relays,
+      );
+    } catch (e) {
+      developer.log('Could not delete left recipient\'s copy for $noteId: $e', name: 'SyncService');
+    }
+  }
+
   /// One full bidirectional sync cycle:
   /// 1. push local notes that aren't synced yet;
   /// 2. fetch remote notes newer than the last known sync;
@@ -262,8 +509,12 @@ class SyncService {
       // `synced: false` and gets a full retry (upload + publish) next cycle.
       final readyToPublish = <Note>[];
       for (final note in localNotes) {
-        final needsUpload =
-            !note.synced && note.nostrEventId != null && note.attachments.any((a) => !a.isUploaded);
+        // A note will be published this cycle if it's unsynced and either an
+        // owned note the user has already synced once, or a note shared with
+        // me that I've edited (published as an edit proposal). Those, and
+        // only those, need their attachments uploaded first.
+        final willPublish = !note.synced && (note.ownerPubkey == null ? note.nostrEventId != null : true);
+        final needsUpload = willPublish && note.attachments.any((a) => !a.isUploaded);
         if (!needsUpload) {
           readyToPublish.add(note);
           continue;
@@ -301,10 +552,19 @@ class SyncService {
       };
       for (final remoteNote in fetchResult.notes) {
         final localNote = currentLocalById[remoteNote.id];
+        // Never let a self-note fetch (authors = me) overwrite a note someone
+        // else shared with me that happens to collide on id — that note's
+        // canonical source is its owner's events, processed separately below.
+        if (localNote != null && localNote.isSharedWithMe) continue;
         if (localNote == null || remoteNote.updatedAt.isAfter(localNote.updatedAt)) {
           await _localStorageService.saveNote(remoteNote);
         }
       }
+
+      // Pull and apply everything addressed to me (shares from owners, edit
+      // proposals from my recipients, leave signals) — its own bookmark,
+      // its own don't-advance-on-incomplete rule.
+      await _processIncomingShares(author: author, relays: relays);
 
       // Only move the bookmark forward when every relay actually confirmed
       // it delivered everything it has (see `fetchNotesFromRelay`'s

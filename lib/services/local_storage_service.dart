@@ -460,4 +460,41 @@ class LocalStorageService {
     final prefs = await _prefs;
     await prefs.remove(AppConstants.prefsLastSyncKey);
   }
+
+  // ---------------------------------------------------------------------
+  // Incoming-shares bookmark + abandoned-share tombstones (see NoteSharing).
+  // ---------------------------------------------------------------------
+
+  Future<DateTime?> loadLastShareSyncTime() async {
+    final prefs = await _prefs;
+    final raw = prefs.getString(AppConstants.prefsLastShareSyncKey);
+    return raw == null ? null : DateTime.parse(raw);
+  }
+
+  Future<void> saveLastShareSyncTime(DateTime time) async {
+    final prefs = await _prefs;
+    await prefs.setString(AppConstants.prefsLastShareSyncKey, time.toIso8601String());
+  }
+
+  /// The ids of shared notes the user has permanently abandoned.
+  Future<Set<String>> loadAbandonedShareIds() async {
+    final prefs = await _prefs;
+    return (prefs.getStringList(AppConstants.prefsAbandonedSharesKey) ?? const []).toSet();
+  }
+
+  /// Marks [noteId] abandoned so it can never be re-accepted from a relay
+  /// again — the permanent, local half of "stop receiving this shared note"
+  /// (the owner-side drop, prompted by the leave signal, is the other half).
+  Future<void> addAbandonedShareId(String noteId) async {
+    developer.log('LocalStorageService.addAbandonedShareId called', name: 'LocalStorageService');
+    final prefs = await _prefs;
+    final ids = (prefs.getStringList(AppConstants.prefsAbandonedSharesKey) ?? const []).toSet();
+    ids.add(noteId);
+    await prefs.setStringList(AppConstants.prefsAbandonedSharesKey, ids.toList());
+  }
+
+  Future<bool> isShareAbandoned(String noteId) async {
+    final ids = await loadAbandonedShareIds();
+    return ids.contains(noteId);
+  }
 }

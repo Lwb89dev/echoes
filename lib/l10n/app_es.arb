@@ -200,5 +200,48 @@
   "passwordLabel": "Contraseña",
   "invalidPrivateKeyError": "La clave privada no es válida. Introduce una clave nsec o hex válida.",
   "wrongPasswordError": "Contraseña incorrecta",
-  "genericErrorPrefix": "Error: {error}"
+  "genericErrorPrefix": "Error: {error}",
+  "shareNoteTooltip": "Compartir",
+  "shareNoteTitle": "Compartir nota",
+  "shareRecipientFieldLabel": "npub o clave pública del destinatario",
+  "shareAddRecipientButton": "Añadir",
+  "shareInvalidRecipientError": "No es un npub ni una clave pública válida",
+  "shareRecipientNotFoundError": "No se encontró ninguna cuenta de Nostr para ese nombre",
+  "shareConfirmTitle": "¿Compartir esta nota?",
+  "shareConfirmButton": "Compartir",
+  "shareAlreadyRecipientError": "Ya se comparte con esta persona",
+  "shareCannotShareWithSelfError": "No puedes compartir una nota contigo mismo",
+  "shareRecipientsHeader": "Compartida con",
+  "shareNoRecipientsMessage": "Aún no se comparte con nadie.",
+  "stopSharingTooltip": "Dejar de compartir con esta persona",
+  "shareRevocationNote": "Cualquiera con quien compartas puede leer esta nota en su dispositivo. Quitar a alguien detiene las actualizaciones futuras, pero no puede borrar lo que ya recibió.",
+  "shareError": "No se pudo actualizar el uso compartido: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Compartida contigo",
+  "sharedByLabel": "Compartida por {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Puedes editar esta nota; tus cambios se sincronizan de vuelta con el propietario, que los combina.",
+  "abandonSharedNoteButton": "Salir de esta nota compartida",
+  "abandonSharedNoteConfirmTitle": "¿Salir de esta nota compartida?",
+  "abandonSharedNoteConfirmBody": "Se eliminará de este dispositivo y dejarás de recibir actualizaciones. Esto no se puede deshacer: no podrás volver a unirte más tarde.",
+  "abandonSharedNoteError": "No se pudo salir: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

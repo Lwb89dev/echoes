@@ -200,5 +200,48 @@
   "passwordLabel": "Heslo",
   "invalidPrivateKeyError": "Soukromý klíč není platný. Zadejte platný nsec nebo hex klíč.",
   "wrongPasswordError": "Nesprávné heslo",
-  "genericErrorPrefix": "Chyba: {error}"
+  "genericErrorPrefix": "Chyba: {error}",
+  "shareNoteTooltip": "Sdílet",
+  "shareNoteTitle": "Sdílet poznámku",
+  "shareRecipientFieldLabel": "npub nebo veřejný klíč příjemce",
+  "shareAddRecipientButton": "Přidat",
+  "shareInvalidRecipientError": "To není platný npub ani veřejný klíč",
+  "shareRecipientNotFoundError": "Pro toto jméno nebyl nalezen žádný účet Nostr",
+  "shareConfirmTitle": "Sdílet tuto poznámku?",
+  "shareConfirmButton": "Sdílet",
+  "shareAlreadyRecipientError": "S touto osobou už je sdíleno",
+  "shareCannotShareWithSelfError": "Nemůžete sdílet poznámku sami se sebou",
+  "shareRecipientsHeader": "Sdíleno s",
+  "shareNoRecipientsMessage": "Zatím s nikým nesdíleno.",
+  "stopSharingTooltip": "Přestat sdílet s touto osobou",
+  "shareRevocationNote": "Kdokoli, s kým poznámku sdílíte, si ji může přečíst na svém zařízení. Odebráním někoho zastavíte budoucí aktualizace, ale nelze smazat, co už obdržel.",
+  "shareError": "Nepodařilo se aktualizovat sdílení: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Sdíleno s vámi",
+  "sharedByLabel": "Sdílel(a) {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Tuto poznámku můžete upravovat; vaše změny se synchronizují zpět vlastníkovi, který je sloučí.",
+  "abandonSharedNoteButton": "Opustit tuto sdílenou poznámku",
+  "abandonSharedNoteConfirmTitle": "Opustit tuto sdílenou poznámku?",
+  "abandonSharedNoteConfirmBody": "Bude odebrána z tohoto zařízení a přestanete dostávat aktualizace. Tuto akci nelze vrátit — nebudete se moci znovu připojit.",
+  "abandonSharedNoteError": "Nepodařilo se opustit: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

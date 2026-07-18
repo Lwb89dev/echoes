@@ -616,4 +616,82 @@ class AppLocalizationsFr extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Erreur : $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Partager';
+
+  @override
+  String get shareNoteTitle => 'Partager la note';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub ou clé publique du destinataire';
+
+  @override
+  String get shareAddRecipientButton => 'Ajouter';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Ce n\'est pas un npub ni une clé publique valide';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Aucun compte Nostr trouvé pour ce nom';
+
+  @override
+  String get shareConfirmTitle => 'Partager cette note ?';
+
+  @override
+  String get shareConfirmButton => 'Partager';
+
+  @override
+  String get shareAlreadyRecipientError => 'Déjà partagée avec cette personne';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Vous ne pouvez pas partager une note avec vous-même';
+
+  @override
+  String get shareRecipientsHeader => 'Partagée avec';
+
+  @override
+  String get shareNoRecipientsMessage => 'Pas encore partagée avec personne.';
+
+  @override
+  String get stopSharingTooltip => 'Arrêter de partager avec cette personne';
+
+  @override
+  String get shareRevocationNote =>
+      'Toute personne avec qui vous partagez peut lire cette note sur son appareil. Retirer quelqu\'un stoppe les futures mises à jour, mais ne peut pas effacer ce qu\'il a déjà reçu.';
+
+  @override
+  String shareError(String error) {
+    return 'Impossible de mettre à jour le partage : $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Partagée avec vous';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Partagée par $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Vous pouvez modifier cette note ; vos changements sont synchronisés vers le propriétaire, qui les fusionne.';
+
+  @override
+  String get abandonSharedNoteButton => 'Quitter cette note partagée';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Quitter cette note partagée ?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Elle sera supprimée de cet appareil et vous ne recevrez plus de mises à jour. Cette action est irréversible — vous ne pourrez pas la rejoindre plus tard.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Impossible de quitter : $error';
+  }
 }

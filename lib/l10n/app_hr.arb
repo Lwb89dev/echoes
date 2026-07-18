@@ -200,5 +200,48 @@
   "passwordLabel": "Lozinka",
   "invalidPrivateKeyError": "Privatni ključ nije valjan. Unesite valjan nsec ili hex ključ.",
   "wrongPasswordError": "Pogrešna lozinka",
-  "genericErrorPrefix": "Pogreška: {error}"
+  "genericErrorPrefix": "Pogreška: {error}",
+  "shareNoteTooltip": "Podijeli",
+  "shareNoteTitle": "Podijeli bilješku",
+  "shareRecipientFieldLabel": "npub ili javni ključ primatelja",
+  "shareAddRecipientButton": "Dodaj",
+  "shareInvalidRecipientError": "To nije valjan npub ni javni ključ",
+  "shareRecipientNotFoundError": "Nije pronađen Nostr račun za to ime",
+  "shareConfirmTitle": "Podijeliti ovu bilješku?",
+  "shareConfirmButton": "Podijeli",
+  "shareAlreadyRecipientError": "Već podijeljeno s ovom osobom",
+  "shareCannotShareWithSelfError": "Ne možete podijeliti bilješku sa samim sobom",
+  "shareRecipientsHeader": "Podijeljeno s",
+  "shareNoRecipientsMessage": "Još nije podijeljeno ni s kim.",
+  "stopSharingTooltip": "Prestani dijeliti s ovom osobom",
+  "shareRevocationNote": "Svatko s kim podijelite može čitati ovu bilješku na svom uređaju. Uklanjanje nekoga zaustavlja buduća ažuriranja, ali ne može izbrisati ono što je već primio.",
+  "shareError": "Ažuriranje dijeljenja nije uspjelo: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Podijeljeno s vama",
+  "sharedByLabel": "Podijelio/la {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Možete uređivati ovu bilješku; vaše se promjene sinkroniziraju natrag vlasniku, koji ih spaja.",
+  "abandonSharedNoteButton": "Napusti ovu dijeljenu bilješku",
+  "abandonSharedNoteConfirmTitle": "Napustiti ovu dijeljenu bilješku?",
+  "abandonSharedNoteConfirmBody": "Bit će uklonjena s ovog uređaja i prestat ćete primati ažuriranja. Ovo se ne može poništiti — nećete se moći ponovno pridružiti.",
+  "abandonSharedNoteError": "Napuštanje nije uspjelo: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

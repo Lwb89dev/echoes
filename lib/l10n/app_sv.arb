@@ -200,5 +200,48 @@
   "passwordLabel": "Lösenord",
   "invalidPrivateKeyError": "Den privata nyckeln är ogiltig. Ange en giltig nsec- eller hex-nyckel.",
   "wrongPasswordError": "Fel lösenord",
-  "genericErrorPrefix": "Fel: {error}"
+  "genericErrorPrefix": "Fel: {error}",
+  "shareNoteTooltip": "Dela",
+  "shareNoteTitle": "Dela anteckning",
+  "shareRecipientFieldLabel": "Mottagarens npub eller offentliga nyckel",
+  "shareAddRecipientButton": "Lägg till",
+  "shareInvalidRecipientError": "Det är inte en giltig npub eller offentlig nyckel",
+  "shareRecipientNotFoundError": "Inget Nostr-konto hittades för det namnet",
+  "shareConfirmTitle": "Dela den här anteckningen?",
+  "shareConfirmButton": "Dela",
+  "shareAlreadyRecipientError": "Redan delad med den här personen",
+  "shareCannotShareWithSelfError": "Du kan inte dela en anteckning med dig själv",
+  "shareRecipientsHeader": "Delad med",
+  "shareNoRecipientsMessage": "Ännu inte delad med någon.",
+  "stopSharingTooltip": "Sluta dela med den här personen",
+  "shareRevocationNote": "Alla du delar med kan läsa den här anteckningen på sin enhet. Att ta bort någon stoppar framtida uppdateringar, men kan inte radera det de redan fått.",
+  "shareError": "Det gick inte att uppdatera delningen: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Delad med dig",
+  "sharedByLabel": "Delad av {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Du kan redigera den här anteckningen; dina ändringar synkas tillbaka till ägaren, som slår samman dem.",
+  "abandonSharedNoteButton": "Lämna den här delade anteckningen",
+  "abandonSharedNoteConfirmTitle": "Lämna den här delade anteckningen?",
+  "abandonSharedNoteConfirmBody": "Den tas bort från den här enheten och du slutar få uppdateringar. Detta kan inte ångras — du kan inte gå med igen senare.",
+  "abandonSharedNoteError": "Det gick inte att lämna: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

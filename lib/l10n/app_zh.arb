@@ -200,5 +200,48 @@
   "passwordLabel": "密码",
   "invalidPrivateKeyError": "私钥无效。请输入有效的 nsec 或十六进制密钥。",
   "wrongPasswordError": "密码错误",
-  "genericErrorPrefix": "错误：{error}"
+  "genericErrorPrefix": "错误：{error}",
+  "shareNoteTooltip": "分享",
+  "shareNoteTitle": "分享笔记",
+  "shareRecipientFieldLabel": "接收者的 npub 或公钥",
+  "shareAddRecipientButton": "添加",
+  "shareInvalidRecipientError": "这不是有效的 npub 或公钥",
+  "shareRecipientNotFoundError": "找不到该名称对应的 Nostr 账户",
+  "shareConfirmTitle": "要分享这条笔记吗?",
+  "shareConfirmButton": "分享",
+  "shareAlreadyRecipientError": "已与此人分享",
+  "shareCannotShareWithSelfError": "不能把笔记分享给自己",
+  "shareRecipientsHeader": "已分享给",
+  "shareNoRecipientsMessage": "尚未与任何人分享。",
+  "stopSharingTooltip": "停止与此人分享",
+  "shareRevocationNote": "任何被分享的人都能在其设备上阅读此笔记。移除某人会停止之后的更新，但无法删除其已收到的内容。",
+  "shareError": "无法更新分享：{error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "已分享给你",
+  "sharedByLabel": "由 {npub} 分享",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "你可以编辑此笔记；你的更改会同步回所有者，由其合并。",
+  "abandonSharedNoteButton": "退出此共享笔记",
+  "abandonSharedNoteConfirmTitle": "退出此共享笔记？",
+  "abandonSharedNoteConfirmBody": "它将从此设备移除，你将不再收到更新。此操作无法撤销——之后你将无法重新加入。",
+  "abandonSharedNoteError": "无法退出：{error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

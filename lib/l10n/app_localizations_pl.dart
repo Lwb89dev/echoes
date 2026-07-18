@@ -610,4 +610,83 @@ class AppLocalizationsPl extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Błąd: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Udostępnij';
+
+  @override
+  String get shareNoteTitle => 'Udostępnij notatkę';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub lub klucz publiczny odbiorcy';
+
+  @override
+  String get shareAddRecipientButton => 'Dodaj';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'To nie jest prawidłowy npub ani klucz publiczny';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Nie znaleziono konta Nostr dla tej nazwy';
+
+  @override
+  String get shareConfirmTitle => 'Udostępnić tę notatkę?';
+
+  @override
+  String get shareConfirmButton => 'Udostępnij';
+
+  @override
+  String get shareAlreadyRecipientError => 'Już udostępniono tej osobie';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Nie możesz udostępnić notatki samemu sobie';
+
+  @override
+  String get shareRecipientsHeader => 'Udostępniono';
+
+  @override
+  String get shareNoRecipientsMessage => 'Jeszcze nikomu nie udostępniono.';
+
+  @override
+  String get stopSharingTooltip => 'Przestań udostępniać tej osobie';
+
+  @override
+  String get shareRevocationNote =>
+      'Każdy, komu udostępnisz, może czytać tę notatkę na swoim urządzeniu. Usunięcie kogoś wstrzymuje przyszłe aktualizacje, ale nie może usunąć tego, co już otrzymał.';
+
+  @override
+  String shareError(String error) {
+    return 'Nie udało się zaktualizować udostępniania: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Udostępniono Tobie';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Udostępnił(a) $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Możesz edytować tę notatkę; zmiany są synchronizowane z powrotem do właściciela, który je scala.';
+
+  @override
+  String get abandonSharedNoteButton => 'Opuść tę udostępnioną notatkę';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Opuścić tę udostępnioną notatkę?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Zostanie usunięta z tego urządzenia i przestaniesz otrzymywać aktualizacje. Tego nie można cofnąć — nie będziesz mógł ponownie do niej dołączyć.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Nie udało się opuścić: $error';
+  }
 }

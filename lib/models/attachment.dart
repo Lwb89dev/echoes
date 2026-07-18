@@ -100,6 +100,30 @@ class Attachment {
     );
   }
 
+  /// A copy with [localPath] cleared. Used at the sharing boundary in both
+  /// directions: outbound so the owner's device-local file paths (which can
+  /// embed a username, e.g. `/home/<name>/…`) never travel to a recipient,
+  /// and inbound so a received attachment can *only* be fetched from its
+  /// remote [url] — never from a path the sender chose, which could point
+  /// at a file on the *recipient's* own device (a local-file-read vector).
+  Attachment withoutLocalPath() {
+    return Attachment(
+      id: id,
+      type: type,
+      url: url,
+      decryptionKeyBase64: decryptionKeyBase64,
+      decryptionNonceBase64: decryptionNonceBase64,
+      encryptionAlgorithm: encryptionAlgorithm,
+      mimeType: mimeType,
+      sizeBytes: sizeBytes,
+      sha256OfEncrypted: sha256OfEncrypted,
+      durationSeconds: durationSeconds,
+      width: width,
+      height: height,
+      recordedAt: recordedAt,
+    );
+  }
+
   /// The other transition an [Attachment] goes through: the user manually
   /// (re)setting [recordedAt] on a voice note (see `_VoiceMessageBubble`'s
   /// long-press menu). Everything else about it is unchanged.

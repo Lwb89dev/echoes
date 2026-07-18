@@ -611,4 +611,83 @@ class AppLocalizationsBg extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Грешка: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Споделяне';
+
+  @override
+  String get shareNoteTitle => 'Споделяне на бележка';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub или публичен ключ на получателя';
+
+  @override
+  String get shareAddRecipientButton => 'Добави';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Това не е валиден npub или публичен ключ';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Не е намерен Nostr акаунт за това име';
+
+  @override
+  String get shareConfirmTitle => 'Споделяне на тази бележка?';
+
+  @override
+  String get shareConfirmButton => 'Споделяне';
+
+  @override
+  String get shareAlreadyRecipientError => 'Вече е споделена с този човек';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Не можете да споделите бележка със себе си';
+
+  @override
+  String get shareRecipientsHeader => 'Споделена с';
+
+  @override
+  String get shareNoRecipientsMessage => 'Още не е споделена с никого.';
+
+  @override
+  String get stopSharingTooltip => 'Спри споделянето с този човек';
+
+  @override
+  String get shareRevocationNote =>
+      'Всеки, с когото споделяте, може да чете тази бележка на своето устройство. Премахването на някого спира бъдещите актуализации към него, но не може да изтрие вече полученото.';
+
+  @override
+  String shareError(String error) {
+    return 'Неуспешно обновяване на споделянето: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Споделена с вас';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Споделена от $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Можете да редактирате тази бележка; промените ви се синхронизират обратно към собственика, който ги обединява.';
+
+  @override
+  String get abandonSharedNoteButton => 'Напусни тази споделена бележка';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Да напуснете тази споделена бележка?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Ще бъде премахната от това устройство и ще спрете да получавате актуализации. Това не може да се отмени — няма да можете да се присъедините отново.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Неуспешно напускане: $error';
+  }
 }

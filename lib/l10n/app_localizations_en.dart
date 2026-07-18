@@ -603,4 +603,82 @@ class AppLocalizationsEn extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Error: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Share';
+
+  @override
+  String get shareNoteTitle => 'Share note';
+
+  @override
+  String get shareRecipientFieldLabel => 'Recipient npub or public key';
+
+  @override
+  String get shareAddRecipientButton => 'Add';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'That\'s not a valid npub or public key';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'No Nostr account found for that name';
+
+  @override
+  String get shareConfirmTitle => 'Share this note?';
+
+  @override
+  String get shareConfirmButton => 'Share';
+
+  @override
+  String get shareAlreadyRecipientError => 'Already shared with this person';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'You can\'t share a note with yourself';
+
+  @override
+  String get shareRecipientsHeader => 'Shared with';
+
+  @override
+  String get shareNoRecipientsMessage => 'Not shared with anyone yet.';
+
+  @override
+  String get stopSharingTooltip => 'Stop sharing with this person';
+
+  @override
+  String get shareRevocationNote =>
+      'Anyone you share with can read this note on their device. Removing someone stops future updates reaching them, but can\'t erase what they already received.';
+
+  @override
+  String shareError(String error) {
+    return 'Could not update sharing: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Shared with you';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Shared by $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'You can edit this note; your changes sync back to the owner, who merges them.';
+
+  @override
+  String get abandonSharedNoteButton => 'Leave this shared note';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Leave this shared note?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'It\'ll be removed from this device and you\'ll stop receiving updates. This can\'t be undone — you won\'t be able to rejoin it later.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Could not leave: $error';
+  }
 }

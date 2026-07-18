@@ -200,5 +200,48 @@
   "passwordLabel": "Salasana",
   "invalidPrivateKeyError": "Yksityinen avain ei ole kelvollinen. Anna kelvollinen nsec- tai hex-avain.",
   "wrongPasswordError": "Väärä salasana",
-  "genericErrorPrefix": "Virhe: {error}"
+  "genericErrorPrefix": "Virhe: {error}",
+  "shareNoteTooltip": "Jaa",
+  "shareNoteTitle": "Jaa muistiinpano",
+  "shareRecipientFieldLabel": "Vastaanottajan npub tai julkinen avain",
+  "shareAddRecipientButton": "Lisää",
+  "shareInvalidRecipientError": "Tämä ei ole kelvollinen npub tai julkinen avain",
+  "shareRecipientNotFoundError": "Nimelle ei löytynyt Nostr-tiliä",
+  "shareConfirmTitle": "Jaetaanko tämä muistiinpano?",
+  "shareConfirmButton": "Jaa",
+  "shareAlreadyRecipientError": "Jaettu jo tämän henkilön kanssa",
+  "shareCannotShareWithSelfError": "Et voi jakaa muistiinpanoa itsesi kanssa",
+  "shareRecipientsHeader": "Jaettu käyttäjälle",
+  "shareNoRecipientsMessage": "Ei vielä jaettu kenellekään.",
+  "stopSharingTooltip": "Lopeta jakaminen tämän henkilön kanssa",
+  "shareRevocationNote": "Kuka tahansa, jonka kanssa jaat, voi lukea tämän muistiinpanon laitteellaan. Jonkun poistaminen lopettaa tulevat päivitykset, mutta ei voi poistaa jo vastaanotettua.",
+  "shareError": "Jakamisen päivitys epäonnistui: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Jaettu sinulle",
+  "sharedByLabel": "Jakoi {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Voit muokata tätä muistiinpanoa; muutoksesi synkronoituvat takaisin omistajalle, joka yhdistää ne.",
+  "abandonSharedNoteButton": "Poistu tästä jaetusta muistiinpanosta",
+  "abandonSharedNoteConfirmTitle": "Poistutaanko tästä jaetusta muistiinpanosta?",
+  "abandonSharedNoteConfirmBody": "Se poistetaan tältä laitteelta etkä enää saa päivityksiä. Tätä ei voi kumota — et voi liittyä uudelleen myöhemmin.",
+  "abandonSharedNoteError": "Poistuminen epäonnistui: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

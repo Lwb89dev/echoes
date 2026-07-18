@@ -200,5 +200,48 @@
   "passwordLabel": "Пароль",
   "invalidPrivateKeyError": "Закрытый ключ недействителен. Введите действительный ключ nsec или hex.",
   "wrongPasswordError": "Неверный пароль",
-  "genericErrorPrefix": "Ошибка: {error}"
+  "genericErrorPrefix": "Ошибка: {error}",
+  "shareNoteTooltip": "Поделиться",
+  "shareNoteTitle": "Поделиться заметкой",
+  "shareRecipientFieldLabel": "npub или открытый ключ получателя",
+  "shareAddRecipientButton": "Добавить",
+  "shareInvalidRecipientError": "Это не действительный npub или открытый ключ",
+  "shareRecipientNotFoundError": "Учётная запись Nostr для этого имени не найдена",
+  "shareConfirmTitle": "Поделиться этой заметкой?",
+  "shareConfirmButton": "Поделиться",
+  "shareAlreadyRecipientError": "Уже предоставлено этому человеку",
+  "shareCannotShareWithSelfError": "Нельзя поделиться заметкой с самим собой",
+  "shareRecipientsHeader": "Доступно для",
+  "shareNoRecipientsMessage": "Пока никому не предоставлено.",
+  "stopSharingTooltip": "Прекратить доступ для этого человека",
+  "shareRevocationNote": "Любой, кому вы предоставили доступ, может читать эту заметку на своём устройстве. Удаление кого-либо прекращает будущие обновления, но не может стереть уже полученное.",
+  "shareError": "Не удалось обновить доступ: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Доступно вам",
+  "sharedByLabel": "Поделился {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Вы можете редактировать эту заметку; ваши изменения синхронизируются обратно владельцу, который их объединяет.",
+  "abandonSharedNoteButton": "Покинуть эту общую заметку",
+  "abandonSharedNoteConfirmTitle": "Покинуть эту общую заметку?",
+  "abandonSharedNoteConfirmBody": "Она будет удалена с этого устройства, и вы перестанете получать обновления. Отменить нельзя — вы не сможете присоединиться снова.",
+  "abandonSharedNoteError": "Не удалось покинуть: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

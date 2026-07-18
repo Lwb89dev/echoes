@@ -5,6 +5,7 @@ import 'dart:developer' as developer;
 import 'package:amberflutter/amberflutter.dart';
 import 'package:dart_nostr/dart_nostr.dart';
 import 'package:flutter/services.dart' show MissingPluginException;
+import 'package:http/http.dart' as http;
 
 import '../models/note.dart';
 import '../models/profile.dart';
@@ -12,6 +13,45 @@ import '../models/relay.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
 import '../utils/crypto.dart';
+import '../utils/note_sharing.dart';
+
+/// One decrypted event addressed to the local user: either a note update
+/// (a share from an owner, or an edit proposal from a recipient — the
+/// caller decides which by looking at [sender]) or a control message (e.g.
+/// a recipient leaving). [sender] is always the *signed* event author, so
+/// it is safe to make trust decisions on.
+class IncomingShare {
+  final String sender;
+  final DateTime createdAt;
+  final Note? note;
+  final String? controlType;
+  final String? controlNoteId;
+
+  const IncomingShare._({
+    required this.sender,
+    required this.createdAt,
+    this.note,
+    this.controlType,
+    this.controlNoteId,
+  });
+
+  factory IncomingShare.note({
+    required String sender,
+    required DateTime createdAt,
+    required Note note,
+  }) =>
+      IncomingShare._(sender: sender, createdAt: createdAt, note: note);
+
+  factory IncomingShare.control({
+    required String sender,
+    required DateTime createdAt,
+    required String type,
+    required String noteId,
+  }) =>
+      IncomingShare._(sender: sender, createdAt: createdAt, controlType: type, controlNoteId: noteId);
+
+  bool get isControl => controlType != null;
+}
 
 /// Wraps all interaction with the Nostr protocol: login (importing a
 /// private key, or delegating to Amber), connecting to the selected
@@ -41,6 +81,136 @@ class NostrService {
   /// restored in [AuthNotifier.build]).
   String publicKeyToNpub(String publicKeyHex) {
     return _nostr.bech32.encodePublicKeyToNpub(publicKeyHex);
+  }
+
+  /// Normalizes a recipient identifier the user typed — a bech32 `npub` or a
+  /// raw 64-char hex pubkey — to lowercase hex, or throws [FormatException]
+  /// if it's neither. Used when adding a share recipient; keeping the
+  /// parsing here (not in the UI) means the bech32/hex validation lives in
+  /// one place next to the rest of the key handling.
+  String recipientToPublicKeyHex(String input) {
+    final trimmed = input.trim();
+    if (trimmed.startsWith('npub1')) {
+      return _nostr.bech32.decodeNpubKeyToPublicKey(trimmed).toLowerCase();
+    }
+    final hex = trimmed.toLowerCase();
+    if (hex.length == 64 && RegExp(r'^[0-9a-f]{64}$').hasMatch(hex)) {
+      return hex;
+    }
+    throw const FormatException('Not a valid npub or hex public key.');
+  }
+
+  /// Resolves a NIP-05 identifier (`name@domain`) to its owner's pubkey hex
+  /// by fetching `https://<domain>/.well-known/nostr.json?name=<name>` and
+  /// reading `names[<name>]`. Returns lowercase hex, or throws
+  /// [FormatException] if the identifier is malformed, the domain doesn't
+  /// answer with a 200, or it lists no valid pubkey for that name.
+  ///
+  /// This only tells us the pubkey the *domain operator* maps that name to —
+  /// it is not proof of who the person is (anyone can host a nostr.json). The
+  /// share sheet therefore treats the result as a suggestion to be confirmed
+  /// visually (avatar + npub), never an authenticated identity.
+  ///
+  /// The identifier's shape is validated *before* any network call: the local
+  /// part is restricted to NIP-05's charset and the domain to a bare host, so
+  /// a typed value can never smuggle a scheme, path, port or query of its own
+  /// into the request — [Uri.https] then percent-encodes both into a fixed
+  /// well-known path. HTTPS is mandatory (like avatar/attachment fetches).
+  Future<String> resolveNip05(String identifier) async {
+    developer.log('NostrService.resolveNip05 called', name: 'NostrService');
+    final trimmed = identifier.trim();
+    final at = trimmed.indexOf('@');
+    // Exactly one '@', with a non-empty local part before it.
+    if (at <= 0 || at != trimmed.lastIndexOf('@')) {
+      throw const FormatException('Not a NIP-05 identifier.');
+    }
+    final localPart = trimmed.substring(0, at);
+    final domain = trimmed.substring(at + 1).toLowerCase();
+    if (!RegExp(r'^[a-zA-Z0-9._-]+$').hasMatch(localPart) ||
+        !RegExp(r'^[a-z0-9-]+(\.[a-z0-9-]+)+$').hasMatch(domain)) {
+      throw const FormatException('Malformed NIP-05 identifier.');
+    }
+
+    final url = Uri.https(domain, '/.well-known/nostr.json', {'name': localPart});
+    final body = await _httpsGetBounded(url, maxBytes: 100 * 1024);
+
+    final decoded = jsonDecode(body);
+    final names = (decoded is Map) ? decoded['names'] : null;
+    if (names is! Map) {
+      throw const FormatException('NIP-05 response has no names map.');
+    }
+    // Prefer the exact name the server was asked for; fall back to a
+    // case-insensitive match since some servers normalise the key's case.
+    var hex = names[localPart];
+    if (hex is! String) {
+      final lower = localPart.toLowerCase();
+      for (final entry in names.entries) {
+        if (entry.key is String && (entry.key as String).toLowerCase() == lower) {
+          hex = entry.value;
+          break;
+        }
+      }
+    }
+    if (hex is! String) {
+      throw const FormatException('NIP-05 name not found.');
+    }
+    final normalized = hex.toLowerCase();
+    if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(normalized)) {
+      throw const FormatException('NIP-05 name maps to an invalid pubkey.');
+    }
+    return normalized;
+  }
+
+  /// GET [url] with the same paranoia the rest of the app applies to
+  /// arbitrary third-party hosts, returning the response body as a string.
+  ///
+  ///  * **https end-to-end**: redirects are followed manually (at most
+  ///    [maxRedirects] hops) and only to https targets. `package:http`'s
+  ///    default client would happily follow a redirect that downgrades to
+  ///    plain http, silently moving the query — which for NIP-05 includes
+  ///    the name being looked up — onto the wire in cleartext.
+  ///  * **bounded body**: the byte stream is abandoned the moment it passes
+  ///    [maxBytes], *before* any JSON parsing, so a hostile host can't feed
+  ///    an arbitrarily large response into memory. `http.get` offers no such
+  ///    cut-off: it buffers whatever the server sends, however big.
+  ///
+  /// Throws [FormatException] on any non-200 terminal status, a non-https
+  /// or missing redirect target, too many hops, or an oversized body.
+  Future<String> _httpsGetBounded(Uri url, {required int maxBytes, int maxRedirects = 3}) async {
+    var current = url;
+    final client = http.Client();
+    try {
+      for (var hop = 0; hop <= maxRedirects; hop++) {
+        final request = http.Request('GET', current)..followRedirects = false;
+        final response = await client.send(request).timeout(const Duration(seconds: 10));
+
+        if (const {301, 302, 303, 307, 308}.contains(response.statusCode)) {
+          final location = response.headers['location'];
+          if (location == null) throw const FormatException('Redirect without a location.');
+          final target = current.resolve(location);
+          if (target.scheme != 'https') {
+            throw const FormatException('Refusing a redirect off https.');
+          }
+          current = target;
+          continue;
+        }
+        if (response.statusCode != 200) {
+          throw FormatException('Lookup failed (HTTP ${response.statusCode}).');
+        }
+
+        final bytes = <int>[];
+        await for (final chunk in response.stream.timeout(const Duration(seconds: 10))) {
+          bytes.addAll(chunk);
+          if (bytes.length > maxBytes) {
+            throw const FormatException('Response too large.');
+          }
+        }
+        return utf8.decode(bytes);
+      }
+      throw const FormatException('Too many redirects.');
+    } finally {
+      client.close();
+    }
   }
 
   /// Imports an existing Nostr account from a private key the user typed in
@@ -171,6 +341,29 @@ class NostrService {
   // Profile metadata (NIP-01 kind 0)
   // -------------------------------------------------------------------
 
+  /// Filters raw relay events down to the ones that can safely be
+  /// *attributed*: signature-verified AND actually authored by one of
+  /// [expectedAuthors]. The two checks matter independently — a relay is
+  /// free to ignore the request's `authors` filter and return events
+  /// carrying any pubkey it likes (only a valid signature makes the pubkey
+  /// real), and a validly-signed event by some *unrelated* key would still
+  /// pass verification alone (letting a relay inject strangers into, say,
+  /// the contact autocomplete). Everything feeding identity UI — the
+  /// name/avatar a person is recognised by before a note is shared with
+  /// them — must pass through here first. Oversized content is dropped
+  /// *before* the signature check: verification hashes the whole content,
+  /// so a hostile relay shipping huge events would otherwise get free CPU
+  /// out of the verifier itself (same cheapest-check-first ordering as
+  /// [_decryptNoteEvent]).
+  List<NostrEvent> _attributedEvents(List<NostrEvent> events, Set<String> expectedAuthors) {
+    return events
+        .where((e) =>
+            (e.content?.length ?? 0) <= AppConstants.maxNoteEventContentChars &&
+            expectedAuthors.contains(e.pubkey) &&
+            _isVerifiedEvent(e))
+        .toList();
+  }
+
   /// Fetches [publicKeyHex]'s public profile card (kind 0), if any relay
   /// has one. Unlike notes, this is plain public data by design — no
   /// NIP-44 involved — so a missing or malformed profile is not an error,
@@ -192,17 +385,30 @@ class NostrService {
       ...profileMetadataFallbackRelayUrls,
     };
     final queryRelays = urls.map((url) => Relay(url: url)).toList();
-    await connectToRelays(queryRelays);
 
-    final events = await _nostr.relays.startEventsSubscriptionAsync(
+    // Uses the same all-relays-EOSE [_gatherEvents] helper as note fetching,
+    // not `startEventsSubscriptionAsync` directly: that call resolves as
+    // soon as the *first* relay of however many are queried sends its own
+    // EOSE, discarding whatever slower relays were still mid-delivery on
+    // (see [_gatherEvents]'s doc comment). With several fallback relays in
+    // play here, a fast-but-empty relay racing ahead of the one relay that
+    // actually has this profile was silently starving real profile lookups
+    // — this fetch is now hit far more (once per recipient shown, not just
+    // once for the logged-in account at Settings) so that race lost far
+    // more often in practice than it used to.
+    final gathered = await _gatherEvents(
       request: NostrRequest(
         filters: [
           NostrFilter(authors: [publicKeyHex], kinds: const [0], limit: 1),
         ],
       ),
+      relays: queryRelays,
       timeout: const Duration(seconds: 10),
-      shouldThrowErrorOnTimeoutWithoutEose: false,
     );
+    // Attribution check before anything else: this name/avatar is what the
+    // user will *recognise a person by* in the share flow, so a relay must
+    // not be able to attach an arbitrary profile to this pubkey.
+    final events = _attributedEvents(gathered.events, {publicKeyHex});
     if (events.isEmpty) return null;
 
     // Relays are not required to enforce "one kind-0 per author" or return
@@ -215,6 +421,7 @@ class NostrService {
     );
     final content = latest.content;
     if (content == null || content.isEmpty) return null;
+    if (content.length > AppConstants.maxNoteEventContentChars) return null;
 
     try {
       final json = jsonDecode(content) as Map<String, dynamic>;
@@ -223,6 +430,117 @@ class NostrService {
       developer.log('Could not parse profile metadata for $publicKeyHex: $e', name: 'NostrService');
       return null;
     }
+  }
+
+  /// Fetches [publicKeyHex]'s NIP-02 contact list — the pubkeys of every
+  /// account they follow — from the most recent kind-3 event they've
+  /// published. Used only to power the share sheet's local, client-side
+  /// recipient autocomplete: matching against people already followed,
+  /// never a network-wide name search (see [AppConstants.contactListEventKind]
+  /// for why that distinction matters here). Empty on no event, malformed
+  /// tags, or no relay response — this is a UX nicety, not load-bearing.
+  Future<List<String>> fetchContactPubkeys({
+    required String publicKeyHex,
+    required List<Relay> relays,
+  }) async {
+    developer.log('NostrService.fetchContactPubkeys called for $publicKeyHex', name: 'NostrService');
+    if (relays.isEmpty) return const [];
+
+    final gathered = await _gatherEvents(
+      request: NostrRequest(
+        filters: [
+          NostrFilter(authors: [publicKeyHex], kinds: const [AppConstants.contactListEventKind], limit: 1),
+        ],
+      ),
+      relays: relays,
+      timeout: const Duration(seconds: 10),
+    );
+    // A forged (unverified) kind-3 here would let a relay seed the share
+    // autocomplete with pubkeys the user never followed — the exact
+    // "trusted suggestions" surface this feature leans on. Only an event
+    // provably signed by the user's own key counts as their follow list.
+    final events = _attributedEvents(gathered.events, {publicKeyHex});
+    if (events.isEmpty) return const [];
+
+    final epoch = DateTime.fromMillisecondsSinceEpoch(0);
+    final latest = events.reduce(
+      (a, b) => (a.createdAt ?? epoch).isAfter(b.createdAt ?? epoch) ? a : b,
+    );
+
+    final pubkeys = <String>{};
+    for (final tag in latest.tags ?? const <List<String>>[]) {
+      if (tag.length < 2 || tag[0] != 'p') continue;
+      final hex = tag[1].toLowerCase();
+      if (RegExp(r'^[0-9a-f]{64}$').hasMatch(hex)) pubkeys.add(hex);
+    }
+    return pubkeys.toList();
+  }
+
+  /// Batch-fetches public profiles (kind 0) for every pubkey in
+  /// [publicKeyHexes] in as few subscriptions as possible — one relay
+  /// round-trip for the whole contact list instead of one per contact.
+  /// [AppConstants.contactProfileBatchSize]-sized chunks are OR'd together
+  /// as separate filters on the same subscription (some relays cap how many
+  /// values one filter's `authors` array may hold). Pubkeys with no
+  /// reachable profile are simply absent from the result.
+  Future<List<NostrProfile>> fetchProfilesBatch({
+    required List<String> publicKeyHexes,
+    required List<Relay> relays,
+  }) async {
+    developer.log('NostrService.fetchProfilesBatch called (${publicKeyHexes.length} pubkeys)', name: 'NostrService');
+    if (publicKeyHexes.isEmpty || relays.isEmpty) return const [];
+
+    final urls = {
+      ...relays.map((r) => r.url),
+      ...profileMetadataFallbackRelayUrls,
+    };
+    final queryRelays = urls.map((url) => Relay(url: url)).toList();
+
+    final filters = <NostrFilter>[];
+    for (var i = 0; i < publicKeyHexes.length; i += AppConstants.contactProfileBatchSize) {
+      final chunk = publicKeyHexes.sublist(
+        i,
+        (i + AppConstants.contactProfileBatchSize).clamp(0, publicKeyHexes.length),
+      );
+      filters.add(NostrFilter(authors: chunk, kinds: const [0]));
+    }
+
+    final gathered = await _gatherEvents(
+      request: NostrRequest(filters: filters),
+      relays: queryRelays,
+      timeout: const Duration(seconds: 15),
+    );
+
+    // Only verified events actually authored by a *requested* pubkey may
+    // proceed: without the membership check, a relay could volunteer
+    // validly-signed profiles of complete strangers and have them surface
+    // as "contacts" in the share autocomplete.
+    final trusted = _attributedEvents(gathered.events, publicKeyHexes.toSet());
+
+    // Relays may return more than one kind-0 per author (an older event
+    // alongside its replacement) — keep only the most recent.
+    final epoch = DateTime.fromMillisecondsSinceEpoch(0);
+    final latestByAuthor = <String, NostrEvent>{};
+    for (final event in trusted) {
+      final existing = latestByAuthor[event.pubkey];
+      if (existing == null || (event.createdAt ?? epoch).isAfter(existing.createdAt ?? epoch)) {
+        latestByAuthor[event.pubkey] = event;
+      }
+    }
+
+    final profiles = <NostrProfile>[];
+    for (final entry in latestByAuthor.entries) {
+      final content = entry.value.content;
+      if (content == null || content.isEmpty) continue;
+      if (content.length > AppConstants.maxNoteEventContentChars) continue;
+      try {
+        final json = jsonDecode(content) as Map<String, dynamic>;
+        profiles.add(NostrProfile.fromMetadataJson(entry.key, json));
+      } catch (e) {
+        developer.log('Could not parse batch profile for ${entry.key}: $e', name: 'NostrService');
+      }
+    }
+    return profiles;
   }
 
   // -------------------------------------------------------------------
@@ -247,41 +565,280 @@ class NostrService {
     final tags = [
       ['d', note.id],
     ];
-    final createdAt = note.updatedAt;
+    // Self-encrypted: recipient == author, so only the author can read it.
+    final content = await _encryptFor(
+      author: author,
+      peerPubHex: author.publicKeyHex,
+      plaintext: plaintext,
+    );
 
-    final String content;
+    return signGenericEvent(
+      kind: AppConstants.noteEventKind,
+      tags: tags,
+      content: content,
+      createdAt: note.updatedAt,
+      author: author,
+    );
+  }
+
+  // -------------------------------------------------------------------
+  // Note sharing with other users (see [NoteSharing])
+  // -------------------------------------------------------------------
+
+  /// Builds the owner's per-recipient copy of [note] for [recipientPubHex]:
+  /// a parameterized-replaceable event under a deterministic per-recipient
+  /// `d`-tag (so editing the note replaces that recipient's copy in place),
+  /// with the note NIP-44-encrypted to the recipient. Uses [Note.toShareJson]
+  /// so the recipient list never travels inside it.
+  Future<NostrEvent> createSharedNoteEvent({
+    required Note note,
+    required User author,
+    required String recipientPubHex,
+  }) async {
+    final content = await _encryptFor(
+      author: author,
+      peerPubHex: recipientPubHex,
+      plaintext: jsonEncode(note.toShareJson()),
+    );
+    return signGenericEvent(
+      kind: AppConstants.noteEventKind,
+      tags: [
+        ['d', NoteSharing.shareDTag(recipientPubHex: recipientPubHex, noteId: note.id)],
+        ['p', recipientPubHex],
+      ],
+      content: content,
+      createdAt: note.updatedAt,
+      author: author,
+    );
+  }
+
+  /// Builds a recipient's edit-proposal copy of [note] addressed back to its
+  /// owner ([ownerPubHex]): same shape as a share event, but under the
+  /// recipient's own edit `d`-tag and encrypted to the owner. The owner's
+  /// client merges it on the next cycle (see `SyncService`).
+  Future<NostrEvent> createEditProposalEvent({
+    required Note note,
+    required User author,
+    required String ownerPubHex,
+  }) async {
+    final content = await _encryptFor(
+      author: author,
+      peerPubHex: ownerPubHex,
+      plaintext: jsonEncode(note.toShareJson()),
+    );
+    return signGenericEvent(
+      kind: AppConstants.noteEventKind,
+      tags: [
+        ['d', NoteSharing.editDTag(ownerPubHex: ownerPubHex, noteId: note.id)],
+        ['p', ownerPubHex],
+      ],
+      content: content,
+      createdAt: note.updatedAt,
+      author: author,
+    );
+  }
+
+  /// Builds the "I'm leaving this shared note" control event a recipient
+  /// sends its owner on abandon, so the owner can drop them. Reuses the
+  /// recipient's edit `d`-tag so it replaces any pending edit proposal for
+  /// the same note rather than adding a separate event.
+  Future<NostrEvent> createLeaveControlEvent({
+    required String noteId,
+    required User author,
+    required String ownerPubHex,
+  }) async {
+    final content = await _encryptFor(
+      author: author,
+      peerPubHex: ownerPubHex,
+      plaintext: jsonEncode({
+        NoteSharing.controlTypeKey: NoteSharing.controlLeave,
+        'id': noteId,
+      }),
+    );
+    return signGenericEvent(
+      kind: AppConstants.noteEventKind,
+      tags: [
+        ['d', NoteSharing.editDTag(ownerPubHex: ownerPubHex, noteId: noteId)],
+        ['p', ownerPubHex],
+      ],
+      content: content,
+      createdAt: DateTime.now(),
+      author: author,
+    );
+  }
+
+  /// Fetches every share/edit/control event addressed to [me] (events
+  /// `p`-tagging my pubkey), verifies and decrypts each one, and returns
+  /// them as [IncomingShare]s tagged with the *signed* sender pubkey. Events
+  /// that fail verification, size limits, decryption or parsing are dropped
+  /// (never throw the whole fetch). `complete` mirrors
+  /// [fetchNotesFromRelay]'s all-relays-EOSE semantics.
+  Future<({List<IncomingShare> items, bool complete})> fetchSharesAddressedTo({
+    required User me,
+    required List<Relay> relays,
+    DateTime? since,
+    Duration timeout = const Duration(seconds: 20),
+  }) async {
+    developer.log('NostrService.fetchSharesAddressedTo called', name: 'NostrService');
+    if (relays.isEmpty) return (items: const <IncomingShare>[], complete: true);
+
+    final gathered = await _gatherEvents(
+      request: NostrRequest(
+        filters: [
+          NostrFilter(
+            kinds: const [AppConstants.noteEventKind],
+            since: since,
+            p: [me.publicKeyHex],
+          ),
+        ],
+      ),
+      relays: relays,
+      timeout: timeout,
+    );
+
+    final items = <IncomingShare>[];
+    for (final event in gathered.events) {
+      final item = await _decryptSharedEvent(event, me);
+      if (item != null) items.add(item);
+    }
+    return (items: items, complete: gathered.complete);
+  }
+
+  /// Publishes a NIP-09 deletion for the copy shared with [recipientPubHex]
+  /// of note [noteId] — targeted by parameterized-replaceable coordinate
+  /// (`a` tag), which is all we need since the `d`-tag is deterministic.
+  /// Used when the owner stops sharing with that recipient.
+  Future<void> deleteSharedNoteEvent({
+    required String noteId,
+    required String recipientPubHex,
+    required User author,
+    required List<Relay> relays,
+  }) async {
+    developer.log('NostrService.deleteSharedNoteEvent called', name: 'NostrService');
+    final dTag = NoteSharing.shareDTag(recipientPubHex: recipientPubHex, noteId: noteId);
+    final deletionEvent = await signGenericEvent(
+      kind: AppConstants.deletionEventKind,
+      tags: [
+        ['a', '${AppConstants.noteEventKind}:${author.publicKeyHex}:$dTag'],
+      ],
+      content: '',
+      author: author,
+    );
+    await publishNote(deletionEvent, relays);
+  }
+
+  /// Verifies, decrypts and parses one event addressed to [me] into an
+  /// [IncomingShare], or null if it isn't a usable share (bad signature,
+  /// oversized, undecryptable — i.e. not actually encrypted to me — or
+  /// malformed). The sender is taken from the *signed* event author, never
+  /// from the payload, so it can't be spoofed.
+  Future<IncomingShare?> _decryptSharedEvent(NostrEvent event, User me) async {
+    final content = event.content;
+    final senderPubHex = event.pubkey;
+    if (content == null || content.isEmpty) return null;
+    if (content.length > AppConstants.maxNoteEventContentChars) return null;
+    // A relay could put anyone's pubkey on an event; only a verified
+    // signature makes `senderPubHex` trustworthy, and trust in the sender
+    // is exactly what the authorization rules downstream hinge on.
+    if (!_isVerifiedEvent(event)) return null;
+    // Never treat our own echoed-back events as an inbound share.
+    if (senderPubHex == me.publicKeyHex) return null;
+
+    try {
+      final plaintext = await _decryptFrom(author: me, peerPubHex: senderPubHex, ciphertext: content);
+      final json = jsonDecode(plaintext) as Map<String, dynamic>;
+
+      final createdAt = event.createdAt ?? DateTime.now();
+      final control = json[NoteSharing.controlTypeKey];
+      if (control is String) {
+        final noteId = json['id'];
+        if (noteId is! String || noteId.isEmpty) return null;
+        return IncomingShare.control(
+          sender: senderPubHex,
+          createdAt: createdAt,
+          type: control,
+          noteId: noteId,
+        );
+      }
+
+      final parsed = Note.fromJson(json);
+      // Sanitize the sender's attachments: a received attachment must only
+      // ever be fetched from its remote (https, hash-checked) url — never
+      // from a `localPath` the sender chose, which could point at a file on
+      // *this* device (a local-file-read vector). See [Attachment.withoutLocalPath].
+      final note = parsed.copyWith(
+        attachments: parsed.attachments.map((a) => a.withoutLocalPath()).toList(),
+      );
+      return IncomingShare.note(sender: senderPubHex, createdAt: createdAt, note: note);
+    } catch (e) {
+      developer.log('Could not decrypt/parse shared event ${event.id}: $e', name: 'NostrService');
+      return null;
+    }
+  }
+
+  /// NIP-44 encrypt [plaintext] from [author] to [peerPubHex] — local key or
+  /// Amber intent depending on the login method. Shared by the self-note and
+  /// all sharing paths.
+  Future<String> _encryptFor({
+    required User author,
+    required String peerPubHex,
+    required String plaintext,
+  }) async {
     switch (author.loginMethod) {
       case LoginMethod.privateKey:
         final privateKeyHex = author.privateKeyHex;
         if (privateKeyHex == null) {
           throw StateError('Missing private key for a LoginMethod.privateKey session.');
         }
-        content = CryptoUtils.encryptNip44(
+        return CryptoUtils.encryptNip44(
           plaintext: plaintext,
           privateKeyHex: privateKeyHex,
-          recipientPublicKeyHex: author.publicKeyHex,
+          recipientPublicKeyHex: peerPubHex,
         );
-
       case LoginMethod.amber:
-        final encryptResult = await _awaitAmber(_amber.nip44Encrypt(
+        final result = await _awaitAmber(_amber.nip44Encrypt(
           plaintext: plaintext,
           currentUser: author.npub,
-          pubKey: author.publicKeyHex,
+          pubKey: peerPubHex,
         ));
-        final encrypted = (encryptResult['signature'] as String?) ?? '';
+        final encrypted = (result['signature'] as String?) ?? '';
         if (encrypted.isEmpty) {
           throw StateError('Amber returned no encrypted content.');
         }
-        content = encrypted;
+        return encrypted;
     }
+  }
 
-    return signGenericEvent(
-      kind: AppConstants.noteEventKind,
-      tags: tags,
-      content: content,
-      createdAt: createdAt,
-      author: author,
-    );
+  /// NIP-44 decrypt [ciphertext] sent by [peerPubHex] for [author] — local
+  /// key or Amber intent depending on the login method.
+  Future<String> _decryptFrom({
+    required User author,
+    required String peerPubHex,
+    required String ciphertext,
+  }) async {
+    switch (author.loginMethod) {
+      case LoginMethod.privateKey:
+        final privateKeyHex = author.privateKeyHex;
+        if (privateKeyHex == null) {
+          throw StateError('Missing private key for a LoginMethod.privateKey session.');
+        }
+        return CryptoUtils.decryptNip44(
+          ciphertext: ciphertext,
+          privateKeyHex: privateKeyHex,
+          senderPublicKeyHex: peerPubHex,
+        );
+      case LoginMethod.amber:
+        final result = await _awaitAmber(_amber.nip44Decrypt(
+          ciphertext: ciphertext,
+          currentUser: author.npub,
+          pubKey: peerPubHex,
+        ));
+        final decrypted = result['signature'] as String?;
+        if (decrypted == null) {
+          throw StateError('Amber returned no decrypted content.');
+        }
+        return decrypted;
+    }
   }
 
   /// Signs an arbitrary Nostr event — local key or Amber intent, depending
@@ -383,13 +940,8 @@ class NostrService {
   }) async {
     developer.log('NostrService.fetchNotesFromRelay called for ${author.publicKeyHex}', name: 'NostrService');
     if (relays.isEmpty) return (notes: const <Note>[], complete: true);
-    await connectToRelays(relays);
 
-    final pendingRelays = relays.map((r) => r.url).toSet();
-    final rawEvents = <NostrEvent>[];
-    final allEoseCompleter = Completer<void>();
-
-    final subscription = _nostr.relays.startEventsSubscription(
+    final gathered = await _gatherEvents(
       request: NostrRequest(
         filters: [
           NostrFilter(
@@ -399,6 +951,39 @@ class NostrService {
           ),
         ],
       ),
+      relays: relays,
+      timeout: timeout,
+    );
+
+    final notes = <Note>[];
+    for (final event in gathered.events) {
+      final note = await _decryptNoteEvent(event, author);
+      if (note != null) notes.add(note);
+    }
+    return (notes: notes, complete: gathered.complete);
+  }
+
+  /// Subscribes with [request] across every relay in [relays], gathering
+  /// events until *every* relay has sent its EOSE ("end of stored events")
+  /// or [timeout] elapses — whichever comes first. `complete` is false when
+  /// the timeout won the race, i.e. at least one relay never finished (see
+  /// [fetchNotesFromRelay] for why that distinction matters for the sync
+  /// bookmark). Shared by every fetch path so none of them re-implements
+  /// the all-relays-EOSE handling.
+  Future<({List<NostrEvent> events, bool complete})> _gatherEvents({
+    required NostrRequest request,
+    required List<Relay> relays,
+    required Duration timeout,
+  }) async {
+    if (relays.isEmpty) return (events: const <NostrEvent>[], complete: true);
+    await connectToRelays(relays);
+
+    final pendingRelays = relays.map((r) => r.url).toSet();
+    final rawEvents = <NostrEvent>[];
+    final allEoseCompleter = Completer<void>();
+
+    final subscription = _nostr.relays.startEventsSubscription(
+      request: request,
       onEose: (relay, eose) {
         pendingRelays.remove(relay);
         if (pendingRelays.isEmpty && !allEoseCompleter.isCompleted) {
@@ -412,19 +997,13 @@ class NostrService {
     subscription.close();
     if (pendingRelays.isNotEmpty) {
       developer.log(
-        'fetchNotesFromRelay: timed out waiting for EOSE from: $pendingRelays '
+        '_gatherEvents: timed out waiting for EOSE from: $pendingRelays '
         '(often means those relays are unreachable from this network) — '
         'returning ${rawEvents.length} event(s) from the relays that did respond',
         name: 'NostrService',
       );
     }
-
-    final notes = <Note>[];
-    for (final event in rawEvents) {
-      final note = await _decryptNoteEvent(event, author);
-      if (note != null) notes.add(note);
-    }
-    return (notes: notes, complete: pendingRelays.isEmpty);
+    return (events: rawEvents, complete: pendingRelays.isEmpty);
   }
 
   /// Pushes every local note that isn't synced yet ([Note.synced] ==
@@ -457,13 +1036,37 @@ class NostrService {
       'NostrService.syncLocalNotes called (${localNotes.length} local notes)',
       name: 'NostrService',
     );
-    final unsyncedNotes = localNotes.where((n) => !n.synced && n.nostrEventId != null).toList();
+    // Notes owned by me publish to my own coordinate — but only once the
+    // user has explicitly synced them at least once (`nostrEventId != null`),
+    // so a purely-local note never leaks onto relays on a background cycle.
+    // Notes *shared with me* (someone else owns them) never get a self copy;
+    // my only outbound event for them is an edit proposal to their owner, so
+    // they publish regardless of `nostrEventId`.
+    final unsyncedNotes = localNotes
+        .where((n) => !n.synced && (n.ownerPubkey == null ? n.nostrEventId != null : true))
+        .toList();
     final syncedNotes = <Note>[];
     for (final note in unsyncedNotes) {
       try {
-        final event = await createNoteEvent(note, author);
-        final eventId = await publishNote(event, relays);
-        syncedNotes.add(note.copyWith(synced: true, nostrEventId: eventId));
+        if (note.ownerPubkey == null) {
+          // I own it: publish the self-encrypted canonical copy (for my own
+          // devices), plus one NIP-44 copy per recipient I share it with.
+          final event = await createNoteEvent(note, author);
+          final eventId = await publishNote(event, relays);
+          for (final recipient in note.sharedWith) {
+            final shareEvent =
+                await createSharedNoteEvent(note: note, author: author, recipientPubHex: recipient);
+            await publishNote(shareEvent, relays);
+          }
+          syncedNotes.add(note.copyWith(synced: true, nostrEventId: eventId));
+        } else {
+          // Shared with me: publish an edit proposal back to the owner, who
+          // merges it and re-publishes to everyone (implicit acceptance).
+          final editEvent =
+              await createEditProposalEvent(note: note, author: author, ownerPubHex: note.ownerPubkey!);
+          await publishNote(editEvent, relays);
+          syncedNotes.add(note.copyWith(synced: true));
+        }
       } catch (e) {
         developer.log('Failed to sync note ${note.id}: $e', name: 'NostrService');
         // Leave it unsynced; the next sync cycle will retry it.
@@ -553,27 +1156,11 @@ class NostrService {
     }
 
     try {
-      final String plaintext;
-      switch (author.loginMethod) {
-        case LoginMethod.privateKey:
-          final privateKeyHex = author.privateKeyHex;
-          if (privateKeyHex == null) return null;
-          plaintext = CryptoUtils.decryptNip44(
-            ciphertext: content,
-            privateKeyHex: privateKeyHex,
-            senderPublicKeyHex: author.publicKeyHex,
-          );
-        case LoginMethod.amber:
-          final result = await _awaitAmber(_amber.nip44Decrypt(
-            ciphertext: content,
-            currentUser: author.npub,
-            pubKey: author.publicKeyHex,
-          ));
-          final decrypted = result['signature'] as String?;
-          if (decrypted == null) return null;
-          plaintext = decrypted;
-      }
-
+      final plaintext = await _decryptFrom(
+        author: author,
+        peerPubHex: author.publicKeyHex,
+        ciphertext: content,
+      );
       final json = jsonDecode(plaintext) as Map<String, dynamic>;
       return Note.fromJson(json).copyWith(synced: true, nostrEventId: eventId);
     } catch (e) {

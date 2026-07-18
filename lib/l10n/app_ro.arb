@@ -200,5 +200,48 @@
   "passwordLabel": "Parolă",
   "invalidPrivateKeyError": "Cheia privată nu este validă. Introduceți o cheie nsec sau hex validă.",
   "wrongPasswordError": "Parolă greșită",
-  "genericErrorPrefix": "Eroare: {error}"
+  "genericErrorPrefix": "Eroare: {error}",
+  "shareNoteTooltip": "Partajează",
+  "shareNoteTitle": "Partajează nota",
+  "shareRecipientFieldLabel": "npub sau cheia publică a destinatarului",
+  "shareAddRecipientButton": "Adaugă",
+  "shareInvalidRecipientError": "Nu este un npub sau o cheie publică validă",
+  "shareRecipientNotFoundError": "Niciun cont Nostr găsit pentru acest nume",
+  "shareConfirmTitle": "Distribui această notiță?",
+  "shareConfirmButton": "Distribuie",
+  "shareAlreadyRecipientError": "Deja partajată cu această persoană",
+  "shareCannotShareWithSelfError": "Nu poți partaja o notă cu tine însuți",
+  "shareRecipientsHeader": "Partajată cu",
+  "shareNoRecipientsMessage": "Încă nepartajată cu nimeni.",
+  "stopSharingTooltip": "Oprește partajarea cu această persoană",
+  "shareRevocationNote": "Oricine cu care partajezi poate citi această notă pe dispozitivul său. Eliminarea cuiva oprește actualizările viitoare, dar nu poate șterge ce a primit deja.",
+  "shareError": "Partajarea nu a putut fi actualizată: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Partajată cu tine",
+  "sharedByLabel": "Partajată de {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Poți edita această notă; modificările tale se sincronizează înapoi la proprietar, care le îmbină.",
+  "abandonSharedNoteButton": "Părăsește această notă partajată",
+  "abandonSharedNoteConfirmTitle": "Părăsești această notă partajată?",
+  "abandonSharedNoteConfirmBody": "Va fi eliminată de pe acest dispozitiv și nu vei mai primi actualizări. Acțiunea nu poate fi anulată — nu te vei mai putea alătura ulterior.",
+  "abandonSharedNoteError": "Nu s-a putut părăsi: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

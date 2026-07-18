@@ -200,5 +200,48 @@
   "passwordLabel": "Password",
   "invalidPrivateKeyError": "Iċ-ċavetta privata mhijiex valida. Daħħal ċavetta nsec jew hex valida.",
   "wrongPasswordError": "Password ħażina",
-  "genericErrorPrefix": "Żball: {error}"
+  "genericErrorPrefix": "Żball: {error}",
+  "shareNoteTooltip": "Aqsam",
+  "shareNoteTitle": "Aqsam nota",
+  "shareRecipientFieldLabel": "npub jew ċavetta pubblika tar-riċevitur",
+  "shareAddRecipientButton": "Żid",
+  "shareInvalidRecipientError": "Dan mhux npub jew ċavetta pubblika valida",
+  "shareRecipientNotFoundError": "Ma nstab ebda kont Nostr għal dak l-isem",
+  "shareConfirmTitle": "Aqsam din in-nota?",
+  "shareConfirmButton": "Aqsam",
+  "shareAlreadyRecipientError": "Diġà maqsuma ma' din il-persuna",
+  "shareCannotShareWithSelfError": "Ma tistax taqsam nota miegħek innifsek",
+  "shareRecipientsHeader": "Maqsuma ma'",
+  "shareNoRecipientsMessage": "Għadha ma nqasmet ma' ħadd.",
+  "stopSharingTooltip": "Waqqaf il-qsim ma' din il-persuna",
+  "shareRevocationNote": "Kull min taqsam miegħu jista' jaqra din in-nota fuq l-apparat tiegħu. It-tneħħija ta' xi ħadd twaqqaf l-aġġornamenti futuri, iżda ma tistax tħassar dak li diġà rċieva.",
+  "shareError": "Ma setax jiġi aġġornat il-qsim: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Maqsuma miegħek",
+  "sharedByLabel": "Maqsuma minn {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Tista' teditja din in-nota; il-bidliet tiegħek jiġu sinkronizzati lura lis-sid, li jgħaqqadhom.",
+  "abandonSharedNoteButton": "Ħalli din in-nota maqsuma",
+  "abandonSharedNoteConfirmTitle": "Tħalli din in-nota maqsuma?",
+  "abandonSharedNoteConfirmBody": "Titneħħa minn dan l-apparat u tieqaf tirċievi aġġornamenti. Dan ma jistax jiġi revokat — mhux se tkun tista' terġa' tingħaqad.",
+  "abandonSharedNoteError": "Ma setax jiġi mħolli: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

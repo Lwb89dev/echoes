@@ -200,5 +200,48 @@
   "passwordLabel": "Κωδικός πρόσβασης",
   "invalidPrivateKeyError": "Το ιδιωτικό κλειδί δεν είναι έγκυρο. Εισαγάγετε έγκυρο κλειδί nsec ή hex.",
   "wrongPasswordError": "Λανθασμένος κωδικός πρόσβασης",
-  "genericErrorPrefix": "Σφάλμα: {error}"
+  "genericErrorPrefix": "Σφάλμα: {error}",
+  "shareNoteTooltip": "Κοινή χρήση",
+  "shareNoteTitle": "Κοινή χρήση σημείωσης",
+  "shareRecipientFieldLabel": "npub ή δημόσιο κλειδί παραλήπτη",
+  "shareAddRecipientButton": "Προσθήκη",
+  "shareInvalidRecipientError": "Δεν είναι έγκυρο npub ή δημόσιο κλειδί",
+  "shareRecipientNotFoundError": "Δεν βρέθηκε λογαριασμός Nostr για αυτό το όνομα",
+  "shareConfirmTitle": "Κοινοποίηση αυτής της σημείωσης;",
+  "shareConfirmButton": "Κοινοποίηση",
+  "shareAlreadyRecipientError": "Έχει ήδη κοινοποιηθεί σε αυτό το άτομο",
+  "shareCannotShareWithSelfError": "Δεν μπορείτε να μοιραστείτε μια σημείωση με τον εαυτό σας",
+  "shareRecipientsHeader": "Κοινοποιήθηκε σε",
+  "shareNoRecipientsMessage": "Δεν έχει κοινοποιηθεί ακόμη σε κανέναν.",
+  "stopSharingTooltip": "Διακοπή κοινής χρήσης με αυτό το άτομο",
+  "shareRevocationNote": "Όποιος λαμβάνει την κοινή χρήση μπορεί να διαβάσει αυτή τη σημείωση στη συσκευή του. Η αφαίρεση κάποιου σταματά τις μελλοντικές ενημερώσεις, αλλά δεν μπορεί να σβήσει ό,τι έχει ήδη λάβει.",
+  "shareError": "Δεν ήταν δυνατή η ενημέρωση της κοινής χρήσης: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Κοινοποιήθηκε σε εσάς",
+  "sharedByLabel": "Κοινοποιήθηκε από {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Μπορείτε να επεξεργαστείτε αυτή τη σημείωση· οι αλλαγές σας συγχρονίζονται πίσω στον ιδιοκτήτη, ο οποίος τις συγχωνεύει.",
+  "abandonSharedNoteButton": "Αποχώρηση από αυτή την κοινόχρηστη σημείωση",
+  "abandonSharedNoteConfirmTitle": "Αποχώρηση από αυτή την κοινόχρηστη σημείωση;",
+  "abandonSharedNoteConfirmBody": "Θα αφαιρεθεί από αυτή τη συσκευή και θα σταματήσετε να λαμβάνετε ενημερώσεις. Δεν αναιρείται — δεν θα μπορείτε να επανασυνδεθείτε αργότερα.",
+  "abandonSharedNoteError": "Δεν ήταν δυνατή η αποχώρηση: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

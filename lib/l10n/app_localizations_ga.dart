@@ -612,4 +612,85 @@ class AppLocalizationsGa extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Earráid: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Comhroinn';
+
+  @override
+  String get shareNoteTitle => 'Comhroinn nóta';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'npub nó eochair phoiblí an fhaighteora';
+
+  @override
+  String get shareAddRecipientButton => 'Cuir leis';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Ní npub ná eochair phoiblí bhailí é sin';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Níor aimsíodh aon chuntas Nostr don ainm sin';
+
+  @override
+  String get shareConfirmTitle => 'An nóta seo a roinnt?';
+
+  @override
+  String get shareConfirmButton => 'Roinn';
+
+  @override
+  String get shareAlreadyRecipientError =>
+      'Comhroinnte leis an duine seo cheana';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Ní féidir leat nóta a chomhroinnt leat féin';
+
+  @override
+  String get shareRecipientsHeader => 'Comhroinnte le';
+
+  @override
+  String get shareNoRecipientsMessage =>
+      'Níl sé comhroinnte le duine ar bith fós.';
+
+  @override
+  String get stopSharingTooltip => 'Stop á chomhroinnt leis an duine seo';
+
+  @override
+  String get shareRevocationNote =>
+      'Is féidir le haon duine a bhfuil sé comhroinnte leo an nóta seo a léamh ar a ngléas. Cuireann duine a bhaint stop le nuashonruithe amach anseo, ach ní féidir an méid a fuair siad cheana a scriosadh.';
+
+  @override
+  String shareError(String error) {
+    return 'Níorbh fhéidir an chomhroinnt a nuashonrú: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Comhroinnte leat';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Comhroinnte ag $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Is féidir leat an nóta seo a chur in eagar; sioncronaítear do chuid athruithe ar ais chuig an úinéir, a chumascann iad.';
+
+  @override
+  String get abandonSharedNoteButton => 'Fág an nóta comhroinnte seo';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Fág an nóta comhroinnte seo?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Bainfear den ghléas seo é agus stopfaidh tú ag fáil nuashonruithe. Ní féidir é seo a chur ar ceal — ní bheidh tú in ann ceangal leis arís.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Níorbh fhéidir imeacht: $error';
+  }
 }

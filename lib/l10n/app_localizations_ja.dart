@@ -589,4 +589,78 @@ class AppLocalizationsJa extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'エラー: $error';
   }
+
+  @override
+  String get shareNoteTooltip => '共有';
+
+  @override
+  String get shareNoteTitle => 'メモを共有';
+
+  @override
+  String get shareRecipientFieldLabel => '受信者の npub または公開鍵';
+
+  @override
+  String get shareAddRecipientButton => '追加';
+
+  @override
+  String get shareInvalidRecipientError => '有効な npub または公開鍵ではありません';
+
+  @override
+  String get shareRecipientNotFoundError => 'その名前の Nostr アカウントが見つかりません';
+
+  @override
+  String get shareConfirmTitle => 'このノートを共有しますか?';
+
+  @override
+  String get shareConfirmButton => '共有';
+
+  @override
+  String get shareAlreadyRecipientError => 'この相手とはすでに共有しています';
+
+  @override
+  String get shareCannotShareWithSelfError => '自分自身とメモを共有することはできません';
+
+  @override
+  String get shareRecipientsHeader => '共有先';
+
+  @override
+  String get shareNoRecipientsMessage => 'まだ誰とも共有していません。';
+
+  @override
+  String get stopSharingTooltip => 'この相手との共有を停止';
+
+  @override
+  String get shareRevocationNote =>
+      '共有した相手は自分の端末でこのメモを読めます。相手を削除すると今後の更新は届かなくなりますが、すでに受け取った内容は消せません。';
+
+  @override
+  String shareError(String error) {
+    return '共有を更新できませんでした: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'あなたと共有中';
+
+  @override
+  String sharedByLabel(String npub) {
+    return '$npub が共有';
+  }
+
+  @override
+  String get sharedNoteEditableNote => 'このメモを編集できます。変更は所有者に同期され、所有者がマージします。';
+
+  @override
+  String get abandonSharedNoteButton => 'この共有メモから退出';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'この共有メモから退出しますか？';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'この端末から削除され、更新を受け取らなくなります。取り消せません — 後で再参加はできません。';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return '退出できませんでした: $error';
+  }
 }

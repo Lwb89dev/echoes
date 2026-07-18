@@ -609,4 +609,83 @@ class AppLocalizationsFi extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Virhe: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Jaa';
+
+  @override
+  String get shareNoteTitle => 'Jaa muistiinpano';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'Vastaanottajan npub tai julkinen avain';
+
+  @override
+  String get shareAddRecipientButton => 'Lisää';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Tämä ei ole kelvollinen npub tai julkinen avain';
+
+  @override
+  String get shareRecipientNotFoundError => 'Nimelle ei löytynyt Nostr-tiliä';
+
+  @override
+  String get shareConfirmTitle => 'Jaetaanko tämä muistiinpano?';
+
+  @override
+  String get shareConfirmButton => 'Jaa';
+
+  @override
+  String get shareAlreadyRecipientError => 'Jaettu jo tämän henkilön kanssa';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Et voi jakaa muistiinpanoa itsesi kanssa';
+
+  @override
+  String get shareRecipientsHeader => 'Jaettu käyttäjälle';
+
+  @override
+  String get shareNoRecipientsMessage => 'Ei vielä jaettu kenellekään.';
+
+  @override
+  String get stopSharingTooltip => 'Lopeta jakaminen tämän henkilön kanssa';
+
+  @override
+  String get shareRevocationNote =>
+      'Kuka tahansa, jonka kanssa jaat, voi lukea tämän muistiinpanon laitteellaan. Jonkun poistaminen lopettaa tulevat päivitykset, mutta ei voi poistaa jo vastaanotettua.';
+
+  @override
+  String shareError(String error) {
+    return 'Jakamisen päivitys epäonnistui: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Jaettu sinulle';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Jakoi $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Voit muokata tätä muistiinpanoa; muutoksesi synkronoituvat takaisin omistajalle, joka yhdistää ne.';
+
+  @override
+  String get abandonSharedNoteButton => 'Poistu tästä jaetusta muistiinpanosta';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Poistutaanko tästä jaetusta muistiinpanosta?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Se poistetaan tältä laitteelta etkä enää saa päivityksiä. Tätä ei voi kumota — et voi liittyä uudelleen myöhemmin.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Poistuminen epäonnistui: $error';
+  }
 }

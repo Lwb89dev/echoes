@@ -200,5 +200,48 @@
   "passwordLabel": "Jelszó",
   "invalidPrivateKeyError": "A privát kulcs érvénytelen. Adjon meg érvényes nsec vagy hex kulcsot.",
   "wrongPasswordError": "Helytelen jelszó",
-  "genericErrorPrefix": "Hiba: {error}"
+  "genericErrorPrefix": "Hiba: {error}",
+  "shareNoteTooltip": "Megosztás",
+  "shareNoteTitle": "Jegyzet megosztása",
+  "shareRecipientFieldLabel": "A címzett npub-ja vagy nyilvános kulcsa",
+  "shareAddRecipientButton": "Hozzáadás",
+  "shareInvalidRecipientError": "Ez nem érvényes npub vagy nyilvános kulcs",
+  "shareRecipientNotFoundError": "Nem található Nostr-fiók ehhez a névhez",
+  "shareConfirmTitle": "Megosztod ezt a jegyzetet?",
+  "shareConfirmButton": "Megosztás",
+  "shareAlreadyRecipientError": "Már megosztva ezzel a személlyel",
+  "shareCannotShareWithSelfError": "Nem oszthatsz meg jegyzetet önmagaddal",
+  "shareRecipientsHeader": "Megosztva vele",
+  "shareNoRecipientsMessage": "Még nincs megosztva senkivel.",
+  "stopSharingTooltip": "Megosztás leállítása ezzel a személlyel",
+  "shareRevocationNote": "Bárki, akivel megosztod, elolvashatja ezt a jegyzetet a saját eszközén. Valaki eltávolítása leállítja a jövőbeli frissítéseket, de nem törölheti azt, amit már megkapott.",
+  "shareError": "A megosztás frissítése nem sikerült: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Megosztva veled",
+  "sharedByLabel": "Megosztotta: {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Szerkesztheted ezt a jegyzetet; a módosításaid visszaszinkronizálódnak a tulajdonoshoz, aki egyesíti őket.",
+  "abandonSharedNoteButton": "Kilépés ebből a megosztott jegyzetből",
+  "abandonSharedNoteConfirmTitle": "Kilépsz ebből a megosztott jegyzetből?",
+  "abandonSharedNoteConfirmBody": "Eltávolítjuk erről az eszközről, és nem kapsz több frissítést. Ez nem vonható vissza — később nem csatlakozhatsz újra.",
+  "abandonSharedNoteError": "Nem sikerült kilépni: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

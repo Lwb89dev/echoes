@@ -612,4 +612,83 @@ class AppLocalizationsNl extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Fout: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Delen';
+
+  @override
+  String get shareNoteTitle => 'Notitie delen';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'npub of publieke sleutel van de ontvanger';
+
+  @override
+  String get shareAddRecipientButton => 'Toevoegen';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Dat is geen geldige npub of publieke sleutel';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Geen Nostr-account gevonden voor die naam';
+
+  @override
+  String get shareConfirmTitle => 'Deze notitie delen?';
+
+  @override
+  String get shareConfirmButton => 'Delen';
+
+  @override
+  String get shareAlreadyRecipientError => 'Al gedeeld met deze persoon';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Je kunt een notitie niet met jezelf delen';
+
+  @override
+  String get shareRecipientsHeader => 'Gedeeld met';
+
+  @override
+  String get shareNoRecipientsMessage => 'Nog met niemand gedeeld.';
+
+  @override
+  String get stopSharingTooltip => 'Delen met deze persoon stoppen';
+
+  @override
+  String get shareRevocationNote =>
+      'Iedereen met wie je deelt, kan deze notitie op zijn apparaat lezen. Iemand verwijderen stopt toekomstige updates, maar kan niet wissen wat al is ontvangen.';
+
+  @override
+  String shareError(String error) {
+    return 'Delen kon niet worden bijgewerkt: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Met jou gedeeld';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Gedeeld door $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Je kunt deze notitie bewerken; je wijzigingen worden teruggesynchroniseerd naar de eigenaar, die ze samenvoegt.';
+
+  @override
+  String get abandonSharedNoteButton => 'Deze gedeelde notitie verlaten';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Deze gedeelde notitie verlaten?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Hij wordt van dit apparaat verwijderd en je ontvangt geen updates meer. Dit kan niet ongedaan worden gemaakt — je kunt later niet opnieuw deelnemen.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Verlaten mislukt: $error';
+  }
 }

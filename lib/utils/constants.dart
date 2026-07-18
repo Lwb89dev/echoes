@@ -15,11 +15,38 @@ class AppConstants {
   /// [NostrService.deleteNoteEvent]).
   static const int deletionEventKind = 5;
 
+  /// NIP-02 "Contacts" kind — one replaceable event per author listing who
+  /// they follow as `p` tags. Used only for the share sheet's local
+  /// autocomplete ([NostrService.fetchContactPubkeys]): matching against
+  /// people the user already follows, entirely client-side, rather than
+  /// full-network name search (which was deliberately rejected — see
+  /// `NoteSharing`'s doc comment — since an unverified name match is an
+  /// impersonation risk when the wrong recipient means leaking a note).
+  static const int contactListEventKind = 3;
+
+  /// Max `authors` per kind-0 batch-fetch filter when resolving names for
+  /// the whole contact list at once ([NostrService.fetchProfilesBatch]).
+  /// Several public relays cap how many values a single filter array may
+  /// hold; a long contact list is split into filters of this size (OR'd
+  /// together in one subscription) rather than sent as one unbounded
+  /// `authors` list some relays would reject.
+  static const int contactProfileBatchSize = 300;
+
   /// SharedPreferences keys.
   static const String prefsRelaysKey = 'echoes.relays';
   static const String prefsPublicKeyKey = 'echoes.pubkey';
   static const String prefsLoginMethodKey = 'echoes.login_method';
   static const String prefsLastSyncKey = 'echoes.last_sync';
+
+  /// Bookmark for the incoming-shares fetch (`#p = me`), separate from
+  /// [prefsLastSyncKey] so the two fetch cursors never interfere.
+  static const String prefsLastShareSyncKey = 'echoes.last_share_sync';
+
+  /// Ids of shared notes the user has abandoned. A note whose id is in this
+  /// set is never re-accepted from a relay again — this is what makes
+  /// "abandon" permanent so a left note can't silently reappear (see
+  /// [LocalStorageService.isShareAbandoned]).
+  static const String prefsAbandonedSharesKey = 'echoes.abandoned_shares';
 
   /// Set once the first-launch onboarding carousel has been completed
   /// (either by logging in or by explicitly choosing to stay local-only).
@@ -71,6 +98,15 @@ class AppConstants {
   /// broken) sending oversized junk that isn't worth spending CPU/memory
   /// hashing and attempting to decrypt.
   static const int maxNoteEventContentChars = 200000;
+
+  /// Upper bound on how many inbound shared items one sync cycle will apply.
+  /// Anyone on the network can publish an event `p`-tagging you (a note
+  /// "shared" with you), just like anyone can send you a Nostr DM — so this
+  /// caps how much a flood of unsolicited shares can make one cycle do,
+  /// newest-first (see `SyncService._processIncomingShares`). It is a
+  /// resource bound, not anti-spam: a persistent spammer is a job for a
+  /// future contacts allowlist, noted as a known limitation.
+  static const int maxIncomingSharesPerCycle = 500;
 
   /// Upper bound on how long we wait for Amber to respond to a signing
   /// request (get_public_key, sign_event, nip44_*).

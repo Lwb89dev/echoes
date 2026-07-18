@@ -606,4 +606,82 @@ class AppLocalizationsSk extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Chyba: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Zdieľať';
+
+  @override
+  String get shareNoteTitle => 'Zdieľať poznámku';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub alebo verejný kľúč príjemcu';
+
+  @override
+  String get shareAddRecipientButton => 'Pridať';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'To nie je platný npub ani verejný kľúč';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Pre toto meno sa nenašiel žiadny účet Nostr';
+
+  @override
+  String get shareConfirmTitle => 'Zdieľať túto poznámku?';
+
+  @override
+  String get shareConfirmButton => 'Zdieľať';
+
+  @override
+  String get shareAlreadyRecipientError => 'S touto osobou je už zdieľané';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Poznámku nemôžete zdieľať sami so sebou';
+
+  @override
+  String get shareRecipientsHeader => 'Zdieľané s';
+
+  @override
+  String get shareNoRecipientsMessage => 'Zatiaľ s nikým nezdieľané.';
+
+  @override
+  String get stopSharingTooltip => 'Prestať zdieľať s touto osobou';
+
+  @override
+  String get shareRevocationNote =>
+      'Ktokoľvek, s kým zdieľate, si môže túto poznámku prečítať na svojom zariadení. Odstránenie niekoho zastaví budúce aktualizácie, ale nemôže vymazať to, čo už dostal.';
+
+  @override
+  String shareError(String error) {
+    return 'Nepodarilo sa aktualizovať zdieľanie: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Zdieľané s vami';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Zdieľal(a) $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Túto poznámku môžete upravovať; vaše zmeny sa synchronizujú späť vlastníkovi, ktorý ich zlúči.';
+
+  @override
+  String get abandonSharedNoteButton => 'Opustiť túto zdieľanú poznámku';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Opustiť túto zdieľanú poznámku?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Bude odstránená z tohto zariadenia a prestanete dostávať aktualizácie. Toto sa nedá vrátiť — neskôr sa nebudete môcť znova pripojiť.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Nepodarilo sa opustiť: $error';
+  }
 }

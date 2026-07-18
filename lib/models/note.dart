@@ -71,6 +71,22 @@ class Note {
   /// surface color, same as before this existed.
   final NoteColor? color;
 
+  /// Hex pubkey of the note's owner when this note was **shared with me**
+  /// by someone else; null when I own it (a normal local note, or one I own
+  /// and share with others). This is never trusted from a payload — it's
+  /// set from the *signed* event author when a shared note is received (see
+  /// `SyncService`), so a sender can't lie about who owns what. See
+  /// [NoteSharing] for the whole model.
+  final String? ownerPubkey;
+
+  /// Hex pubkeys I (the owner) share this note with. Empty = private.
+  /// Only meaningful when [ownerPubkey] is null (I own it). Deliberately
+  /// **stripped** from the per-recipient wire copy (see [toShareJson]) so
+  /// one recipient never learns who else a note is shared with — it only
+  /// travels inside the owner's own self-encrypted copy, for the owner's
+  /// other devices.
+  final List<String> sharedWith;
+
   const Note({
     required this.id,
     required this.title,
@@ -85,7 +101,15 @@ class Note {
     this.isDiaryEntry = false,
     this.entryDate,
     this.color,
+    this.ownerPubkey,
+    this.sharedWith = const [],
   });
+
+  /// True when someone else owns this note and shared it with me.
+  bool get isSharedWithMe => ownerPubkey != null;
+
+  /// True when I own this note and share it with at least one other person.
+  bool get isSharedByMe => ownerPubkey == null && sharedWith.isNotEmpty;
 
   /// Matches an inline attachment token — image (`![](attachment://...)`)
   /// or voice (`![voice](attachment://...)`) alike, see
@@ -128,6 +152,8 @@ class Note {
     bool? isDiaryEntry,
     Object? entryDate = _unset,
     Object? color = _unset,
+    Object? ownerPubkey = _unset,
+    List<String>? sharedWith,
   }) {
     return Note(
       id: id ?? this.id,
@@ -143,6 +169,8 @@ class Note {
       isDiaryEntry: isDiaryEntry ?? this.isDiaryEntry,
       entryDate: identical(entryDate, _unset) ? this.entryDate : entryDate as DateTime?,
       color: identical(color, _unset) ? this.color : color as NoteColor?,
+      ownerPubkey: identical(ownerPubkey, _unset) ? this.ownerPubkey : ownerPubkey as String?,
+      sharedWith: sharedWith ?? this.sharedWith,
     );
   }
 
@@ -160,7 +188,28 @@ class Note {
         'isDiaryEntry': isDiaryEntry,
         'entryDate': entryDate?.toIso8601String(),
         'color': color?.name,
+        'ownerPubkey': ownerPubkey,
+        'sharedWith': sharedWith,
       };
+
+  /// Wire format for the per-recipient shared copy: the note's actual
+  /// content, minus everything that is either local-only state or that a
+  /// recipient must not see. In particular [sharedWith] is dropped (a
+  /// recipient must never learn the rest of the recipient list) along with
+  /// [ownerPubkey] and the local sync bookkeeping ([synced]/[nostrEventId]
+  /// — the latter would also leak the owner's own event id). The receiver
+  /// re-derives the owner from the *signed* event author, not from here.
+  Map<String, dynamic> toShareJson() {
+    final json = toJson();
+    json.remove('sharedWith');
+    json.remove('ownerPubkey');
+    json.remove('synced');
+    json.remove('nostrEventId');
+    // Never ship this device's local file paths to a recipient — they can
+    // embed a username and are meaningless (and unsafe to trust) elsewhere.
+    json['attachments'] = attachments.map((a) => a.withoutLocalPath().toJson()).toList();
+    return json;
+  }
 
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
@@ -181,6 +230,10 @@ class Note {
       isDiaryEntry: json['isDiaryEntry'] as bool? ?? false,
       entryDate: json['entryDate'] != null ? DateTime.parse(json['entryDate'] as String) : null,
       color: json['color'] != null ? NoteColor.values.byName(json['color'] as String) : null,
+      ownerPubkey: json['ownerPubkey'] as String?,
+      sharedWith: (json['sharedWith'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList(),
     );
   }
 }

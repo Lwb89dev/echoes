@@ -608,4 +608,82 @@ class AppLocalizationsHr extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Pogreška: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Podijeli';
+
+  @override
+  String get shareNoteTitle => 'Podijeli bilješku';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub ili javni ključ primatelja';
+
+  @override
+  String get shareAddRecipientButton => 'Dodaj';
+
+  @override
+  String get shareInvalidRecipientError => 'To nije valjan npub ni javni ključ';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Nije pronađen Nostr račun za to ime';
+
+  @override
+  String get shareConfirmTitle => 'Podijeliti ovu bilješku?';
+
+  @override
+  String get shareConfirmButton => 'Podijeli';
+
+  @override
+  String get shareAlreadyRecipientError => 'Već podijeljeno s ovom osobom';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Ne možete podijeliti bilješku sa samim sobom';
+
+  @override
+  String get shareRecipientsHeader => 'Podijeljeno s';
+
+  @override
+  String get shareNoRecipientsMessage => 'Još nije podijeljeno ni s kim.';
+
+  @override
+  String get stopSharingTooltip => 'Prestani dijeliti s ovom osobom';
+
+  @override
+  String get shareRevocationNote =>
+      'Svatko s kim podijelite može čitati ovu bilješku na svom uređaju. Uklanjanje nekoga zaustavlja buduća ažuriranja, ali ne može izbrisati ono što je već primio.';
+
+  @override
+  String shareError(String error) {
+    return 'Ažuriranje dijeljenja nije uspjelo: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Podijeljeno s vama';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Podijelio/la $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Možete uređivati ovu bilješku; vaše se promjene sinkroniziraju natrag vlasniku, koji ih spaja.';
+
+  @override
+  String get abandonSharedNoteButton => 'Napusti ovu dijeljenu bilješku';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Napustiti ovu dijeljenu bilješku?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Bit će uklonjena s ovog uređaja i prestat ćete primati ažuriranja. Ovo se ne može poništiti — nećete se moći ponovno pridružiti.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Napuštanje nije uspjelo: $error';
+  }
 }

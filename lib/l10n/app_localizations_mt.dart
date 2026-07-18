@@ -611,4 +611,83 @@ class AppLocalizationsMt extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Żball: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Aqsam';
+
+  @override
+  String get shareNoteTitle => 'Aqsam nota';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'npub jew ċavetta pubblika tar-riċevitur';
+
+  @override
+  String get shareAddRecipientButton => 'Żid';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Dan mhux npub jew ċavetta pubblika valida';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Ma nstab ebda kont Nostr għal dak l-isem';
+
+  @override
+  String get shareConfirmTitle => 'Aqsam din in-nota?';
+
+  @override
+  String get shareConfirmButton => 'Aqsam';
+
+  @override
+  String get shareAlreadyRecipientError => 'Diġà maqsuma ma\' din il-persuna';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Ma tistax taqsam nota miegħek innifsek';
+
+  @override
+  String get shareRecipientsHeader => 'Maqsuma ma\'';
+
+  @override
+  String get shareNoRecipientsMessage => 'Għadha ma nqasmet ma\' ħadd.';
+
+  @override
+  String get stopSharingTooltip => 'Waqqaf il-qsim ma\' din il-persuna';
+
+  @override
+  String get shareRevocationNote =>
+      'Kull min taqsam miegħu jista\' jaqra din in-nota fuq l-apparat tiegħu. It-tneħħija ta\' xi ħadd twaqqaf l-aġġornamenti futuri, iżda ma tistax tħassar dak li diġà rċieva.';
+
+  @override
+  String shareError(String error) {
+    return 'Ma setax jiġi aġġornat il-qsim: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Maqsuma miegħek';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Maqsuma minn $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Tista\' teditja din in-nota; il-bidliet tiegħek jiġu sinkronizzati lura lis-sid, li jgħaqqadhom.';
+
+  @override
+  String get abandonSharedNoteButton => 'Ħalli din in-nota maqsuma';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Tħalli din in-nota maqsuma?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Titneħħa minn dan l-apparat u tieqaf tirċievi aġġornamenti. Dan ma jistax jiġi revokat — mhux se tkun tista\' terġa\' tingħaqad.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Ma setax jiġi mħolli: $error';
+  }
 }

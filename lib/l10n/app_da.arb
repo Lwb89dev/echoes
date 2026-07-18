@@ -200,5 +200,48 @@
   "passwordLabel": "Adgangskode",
   "invalidPrivateKeyError": "Den private nøgle er ikke gyldig. Indtast en gyldig nsec- eller hex-nøgle.",
   "wrongPasswordError": "Forkert adgangskode",
-  "genericErrorPrefix": "Fejl: {error}"
+  "genericErrorPrefix": "Fejl: {error}",
+  "shareNoteTooltip": "Del",
+  "shareNoteTitle": "Del note",
+  "shareRecipientFieldLabel": "Modtagerens npub eller offentlige nøgle",
+  "shareAddRecipientButton": "Tilføj",
+  "shareInvalidRecipientError": "Det er ikke en gyldig npub eller offentlig nøgle",
+  "shareRecipientNotFoundError": "Ingen Nostr-konto fundet for det navn",
+  "shareConfirmTitle": "Del denne note?",
+  "shareConfirmButton": "Del",
+  "shareAlreadyRecipientError": "Allerede delt med denne person",
+  "shareCannotShareWithSelfError": "Du kan ikke dele en note med dig selv",
+  "shareRecipientsHeader": "Delt med",
+  "shareNoRecipientsMessage": "Endnu ikke delt med nogen.",
+  "stopSharingTooltip": "Stop deling med denne person",
+  "shareRevocationNote": "Alle du deler med kan læse denne note på deres enhed. At fjerne nogen stopper fremtidige opdateringer til dem, men kan ikke slette det, de allerede har modtaget.",
+  "shareError": "Kunne ikke opdatere deling: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Delt med dig",
+  "sharedByLabel": "Delt af {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Du kan redigere denne note; dine ændringer synkroniseres tilbage til ejeren, som fletter dem.",
+  "abandonSharedNoteButton": "Forlad denne delte note",
+  "abandonSharedNoteConfirmTitle": "Forlad denne delte note?",
+  "abandonSharedNoteConfirmBody": "Den fjernes fra denne enhed, og du holder op med at modtage opdateringer. Dette kan ikke fortrydes — du kan ikke tilslutte dig igen senere.",
+  "abandonSharedNoteError": "Kunne ikke forlade: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

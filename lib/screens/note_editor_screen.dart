@@ -21,6 +21,7 @@ import '../utils/note_colors.dart';
 import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
 import 'widgets/note_actions.dart';
+import 'widgets/share_note_sheet.dart';
 import 'widgets/voice_recorder.dart';
 
 /// Editor for creating or editing a note. If [note] is null this is a new
@@ -173,6 +174,15 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// edit mode.
   NoteColor? _color;
 
+  /// Sharing state, carried through every [_buildNote] so an autosave never
+  /// silently wipes it. [_ownerPubkey] non-null means this note was shared
+  /// *with* me (I'm a recipient, not the owner); [_sharedWith] is the set of
+  /// recipients I (the owner) share it with. Both are only ever changed via
+  /// the explicit share actions (see [_openShareSheet]), which publish
+  /// immediately through the provider — never edited through a text field.
+  String? _ownerPubkey;
+  List<String> _sharedWith = const [];
+
   // Whether this screen is showing the editable form (text fields,
   // formatting toolbar, attachment controls) or the read-only rendered
   // view. A brand-new note has nothing to "view" yet, so it opens straight
@@ -199,6 +209,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _isDiaryEntry = note?.isDiaryEntry ?? widget.isDiaryEntry;
     _entryDate = note?.entryDate ?? (_isDiaryEntry ? DateTime.now() : null);
     _color = note?.color;
+    _ownerPubkey = note?.ownerPubkey;
+    _sharedWith = note?.sharedWith ?? const [];
     _titleController = TextEditingController(text: note?.title ?? '')
       ..addListener(_markDirty);
     _bodyController = TextEditingController(text: note?.body ?? '')
@@ -862,6 +874,38 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     }
   }
 
+  /// Opens the share sheet. Persists the current edits first so what gets
+  /// shared is exactly what's on screen, then reflects any recipient change
+  /// back into local state (so [_buildNote] keeps carrying it). If the note
+  /// was a shared-in one and the user left it, pops the editor — the note no
+  /// longer exists locally.
+  Future<void> _openShareSheet() async {
+    final note = _buildNote();
+    await ref.read(notesProvider.notifier).saveNote(note);
+    if (!mounted) return;
+    var abandoned = false;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => ShareNoteSheet(
+        note: note,
+        onChanged: (updated) {
+          if (updated == null) {
+            abandoned = true;
+            return;
+          }
+          setState(() {
+            _sharedWith = updated.sharedWith;
+            _ownerPubkey = updated.ownerPubkey;
+            _nostrEventId = updated.nostrEventId;
+            _synced = updated.synced;
+          });
+        },
+      ),
+    );
+    if (abandoned && mounted) Navigator.of(context).pop();
+  }
+
   /// Builds a [Note] from the current field values. Uses [_synced] as-is
   /// rather than hardcoding `false`: every mutation method already flips
   /// `_synced` to false itself the instant it touches anything (see
@@ -904,6 +948,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       isDiaryEntry: _isDiaryEntry,
       entryDate: _entryDate,
       color: _color,
+      ownerPubkey: _ownerPubkey,
+      sharedWith: _sharedWith,
     );
   }
 
@@ -1172,6 +1218,16 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             tooltip: l.noteColorButton,
             onPressed: _pickColor,
           ),
+          if (hasNostrAccount)
+            IconButton(
+              icon: Icon(
+                _ownerPubkey != null
+                    ? Icons.people_outline
+                    : (_sharedWith.isEmpty ? Icons.person_add_outlined : Icons.people),
+              ),
+              tooltip: l.shareNoteTooltip,
+              onPressed: _openShareSheet,
+            ),
           if (!_isNewNote)
             IconButton(
               icon: const Icon(Icons.delete_outline),

@@ -610,4 +610,84 @@ class AppLocalizationsSv extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Fel: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Dela';
+
+  @override
+  String get shareNoteTitle => 'Dela anteckning';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'Mottagarens npub eller offentliga nyckel';
+
+  @override
+  String get shareAddRecipientButton => 'Lägg till';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Det är inte en giltig npub eller offentlig nyckel';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Inget Nostr-konto hittades för det namnet';
+
+  @override
+  String get shareConfirmTitle => 'Dela den här anteckningen?';
+
+  @override
+  String get shareConfirmButton => 'Dela';
+
+  @override
+  String get shareAlreadyRecipientError => 'Redan delad med den här personen';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Du kan inte dela en anteckning med dig själv';
+
+  @override
+  String get shareRecipientsHeader => 'Delad med';
+
+  @override
+  String get shareNoRecipientsMessage => 'Ännu inte delad med någon.';
+
+  @override
+  String get stopSharingTooltip => 'Sluta dela med den här personen';
+
+  @override
+  String get shareRevocationNote =>
+      'Alla du delar med kan läsa den här anteckningen på sin enhet. Att ta bort någon stoppar framtida uppdateringar, men kan inte radera det de redan fått.';
+
+  @override
+  String shareError(String error) {
+    return 'Det gick inte att uppdatera delningen: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Delad med dig';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Delad av $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Du kan redigera den här anteckningen; dina ändringar synkas tillbaka till ägaren, som slår samman dem.';
+
+  @override
+  String get abandonSharedNoteButton => 'Lämna den här delade anteckningen';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Lämna den här delade anteckningen?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Den tas bort från den här enheten och du slutar få uppdateringar. Detta kan inte ångras — du kan inte gå med igen senare.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Det gick inte att lämna: $error';
+  }
 }

@@ -608,4 +608,83 @@ class AppLocalizationsEt extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Viga: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Jaga';
+
+  @override
+  String get shareNoteTitle => 'Jaga märkust';
+
+  @override
+  String get shareRecipientFieldLabel => 'Saaja npub või avalik võti';
+
+  @override
+  String get shareAddRecipientButton => 'Lisa';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'See pole kehtiv npub ega avalik võti';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Selle nimega Nostri kontot ei leitud';
+
+  @override
+  String get shareConfirmTitle => 'Kas jagada seda märkust?';
+
+  @override
+  String get shareConfirmButton => 'Jaga';
+
+  @override
+  String get shareAlreadyRecipientError => 'Selle inimesega on juba jagatud';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Sa ei saa märkust iseendaga jagada';
+
+  @override
+  String get shareRecipientsHeader => 'Jagatud kasutajaga';
+
+  @override
+  String get shareNoRecipientsMessage => 'Pole veel kellegagi jagatud.';
+
+  @override
+  String get stopSharingTooltip => 'Lõpeta selle inimesega jagamine';
+
+  @override
+  String get shareRevocationNote =>
+      'Igaüks, kellega jagad, saab lugeda seda märkust oma seadmes. Kellegi eemaldamine peatab tulevased uuendused, kuid ei saa kustutada juba saadut.';
+
+  @override
+  String shareError(String error) {
+    return 'Jagamise uuendamine ebaõnnestus: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Sinuga jagatud';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Jagas $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Saad seda märkust muuta; su muudatused sünkroonitakse tagasi omanikule, kes need liidab.';
+
+  @override
+  String get abandonSharedNoteButton => 'Lahku sellest jagatud märkusest';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Kas lahkuda sellest jagatud märkusest?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'See eemaldatakse sellest seadmest ja sa ei saa enam uuendusi. Seda ei saa tagasi võtta — sa ei saa hiljem uuesti liituda.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Lahkumine ebaõnnestus: $error';
+  }
 }

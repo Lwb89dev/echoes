@@ -606,4 +606,83 @@ class AppLocalizationsDa extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Fejl: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Del';
+
+  @override
+  String get shareNoteTitle => 'Del note';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'Modtagerens npub eller offentlige nøgle';
+
+  @override
+  String get shareAddRecipientButton => 'Tilføj';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Det er ikke en gyldig npub eller offentlig nøgle';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Ingen Nostr-konto fundet for det navn';
+
+  @override
+  String get shareConfirmTitle => 'Del denne note?';
+
+  @override
+  String get shareConfirmButton => 'Del';
+
+  @override
+  String get shareAlreadyRecipientError => 'Allerede delt med denne person';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Du kan ikke dele en note med dig selv';
+
+  @override
+  String get shareRecipientsHeader => 'Delt med';
+
+  @override
+  String get shareNoRecipientsMessage => 'Endnu ikke delt med nogen.';
+
+  @override
+  String get stopSharingTooltip => 'Stop deling med denne person';
+
+  @override
+  String get shareRevocationNote =>
+      'Alle du deler med kan læse denne note på deres enhed. At fjerne nogen stopper fremtidige opdateringer til dem, men kan ikke slette det, de allerede har modtaget.';
+
+  @override
+  String shareError(String error) {
+    return 'Kunne ikke opdatere deling: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Delt med dig';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Delt af $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Du kan redigere denne note; dine ændringer synkroniseres tilbage til ejeren, som fletter dem.';
+
+  @override
+  String get abandonSharedNoteButton => 'Forlad denne delte note';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Forlad denne delte note?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Den fjernes fra denne enhed, og du holder op med at modtage opdateringer. Dette kan ikke fortrydes — du kan ikke tilslutte dig igen senere.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Kunne ikke forlade: $error';
+  }
 }

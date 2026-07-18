@@ -610,4 +610,81 @@ class AppLocalizationsLv extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Kļūda: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Kopīgot';
+
+  @override
+  String get shareNoteTitle => 'Kopīgot piezīmi';
+
+  @override
+  String get shareRecipientFieldLabel => 'Saņēmēja npub vai publiskā atslēga';
+
+  @override
+  String get shareAddRecipientButton => 'Pievienot';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Tas nav derīgs npub vai publiskā atslēga';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Šim vārdam netika atrasts neviens Nostr konts';
+
+  @override
+  String get shareConfirmTitle => 'Kopīgot šo piezīmi?';
+
+  @override
+  String get shareConfirmButton => 'Kopīgot';
+
+  @override
+  String get shareAlreadyRecipientError => 'Jau kopīgots ar šo personu';
+
+  @override
+  String get shareCannotShareWithSelfError => 'Nevar kopīgot piezīmi ar sevi';
+
+  @override
+  String get shareRecipientsHeader => 'Kopīgots ar';
+
+  @override
+  String get shareNoRecipientsMessage => 'Vēl nav ne ar vienu kopīgots.';
+
+  @override
+  String get stopSharingTooltip => 'Pārtraukt kopīgošanu ar šo personu';
+
+  @override
+  String get shareRevocationNote =>
+      'Ikviens, ar ko kopīgojat, var lasīt šo piezīmi savā ierīcē. Kāda noņemšana aptur turpmākos atjauninājumus, bet nevar dzēst jau saņemto.';
+
+  @override
+  String shareError(String error) {
+    return 'Neizdevās atjaunināt kopīgošanu: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Kopīgots ar jums';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Kopīgoja $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Šo piezīmi varat rediģēt; jūsu izmaiņas tiek sinhronizētas atpakaļ īpašniekam, kurš tās apvieno.';
+
+  @override
+  String get abandonSharedNoteButton => 'Pamest šo kopīgoto piezīmi';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Pamest šo kopīgoto piezīmi?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Tā tiks noņemta no šīs ierīces, un jūs pārstāsiet saņemt atjauninājumus. To nevar atsaukt — vēlāk atkārtoti pievienoties nevarēsiet.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Neizdevās pamest: $error';
+  }
 }

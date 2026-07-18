@@ -610,4 +610,81 @@ class AppLocalizationsLt extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Klaida: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Bendrinti';
+
+  @override
+  String get shareNoteTitle => 'Bendrinti užrašą';
+
+  @override
+  String get shareRecipientFieldLabel => 'Gavėjo npub arba viešasis raktas';
+
+  @override
+  String get shareAddRecipientButton => 'Pridėti';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Tai netinkamas npub arba viešasis raktas';
+
+  @override
+  String get shareRecipientNotFoundError => 'Nerasta Nostr paskyra tuo vardu';
+
+  @override
+  String get shareConfirmTitle => 'Bendrinti šį užrašą?';
+
+  @override
+  String get shareConfirmButton => 'Bendrinti';
+
+  @override
+  String get shareAlreadyRecipientError => 'Jau bendrinama su šiuo asmeniu';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Negalite bendrinti užrašo su savimi';
+
+  @override
+  String get shareRecipientsHeader => 'Bendrinama su';
+
+  @override
+  String get shareNoRecipientsMessage => 'Dar niekam nebendrinama.';
+
+  @override
+  String get stopSharingTooltip => 'Nustoti bendrinti su šiuo asmeniu';
+
+  @override
+  String get shareRevocationNote =>
+      'Bet kas, su kuo bendrinate, gali skaityti šį užrašą savo įrenginyje. Pašalinus ką nors, būsimi atnaujinimai nutraukiami, bet jau gauto ištrinti negalima.';
+
+  @override
+  String shareError(String error) {
+    return 'Nepavyko atnaujinti bendrinimo: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Bendrinama su jumis';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Bendrino $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Galite redaguoti šį užrašą; jūsų pakeitimai sinchronizuojami atgal savininkui, kuris juos sujungia.';
+
+  @override
+  String get abandonSharedNoteButton => 'Palikti šį bendrinamą užrašą';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Palikti šį bendrinamą užrašą?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Jis bus pašalintas iš šio įrenginio ir nebegausite atnaujinimų. To atšaukti negalima — vėliau prisijungti iš naujo nebegalėsite.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Nepavyko palikti: $error';
+  }
 }

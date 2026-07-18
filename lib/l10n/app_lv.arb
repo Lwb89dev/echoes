@@ -200,5 +200,48 @@
   "passwordLabel": "Parole",
   "invalidPrivateKeyError": "Privātā atslēga nav derīga. Ievadiet derīgu nsec vai hex atslēgu.",
   "wrongPasswordError": "Nepareiza parole",
-  "genericErrorPrefix": "Kļūda: {error}"
+  "genericErrorPrefix": "Kļūda: {error}",
+  "shareNoteTooltip": "Kopīgot",
+  "shareNoteTitle": "Kopīgot piezīmi",
+  "shareRecipientFieldLabel": "Saņēmēja npub vai publiskā atslēga",
+  "shareAddRecipientButton": "Pievienot",
+  "shareInvalidRecipientError": "Tas nav derīgs npub vai publiskā atslēga",
+  "shareRecipientNotFoundError": "Šim vārdam netika atrasts neviens Nostr konts",
+  "shareConfirmTitle": "Kopīgot šo piezīmi?",
+  "shareConfirmButton": "Kopīgot",
+  "shareAlreadyRecipientError": "Jau kopīgots ar šo personu",
+  "shareCannotShareWithSelfError": "Nevar kopīgot piezīmi ar sevi",
+  "shareRecipientsHeader": "Kopīgots ar",
+  "shareNoRecipientsMessage": "Vēl nav ne ar vienu kopīgots.",
+  "stopSharingTooltip": "Pārtraukt kopīgošanu ar šo personu",
+  "shareRevocationNote": "Ikviens, ar ko kopīgojat, var lasīt šo piezīmi savā ierīcē. Kāda noņemšana aptur turpmākos atjauninājumus, bet nevar dzēst jau saņemto.",
+  "shareError": "Neizdevās atjaunināt kopīgošanu: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Kopīgots ar jums",
+  "sharedByLabel": "Kopīgoja {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Šo piezīmi varat rediģēt; jūsu izmaiņas tiek sinhronizētas atpakaļ īpašniekam, kurš tās apvieno.",
+  "abandonSharedNoteButton": "Pamest šo kopīgoto piezīmi",
+  "abandonSharedNoteConfirmTitle": "Pamest šo kopīgoto piezīmi?",
+  "abandonSharedNoteConfirmBody": "Tā tiks noņemta no šīs ierīces, un jūs pārstāsiet saņemt atjauninājumus. To nevar atsaukt — vēlāk atkārtoti pievienoties nevarēsiet.",
+  "abandonSharedNoteError": "Neizdevās pamest: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

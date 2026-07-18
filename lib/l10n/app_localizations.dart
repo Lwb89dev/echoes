@@ -1185,6 +1185,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error: {error}'**
   String genericErrorPrefix(String error);
+
+  /// No description provided for @shareNoteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareNoteTooltip;
+
+  /// No description provided for @shareNoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share note'**
+  String get shareNoteTitle;
+
+  /// No description provided for @shareRecipientFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient npub or public key'**
+  String get shareRecipientFieldLabel;
+
+  /// No description provided for @shareAddRecipientButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get shareAddRecipientButton;
+
+  /// No description provided for @shareInvalidRecipientError.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s not a valid npub or public key'**
+  String get shareInvalidRecipientError;
+
+  /// No description provided for @shareRecipientNotFoundError.
+  ///
+  /// In en, this message translates to:
+  /// **'No Nostr account found for that name'**
+  String get shareRecipientNotFoundError;
+
+  /// No description provided for @shareConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this note?'**
+  String get shareConfirmTitle;
+
+  /// No description provided for @shareConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareConfirmButton;
+
+  /// No description provided for @shareAlreadyRecipientError.
+  ///
+  /// In en, this message translates to:
+  /// **'Already shared with this person'**
+  String get shareAlreadyRecipientError;
+
+  /// No description provided for @shareCannotShareWithSelfError.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t share a note with yourself'**
+  String get shareCannotShareWithSelfError;
+
+  /// No description provided for @shareRecipientsHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with'**
+  String get shareRecipientsHeader;
+
+  /// No description provided for @shareNoRecipientsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Not shared with anyone yet.'**
+  String get shareNoRecipientsMessage;
+
+  /// No description provided for @stopSharingTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing with this person'**
+  String get stopSharingTooltip;
+
+  /// No description provided for @shareRevocationNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone you share with can read this note on their device. Removing someone stops future updates reaching them, but can\'t erase what they already received.'**
+  String get shareRevocationNote;
+
+  /// No description provided for @shareError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update sharing: {error}'**
+  String shareError(String error);
+
+  /// No description provided for @sharedWithMeHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with you'**
+  String get sharedWithMeHeader;
+
+  /// No description provided for @sharedByLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared by {npub}'**
+  String sharedByLabel(String npub);
+
+  /// No description provided for @sharedNoteEditableNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You can edit this note; your changes sync back to the owner, who merges them.'**
+  String get sharedNoteEditableNote;
+
+  /// No description provided for @abandonSharedNoteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave this shared note'**
+  String get abandonSharedNoteButton;
+
+  /// No description provided for @abandonSharedNoteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave this shared note?'**
+  String get abandonSharedNoteConfirmTitle;
+
+  /// No description provided for @abandonSharedNoteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'ll be removed from this device and you\'ll stop receiving updates. This can\'t be undone — you won\'t be able to rejoin it later.'**
+  String get abandonSharedNoteConfirmBody;
+
+  /// No description provided for @abandonSharedNoteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not leave: {error}'**
+  String abandonSharedNoteError(String error);
 }
 
 class _AppLocalizationsDelegate

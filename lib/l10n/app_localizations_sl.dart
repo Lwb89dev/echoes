@@ -610,4 +610,82 @@ class AppLocalizationsSl extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Napaka: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Deli';
+
+  @override
+  String get shareNoteTitle => 'Deli zapisek';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub ali javni ključ prejemnika';
+
+  @override
+  String get shareAddRecipientButton => 'Dodaj';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'To ni veljaven npub ali javni ključ';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Za to ime ni bilo najdenega računa Nostr';
+
+  @override
+  String get shareConfirmTitle => 'Deliti to opombo?';
+
+  @override
+  String get shareConfirmButton => 'Deli';
+
+  @override
+  String get shareAlreadyRecipientError => 'S to osebo je že deljeno';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Zapiska ne morete deliti s samim seboj';
+
+  @override
+  String get shareRecipientsHeader => 'Deljeno z';
+
+  @override
+  String get shareNoRecipientsMessage => 'Še ni deljeno z nikomer.';
+
+  @override
+  String get stopSharingTooltip => 'Prenehaj deliti s to osebo';
+
+  @override
+  String get shareRevocationNote =>
+      'Vsak, s komer delite, lahko bere ta zapisek na svoji napravi. Odstranitev nekoga ustavi prihodnje posodobitve, ne more pa izbrisati že prejetega.';
+
+  @override
+  String shareError(String error) {
+    return 'Deljenja ni bilo mogoče posodobiti: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Deljeno z vami';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Delil(a) $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Ta zapisek lahko urejate; vaše spremembe se sinhronizirajo nazaj lastniku, ki jih združi.';
+
+  @override
+  String get abandonSharedNoteButton => 'Zapusti ta deljeni zapisek';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Zapustiti ta deljeni zapisek?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Odstranjen bo iz te naprave in ne boste več prejemali posodobitev. Tega ni mogoče razveljaviti — pozneje se ne boste mogli znova pridružiti.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Ni bilo mogoče zapustiti: $error';
+  }
 }

@@ -610,4 +610,84 @@ class AppLocalizationsHu extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Hiba: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Megosztás';
+
+  @override
+  String get shareNoteTitle => 'Jegyzet megosztása';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'A címzett npub-ja vagy nyilvános kulcsa';
+
+  @override
+  String get shareAddRecipientButton => 'Hozzáadás';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Ez nem érvényes npub vagy nyilvános kulcs';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Nem található Nostr-fiók ehhez a névhez';
+
+  @override
+  String get shareConfirmTitle => 'Megosztod ezt a jegyzetet?';
+
+  @override
+  String get shareConfirmButton => 'Megosztás';
+
+  @override
+  String get shareAlreadyRecipientError => 'Már megosztva ezzel a személlyel';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Nem oszthatsz meg jegyzetet önmagaddal';
+
+  @override
+  String get shareRecipientsHeader => 'Megosztva vele';
+
+  @override
+  String get shareNoRecipientsMessage => 'Még nincs megosztva senkivel.';
+
+  @override
+  String get stopSharingTooltip => 'Megosztás leállítása ezzel a személlyel';
+
+  @override
+  String get shareRevocationNote =>
+      'Bárki, akivel megosztod, elolvashatja ezt a jegyzetet a saját eszközén. Valaki eltávolítása leállítja a jövőbeli frissítéseket, de nem törölheti azt, amit már megkapott.';
+
+  @override
+  String shareError(String error) {
+    return 'A megosztás frissítése nem sikerült: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Megosztva veled';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Megosztotta: $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Szerkesztheted ezt a jegyzetet; a módosításaid visszaszinkronizálódnak a tulajdonoshoz, aki egyesíti őket.';
+
+  @override
+  String get abandonSharedNoteButton => 'Kilépés ebből a megosztott jegyzetből';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Kilépsz ebből a megosztott jegyzetből?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Eltávolítjuk erről az eszközről, és nem kapsz több frissítést. Ez nem vonható vissza — később nem csatlakozhatsz újra.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Nem sikerült kilépni: $error';
+  }
 }

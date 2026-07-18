@@ -616,4 +616,86 @@ class AppLocalizationsEl extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Σφάλμα: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Κοινή χρήση';
+
+  @override
+  String get shareNoteTitle => 'Κοινή χρήση σημείωσης';
+
+  @override
+  String get shareRecipientFieldLabel => 'npub ή δημόσιο κλειδί παραλήπτη';
+
+  @override
+  String get shareAddRecipientButton => 'Προσθήκη';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Δεν είναι έγκυρο npub ή δημόσιο κλειδί';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Δεν βρέθηκε λογαριασμός Nostr για αυτό το όνομα';
+
+  @override
+  String get shareConfirmTitle => 'Κοινοποίηση αυτής της σημείωσης;';
+
+  @override
+  String get shareConfirmButton => 'Κοινοποίηση';
+
+  @override
+  String get shareAlreadyRecipientError =>
+      'Έχει ήδη κοινοποιηθεί σε αυτό το άτομο';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Δεν μπορείτε να μοιραστείτε μια σημείωση με τον εαυτό σας';
+
+  @override
+  String get shareRecipientsHeader => 'Κοινοποιήθηκε σε';
+
+  @override
+  String get shareNoRecipientsMessage =>
+      'Δεν έχει κοινοποιηθεί ακόμη σε κανέναν.';
+
+  @override
+  String get stopSharingTooltip => 'Διακοπή κοινής χρήσης με αυτό το άτομο';
+
+  @override
+  String get shareRevocationNote =>
+      'Όποιος λαμβάνει την κοινή χρήση μπορεί να διαβάσει αυτή τη σημείωση στη συσκευή του. Η αφαίρεση κάποιου σταματά τις μελλοντικές ενημερώσεις, αλλά δεν μπορεί να σβήσει ό,τι έχει ήδη λάβει.';
+
+  @override
+  String shareError(String error) {
+    return 'Δεν ήταν δυνατή η ενημέρωση της κοινής χρήσης: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Κοινοποιήθηκε σε εσάς';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Κοινοποιήθηκε από $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Μπορείτε να επεξεργαστείτε αυτή τη σημείωση· οι αλλαγές σας συγχρονίζονται πίσω στον ιδιοκτήτη, ο οποίος τις συγχωνεύει.';
+
+  @override
+  String get abandonSharedNoteButton =>
+      'Αποχώρηση από αυτή την κοινόχρηστη σημείωση';
+
+  @override
+  String get abandonSharedNoteConfirmTitle =>
+      'Αποχώρηση από αυτή την κοινόχρηστη σημείωση;';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Θα αφαιρεθεί από αυτή τη συσκευή και θα σταματήσετε να λαμβάνετε ενημερώσεις. Δεν αναιρείται — δεν θα μπορείτε να επανασυνδεθείτε αργότερα.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Δεν ήταν δυνατή η αποχώρηση: $error';
+  }
 }

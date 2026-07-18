@@ -200,5 +200,48 @@
   "passwordLabel": "Focal faire",
   "invalidPrivateKeyError": "Níl an eochair phríobháideach bailí. Cuir isteach eochair nsec nó hex bhailí.",
   "wrongPasswordError": "Focal faire mícheart",
-  "genericErrorPrefix": "Earráid: {error}"
+  "genericErrorPrefix": "Earráid: {error}",
+  "shareNoteTooltip": "Comhroinn",
+  "shareNoteTitle": "Comhroinn nóta",
+  "shareRecipientFieldLabel": "npub nó eochair phoiblí an fhaighteora",
+  "shareAddRecipientButton": "Cuir leis",
+  "shareInvalidRecipientError": "Ní npub ná eochair phoiblí bhailí é sin",
+  "shareRecipientNotFoundError": "Níor aimsíodh aon chuntas Nostr don ainm sin",
+  "shareConfirmTitle": "An nóta seo a roinnt?",
+  "shareConfirmButton": "Roinn",
+  "shareAlreadyRecipientError": "Comhroinnte leis an duine seo cheana",
+  "shareCannotShareWithSelfError": "Ní féidir leat nóta a chomhroinnt leat féin",
+  "shareRecipientsHeader": "Comhroinnte le",
+  "shareNoRecipientsMessage": "Níl sé comhroinnte le duine ar bith fós.",
+  "stopSharingTooltip": "Stop á chomhroinnt leis an duine seo",
+  "shareRevocationNote": "Is féidir le haon duine a bhfuil sé comhroinnte leo an nóta seo a léamh ar a ngléas. Cuireann duine a bhaint stop le nuashonruithe amach anseo, ach ní féidir an méid a fuair siad cheana a scriosadh.",
+  "shareError": "Níorbh fhéidir an chomhroinnt a nuashonrú: {error}",
+  "@shareError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedWithMeHeader": "Comhroinnte leat",
+  "sharedByLabel": "Comhroinnte ag {npub}",
+  "@sharedByLabel": {
+    "placeholders": {
+      "npub": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedNoteEditableNote": "Is féidir leat an nóta seo a chur in eagar; sioncronaítear do chuid athruithe ar ais chuig an úinéir, a chumascann iad.",
+  "abandonSharedNoteButton": "Fág an nóta comhroinnte seo",
+  "abandonSharedNoteConfirmTitle": "Fág an nóta comhroinnte seo?",
+  "abandonSharedNoteConfirmBody": "Bainfear den ghléas seo é agus stopfaidh tú ag fáil nuashonruithe. Ní féidir é seo a chur ar ceal — ní bheidh tú in ann ceangal leis arís.",
+  "abandonSharedNoteError": "Níorbh fhéidir imeacht: {error}",
+  "@abandonSharedNoteError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

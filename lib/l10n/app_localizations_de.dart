@@ -613,4 +613,83 @@ class AppLocalizationsDe extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return 'Fehler: $error';
   }
+
+  @override
+  String get shareNoteTooltip => 'Teilen';
+
+  @override
+  String get shareNoteTitle => 'Notiz teilen';
+
+  @override
+  String get shareRecipientFieldLabel =>
+      'npub oder öffentlicher Schlüssel des Empfängers';
+
+  @override
+  String get shareAddRecipientButton => 'Hinzufügen';
+
+  @override
+  String get shareInvalidRecipientError =>
+      'Das ist kein gültiger npub oder öffentlicher Schlüssel';
+
+  @override
+  String get shareRecipientNotFoundError =>
+      'Kein Nostr-Konto für diesen Namen gefunden';
+
+  @override
+  String get shareConfirmTitle => 'Diese Notiz teilen?';
+
+  @override
+  String get shareConfirmButton => 'Teilen';
+
+  @override
+  String get shareAlreadyRecipientError => 'Bereits mit dieser Person geteilt';
+
+  @override
+  String get shareCannotShareWithSelfError =>
+      'Du kannst eine Notiz nicht mit dir selbst teilen';
+
+  @override
+  String get shareRecipientsHeader => 'Geteilt mit';
+
+  @override
+  String get shareNoRecipientsMessage => 'Noch mit niemandem geteilt.';
+
+  @override
+  String get stopSharingTooltip => 'Teilen mit dieser Person beenden';
+
+  @override
+  String get shareRevocationNote =>
+      'Jeder, mit dem du teilst, kann diese Notiz auf seinem Gerät lesen. Jemanden zu entfernen stoppt künftige Aktualisierungen an ihn, kann aber bereits Erhaltenes nicht löschen.';
+
+  @override
+  String shareError(String error) {
+    return 'Freigabe konnte nicht aktualisiert werden: $error';
+  }
+
+  @override
+  String get sharedWithMeHeader => 'Mit dir geteilt';
+
+  @override
+  String sharedByLabel(String npub) {
+    return 'Geteilt von $npub';
+  }
+
+  @override
+  String get sharedNoteEditableNote =>
+      'Du kannst diese Notiz bearbeiten; deine Änderungen werden zurück an den Eigentümer synchronisiert, der sie zusammenführt.';
+
+  @override
+  String get abandonSharedNoteButton => 'Diese geteilte Notiz verlassen';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => 'Diese geteilte Notiz verlassen?';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      'Sie wird von diesem Gerät entfernt und du erhältst keine Aktualisierungen mehr. Das kann nicht rückgängig gemacht werden — du kannst später nicht wieder beitreten.';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return 'Verlassen fehlgeschlagen: $error';
+  }
 }

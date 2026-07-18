@@ -586,4 +586,78 @@ class AppLocalizationsZh extends AppLocalizations {
   String genericErrorPrefix(String error) {
     return '错误：$error';
   }
+
+  @override
+  String get shareNoteTooltip => '分享';
+
+  @override
+  String get shareNoteTitle => '分享笔记';
+
+  @override
+  String get shareRecipientFieldLabel => '接收者的 npub 或公钥';
+
+  @override
+  String get shareAddRecipientButton => '添加';
+
+  @override
+  String get shareInvalidRecipientError => '这不是有效的 npub 或公钥';
+
+  @override
+  String get shareRecipientNotFoundError => '找不到该名称对应的 Nostr 账户';
+
+  @override
+  String get shareConfirmTitle => '要分享这条笔记吗?';
+
+  @override
+  String get shareConfirmButton => '分享';
+
+  @override
+  String get shareAlreadyRecipientError => '已与此人分享';
+
+  @override
+  String get shareCannotShareWithSelfError => '不能把笔记分享给自己';
+
+  @override
+  String get shareRecipientsHeader => '已分享给';
+
+  @override
+  String get shareNoRecipientsMessage => '尚未与任何人分享。';
+
+  @override
+  String get stopSharingTooltip => '停止与此人分享';
+
+  @override
+  String get shareRevocationNote =>
+      '任何被分享的人都能在其设备上阅读此笔记。移除某人会停止之后的更新，但无法删除其已收到的内容。';
+
+  @override
+  String shareError(String error) {
+    return '无法更新分享：$error';
+  }
+
+  @override
+  String get sharedWithMeHeader => '已分享给你';
+
+  @override
+  String sharedByLabel(String npub) {
+    return '由 $npub 分享';
+  }
+
+  @override
+  String get sharedNoteEditableNote => '你可以编辑此笔记；你的更改会同步回所有者，由其合并。';
+
+  @override
+  String get abandonSharedNoteButton => '退出此共享笔记';
+
+  @override
+  String get abandonSharedNoteConfirmTitle => '退出此共享笔记？';
+
+  @override
+  String get abandonSharedNoteConfirmBody =>
+      '它将从此设备移除，你将不再收到更新。此操作无法撤销——之后你将无法重新加入。';
+
+  @override
+  String abandonSharedNoteError(String error) {
+    return '无法退出：$error';
+  }
 }

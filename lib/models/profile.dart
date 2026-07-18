@@ -24,12 +24,36 @@ class NostrProfile {
   /// (meant to be the user's chosen "pretty" name) over `name` (the
   /// NIP-05-adjacent handle). Null if neither is set, so callers can fall
   /// back to a truncated npub.
+  ///
+  /// Sanitized before display: a profile's name is attacker-chosen text
+  /// that ends up right next to trust decisions (the share-confirmation
+  /// dialog identifies the recipient by it), so invisible/bidi-control
+  /// characters are stripped — they enable spoofing tricks like RLO-
+  /// reversing or zero-width padding a lookalike name — and the length is
+  /// capped so a boundless "name" can't crowd the real npub out of the
+  /// dialog. Display-only: the raw fields stay untouched on the model.
   String? get label {
-    final trimmedDisplayName = displayName?.trim();
-    if (trimmedDisplayName != null && trimmedDisplayName.isNotEmpty) return trimmedDisplayName;
-    final trimmedName = name?.trim();
-    if (trimmedName != null && trimmedName.isNotEmpty) return trimmedName;
-    return null;
+    final display = _sanitizeForDisplay(displayName);
+    if (display != null) return display;
+    return _sanitizeForDisplay(name);
+  }
+
+  /// Strips C0/C1 controls plus the invisible formatting range —
+  /// zero-width chars, bidi embedding/override/isolate marks, BOM — and
+  /// collapses runs of whitespace, then caps at [maxChars]. Null when
+  /// nothing visible is left.
+  static String? _sanitizeForDisplay(String? raw, {int maxChars = 48}) {
+    if (raw == null) return null;
+    final cleaned = raw
+        .replaceAll(
+          RegExp(r'[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2060-\u206F\uFEFF]'),
+          '',
+        )
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    if (cleaned.isEmpty) return null;
+    if (cleaned.length <= maxChars) return cleaned;
+    return '${cleaned.substring(0, maxChars)}…';
   }
 
   /// Parses a kind-0 event's `content` (already JSON-decoded) into a
