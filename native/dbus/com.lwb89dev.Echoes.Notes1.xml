@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!-- Normative introspection for the Echoes notes service.
+     See docs/dbus-api.md for payload schemas and compatibility rules.
+
+     Authentication is deliberately NOT part of this interface: it lives on
+     com.lwb89dev.NostrAccount1, exported on the same object, so Astraea /
+     Echoes / Kairos share one identity surface (ADR-E-004). -->
+<node>
+  <interface name="com.lwb89dev.Echoes.Notes1">
+    <method name="GetVersion">
+      <arg type="s" name="version" direction="out"/>
+    </method>
+    <method name="GetServiceStatus">
+      <arg type="s" name="statusJson" direction="out"/>
+    </method>
+
+    <!-- ============ Reads ============ -->
+    <!-- filterJson: {"schemaVersion":1,"view":"notes|pinned|archived|trash",
+         "tags":[...],"limit":n,"offset":n}. All keys optional. -->
+    <method name="ListNotes">
+      <arg type="s" name="filterJson" direction="in"/>
+      <arg type="s" name="notesJson" direction="out"/>
+    </method>
+    <method name="GetNote">
+      <arg type="s" name="noteId" direction="in"/>
+      <arg type="s" name="noteJson" direction="out"/>
+    </method>
+    <!-- Summaries only (no body): what the shell popup renders. -->
+    <method name="GetRecent">
+      <arg type="u" name="limit" direction="in"/>
+      <arg type="s" name="summariesJson" direction="out"/>
+    </method>
+    <method name="GetPinned">
+      <arg type="s" name="summariesJson" direction="out"/>
+    </method>
+    <method name="GetTags">
+      <arg type="s" name="tagsJson" direction="out"/>
+    </method>
+    <!-- FTS5-backed. Returns summaries + highlighted snippet, ranked. -->
+    <method name="Search">
+      <arg type="s" name="query" direction="in"/>
+      <arg type="u" name="limit" direction="in"/>
+      <arg type="s" name="resultsJson" direction="out"/>
+    </method>
+
+    <!-- ============ Writes ============ -->
+    <method name="CreateNote">
+      <arg type="s" name="draftJson" direction="in"/>
+      <arg type="s" name="noteId" direction="out"/>
+    </method>
+    <method name="UpdateNote">
+      <arg type="s" name="noteId" direction="in"/>
+      <arg type="s" name="patchJson" direction="in"/>
+      <arg type="s" name="noteJson" direction="out"/>
+    </method>
+    <!-- Moves to trash (recoverable, still on disk and still synced). -->
+    <method name="TrashNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <method name="RestoreNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <!-- Irreversible: removes locally AND publishes a NIP-09 retraction
+         when the note was ever synced. Distinct from TrashNote on purpose —
+         no frontend should be able to destroy data with a one-word call
+         that sounds like "hide it". -->
+    <method name="DeleteNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <method name="ArchiveNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <method name="UnarchiveNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <method name="PinNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <method name="UnpinNote">
+      <arg type="s" name="noteId" direction="in"/>
+    </method>
+    <method name="SetNoteTags">
+      <arg type="s" name="noteId" direction="in"/>
+      <arg type="as" name="tags" direction="in"/>
+    </method>
+
+    <!-- ============ Sync ============ -->
+    <method name="SyncNow">
+      <arg type="s" name="statusJson" direction="out"/>
+    </method>
+
+    <!-- ============ Desktop integration ============ -->
+    <!-- uri: "" opens the main window; otherwise an echoes:// deep link
+         (echoes://note/<id>, echoes://new, echoes://search?q=…). -->
+    <method name="OpenDesktop">
+      <arg type="s" name="uri" direction="in"/>
+    </method>
+    <!-- Raises the quick-capture window. seedText pre-fills it (used by the
+         "paste clipboard" popup action and the Nautilus "send to Echoes"
+         menu). Returns once the window is up, not when the user commits. -->
+    <method name="QuickCapture">
+      <arg type="s" name="seedText" direction="in"/>
+    </method>
+
+    <!-- ============ Signals ============ -->
+    <!-- changeJson: {"schemaVersion":1,"kind":"created|updated|deleted|
+         bulk","noteIds":[...]} — frontends refresh only what changed. -->
+    <signal name="NotesChanged">
+      <arg type="s" name="changeJson"/>
+    </signal>
+    <signal name="SearchIndexUpdated">
+      <arg type="s" name="statusJson"/>
+    </signal>
+    <signal name="SyncStatusChanged">
+      <arg type="s" name="statusJson"/>
+    </signal>
+    <!-- Non-fatal service-level failures worth surfacing in a UI. -->
+    <signal name="ServiceError">
+      <arg type="s" name="errorJson"/>
+    </signal>
+  </interface>
+</node>
