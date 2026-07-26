@@ -31,9 +31,17 @@ class Relay {
 /// a presence beacon a note-storage relay has no reason to also be. It's
 /// otherwise unremarkable as a relay, so if a user adds it back manually
 /// that's an informed choice — it's only excluded from what's *suggested*.
+// Four general-purpose, no-auth, write-accepting relays rather than two: one
+// relay having a bad day (relay.damus.io in particular has been flaky) then
+// only halves the redundancy instead of removing it. All four were probed
+// live (open socket + REQ + reply) on 2026-07-20; auth-gated relays
+// (nostr.land) and search/indexing relays (relay.nostr.band — a presence
+// beacon, see below) are deliberately excluded from the suggested set.
 const List<String> defaultRelayUrls = [
   'wss://relay.damus.io',
   'wss://nos.lol',
+  'wss://offchain.pub',
+  'wss://nostr.mom',
 ];
 
 /// Always queried *in addition to* the user's configured relays when

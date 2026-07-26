@@ -1057,9 +1057,15 @@ class _NewNoteFabState extends ConsumerState<_NewNoteFab>
         FloatingActionButton(
           heroTag: 'fab_main',
           onPressed: () => ref.read(fabMenuProvider.notifier).toggle(),
+          // A full spin that lands on the ×. Geometry note: a "+" glyph only
+          // reads as a "×" at 45° (+ any multiple of 90°); a literal 450°
+          // (1.25 turns) is 360°+90°, which spins right back to looking like a
+          // "+". 405° (1.125 turns) is the nearest value that both does the
+          // extra whirl the user wanted and actually lands on the ×.
           child: AnimatedRotation(
-            turns: open ? 0.125 : 0,
-            duration: const Duration(milliseconds: 200),
+            turns: open ? 1.125 : 0,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOutBack,
             child: const Icon(Icons.add),
           ),
         ),

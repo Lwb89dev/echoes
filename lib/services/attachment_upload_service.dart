@@ -112,7 +112,7 @@ class AttachmentUploadService {
     // and there's no reason for a private photo or voice note to keep
     // sitting in the cache directory under its own, separate, unencrypted
     // path once that's true.
-    await _fileCacheService.put(encryptedHash, plainBytes);
+    await _fileCacheService.put(encryptedHash, plainBytes, persistent: _durable(pending));
     try {
       await File(localPath).delete();
     } catch (e) {
@@ -237,7 +237,19 @@ class AttachmentUploadService {
     _requireHttps(url);
 
     final cacheKey = expectedHash ?? sha256.convert(utf8.encode(url)).toString();
-    final cached = await _fileCacheService.get(cacheKey);
+    // Voice notes are stored durably (see [_durable]); everything else in the
+    // purgeable cache. A note recorded on this device seeds the durable store
+    // on upload, but one that only ever arrived as url+key (synced from
+    // another device, or shared with me) is downloaded here for the first
+    // time — so on a miss we still write it to the store its type dictates.
+    final durable = _durable(attachment);
+    // Check the type's own store first, then the other one: a voice note
+    // cached under the OLD (purgeable) scheme, before this durability fix
+    // shipped, must still play — and must not be considered missing just
+    // because its host blob has since been GC'd. Found in the wrong store, it
+    // migrates to the right one on the next download-triggering miss.
+    final cached = await _fileCacheService.get(cacheKey, persistent: durable) ??
+        await _fileCacheService.get(cacheKey, persistent: !durable);
     if (cached != null) return cached;
 
     developer.log('AttachmentUploadService.getDecrypted downloading: ${attachment.id}', name: 'AttachmentUploadService');
@@ -268,8 +280,15 @@ class AttachmentUploadService {
     final secretBox = SecretBox(cipherText, nonce: base64Decode(nonceB64), mac: Mac(mac));
 
     final plainBytes = await _aesGcm.decrypt(secretBox, secretKey: SecretKey(base64Decode(keyB64)));
-    return _fileCacheService.put(cacheKey, Uint8List.fromList(plainBytes));
+    return _fileCacheService.put(cacheKey, Uint8List.fromList(plainBytes), persistent: durable);
   }
+
+  /// Whether [attachment]'s decrypted copy must survive an OS cache purge.
+  /// Voice notes qualify: they're irreplaceable (a moment, not a re-shootable
+  /// photo) and their only durable copy after upload is the remote blob on a
+  /// possibly-ephemeral free host, so the local decrypted copy has to outlive
+  /// the purgeable cache. Images stay purgeable — re-downloadable on demand.
+  bool _durable(Attachment attachment) => attachment.type == AttachmentType.audio;
 
   // ---------------------------------------------------------------------
   // Blossom (BUD-01/BUD-02)

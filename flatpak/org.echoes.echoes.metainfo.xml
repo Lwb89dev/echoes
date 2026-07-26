@@ -36,6 +36,11 @@
   <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.4.3" date="2026-07-20">
+      <description>
+        <p>Fixes voice notes being lost over time (their only local copy could be evicted from the OS-purgeable cache). Notes now open as a post-it grid by default, note text is justified, and adding a relay auto-republishes your synced notes to it. Plus two extra default relays and smoother UI touches.</p>
+      </description>
+    </release>
     <release version="0.4.2" date="2026-07-18">
       <description>
         <p>Android signing identity migrated to a dedicated release key (existing Android installs must be reinstalled once — sync or export notes first). Sync cycles are now serialized, fixing a race that could upload attachments twice.</p>

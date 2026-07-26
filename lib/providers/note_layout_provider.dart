@@ -16,7 +16,12 @@ class NoteLayoutNotifier extends Notifier<NoteLayout> {
   @override
   NoteLayout build() {
     _load();
-    return NoteLayout.list;
+    // Grid (Google-Keep-style post-it cards) is the default look: a single
+    // full-width column reads as a plain to-do list and is the weaker first
+    // impression for a notes app. A user who prefers the list still gets it —
+    // their explicit choice is saved and reapplied by [_load]; only the
+    // never-chosen default changes.
+    return NoteLayout.grid;
   }
 
   Future<void> _load() async {
