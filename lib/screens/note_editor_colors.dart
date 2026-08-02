@@ -43,16 +43,12 @@ class _ColorSwatchOption extends StatelessWidget {
                 color: swatchColor ?? colorScheme.surface,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: selected
-                      ? colorScheme.primary
-                      : colorScheme.outlineVariant,
+                  color: selected ? colorScheme.primary : colorScheme.outlineVariant,
                   width: selected ? 3 : 1,
                 ),
               ),
               child: Icon(
-                swatchColor == null
-                    ? Icons.format_color_reset_outlined
-                    : Icons.check,
+                swatchColor == null ? Icons.format_color_reset_outlined : Icons.check,
                 color: swatchColor == null
                     ? iconColor
                     : (selected ? iconColor : Colors.transparent),
@@ -90,8 +86,7 @@ class _NoteColorReveal extends StatefulWidget {
   State<_NoteColorReveal> createState() => _NoteColorRevealState();
 }
 
-class _NoteColorRevealState extends State<_NoteColorReveal>
-    with SingleTickerProviderStateMixin {
+class _NoteColorRevealState extends State<_NoteColorReveal> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 450),
@@ -162,13 +157,10 @@ class _CircleRevealClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final maxRadius =
-        center.distance; // (0,0) to center == any corner to center
-    return Path()
-      ..addOval(Rect.fromCircle(center: center, radius: maxRadius * fraction));
+    final maxRadius = center.distance; // (0,0) to center == any corner to center
+    return Path()..addOval(Rect.fromCircle(center: center, radius: maxRadius * fraction));
   }
 
   @override
-  bool shouldReclip(covariant _CircleRevealClipper oldClipper) =>
-      oldClipper.fraction != fraction;
+  bool shouldReclip(covariant _CircleRevealClipper oldClipper) => oldClipper.fraction != fraction;
 }

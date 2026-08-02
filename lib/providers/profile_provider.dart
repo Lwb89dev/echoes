@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/profile.dart';
 import '../utils/constants.dart';
+import '../utils/network_url.dart';
 import 'auth_provider.dart';
 import 'relay_provider.dart';
 import 'service_providers.dart';
@@ -37,10 +38,9 @@ class ProfileNotifier extends AsyncNotifier<NostrProfile?> {
     NostrProfile? fetched;
     try {
       final relays = ref.read(relayProvider).value ?? const [];
-      fetched = await ref.read(nostrServiceProvider).fetchProfileMetadata(
-            publicKeyHex: author.publicKeyHex,
-            relays: relays,
-          );
+      fetched = await ref
+          .read(nostrServiceProvider)
+          .fetchProfileMetadata(publicKeyHex: author.publicKeyHex, relays: relays);
     } catch (e) {
       developer.log('Could not refresh profile metadata: $e', name: 'ProfileNotifier');
     }
@@ -79,16 +79,20 @@ final profileProvider = AsyncNotifierProvider<ProfileNotifier, NostrProfile?>(Pr
 /// `autoDispose` so entries live only while something on screen is showing
 /// them: without it, every pubkey ever previewed would pin a cache entry
 /// (and its fetch result) for the app's whole lifetime.
-final peerProfileProvider =
-    FutureProvider.autoDispose.family<NostrProfile?, String>((ref, publicKeyHex) async {
+final peerProfileProvider = FutureProvider.autoDispose.family<NostrProfile?, String>((
+  ref,
+  publicKeyHex,
+) async {
   final relays = ref.watch(relayProvider).value ?? const [];
   try {
-    return await ref.watch(nostrServiceProvider).fetchProfileMetadata(
-          publicKeyHex: publicKeyHex,
-          relays: relays,
-        );
+    return await ref
+        .watch(nostrServiceProvider)
+        .fetchProfileMetadata(publicKeyHex: publicKeyHex, relays: relays);
   } catch (e) {
-    developer.log('Could not fetch peer profile for $publicKeyHex: $e', name: 'peerProfileProvider');
+    developer.log(
+      'Could not fetch peer profile for $publicKeyHex: $e',
+      name: 'peerProfileProvider',
+    );
     return null;
   }
 });
@@ -110,7 +114,10 @@ final contactsProvider = FutureProvider.autoDispose<List<NostrProfile>>((ref) as
   final service = ref.watch(nostrServiceProvider);
   final relays = ref.watch(relayProvider).value ?? const [];
   try {
-    final pubkeys = await service.fetchContactPubkeys(publicKeyHex: me.publicKeyHex, relays: relays);
+    final pubkeys = await service.fetchContactPubkeys(
+      publicKeyHex: me.publicKeyHex,
+      relays: relays,
+    );
     if (pubkeys.isEmpty) return const [];
     return await service.fetchProfilesBatch(publicKeyHexes: pubkeys, relays: relays);
   } catch (e) {
@@ -133,7 +140,8 @@ final avatarFileProvider = FutureProvider.family<File?, String>((ref, url) async
   // allowance would silently extend to plain-HTTP avatar fetches too.
   // Same policy as attachments (`AttachmentUploadService._requireHttps`),
   // just non-throwing — no avatar is a fine outcome, it's decorative.
-  if (!url.startsWith('https://')) return null;
+  final initialUri = tryParseHttpsUri(url);
+  if (initialUri == null) return null;
 
   final cacheService = ref.watch(fileCacheServiceProvider);
   final key = sha256.convert(utf8.encode(url)).toString();
@@ -153,15 +161,15 @@ final avatarFileProvider = FutureProvider.family<File?, String>((ref, url) async
     // Redirects are followed manually and https-only, for the same reason
     // the initial URL is: the default client would silently follow a
     // downgrade redirect onto plain http.
-    var current = Uri.parse(url);
+    var current = initialUri;
     for (var hop = 0; hop <= maxRedirects; hop++) {
       final request = http.Request('GET', current)..followRedirects = false;
       final response = await client.send(request).timeout(const Duration(seconds: 15));
       if (const {301, 302, 303, 307, 308}.contains(response.statusCode)) {
         final location = response.headers['location'];
         if (location == null) return null;
-        final target = current.resolve(location);
-        if (target.scheme != 'https') return null;
+        final target = tryParseHttpsUri(current.resolve(location).toString());
+        if (target == null) return null;
         current = target;
         continue;
       }
@@ -170,7 +178,10 @@ final avatarFileProvider = FutureProvider.family<File?, String>((ref, url) async
       await for (final chunk in response.stream.timeout(const Duration(seconds: 15))) {
         bytes.add(chunk);
         if (bytes.length > maxAvatarBytes) {
-          developer.log('Avatar at $url exceeds $maxAvatarBytes bytes — dropped', name: 'avatarFileProvider');
+          developer.log(
+            'Avatar at $url exceeds $maxAvatarBytes bytes — dropped',
+            name: 'avatarFileProvider',
+          );
           return null;
         }
       }

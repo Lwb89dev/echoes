@@ -19,7 +19,7 @@
         are redundant once backup is disabled outright.
     -->
     <application
-        android:label="echoes"
+        android:label="Echoes"
         android:name="${applicationName}"
         android:allowBackup="false"
         android:fullBackupContent="false"

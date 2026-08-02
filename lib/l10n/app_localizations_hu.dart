@@ -33,8 +33,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get bunkerConnectButton => 'Csatlakozás';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Hagyd jóvá a kapcsolatot az aláíródban, majd térj vissza';
+  String get bunkerAuthPrompt => 'Hagyd jóvá a kapcsolatot az aláíródban, majd térj vissza';
 
   @override
   String get relaysTitle => 'Relék';
@@ -55,8 +54,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get noSearchResultsMessage => 'Nincs találat.';
 
   @override
-  String get emptyNotesMessage =>
-      'Még nincsenek jegyzetek. Koppints a + gombra újhoz.';
+  String get emptyNotesMessage => 'Még nincsenek jegyzetek. Koppints a + gombra újhoz.';
 
   @override
   String get notesTabLabel => 'Jegyzetek';
@@ -65,8 +63,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get diaryTabLabel => 'Napló';
 
   @override
-  String get emptyDiaryMessage =>
-      'Még nincs naplóbejegyzés. Koppints a + gombra egy írásához.';
+  String get emptyDiaryMessage => 'Még nincs naplóbejegyzés. Koppints a + gombra egy írásához.';
 
   @override
   String get diaryToday => 'Ma';
@@ -166,8 +163,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Kész elemek elrejtése';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Minden elem kész és el van rejtve.';
+  String get allChecklistItemsCompletedHidden => 'Minden elem kész és el van rejtve.';
 
   @override
   String get deleteCompletedItemsButton => 'Kész elemek törlése';
@@ -230,8 +226,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get editVoiceTimestampButton => 'Időbélyeg szerkesztése';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'A hangjegyzetek nem támogatottak ezen az eszközön';
+  String get voiceNoteUnsupportedOnPlatform => 'A hangjegyzetek nem támogatottak ezen az eszközön';
 
   @override
   String get formatBoldTooltip => 'Félkövér';
@@ -281,8 +276,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get loadingLabel => 'Betöltés…';
 
   @override
-  String get encryptionLoadError =>
-      'A titkosítási beállításokat nem sikerült betölteni';
+  String get encryptionLoadError => 'A titkosítási beállításokat nem sikerült betölteni';
 
   @override
   String get encryptionToggleTitle => 'Jegyzetek védelme jelszóval';
@@ -295,8 +289,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get lockNotesNowTitle => 'Jegyzetek zárolása most';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'A jegyzetek megtekintéséhez ismét szükség lesz a jelszóra';
+  String get lockNotesNowSubtitle => 'A jegyzetek megtekintéséhez ismét szükség lesz a jelszóra';
 
   @override
   String get setPasswordDialogTitle => 'Jelszó beállítása';
@@ -319,8 +312,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get enableButton => 'Engedélyezés';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Add meg a jelszavadat a titkosítás letiltásához';
+  String get disablePasswordDialogTitle => 'Add meg a jelszavadat a titkosítás letiltásához';
 
   @override
   String get disableButton => 'Letiltás';
@@ -332,8 +324,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get lightThemeToggleTitle => 'Világos téma';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Világos színséma használata sötét helyett';
+  String get lightThemeToggleSubtitle => 'Világos színséma használata sötét helyett';
 
   @override
   String get noteLayoutToggleTitle => 'Váltás lista- és rácsnézet között';
@@ -342,8 +333,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get manageRelaysTitle => 'Relék kezelése';
 
   @override
-  String get republishAllNotesButton =>
-      'Minden szinkronizált jegyzet újraközzététele';
+  String get republishAllNotesButton => 'Minden szinkronizált jegyzet újraközzététele';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -419,8 +409,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'Minden jegyzet először helyben kerül mentésre, így az alkalmazás teljesen offline is működik. Semmi sem hagyja el az eszközödet, hacsak nem választod a szinkronizálást.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Opcionális szinkronizálás Nostron keresztül';
+  String get onboardingIntroSyncTitle => 'Opcionális szinkronizálás Nostron keresztül';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -434,8 +423,7 @@ class AppLocalizationsHu extends AppLocalizations {
       'A Nostrra szinkronizált jegyzetek végpontok közötti titkosítással vannak védve, így a relé üzemeltetői — és mindenki más — soha nem olvashatják a tartalmukat.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Jelentkezz be a kulcsod felfedése nélkül';
+  String get onboardingIntroAmberTitle => 'Jelentkezz be a kulcsod felfedése nélkül';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -455,8 +443,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get onboardingBackButton => 'Vissza';
 
   @override
-  String get onboardingSkipButton =>
-      'Kihagyás — Echoes használata csak helyben';
+  String get onboardingSkipButton => 'Kihagyás — Echoes használata csak helyben';
 
   @override
   String get onboardingRelayTitle => 'Válassz relékat a szinkronizáláshoz';
@@ -530,15 +517,13 @@ class AppLocalizationsHu extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Fájl titkosítása';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Javasolt — jelszóval védi a biztonsági mentést';
+  String get exportEncryptToggleSubtitle => 'Javasolt — jelszóval védi a biztonsági mentést';
 
   @override
   String get exportPasswordDialogTitle => 'Add meg a jelszavad';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Állíts be jelszót ehhez az exporthoz';
+  String get exportSetPasswordDialogTitle => 'Állíts be jelszót ehhez az exporthoz';
 
   @override
   String get importPasswordDialogTitle => 'Add meg az export jelszavát';
@@ -557,8 +542,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get importNotesButton => 'Jegyzetek importálása';
 
   @override
-  String get importNotesSubtitle =>
-      'Jegyzetek visszaállítása egy korábban exportált fájlból';
+  String get importNotesSubtitle => 'Jegyzetek visszaállítása egy korábban exportált fájlból';
 
   @override
   String get exportNotesSuccess => 'Jegyzetek exportálva';
@@ -631,19 +615,16 @@ class AppLocalizationsHu extends AppLocalizations {
   String get shareNoteTitle => 'Jegyzet megosztása';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'A címzett npub-ja vagy nyilvános kulcsa';
+  String get shareRecipientFieldLabel => 'A címzett npub-ja vagy nyilvános kulcsa';
 
   @override
   String get shareAddRecipientButton => 'Hozzáadás';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Ez nem érvényes npub vagy nyilvános kulcs';
+  String get shareInvalidRecipientError => 'Ez nem érvényes npub vagy nyilvános kulcs';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Nem található Nostr-fiók ehhez a névhez';
+  String get shareRecipientNotFoundError => 'Nem található Nostr-fiók ehhez a névhez';
 
   @override
   String get shareConfirmTitle => 'Megosztod ezt a jegyzetet?';
@@ -655,8 +636,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Már megosztva ezzel a személlyel';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Nem oszthatsz meg jegyzetet önmagaddal';
+  String get shareCannotShareWithSelfError => 'Nem oszthatsz meg jegyzetet önmagaddal';
 
   @override
   String get shareRecipientsHeader => 'Megosztva vele';
@@ -692,8 +672,7 @@ class AppLocalizationsHu extends AppLocalizations {
   String get abandonSharedNoteButton => 'Kilépés ebből a megosztott jegyzetből';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Kilépsz ebből a megosztott jegyzetből?';
+  String get abandonSharedNoteConfirmTitle => 'Kilépsz ebből a megosztott jegyzetből?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

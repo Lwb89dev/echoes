@@ -18,8 +18,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importAccountButton => 'Importuj konto Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Klucz prywatny (nsec) Twojego konta Nostr';
+  String get importAccountFieldLabel => 'Klucz prywatny (nsec) Twojego konta Nostr';
 
   @override
   String get importButton => 'Importuj';
@@ -34,8 +33,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get bunkerConnectButton => 'Połącz';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Zatwierdź połączenie w swoim podpisywaczu i wróć';
+  String get bunkerAuthPrompt => 'Zatwierdź połączenie w swoim podpisywaczu i wróć';
 
   @override
   String get relaysTitle => 'Przekaźniki';
@@ -56,8 +54,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noSearchResultsMessage => 'Brak wyników.';
 
   @override
-  String get emptyNotesMessage =>
-      'Nie masz jeszcze żadnych notatek. Dotknij +, aby utworzyć nową.';
+  String get emptyNotesMessage => 'Nie masz jeszcze żadnych notatek. Dotknij +, aby utworzyć nową.';
 
   @override
   String get notesTabLabel => 'Notatki';
@@ -66,8 +63,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get diaryTabLabel => 'Dziennik';
 
   @override
-  String get emptyDiaryMessage =>
-      'Brak wpisów w dzienniku. Dotknij +, aby napisać.';
+  String get emptyDiaryMessage => 'Brak wpisów w dzienniku. Dotknij +, aby napisać.';
 
   @override
   String get diaryToday => 'Dzisiaj';
@@ -167,8 +163,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Ukryj ukończone pozycje';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Wszystkie pozycje są ukończone i ukryte.';
+  String get allChecklistItemsCompletedHidden => 'Wszystkie pozycje są ukończone i ukryte.';
 
   @override
   String get deleteCompletedItemsButton => 'Usuń ukończone pozycje';
@@ -265,8 +260,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get relayUrlHint => 'wss://relay.example.com';
 
   @override
-  String get noRelaysMessage =>
-      'Nie skonfigurowano jeszcze żadnego przekaźnika.';
+  String get noRelaysMessage => 'Nie skonfigurowano jeszcze żadnego przekaźnika.';
 
   @override
   String relaysCount(int count) {
@@ -283,8 +277,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get loadingLabel => 'Wczytywanie…';
 
   @override
-  String get encryptionLoadError =>
-      'Nie udało się wczytać ustawień szyfrowania';
+  String get encryptionLoadError => 'Nie udało się wczytać ustawień szyfrowania';
 
   @override
   String get encryptionToggleTitle => 'Chroń notatki hasłem';
@@ -297,8 +290,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get lockNotesNowTitle => 'Zablokuj notatki teraz';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Aby zobaczyć notatki, ponownie będzie potrzebne hasło';
+  String get lockNotesNowSubtitle => 'Aby zobaczyć notatki, ponownie będzie potrzebne hasło';
 
   @override
   String get setPasswordDialogTitle => 'Ustaw hasło';
@@ -321,8 +313,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enableButton => 'Włącz';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Wprowadź hasło, aby wyłączyć szyfrowanie';
+  String get disablePasswordDialogTitle => 'Wprowadź hasło, aby wyłączyć szyfrowanie';
 
   @override
   String get disableButton => 'Wyłącz';
@@ -334,8 +325,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get lightThemeToggleTitle => 'Jasny motyw';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Użyj jasnego schematu kolorów zamiast ciemnego';
+  String get lightThemeToggleSubtitle => 'Użyj jasnego schematu kolorów zamiast ciemnego';
 
   @override
   String get noteLayoutToggleTitle => 'Przełącz między widokiem listy i siatki';
@@ -344,8 +334,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get manageRelaysTitle => 'Zarządzaj przekaźnikami';
 
   @override
-  String get republishAllNotesButton =>
-      'Opublikuj ponownie wszystkie zsynchronizowane notatki';
+  String get republishAllNotesButton => 'Opublikuj ponownie wszystkie zsynchronizowane notatki';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -389,8 +378,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get sectionAccount => 'Konto';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes używane lokalnie — brak synchronizacji z Nostr';
+  String get accountLocalOnlyMessage => 'Echoes używane lokalnie — brak synchronizacji z Nostr';
 
   @override
   String get accountSignInButton => 'Zaloguj się';
@@ -414,16 +402,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Witamy w Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Twoje notatki, zawsze na Twoim urządzeniu';
+  String get onboardingIntroLocalTitle => 'Twoje notatki, zawsze na Twoim urządzeniu';
 
   @override
   String get onboardingIntroLocalBody =>
       'Każda notatka jest najpierw zapisywana lokalnie, dzięki czemu aplikacja działa w pełni offline. Nic nie opuszcza Twojego urządzenia, chyba że zdecydujesz się na synchronizację.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Opcjonalna synchronizacja przez Nostr';
+  String get onboardingIntroSyncTitle => 'Opcjonalna synchronizacja przez Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -531,8 +517,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Zaszyfruj ten plik';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Zalecane — chroni kopię zapasową hasłem';
+  String get exportEncryptToggleSubtitle => 'Zalecane — chroni kopię zapasową hasłem';
 
   @override
   String get exportPasswordDialogTitle => 'Wprowadź swoje hasło';
@@ -557,8 +542,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importNotesButton => 'Importuj notatki';
 
   @override
-  String get importNotesSubtitle =>
-      'Przywróć notatki z wcześniej wyeksportowanego pliku';
+  String get importNotesSubtitle => 'Przywróć notatki z wcześniej wyeksportowanego pliku';
 
   @override
   String get exportNotesSuccess => 'Notatki wyeksportowane';
@@ -637,12 +621,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get shareAddRecipientButton => 'Dodaj';
 
   @override
-  String get shareInvalidRecipientError =>
-      'To nie jest prawidłowy npub ani klucz publiczny';
+  String get shareInvalidRecipientError => 'To nie jest prawidłowy npub ani klucz publiczny';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Nie znaleziono konta Nostr dla tej nazwy';
+  String get shareRecipientNotFoundError => 'Nie znaleziono konta Nostr dla tej nazwy';
 
   @override
   String get shareConfirmTitle => 'Udostępnić tę notatkę?';
@@ -654,8 +636,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Już udostępniono tej osobie';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Nie możesz udostępnić notatki samemu sobie';
+  String get shareCannotShareWithSelfError => 'Nie możesz udostępnić notatki samemu sobie';
 
   @override
   String get shareRecipientsHeader => 'Udostępniono';
@@ -691,8 +672,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get abandonSharedNoteButton => 'Opuść tę udostępnioną notatkę';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Opuścić tę udostępnioną notatkę?';
+  String get abandonSharedNoteConfirmTitle => 'Opuścić tę udostępnioną notatkę?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

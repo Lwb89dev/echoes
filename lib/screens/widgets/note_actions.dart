@@ -38,7 +38,9 @@ Future<bool> deleteNotes(
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(notes.length == 1 ? l.deleteNoteConfirmTitle : l.deleteNotesConfirmTitle(notes.length)),
+      title: Text(
+        notes.length == 1 ? l.deleteNoteConfirmTitle : l.deleteNotesConfirmTitle(notes.length),
+      ),
       content: Text(notes.length == 1 ? l.deleteNoteConfirmBody : l.deleteNotesConfirmBody),
       actions: [
         TextButton(
@@ -143,7 +145,9 @@ Future<void> exportNotesToFile(
   if (!context.mounted) return;
 
   try {
-    final json = await ref.read(notesProvider.notifier).exportNotes(noteIds: noteIds, password: choice.password);
+    final json = await ref
+        .read(notesProvider.notifier)
+        .exportNotes(noteIds: noteIds, password: choice.password);
     final bytes = utf8.encode(json);
     final fileName = 'echoes-notes-${DateTime.now().toIso8601String().split('T').first}.json';
 
@@ -163,15 +167,13 @@ Future<void> exportNotesToFile(
     }
 
     if (savedPath != null && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.exportNotesSuccess)),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.exportNotesSuccess)));
     }
   } catch (e) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.exportNotesError(e.toString()))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l.exportNotesError(e.toString()))));
     }
   }
 }
@@ -244,7 +246,11 @@ Future<_ExportChoice?> _confirmExportEncryption(
 /// — verified against the real saved verifier (see
 /// [NoteEncryptionNotifier.verifyPassword]) so a typo is caught immediately
 /// rather than surfacing as a confusing "wrong password" on a later import.
-Future<String?> _promptExistingPassword(BuildContext context, WidgetRef ref, AppLocalizations l) async {
+Future<String?> _promptExistingPassword(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations l,
+) async {
   final controller = TextEditingController();
   var submitting = false;
   String? errorText;
@@ -273,7 +279,9 @@ Future<String?> _promptExistingPassword(BuildContext context, WidgetRef ref, App
                       submitting = true;
                       errorText = null;
                     });
-                    final ok = await ref.read(noteEncryptionProvider.notifier).verifyPassword(controller.text);
+                    final ok = await ref
+                        .read(noteEncryptionProvider.notifier)
+                        .verifyPassword(controller.text);
                     if (!ok) {
                       setState(() {
                         submitting = false;
@@ -281,7 +289,9 @@ Future<String?> _promptExistingPassword(BuildContext context, WidgetRef ref, App
                       });
                       return;
                     }
-                    if (dialogContext.mounted) Navigator.of(dialogContext).pop(controller.text);
+                    if (dialogContext.mounted) {
+                      Navigator.of(dialogContext).pop(controller.text);
+                    }
                   },
             child: Text(l.exportNotesButton),
           ),
@@ -316,22 +326,21 @@ Future<String?> _promptNewExportPassword(BuildContext context, AppLocalizations 
               obscureText: true,
               autofocus: true,
               decoration: InputDecoration(labelText: l.passwordLabel),
-              validator: (value) => (value == null || value.length < 8) ? l.passwordTooShortError : null,
+              validator: (value) =>
+                  (value == null || value.length < 8) ? l.passwordTooShortError : null,
             ),
             TextFormField(
               controller: confirmController,
               obscureText: true,
               decoration: InputDecoration(labelText: l.confirmPasswordLabel),
-              validator: (value) => value != passwordController.text ? l.passwordsDoNotMatchError : null,
+              validator: (value) =>
+                  value != passwordController.text ? l.passwordsDoNotMatchError : null,
             ),
           ],
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
-          child: Text(l.cancelButton),
-        ),
+        TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: Text(l.cancelButton)),
         FilledButton(
           onPressed: () {
             if (!formKey.currentState!.validate()) return;
@@ -351,11 +360,7 @@ Future<String?> _promptNewExportPassword(BuildContext context, AppLocalizations 
 /// its list — [progress] is updated by the caller (one relay round-trip per
 /// note completed), this widget just reflects it live.
 class _DeletionProgressDialog extends StatelessWidget {
-  const _DeletionProgressDialog({
-    required this.l,
-    required this.progress,
-    required this.total,
-  });
+  const _DeletionProgressDialog({required this.l, required this.progress, required this.total});
 
   final AppLocalizations l;
   final ValueNotifier<int> progress;

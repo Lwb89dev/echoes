@@ -11,26 +11,26 @@ import 'package:echoes/utils/note_sharing.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Note _noteFixture() => Note(
-      id: 'note-1',
-      title: 'Title',
-      body: 'Body',
-      createdAt: DateTime.utc(2026, 1, 1),
-      updatedAt: DateTime.utc(2026, 1, 2),
-      ownerPubkey: null,
-      sharedWith: const ['recipient-a-pub', 'recipient-b-pub'],
-      attachments: [
-        const Attachment(
-          id: 'att-1',
-          type: AttachmentType.image,
-          localPath: '/home/secretuser/photos/private.jpg',
-          url: 'https://host.example/blob',
-          decryptionKeyBase64: 'a2V5',
-          decryptionNonceBase64: 'bm9uY2U=',
-          mimeType: 'image/jpeg',
-          sha256OfEncrypted: 'abc',
-        ),
-      ],
-    );
+  id: 'note-1',
+  title: 'Title',
+  body: 'Body',
+  createdAt: DateTime.utc(2026, 1, 1),
+  updatedAt: DateTime.utc(2026, 1, 2),
+  ownerPubkey: null,
+  sharedWith: const ['recipient-a-pub', 'recipient-b-pub'],
+  attachments: [
+    const Attachment(
+      id: 'att-1',
+      type: AttachmentType.image,
+      localPath: '/home/secretuser/photos/private.jpg',
+      url: 'https://host.example/blob',
+      decryptionKeyBase64: 'a2V5',
+      decryptionNonceBase64: 'bm9uY2U=',
+      mimeType: 'image/jpeg',
+      sha256OfEncrypted: 'abc',
+    ),
+  ],
+);
 
 void main() {
   group('NoteSharing d-tags', () {
@@ -112,6 +112,16 @@ void main() {
       final received = Note.fromJson(wire);
       expect(received.attachments.single.localPath, isNull);
     });
+  });
+
+  test('Note.toExportJson strips device-local attachment paths', () {
+    final json = _noteFixture().toExportJson();
+    final attachments = json['attachments'] as List<dynamic>;
+    final attachment = attachments.single as Map<String, dynamic>;
+
+    expect(attachment['localPath'], isNull);
+    expect(json['sharedWith'], _noteFixture().sharedWith);
+    expect(json['nostrEventId'], _noteFixture().nostrEventId);
   });
 
   group('Attachment.withoutLocalPath', () {

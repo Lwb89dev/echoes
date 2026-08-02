@@ -73,12 +73,12 @@ class NostrProfile {
   /// Serialized for the small local cache in SharedPreferences (see
   /// [ProfileNotifier]) — not related to the Nostr wire format.
   Map<String, dynamic> toJson() => {
-        'publicKeyHex': publicKeyHex,
-        'name': name,
-        'displayName': displayName,
-        'picture': picture,
-        'about': about,
-      };
+    'publicKeyHex': publicKeyHex,
+    'name': name,
+    'displayName': displayName,
+    'picture': picture,
+    'about': about,
+  };
 
   factory NostrProfile.fromJson(Map<String, dynamic> json) {
     return NostrProfile(

@@ -18,8 +18,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importAccountButton => 'Nostr-Konto importieren';
 
   @override
-  String get importAccountFieldLabel =>
-      'Privater Schlüssel (nsec) deines Nostr-Kontos';
+  String get importAccountFieldLabel => 'Privater Schlüssel (nsec) deines Nostr-Kontos';
 
   @override
   String get importButton => 'Importieren';
@@ -34,8 +33,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get bunkerConnectButton => 'Verbinden';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Bestätige die Verbindung in deinem Signierer und komm zurück';
+  String get bunkerAuthPrompt => 'Bestätige die Verbindung in deinem Signierer und komm zurück';
 
   @override
   String get relaysTitle => 'Relays';
@@ -56,8 +54,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noSearchResultsMessage => 'Keine Treffer.';
 
   @override
-  String get emptyNotesMessage =>
-      'Noch keine Notizen. Tippe auf +, um eine zu erstellen.';
+  String get emptyNotesMessage => 'Noch keine Notizen. Tippe auf +, um eine zu erstellen.';
 
   @override
   String get notesTabLabel => 'Notizen';
@@ -167,8 +164,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Erledigte Einträge ausblenden';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Alle Einträge sind erledigt und ausgeblendet.';
+  String get allChecklistItemsCompletedHidden => 'Alle Einträge sind erledigt und ausgeblendet.';
 
   @override
   String get deleteCompletedItemsButton => 'Erledigte Einträge löschen';
@@ -282,8 +278,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loadingLabel => 'Wird geladen…';
 
   @override
-  String get encryptionLoadError =>
-      'Verschlüsselungseinstellungen konnten nicht geladen werden';
+  String get encryptionLoadError => 'Verschlüsselungseinstellungen konnten nicht geladen werden';
 
   @override
   String get encryptionToggleTitle => 'Notizen mit einem Passwort schützen';
@@ -333,19 +328,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lightThemeToggleTitle => 'Helles Design';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Helles statt dunkles Farbschema verwenden';
+  String get lightThemeToggleSubtitle => 'Helles statt dunkles Farbschema verwenden';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Zwischen Listen- und Rasteransicht wechseln';
+  String get noteLayoutToggleTitle => 'Zwischen Listen- und Rasteransicht wechseln';
 
   @override
   String get manageRelaysTitle => 'Relais verwalten';
 
   @override
-  String get republishAllNotesButton =>
-      'Alle synchronisierten Notizen erneut veröffentlichen';
+  String get republishAllNotesButton => 'Alle synchronisierten Notizen erneut veröffentlichen';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -362,8 +354,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get forceFullResyncButton =>
-      'Vollständige Neusynchronisierung erzwingen';
+  String get forceFullResyncButton => 'Vollständige Neusynchronisierung erzwingen';
 
   @override
   String get forceFullResyncSubtitle =>
@@ -415,16 +406,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Willkommen bei Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Deine Notizen, immer auf deinem Gerät';
+  String get onboardingIntroLocalTitle => 'Deine Notizen, immer auf deinem Gerät';
 
   @override
   String get onboardingIntroLocalBody =>
       'Jede Notiz wird zuerst lokal gespeichert, sodass die App vollständig offline funktioniert. Nichts verlässt dein Gerät, es sei denn, du entscheidest dich für die Synchronisierung.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Optionale Synchronisierung über Nostr';
+  String get onboardingIntroSyncTitle => 'Optionale Synchronisierung über Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -438,8 +427,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Mit Nostr synchronisierte Notizen sind Ende-zu-Ende-verschlüsselt, sodass Relay-Betreiber — und alle anderen — ihren Inhalt niemals lesen können.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Anmelden, ohne deinen Schlüssel preiszugeben';
+  String get onboardingIntroAmberTitle => 'Anmelden, ohne deinen Schlüssel preiszugeben';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -533,15 +521,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Diese Datei verschlüsseln';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Empfohlen — schützt die Sicherung mit einem Passwort';
+  String get exportEncryptToggleSubtitle => 'Empfohlen — schützt die Sicherung mit einem Passwort';
 
   @override
   String get exportPasswordDialogTitle => 'Gib dein Passwort ein';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Lege ein Passwort für diesen Export fest';
+  String get exportSetPasswordDialogTitle => 'Lege ein Passwort für diesen Export fest';
 
   @override
   String get importPasswordDialogTitle => 'Gib das Passwort des Exports ein';
@@ -560,8 +546,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importNotesButton => 'Notizen importieren';
 
   @override
-  String get importNotesSubtitle =>
-      'Notizen aus einer zuvor exportierten Datei wiederherstellen';
+  String get importNotesSubtitle => 'Notizen aus einer zuvor exportierten Datei wiederherstellen';
 
   @override
   String get exportNotesSuccess => 'Notizen exportiert';
@@ -634,19 +619,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareNoteTitle => 'Notiz teilen';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub oder öffentlicher Schlüssel des Empfängers';
+  String get shareRecipientFieldLabel => 'npub oder öffentlicher Schlüssel des Empfängers';
 
   @override
   String get shareAddRecipientButton => 'Hinzufügen';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Das ist kein gültiger npub oder öffentlicher Schlüssel';
+  String get shareInvalidRecipientError => 'Das ist kein gültiger npub oder öffentlicher Schlüssel';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Kein Nostr-Konto für diesen Namen gefunden';
+  String get shareRecipientNotFoundError => 'Kein Nostr-Konto für diesen Namen gefunden';
 
   @override
   String get shareConfirmTitle => 'Diese Notiz teilen?';
@@ -658,8 +640,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Bereits mit dieser Person geteilt';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Du kannst eine Notiz nicht mit dir selbst teilen';
+  String get shareCannotShareWithSelfError => 'Du kannst eine Notiz nicht mit dir selbst teilen';
 
   @override
   String get shareRecipientsHeader => 'Geteilt mit';

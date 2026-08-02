@@ -16,9 +16,7 @@ void main() {
     // platform channel leaves the provider stuck in a loading state.
     SharedPreferences.setMockInitialValues({});
 
-    await tester.pumpWidget(
-      const ProviderScope(child: EchoesApp()),
-    );
+    await tester.pumpWidget(const ProviderScope(child: EchoesApp()));
     await tester.pumpAndSettle();
 
     expect(find.text('Welcome to Echoes'), findsOneWidget);

@@ -31,7 +31,9 @@ class FileCacheService {
   Future<Directory> _dir({required bool persistent}) async {
     final cached = persistent ? _persistentDir : _purgeableDir;
     if (cached != null) return cached;
-    final base = persistent ? await getApplicationSupportDirectory() : await getApplicationCacheDirectory();
+    final base = persistent
+        ? await getApplicationSupportDirectory()
+        : await getApplicationCacheDirectory();
     final dir = Directory('${base.path}/echoes_files');
     if (!await dir.exists()) await dir.create(recursive: true);
     if (persistent) {
@@ -46,16 +48,26 @@ class FileCacheService {
   /// Looks only in the [persistent]-selected store: callers that don't know
   /// which store holds a key must check both (see [AttachmentUploadService]).
   Future<File?> get(String key, {bool persistent = false, String extension = ''}) async {
+    _validateKeyAndExtension(key, extension);
     final dir = await _dir(persistent: persistent);
-    final file = File('${dir.path}/$key$extension');
+    final file = _fileFor(dir, key, extension);
     return file.existsSync() ? file : null;
   }
 
   /// Writes [bytes] under [key] and returns the resulting file.
-  Future<File> put(String key, Uint8List bytes, {bool persistent = false, String extension = ''}) async {
-    developer.log('FileCacheService.put called: $key (persistent: $persistent)', name: 'FileCacheService');
+  Future<File> put(
+    String key,
+    Uint8List bytes, {
+    bool persistent = false,
+    String extension = '',
+  }) async {
+    _validateKeyAndExtension(key, extension);
+    developer.log(
+      'FileCacheService.put called: $key (persistent: $persistent)',
+      name: 'FileCacheService',
+    );
     final dir = await _dir(persistent: persistent);
-    final file = File('${dir.path}/$key$extension');
+    final file = _fileFor(dir, key, extension);
     return file.writeAsBytes(bytes, flush: true);
   }
 
@@ -67,9 +79,13 @@ class FileCacheService {
   /// own operation.
   Future<void> remove(String key, {String extension = ''}) async {
     developer.log('FileCacheService.remove called: $key', name: 'FileCacheService');
+    if (!_validKey(key) || !_validExtension(extension)) {
+      developer.log('Refused invalid cache key or extension', name: 'FileCacheService');
+      return;
+    }
     for (final persistent in const [false, true]) {
       final dir = await _dir(persistent: persistent);
-      final file = File('${dir.path}/$key$extension');
+      final file = _fileFor(dir, key, extension);
       try {
         if (await file.exists()) await file.delete();
       } catch (e) {
@@ -77,4 +93,20 @@ class FileCacheService {
       }
     }
   }
+
+  File _fileFor(Directory directory, String key, String extension) {
+    _validateKeyAndExtension(key, extension);
+    return File('${directory.path}/$key$extension');
+  }
+
+  void _validateKeyAndExtension(String key, String extension) {
+    if (!_validKey(key) || !_validExtension(extension)) {
+      throw ArgumentError('Invalid cache key or extension.');
+    }
+  }
+
+  bool _validKey(String key) => RegExp(r'^[0-9a-f]{64}$').hasMatch(key);
+
+  bool _validExtension(String extension) =>
+      extension.isEmpty || RegExp(r'^\.[a-zA-Z0-9]{1,10}$').hasMatch(extension);
 }

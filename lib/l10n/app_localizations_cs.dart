@@ -18,8 +18,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importAccountButton => 'Importovat účet Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Soukromý klíč (nsec) vašeho účtu Nostr';
+  String get importAccountFieldLabel => 'Soukromý klíč (nsec) vašeho účtu Nostr';
 
   @override
   String get importButton => 'Importovat';
@@ -34,8 +33,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get bunkerConnectButton => 'Připojit';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Schvalte připojení ve svém podpisovači a vraťte se';
+  String get bunkerAuthPrompt => 'Schvalte připojení ve svém podpisovači a vraťte se';
 
   @override
   String get relaysTitle => 'Relé';
@@ -56,8 +54,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noSearchResultsMessage => 'Žádné shody.';
 
   @override
-  String get emptyNotesMessage =>
-      'Zatím žádné poznámky. Klepnutím na + vytvoříte novou.';
+  String get emptyNotesMessage => 'Zatím žádné poznámky. Klepnutím na + vytvoříte novou.';
 
   @override
   String get notesTabLabel => 'Poznámky';
@@ -66,8 +63,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get diaryTabLabel => 'Deník';
 
   @override
-  String get emptyDiaryMessage =>
-      'Zatím žádné záznamy v deníku. Klepnutím na + nějaký napište.';
+  String get emptyDiaryMessage => 'Zatím žádné záznamy v deníku. Klepnutím na + nějaký napište.';
 
   @override
   String get diaryToday => 'Dnes';
@@ -167,8 +163,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Skrýt dokončené položky';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Všechny položky jsou dokončené a skryté.';
+  String get allChecklistItemsCompletedHidden => 'Všechny položky jsou dokončené a skryté.';
 
   @override
   String get deleteCompletedItemsButton => 'Smazat dokončené položky';
@@ -295,8 +290,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get lockNotesNowTitle => 'Zamknout poznámky nyní';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Pro zobrazení poznámek bude znovu potřeba heslo';
+  String get lockNotesNowSubtitle => 'Pro zobrazení poznámek bude znovu potřeba heslo';
 
   @override
   String get setPasswordDialogTitle => 'Nastavit heslo';
@@ -319,8 +313,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get enableButton => 'Aktivovat';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Zadejte heslo pro deaktivaci šifrování';
+  String get disablePasswordDialogTitle => 'Zadejte heslo pro deaktivaci šifrování';
 
   @override
   String get disableButton => 'Deaktivovat';
@@ -332,8 +325,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get lightThemeToggleTitle => 'Světlý motiv';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Použít světlé barevné schéma místo tmavého';
+  String get lightThemeToggleSubtitle => 'Použít světlé barevné schéma místo tmavého';
 
   @override
   String get noteLayoutToggleTitle => 'Přepnout mezi seznamem a mřížkou';
@@ -342,8 +334,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get manageRelaysTitle => 'Spravovat relé';
 
   @override
-  String get republishAllNotesButton =>
-      'Znovu publikovat všechny synchronizované poznámky';
+  String get republishAllNotesButton => 'Znovu publikovat všechny synchronizované poznámky';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -412,8 +403,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Vítejte v Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Vaše poznámky vždy ve vašem zařízení';
+  String get onboardingIntroLocalTitle => 'Vaše poznámky vždy ve vašem zařízení';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -454,8 +444,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get onboardingBackButton => 'Zpět';
 
   @override
-  String get onboardingSkipButton =>
-      'Přeskočit — používat Echoes pouze lokálně';
+  String get onboardingSkipButton => 'Přeskočit — používat Echoes pouze lokálně';
 
   @override
   String get onboardingRelayTitle => 'Vyberte relé pro synchronizaci';
@@ -554,8 +543,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importNotesButton => 'Importovat poznámky';
 
   @override
-  String get importNotesSubtitle =>
-      'Obnovte poznámky ze souboru exportovaného dříve';
+  String get importNotesSubtitle => 'Obnovte poznámky ze souboru exportovaného dříve';
 
   @override
   String get exportNotesSuccess => 'Poznámky byly exportovány';
@@ -634,12 +622,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get shareAddRecipientButton => 'Přidat';
 
   @override
-  String get shareInvalidRecipientError =>
-      'To není platný npub ani veřejný klíč';
+  String get shareInvalidRecipientError => 'To není platný npub ani veřejný klíč';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Pro toto jméno nebyl nalezen žádný účet Nostr';
+  String get shareRecipientNotFoundError => 'Pro toto jméno nebyl nalezen žádný účet Nostr';
 
   @override
   String get shareConfirmTitle => 'Sdílet tuto poznámku?';
@@ -651,8 +637,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get shareAlreadyRecipientError => 'S touto osobou už je sdíleno';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Nemůžete sdílet poznámku sami se sebou';
+  String get shareCannotShareWithSelfError => 'Nemůžete sdílet poznámku sami se sebou';
 
   @override
   String get shareRecipientsHeader => 'Sdíleno s';

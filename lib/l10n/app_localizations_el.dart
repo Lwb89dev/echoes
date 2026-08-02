@@ -18,8 +18,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get importAccountButton => 'Εισαγωγή λογαριασμού Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Ιδιωτικό κλειδί (nsec) του λογαριασμού σας Nostr';
+  String get importAccountFieldLabel => 'Ιδιωτικό κλειδί (nsec) του λογαριασμού σας Nostr';
 
   @override
   String get importButton => 'Εισαγωγή';
@@ -34,8 +33,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get bunkerConnectButton => 'Σύνδεση';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Ενέκρινε τη σύνδεση στον υπογράφοντά σου και επίστρεψε';
+  String get bunkerAuthPrompt => 'Ενέκρινε τη σύνδεση στον υπογράφοντά σου και επίστρεψε';
 
   @override
   String get relaysTitle => 'Relays';
@@ -66,8 +64,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get diaryTabLabel => 'Ημερολόγιο';
 
   @override
-  String get emptyDiaryMessage =>
-      'Δεν υπάρχουν ακόμη καταχωρήσεις. Πατήστε + για να γράψετε μία.';
+  String get emptyDiaryMessage => 'Δεν υπάρχουν ακόμη καταχωρήσεις. Πατήστε + για να γράψετε μία.';
 
   @override
   String get diaryToday => 'Σήμερα';
@@ -135,8 +132,7 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
-  String get notesLockedTitle =>
-      'Οι σημειώσεις προστατεύονται με κωδικό πρόσβασης';
+  String get notesLockedTitle => 'Οι σημειώσεις προστατεύονται με κωδικό πρόσβασης';
 
   @override
   String get unlockButton => 'Ξεκλείδωμα';
@@ -175,8 +171,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get deleteCompletedItemsButton => 'Διαγραφή ολοκληρωμένων στοιχείων';
 
   @override
-  String get deleteCompletedItemsConfirmTitle =>
-      'Διαγραφή ολοκληρωμένων στοιχείων;';
+  String get deleteCompletedItemsConfirmTitle => 'Διαγραφή ολοκληρωμένων στοιχείων;';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
@@ -284,12 +279,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get loadingLabel => 'Φόρτωση…';
 
   @override
-  String get encryptionLoadError =>
-      'Δεν ήταν δυνατή η φόρτωση των ρυθμίσεων κρυπτογράφησης';
+  String get encryptionLoadError => 'Δεν ήταν δυνατή η φόρτωση των ρυθμίσεων κρυπτογράφησης';
 
   @override
-  String get encryptionToggleTitle =>
-      'Προστασία σημειώσεων με κωδικό πρόσβασης';
+  String get encryptionToggleTitle => 'Προστασία σημειώσεων με κωδικό πρόσβασης';
 
   @override
   String get encryptionToggleSubtitle =>
@@ -336,19 +329,16 @@ class AppLocalizationsEl extends AppLocalizations {
   String get lightThemeToggleTitle => 'Ανοιχτόχρωμο θέμα';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Χρήση ανοιχτόχρωμου συνδυασμού χρωμάτων αντί για σκούρο';
+  String get lightThemeToggleSubtitle => 'Χρήση ανοιχτόχρωμου συνδυασμού χρωμάτων αντί για σκούρο';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Εναλλαγή μεταξύ προβολής λίστας και πλέγματος';
+  String get noteLayoutToggleTitle => 'Εναλλαγή μεταξύ προβολής λίστας και πλέγματος';
 
   @override
   String get manageRelaysTitle => 'Διαχείριση relay';
 
   @override
-  String get republishAllNotesButton =>
-      'Αναδημοσίευση όλων των συγχρονισμένων σημειώσεων';
+  String get republishAllNotesButton => 'Αναδημοσίευση όλων των συγχρονισμένων σημειώσεων';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -372,8 +362,7 @@ class AppLocalizationsEl extends AppLocalizations {
       'Ελέγχει ξανά τους relay για ολόκληρο το ιστορικό μιας σημείωσης αντί μόνο για ό,τι είναι νέο — χρήσιμο αν ο συγχρονισμός φαίνεται κολλημένος και παραλείπει παλαιότερες σημειώσεις, π.χ. μετά την επιδιόρθωση ενός μη προσβάσιμου relay';
 
   @override
-  String get forceFullResyncSuccess =>
-      'Οι σημειώσεις ανανεώθηκαν από τους relay';
+  String get forceFullResyncSuccess => 'Οι σημειώσεις ανανεώθηκαν από τους relay';
 
   @override
   String forceFullResyncError(String error) {
@@ -393,8 +382,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get sectionAccount => 'Λογαριασμός';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Χρήση του Echoes τοπικά — χωρίς συγχρονισμό με το Nostr';
+  String get accountLocalOnlyMessage => 'Χρήση του Echoes τοπικά — χωρίς συγχρονισμό με το Nostr';
 
   @override
   String get accountSignInButton => 'Σύνδεση';
@@ -418,8 +406,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Καλώς ήρθατε στο Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Οι σημειώσεις σας, πάντα στη συσκευή σας';
+  String get onboardingIntroLocalTitle => 'Οι σημειώσεις σας, πάντα στη συσκευή σας';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -440,8 +427,7 @@ class AppLocalizationsEl extends AppLocalizations {
       'Οι σημειώσεις που συγχρονίζονται στο Nostr είναι κρυπτογραφημένες από άκρο σε άκρο, οπότε οι διαχειριστές των relays — και όλοι οι άλλοι — δεν μπορούν ποτέ να διαβάσουν το περιεχόμενό τους.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Σύνδεση χωρίς αποκάλυψη του κλειδιού σας';
+  String get onboardingIntroAmberTitle => 'Σύνδεση χωρίς αποκάλυψη του κλειδιού σας';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -542,12 +528,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get exportPasswordDialogTitle => 'Εισαγάγετε τον κωδικό πρόσβασής σας';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Ορίστε κωδικό πρόσβασης για αυτήν την εξαγωγή';
+  String get exportSetPasswordDialogTitle => 'Ορίστε κωδικό πρόσβασης για αυτήν την εξαγωγή';
 
   @override
-  String get importPasswordDialogTitle =>
-      'Εισαγάγετε τον κωδικό πρόσβασης της εξαγωγής';
+  String get importPasswordDialogTitle => 'Εισαγάγετε τον κωδικό πρόσβασης της εξαγωγής';
 
   @override
   String get sectionData => 'Δεδομένα';
@@ -563,8 +547,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get importNotesButton => 'Εισαγωγή σημειώσεων';
 
   @override
-  String get importNotesSubtitle =>
-      'Επαναφέρετε σημειώσεις από ένα αρχείο που εξήχθη νωρίτερα';
+  String get importNotesSubtitle => 'Επαναφέρετε σημειώσεις από ένα αρχείο που εξήχθη νωρίτερα';
 
   @override
   String get exportNotesSuccess => 'Οι σημειώσεις εξήχθησαν';
@@ -643,12 +626,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get shareAddRecipientButton => 'Προσθήκη';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Δεν είναι έγκυρο npub ή δημόσιο κλειδί';
+  String get shareInvalidRecipientError => 'Δεν είναι έγκυρο npub ή δημόσιο κλειδί';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Δεν βρέθηκε λογαριασμός Nostr για αυτό το όνομα';
+  String get shareRecipientNotFoundError => 'Δεν βρέθηκε λογαριασμός Nostr για αυτό το όνομα';
 
   @override
   String get shareConfirmTitle => 'Κοινοποίηση αυτής της σημείωσης;';
@@ -657,8 +638,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get shareConfirmButton => 'Κοινοποίηση';
 
   @override
-  String get shareAlreadyRecipientError =>
-      'Έχει ήδη κοινοποιηθεί σε αυτό το άτομο';
+  String get shareAlreadyRecipientError => 'Έχει ήδη κοινοποιηθεί σε αυτό το άτομο';
 
   @override
   String get shareCannotShareWithSelfError =>
@@ -668,8 +648,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get shareRecipientsHeader => 'Κοινοποιήθηκε σε';
 
   @override
-  String get shareNoRecipientsMessage =>
-      'Δεν έχει κοινοποιηθεί ακόμη σε κανέναν.';
+  String get shareNoRecipientsMessage => 'Δεν έχει κοινοποιηθεί ακόμη σε κανέναν.';
 
   @override
   String get stopSharingTooltip => 'Διακοπή κοινής χρήσης με αυτό το άτομο';
@@ -696,12 +675,10 @@ class AppLocalizationsEl extends AppLocalizations {
       'Μπορείτε να επεξεργαστείτε αυτή τη σημείωση· οι αλλαγές σας συγχρονίζονται πίσω στον ιδιοκτήτη, ο οποίος τις συγχωνεύει.';
 
   @override
-  String get abandonSharedNoteButton =>
-      'Αποχώρηση από αυτή την κοινόχρηστη σημείωση';
+  String get abandonSharedNoteButton => 'Αποχώρηση από αυτή την κοινόχρηστη σημείωση';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Αποχώρηση από αυτή την κοινόχρηστη σημείωση;';
+  String get abandonSharedNoteConfirmTitle => 'Αποχώρηση από αυτή την κοινόχρηστη σημείωση;';
 
   @override
   String get abandonSharedNoteConfirmBody =>

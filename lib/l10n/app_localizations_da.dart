@@ -18,8 +18,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get importAccountButton => 'Importér Nostr-konto';
 
   @override
-  String get importAccountFieldLabel =>
-      'Privat nøgle (nsec) til din Nostr-konto';
+  String get importAccountFieldLabel => 'Privat nøgle (nsec) til din Nostr-konto';
 
   @override
   String get importButton => 'Importér';
@@ -34,8 +33,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get bunkerConnectButton => 'Forbind';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Godkend forbindelsen i din signer, og kom tilbage';
+  String get bunkerAuthPrompt => 'Godkend forbindelsen i din signer, og kom tilbage';
 
   @override
   String get relaysTitle => 'Relæer';
@@ -56,8 +54,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get noSearchResultsMessage => 'Ingen resultater.';
 
   @override
-  String get emptyNotesMessage =>
-      'Ingen noter endnu. Tryk på + for at oprette en.';
+  String get emptyNotesMessage => 'Ingen noter endnu. Tryk på + for at oprette en.';
 
   @override
   String get notesTabLabel => 'Noter';
@@ -66,8 +63,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get diaryTabLabel => 'Dagbog';
 
   @override
-  String get emptyDiaryMessage =>
-      'Ingen dagbogsindlæg endnu. Tryk på + for at skrive et.';
+  String get emptyDiaryMessage => 'Ingen dagbogsindlæg endnu. Tryk på + for at skrive et.';
 
   @override
   String get diaryToday => 'I dag';
@@ -167,8 +163,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Skjul fuldførte punkter';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Alle punkter er fuldført og skjult.';
+  String get allChecklistItemsCompletedHidden => 'Alle punkter er fuldført og skjult.';
 
   @override
   String get deleteCompletedItemsButton => 'Slet fuldførte punkter';
@@ -231,8 +226,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get editVoiceTimestampButton => 'Rediger tidsstempel';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Talebeskeder understøttes ikke på denne enhed';
+  String get voiceNoteUnsupportedOnPlatform => 'Talebeskeder understøttes ikke på denne enhed';
 
   @override
   String get formatBoldTooltip => 'Fed';
@@ -282,8 +276,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get loadingLabel => 'Indlæser…';
 
   @override
-  String get encryptionLoadError =>
-      'Kunne ikke indlæse krypteringsindstillinger';
+  String get encryptionLoadError => 'Kunne ikke indlæse krypteringsindstillinger';
 
   @override
   String get encryptionToggleTitle => 'Beskyt noter med en adgangskode';
@@ -319,8 +312,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get enableButton => 'Aktivér';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Indtast din adgangskode for at deaktivere kryptering';
+  String get disablePasswordDialogTitle => 'Indtast din adgangskode for at deaktivere kryptering';
 
   @override
   String get disableButton => 'Deaktivér';
@@ -332,8 +324,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get lightThemeToggleTitle => 'Lyst tema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Brug et lyst farveskema i stedet for mørkt';
+  String get lightThemeToggleSubtitle => 'Brug et lyst farveskema i stedet for mørkt';
 
   @override
   String get noteLayoutToggleTitle => 'Skift mellem liste- og gittervisning';
@@ -386,8 +377,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get sectionAccount => 'Konto';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Bruger Echoes lokalt — synkroniseres ikke med Nostr';
+  String get accountLocalOnlyMessage => 'Bruger Echoes lokalt — synkroniseres ikke med Nostr';
 
   @override
   String get accountSignInButton => 'Log ind';
@@ -533,8 +523,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get exportPasswordDialogTitle => 'Indtast din adgangskode';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Angiv en adgangskode til denne eksport';
+  String get exportSetPasswordDialogTitle => 'Angiv en adgangskode til denne eksport';
 
   @override
   String get importPasswordDialogTitle => 'Indtast eksportens adgangskode';
@@ -546,15 +535,13 @@ class AppLocalizationsDa extends AppLocalizations {
   String get exportNotesButton => 'Eksportér noter';
 
   @override
-  String get exportNotesSubtitle =>
-      'Gem alle dine noter i en fil, du kan importere igen senere';
+  String get exportNotesSubtitle => 'Gem alle dine noter i en fil, du kan importere igen senere';
 
   @override
   String get importNotesButton => 'Importér noter';
 
   @override
-  String get importNotesSubtitle =>
-      'Gendan noter fra en tidligere eksporteret fil';
+  String get importNotesSubtitle => 'Gendan noter fra en tidligere eksporteret fil';
 
   @override
   String get exportNotesSuccess => 'Noter eksporteret';
@@ -627,19 +614,16 @@ class AppLocalizationsDa extends AppLocalizations {
   String get shareNoteTitle => 'Del note';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'Modtagerens npub eller offentlige nøgle';
+  String get shareRecipientFieldLabel => 'Modtagerens npub eller offentlige nøgle';
 
   @override
   String get shareAddRecipientButton => 'Tilføj';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Det er ikke en gyldig npub eller offentlig nøgle';
+  String get shareInvalidRecipientError => 'Det er ikke en gyldig npub eller offentlig nøgle';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Ingen Nostr-konto fundet for det navn';
+  String get shareRecipientNotFoundError => 'Ingen Nostr-konto fundet for det navn';
 
   @override
   String get shareConfirmTitle => 'Del denne note?';
@@ -651,8 +635,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Allerede delt med denne person';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Du kan ikke dele en note med dig selv';
+  String get shareCannotShareWithSelfError => 'Du kan ikke dele en note med dig selv';
 
   @override
   String get shareRecipientsHeader => 'Delt med';

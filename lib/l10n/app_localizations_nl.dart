@@ -18,8 +18,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importAccountButton => 'Nostr-account importeren';
 
   @override
-  String get importAccountFieldLabel =>
-      'Privésleutel (nsec) van je Nostr-account';
+  String get importAccountFieldLabel => 'Privésleutel (nsec) van je Nostr-account';
 
   @override
   String get importButton => 'Importeren';
@@ -34,8 +33,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get bunkerConnectButton => 'Verbinden';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Keur de verbinding goed in je ondertekenaar en kom terug';
+  String get bunkerAuthPrompt => 'Keur de verbinding goed in je ondertekenaar en kom terug';
 
   @override
   String get relaysTitle => 'Relays';
@@ -56,8 +54,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noSearchResultsMessage => 'Geen resultaten.';
 
   @override
-  String get emptyNotesMessage =>
-      'Nog geen notities. Tik op + om er een te maken.';
+  String get emptyNotesMessage => 'Nog geen notities. Tik op + om er een te maken.';
 
   @override
   String get notesTabLabel => 'Notities';
@@ -66,8 +63,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get diaryTabLabel => 'Dagboek';
 
   @override
-  String get emptyDiaryMessage =>
-      'Nog geen dagboeknotities. Tik op + om er een te schrijven.';
+  String get emptyDiaryMessage => 'Nog geen dagboeknotities. Tik op + om er een te schrijven.';
 
   @override
   String get diaryToday => 'Vandaag';
@@ -167,8 +163,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Voltooide items verbergen';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Alle items zijn voltooid en verborgen.';
+  String get allChecklistItemsCompletedHidden => 'Alle items zijn voltooid en verborgen.';
 
   @override
   String get deleteCompletedItemsButton => 'Voltooide items verwijderen';
@@ -282,8 +277,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get loadingLabel => 'Bezig met laden…';
 
   @override
-  String get encryptionLoadError =>
-      'Versleutelingsinstellingen konden niet worden geladen';
+  String get encryptionLoadError => 'Versleutelingsinstellingen konden niet worden geladen';
 
   @override
   String get encryptionToggleTitle => 'Notities beveiligen met een wachtwoord';
@@ -296,8 +290,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get lockNotesNowTitle => 'Notities nu vergrendelen';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Vereist het wachtwoord opnieuw om notities te bekijken';
+  String get lockNotesNowSubtitle => 'Vereist het wachtwoord opnieuw om notities te bekijken';
 
   @override
   String get setPasswordDialogTitle => 'Wachtwoord instellen';
@@ -333,19 +326,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get lightThemeToggleTitle => 'Licht thema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Gebruik een licht kleurenschema in plaats van donker';
+  String get lightThemeToggleSubtitle => 'Gebruik een licht kleurenschema in plaats van donker';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Wisselen tussen lijst- en rasterweergave';
+  String get noteLayoutToggleTitle => 'Wisselen tussen lijst- en rasterweergave';
 
   @override
   String get manageRelaysTitle => 'Relays beheren';
 
   @override
-  String get republishAllNotesButton =>
-      'Alle gesynchroniseerde notities opnieuw publiceren';
+  String get republishAllNotesButton => 'Alle gesynchroniseerde notities opnieuw publiceren';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -435,8 +425,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Notities die naar Nostr worden gesynchroniseerd zijn end-to-end versleuteld, zodat relay-beheerders — en verder niemand — de inhoud ooit kunnen lezen.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Inloggen zonder je sleutel bloot te geven';
+  String get onboardingIntroAmberTitle => 'Inloggen zonder je sleutel bloot te geven';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -456,8 +445,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onboardingBackButton => 'Terug';
 
   @override
-  String get onboardingSkipButton =>
-      'Overslaan — Echoes alleen lokaal gebruiken';
+  String get onboardingSkipButton => 'Overslaan — Echoes alleen lokaal gebruiken';
 
   @override
   String get onboardingRelayTitle => 'Kies relays om te synchroniseren';
@@ -531,19 +519,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Dit bestand versleutelen';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Aanbevolen — beschermt de back-up met een wachtwoord';
+  String get exportEncryptToggleSubtitle => 'Aanbevolen — beschermt de back-up met een wachtwoord';
 
   @override
   String get exportPasswordDialogTitle => 'Voer je wachtwoord in';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Stel een wachtwoord in voor deze export';
+  String get exportSetPasswordDialogTitle => 'Stel een wachtwoord in voor deze export';
 
   @override
-  String get importPasswordDialogTitle =>
-      'Voer het wachtwoord van de export in';
+  String get importPasswordDialogTitle => 'Voer het wachtwoord van de export in';
 
   @override
   String get sectionData => 'Gegevens';
@@ -559,8 +544,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importNotesButton => 'Notities importeren';
 
   @override
-  String get importNotesSubtitle =>
-      'Herstel notities uit een eerder geëxporteerd bestand';
+  String get importNotesSubtitle => 'Herstel notities uit een eerder geëxporteerd bestand';
 
   @override
   String get exportNotesSuccess => 'Notities geëxporteerd';
@@ -633,19 +617,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get shareNoteTitle => 'Notitie delen';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub of publieke sleutel van de ontvanger';
+  String get shareRecipientFieldLabel => 'npub of publieke sleutel van de ontvanger';
 
   @override
   String get shareAddRecipientButton => 'Toevoegen';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Dat is geen geldige npub of publieke sleutel';
+  String get shareInvalidRecipientError => 'Dat is geen geldige npub of publieke sleutel';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Geen Nostr-account gevonden voor die naam';
+  String get shareRecipientNotFoundError => 'Geen Nostr-account gevonden voor die naam';
 
   @override
   String get shareConfirmTitle => 'Deze notitie delen?';
@@ -657,8 +638,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Al gedeeld met deze persoon';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Je kunt een notitie niet met jezelf delen';
+  String get shareCannotShareWithSelfError => 'Je kunt een notitie niet met jezelf delen';
 
   @override
   String get shareRecipientsHeader => 'Gedeeld met';

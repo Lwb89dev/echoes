@@ -18,8 +18,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importAccountButton => 'Import Nostr account';
 
   @override
-  String get importAccountFieldLabel =>
-      'Private key (nsec) of your Nostr account';
+  String get importAccountFieldLabel => 'Private key (nsec) of your Nostr account';
 
   @override
   String get importButton => 'Import';
@@ -34,8 +33,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bunkerConnectButton => 'Connect';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Approve the connection in your signer, then come back';
+  String get bunkerAuthPrompt => 'Approve the connection in your signer, then come back';
 
   @override
   String get relaysTitle => 'Relays';
@@ -165,8 +163,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Hide completed items';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'All items are completed and hidden.';
+  String get allChecklistItemsCompletedHidden => 'All items are completed and hidden.';
 
   @override
   String get deleteCompletedItemsButton => 'Delete completed items';
@@ -229,8 +226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editVoiceTimestampButton => 'Edit timestamp';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Voice notes aren\'t supported on this device';
+  String get voiceNoteUnsupportedOnPlatform => 'Voice notes aren\'t supported on this device';
 
   @override
   String get formatBoldTooltip => 'Bold';
@@ -293,8 +289,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lockNotesNowTitle => 'Lock notes now';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Requires the password again to view notes';
+  String get lockNotesNowSubtitle => 'Requires the password again to view notes';
 
   @override
   String get setPasswordDialogTitle => 'Set a password';
@@ -317,8 +312,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableButton => 'Enable';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Enter your password to disable encryption';
+  String get disablePasswordDialogTitle => 'Enter your password to disable encryption';
 
   @override
   String get disableButton => 'Disable';
@@ -330,8 +324,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lightThemeToggleTitle => 'Light theme';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Use a light color scheme instead of dark';
+  String get lightThemeToggleSubtitle => 'Use a light color scheme instead of dark';
 
   @override
   String get noteLayoutToggleTitle => 'Switch between list and grid view';
@@ -384,8 +377,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionAccount => 'Account';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Using Echoes locally — not synced to Nostr';
+  String get accountLocalOnlyMessage => 'Using Echoes locally — not synced to Nostr';
 
   @override
   String get accountSignInButton => 'Sign in';
@@ -524,8 +516,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Encrypt this file';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Recommended — protects the backup with a password';
+  String get exportEncryptToggleSubtitle => 'Recommended — protects the backup with a password';
 
   @override
   String get exportPasswordDialogTitle => 'Enter your password';
@@ -543,15 +534,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportNotesButton => 'Export notes';
 
   @override
-  String get exportNotesSubtitle =>
-      'Save all your notes to a file you can import again later';
+  String get exportNotesSubtitle => 'Save all your notes to a file you can import again later';
 
   @override
   String get importNotesButton => 'Import notes';
 
   @override
-  String get importNotesSubtitle =>
-      'Restore notes from a file exported earlier';
+  String get importNotesSubtitle => 'Restore notes from a file exported earlier';
 
   @override
   String get exportNotesSuccess => 'Notes exported';
@@ -630,12 +619,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareAddRecipientButton => 'Add';
 
   @override
-  String get shareInvalidRecipientError =>
-      'That\'s not a valid npub or public key';
+  String get shareInvalidRecipientError => 'That\'s not a valid npub or public key';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'No Nostr account found for that name';
+  String get shareRecipientNotFoundError => 'No Nostr account found for that name';
 
   @override
   String get shareConfirmTitle => 'Share this note?';
@@ -647,8 +634,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Already shared with this person';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'You can\'t share a note with yourself';
+  String get shareCannotShareWithSelfError => 'You can\'t share a note with yourself';
 
   @override
   String get shareRecipientsHeader => 'Shared with';

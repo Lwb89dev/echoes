@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
+import '../../utils/network_url.dart';
 import '../../utils/platform_support.dart';
 
 /// The Amber / import-nsec login controls, shared by [LoginScreen] and the
@@ -48,7 +49,9 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
   Future<void> _loginWithBunker() async {
     final token = _bunkerController.text.trim();
     if (token.isEmpty) return;
-    await ref.read(authProvider.notifier).loginWithBunker(token, onAuthChallenge: _openAuthChallenge);
+    await ref
+        .read(authProvider.notifier)
+        .loginWithBunker(token, onAuthChallenge: _openAuthChallenge);
     _notifyIfLoggedIn();
   }
 
@@ -57,8 +60,10 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
   /// still waiting, so the real result lands once they do.
   Future<void> _openAuthChallenge(String authUrl) async {
     final l = AppLocalizations.of(context);
-    final uri = Uri.tryParse(authUrl);
-    if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final uri = tryParseHttpsUri(authUrl);
+    if (uri != null) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.bunkerAuthPrompt)));
     }
@@ -103,9 +108,7 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
           const SizedBox(height: 12),
         ],
         OutlinedButton.icon(
-          onPressed: isLoading
-              ? null
-              : () => setState(() => _showImportField = !_showImportField),
+          onPressed: isLoading ? null : () => setState(() => _showImportField = !_showImportField),
           icon: const Icon(Icons.key),
           label: Text(l.importAccountButton),
         ),
@@ -120,19 +123,14 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
             ),
           ),
           const SizedBox(height: 12),
-          FilledButton(
-            onPressed: isLoading ? null : _importAccount,
-            child: Text(l.importButton),
-          ),
+          FilledButton(onPressed: isLoading ? null : _importAccount, child: Text(l.importButton)),
         ],
         const SizedBox(height: 12),
         // Remote signer (NIP-46 "bunker") — every platform, unlike Amber.
         // The private key stays in the signer; the app only ever holds an
         // ephemeral connection key.
         OutlinedButton.icon(
-          onPressed: isLoading
-              ? null
-              : () => setState(() => _showBunkerField = !_showBunkerField),
+          onPressed: isLoading ? null : () => setState(() => _showBunkerField = !_showBunkerField),
           icon: const Icon(Icons.hub_outlined),
           label: Text(l.bunkerLoginButton),
         ),

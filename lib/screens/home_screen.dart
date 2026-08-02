@@ -50,9 +50,7 @@ class HomeScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: selection.isEmpty
-          ? _HomeAppBar(tab: tab)
-          : const _SelectionAppBar(),
+      appBar: selection.isEmpty ? _HomeAppBar(tab: tab) : const _SelectionAppBar(),
       body: Stack(
         children: [
           encryptionState.when(
@@ -61,14 +59,8 @@ class HomeScreen extends ConsumerWidget {
                 return const _UnlockNotesView();
               }
               return tab == HomeTab.notes
-                  ? const _RefreshableNotesBody(
-                      filter: _notesOnly,
-                      builder: _NotesList.new,
-                    )
-                  : const _RefreshableNotesBody(
-                      filter: _diaryOnly,
-                      builder: _DiaryList.new,
-                    );
+                  ? const _RefreshableNotesBody(filter: _notesOnly, builder: _NotesList.new)
+                  : const _RefreshableNotesBody(filter: _diaryOnly, builder: _DiaryList.new);
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stackTrace) => _ErrorState(error: error),
@@ -88,16 +80,13 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: (notesUnlocked && selection.isEmpty)
-          ? (tab == HomeTab.notes
-                ? const _NewNoteFab()
-                : const _NewDiaryEntryFab())
+          ? (tab == HomeTab.notes ? const _NewNoteFab() : const _NewDiaryEntryFab())
           : null,
       bottomNavigationBar: (notesUnlocked && selection.isEmpty)
           ? NavigationBar(
               selectedIndex: tab.index,
-              onDestinationSelected: (index) => ref
-                  .read(homeTabProvider.notifier)
-                  .select(HomeTab.values[index]),
+              onDestinationSelected: (index) =>
+                  ref.read(homeTabProvider.notifier).select(HomeTab.values[index]),
               destinations: [
                 NavigationDestination(
                   icon: const Icon(Icons.notes_outlined),
@@ -128,8 +117,7 @@ class HomeScreen extends ConsumerWidget {
 /// can filter by it), but whether the search field is currently expanded
 /// is local, purely-visual state — it doesn't need to be shared or survive
 /// a rebuild of anything else.
-class _HomeAppBar extends ConsumerStatefulWidget
-    implements PreferredSizeWidget {
+class _HomeAppBar extends ConsumerStatefulWidget implements PreferredSizeWidget {
   const _HomeAppBar({required this.tab});
 
   final HomeTab tab;
@@ -149,11 +137,7 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
   void initState() {
     super.initState();
     _searchController = TextEditingController()
-      ..addListener(
-        () => ref
-            .read(noteSearchProvider.notifier)
-            .setQuery(_searchController.text),
-      );
+      ..addListener(() => ref.read(noteSearchProvider.notifier).setQuery(_searchController.text));
   }
 
   @override
@@ -179,17 +163,10 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
           ? TextField(
               controller: _searchController,
               autofocus: true,
-              decoration: InputDecoration(
-                hintText: l.searchNotesHint,
-                border: InputBorder.none,
-              ),
+              decoration: InputDecoration(hintText: l.searchNotesHint, border: InputBorder.none),
               style: Theme.of(context).textTheme.titleMedium,
             )
-          : Text(
-              widget.tab == HomeTab.notes
-                  ? AppConstants.appName
-                  : l.diaryTabLabel,
-            ),
+          : Text(widget.tab == HomeTab.notes ? AppConstants.appName : l.diaryTabLabel),
       actions: [
         // Layout only applies to the Notes tab's own list — Diary is
         // always a day-grouped timeline, there's no grid variant of it to
@@ -197,16 +174,12 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
         if (!_searching && widget.tab == HomeTab.notes)
           IconButton(
             icon: Icon(
-              layout == NoteLayout.list
-                  ? Icons.grid_view_outlined
-                  : Icons.view_list_outlined,
+              layout == NoteLayout.list ? Icons.grid_view_outlined : Icons.view_list_outlined,
             ),
             tooltip: l.noteLayoutToggleTitle,
             onPressed: () => ref
                 .read(noteLayoutProvider.notifier)
-                .setLayout(
-                  layout == NoteLayout.list ? NoteLayout.grid : NoteLayout.list,
-                ),
+                .setLayout(layout == NoteLayout.list ? NoteLayout.grid : NoteLayout.list),
           ),
         IconButton(
           icon: Icon(_searching ? Icons.close : Icons.search),
@@ -218,9 +191,7 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
             icon: const Icon(Icons.settings_outlined),
             tooltip: l.settingsTooltip,
             onPressed: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
             },
           ),
       ],
@@ -252,9 +223,9 @@ class _RefreshableNotesBody extends ConsumerWidget {
           await ref.read(notesProvider.notifier).refreshFromRelays();
         } catch (e) {
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l.genericErrorPrefix(e.toString()))),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l.genericErrorPrefix(e.toString()))));
           }
         }
       },
@@ -301,9 +272,7 @@ class _SelectionAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final l = AppLocalizations.of(context);
     final selection = ref.watch(selectionProvider);
     final allNotes = ref.watch(notesProvider).value ?? const <Note>[];
-    final selectedNotes = allNotes
-        .where((n) => selection.contains(n.id))
-        .toList();
+    final selectedNotes = allNotes.where((n) => selection.contains(n.id)).toList();
 
     return AppBar(
       leading: IconButton(
@@ -364,11 +333,7 @@ class _NotesList extends ConsumerWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(
-              child: Text(
-                searching ? l.noSearchResultsMessage : l.emptyNotesMessage,
-              ),
-            ),
+            child: Center(child: Text(searching ? l.noSearchResultsMessage : l.emptyNotesMessage)),
           ),
         ),
       );
@@ -404,9 +369,7 @@ class _NotesListView extends ConsumerWidget {
           // own — leaves the tile's normal theme-driven colors (including
           // the selected-row tint) alone otherwise.
           final textColor = note.color?.onBackground;
-          final mutedColor = note.color != null
-              ? mutedTextColorOn(note.color!.background)
-              : null;
+          final mutedColor = note.color != null ? mutedTextColorOn(note.color!.background) : null;
           return ListTile(
             tileColor: note.color?.background,
             selected: selected,
@@ -431,9 +394,7 @@ class _NotesListView extends ConsumerWidget {
               children: [
                 Text(
                   Formatter.relativeTimestamp(note.updatedAt, l),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: mutedColor),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
                 ),
                 const SizedBox(height: 4),
                 // Same three-state icon as the cloud button in
@@ -456,8 +417,7 @@ class _NotesListView extends ConsumerWidget {
             onTap: () => _openNote(context, ref, note, selectionMode),
             // Long-press always toggles: with nothing selected yet, that's
             // exactly "start selecting, with this note as the first pick".
-            onLongPress: () =>
-                ref.read(selectionProvider.notifier).toggle(note.id),
+            onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
           );
         },
       ),
@@ -496,9 +456,7 @@ class _NotesGridView extends ConsumerWidget {
           // otherwise apply — the tint is a transient UI state, not the
           // note's actual color, and needs to stay recognizable regardless
           // of what that color is.
-          final cardColor = selected
-              ? colorScheme.primaryContainer
-              : note.color?.background;
+          final cardColor = selected ? colorScheme.primaryContainer : note.color?.background;
           final textColor = !selected ? note.color?.onBackground : null;
           final mutedColor = !selected && note.color != null
               ? mutedTextColorOn(note.color!.background)
@@ -508,8 +466,7 @@ class _NotesGridView extends ConsumerWidget {
             color: cardColor,
             child: InkWell(
               onTap: () => _openNote(context, ref, note, selectionMode),
-              onLongPress: () =>
-                  ref.read(selectionProvider.notifier).toggle(note.id),
+              onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Column(
@@ -520,12 +477,8 @@ class _NotesGridView extends ConsumerWidget {
                       children: [
                         Icon(
                           selectionMode
-                              ? (selected
-                                    ? Icons.check_circle
-                                    : Icons.circle_outlined)
-                              : (note.isChecklist
-                                    ? Icons.checklist
-                                    : Icons.notes),
+                              ? (selected ? Icons.check_circle : Icons.circle_outlined)
+                              : (note.isChecklist ? Icons.checklist : Icons.notes),
                           size: 18,
                           color: mutedColor ?? colorScheme.onSurfaceVariant,
                         ),
@@ -537,9 +490,7 @@ class _NotesGridView extends ConsumerWidget {
                                     ? Icons.cloud_sync_outlined
                                     : Icons.cloud_off_outlined),
                           size: 14,
-                          color: note.synced
-                              ? colorScheme.primary
-                              : colorScheme.outline,
+                          color: note.synced ? colorScheme.primary : colorScheme.outline,
                         ),
                       ],
                     ),
@@ -548,9 +499,7 @@ class _NotesGridView extends ConsumerWidget {
                       note.title.isEmpty ? l.untitledNote : note.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall?.copyWith(color: textColor),
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor),
                     ),
                     if (note.preview.isNotEmpty) ...[
                       const SizedBox(height: 4),
@@ -558,9 +507,7 @@ class _NotesGridView extends ConsumerWidget {
                         note.preview,
                         maxLines: 6,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: mutedColor),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
                       ),
                     ],
                     const SizedBox(height: 8),
@@ -583,19 +530,12 @@ class _NotesGridView extends ConsumerWidget {
 
 /// Shared by both layouts: toggles selection while already selecting one or
 /// more notes, otherwise opens the note for editing.
-void _openNote(
-  BuildContext context,
-  WidgetRef ref,
-  Note note,
-  bool selectionMode,
-) {
+void _openNote(BuildContext context, WidgetRef ref, Note note, bool selectionMode) {
   if (selectionMode) {
     ref.read(selectionProvider.notifier).toggle(note.id);
     return;
   }
-  Navigator.of(
-    context,
-  ).push(MaterialPageRoute(builder: (_) => NoteEditorScreen(note: note)));
+  Navigator.of(context).push(MaterialPageRoute(builder: (_) => NoteEditorScreen(note: note)));
 }
 
 // ── Diary ────────────────────────────────────────────────────────────────
@@ -636,21 +576,14 @@ class _DiaryList extends ConsumerWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(
-              child: Text(
-                searching ? l.noSearchResultsMessage : l.emptyDiaryMessage,
-              ),
-            ),
+            child: Center(child: Text(searching ? l.noSearchResultsMessage : l.emptyDiaryMessage)),
           ),
         ),
       );
     }
 
     final sorted = [...notes]
-      ..sort(
-        (a, b) =>
-            (b.entryDate ?? b.updatedAt).compareTo(a.entryDate ?? a.updatedAt),
-      );
+      ..sort((a, b) => (b.entryDate ?? b.updatedAt).compareTo(a.entryDate ?? a.updatedAt));
 
     final rows = <_DiaryRow>[];
     DateTime? currentDay;
@@ -707,10 +640,7 @@ class _DiaryDayHeader extends StatelessWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(
-              color: colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: colorScheme.primary, shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
           Text(
@@ -732,11 +662,7 @@ class _DiaryDayHeader extends StatelessWidget {
 /// [_NotesListView]'s row (title/preview/sync state) but indented under
 /// the day header's dot, so it visually nests underneath it.
 class _DiaryEntryTile extends ConsumerWidget {
-  const _DiaryEntryTile({
-    required this.note,
-    required this.selected,
-    required this.selectionMode,
-  });
+  const _DiaryEntryTile({required this.note, required this.selected, required this.selectionMode});
 
   final Note note;
   final bool selected;
@@ -747,16 +673,12 @@ class _DiaryEntryTile extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     final textColor = note.color?.onBackground;
-    final mutedColor = note.color != null
-        ? mutedTextColorOn(note.color!.background)
-        : null;
+    final mutedColor = note.color != null ? mutedTextColorOn(note.color!.background) : null;
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 34, right: 16),
       tileColor: note.color?.background,
       selected: selected,
-      leading: selectionMode
-          ? Icon(selected ? Icons.check_circle : Icons.circle_outlined)
-          : null,
+      leading: selectionMode ? Icon(selected ? Icons.check_circle : Icons.circle_outlined) : null,
       title: Text(
         note.title.isEmpty ? l.untitledNote : note.title,
         maxLines: 1,
@@ -774,9 +696,7 @@ class _DiaryEntryTile extends ConsumerWidget {
       trailing: Icon(
         note.synced
             ? Icons.cloud_done_outlined
-            : (note.nostrEventId != null
-                  ? Icons.cloud_sync_outlined
-                  : Icons.cloud_off_outlined),
+            : (note.nostrEventId != null ? Icons.cloud_sync_outlined : Icons.cloud_off_outlined),
         size: 16,
         color: note.synced ? colorScheme.primary : colorScheme.outline,
       ),
@@ -797,11 +717,9 @@ class _NewDiaryEntryFab extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       heroTag: 'fab_diary',
-      onPressed: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const NoteEditorScreen(isDiaryEntry: true),
-        ),
-      ),
+      onPressed: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const NoteEditorScreen(isDiaryEntry: true))),
       child: const Icon(Icons.add),
     );
   }
@@ -852,11 +770,7 @@ class _UnlockNotesViewState extends ConsumerState<_UnlockNotesView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.lock_outline,
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(Icons.lock_outline, size: 48, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 16),
             Text(
               l.notesLockedTitle,
@@ -903,9 +817,7 @@ class _ErrorState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
-        child: Text(
-          AppLocalizations.of(context).errorLoadingNotes(error.toString()),
-        ),
+        child: Text(AppLocalizations.of(context).errorLoadingNotes(error.toString())),
       ),
     );
   }
@@ -922,8 +834,7 @@ class _NewNoteFab extends ConsumerStatefulWidget {
   ConsumerState<_NewNoteFab> createState() => _NewNoteFabState();
 }
 
-class _NewNoteFabState extends ConsumerState<_NewNoteFab>
-    with SingleTickerProviderStateMixin {
+class _NewNoteFabState extends ConsumerState<_NewNoteFab> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 280),
@@ -938,16 +849,8 @@ class _NewNoteFabState extends ConsumerState<_NewNoteFab>
     3,
     (order) => CurvedAnimation(
       parent: _controller,
-      curve: Interval(
-        order * 0.15,
-        order * 0.15 + 0.7,
-        curve: Curves.easeOutCubic,
-      ),
-      reverseCurve: Interval(
-        order * 0.15,
-        order * 0.15 + 0.7,
-        curve: Curves.easeInCubic,
-      ),
+      curve: Interval(order * 0.15, order * 0.15 + 0.7, curve: Curves.easeOutCubic),
+      reverseCurve: Interval(order * 0.15, order * 0.15 + 0.7, curve: Curves.easeInCubic),
     ),
   );
 
@@ -985,11 +888,7 @@ class _NewNoteFabState extends ConsumerState<_NewNoteFab>
             widthFactor: 1,
             child: Opacity(
               opacity: t,
-              child: Transform.scale(
-                scale: t,
-                alignment: Alignment.bottomRight,
-                child: child,
-              ),
+              child: Transform.scale(scale: t, alignment: Alignment.bottomRight, child: child),
             ),
           ),
         );
@@ -1027,10 +926,7 @@ class _NewNoteFabState extends ConsumerState<_NewNoteFab>
               heroTag: 'fab_voice',
               label: l.newVoiceNoteOption,
               icon: Icons.mic_none_outlined,
-              onTap: () => _choose(
-                context,
-                const NoteEditorScreen(startRecording: true),
-              ),
+              onTap: () => _choose(context, const NoteEditorScreen(startRecording: true)),
             ),
           ),
         _animatedOption(
@@ -1039,10 +935,7 @@ class _NewNoteFabState extends ConsumerState<_NewNoteFab>
             heroTag: 'fab_checklist',
             label: l.newChecklistOption,
             icon: Icons.checklist,
-            onTap: () => _choose(
-              context,
-              const NoteEditorScreen(startAsChecklist: true),
-            ),
+            onTap: () => _choose(context, const NoteEditorScreen(startAsChecklist: true)),
           ),
         ),
         _animatedOption(
@@ -1098,20 +991,11 @@ class _FabOption extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            shadows: [
-              Shadow(
-                blurRadius: 6,
-                color: Theme.of(context).scaffoldBackgroundColor,
-              ),
-            ],
+            shadows: [Shadow(blurRadius: 6, color: Theme.of(context).scaffoldBackgroundColor)],
           ),
         ),
         const SizedBox(width: 12),
-        FloatingActionButton.small(
-          heroTag: heroTag,
-          onPressed: onTap,
-          child: Icon(icon),
-        ),
+        FloatingActionButton.small(heroTag: heroTag, onPressed: onTap, child: Icon(icon)),
       ],
     );
   }

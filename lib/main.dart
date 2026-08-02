@@ -39,12 +39,7 @@ Future<void> main() async {
   // ever `watch` it into existence otherwise.
   container.read(syncLifecycleProvider);
 
-  runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const EchoesApp(),
-    ),
-  );
+  runApp(UncontrolledProviderScope(container: container, child: const EchoesApp()));
 }
 
 class EchoesApp extends ConsumerWidget {
@@ -71,17 +66,11 @@ class EchoesApp extends ConsumerWidget {
       // theme (see [ThemeModeNotifier]) — light is available from Settings.
       themeMode: themeMode,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: _brandSeed,
-          brightness: Brightness.light,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: _brandSeed, brightness: Brightness.light),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-          brightness: Brightness.dark,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       // `null` locale means "follow the device locale"; set when the user
@@ -146,9 +135,7 @@ class _AppRoot extends ConsumerWidget {
 
     return onboardingState.when(
       data: (completed) => completed ? const HomeScreen() : const OnboardingScreen(),
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stackTrace) => const OnboardingScreen(),
     );
   }

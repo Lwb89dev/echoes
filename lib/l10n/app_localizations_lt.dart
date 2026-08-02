@@ -18,8 +18,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get importAccountButton => 'Importuoti Nostr paskyrą';
 
   @override
-  String get importAccountFieldLabel =>
-      'Jūsų Nostr paskyros privatus raktas (nsec)';
+  String get importAccountFieldLabel => 'Jūsų Nostr paskyros privatus raktas (nsec)';
 
   @override
   String get importButton => 'Importuoti';
@@ -28,15 +27,13 @@ class AppLocalizationsLt extends AppLocalizations {
   String get bunkerLoginButton => 'Prijungti nuotolinį pasirašytoją (bunker)';
 
   @override
-  String get bunkerFieldLabel =>
-      'Įklijuokite savo bunker:// prisijungimo raktą';
+  String get bunkerFieldLabel => 'Įklijuokite savo bunker:// prisijungimo raktą';
 
   @override
   String get bunkerConnectButton => 'Prijungti';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Patvirtinkite ryšį savo pasirašytojuje ir grįžkite';
+  String get bunkerAuthPrompt => 'Patvirtinkite ryšį savo pasirašytojuje ir grįžkite';
 
   @override
   String get relaysTitle => 'Relės';
@@ -57,8 +54,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get noSearchResultsMessage => 'Atitikmenų nėra.';
 
   @override
-  String get emptyNotesMessage =>
-      'Užrašų dar nėra. Palieskite +, kad sukurtumėte naują.';
+  String get emptyNotesMessage => 'Užrašų dar nėra. Palieskite +, kad sukurtumėte naują.';
 
   @override
   String get notesTabLabel => 'Užrašai';
@@ -67,8 +63,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get diaryTabLabel => 'Dienoraštis';
 
   @override
-  String get emptyDiaryMessage =>
-      'Dienoraščio įrašų dar nėra. Palieskite +, kad parašytumėte.';
+  String get emptyDiaryMessage => 'Dienoraščio įrašų dar nėra. Palieskite +, kad parašytumėte.';
 
   @override
   String get diaryToday => 'Šiandien';
@@ -168,8 +163,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Slėpti atliktus punktus';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Visi punktai atlikti ir paslėpti.';
+  String get allChecklistItemsCompletedHidden => 'Visi punktai atlikti ir paslėpti.';
 
   @override
   String get deleteCompletedItemsButton => 'Ištrinti atliktus punktus';
@@ -232,8 +226,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get editVoiceTimestampButton => 'Redaguoti laiko žymą';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Balso įrašai šiame įrenginyje nepalaikomi';
+  String get voiceNoteUnsupportedOnPlatform => 'Balso įrašai šiame įrenginyje nepalaikomi';
 
   @override
   String get formatBoldTooltip => 'Pusjuodis';
@@ -296,8 +289,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get lockNotesNowTitle => 'Užrakinti užrašus dabar';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Norint peržiūrėti užrašus, vėl reikės slaptažodžio';
+  String get lockNotesNowSubtitle => 'Norint peržiūrėti užrašus, vėl reikės slaptažodžio';
 
   @override
   String get setPasswordDialogTitle => 'Nustatyti slaptažodį';
@@ -320,8 +312,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get enableButton => 'Įjungti';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Įveskite slaptažodį, kad išjungtumėte šifravimą';
+  String get disablePasswordDialogTitle => 'Įveskite slaptažodį, kad išjungtumėte šifravimą';
 
   @override
   String get disableButton => 'Išjungti';
@@ -333,19 +324,16 @@ class AppLocalizationsLt extends AppLocalizations {
   String get lightThemeToggleTitle => 'Šviesi tema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Naudoti šviesią spalvų schemą vietoj tamsios';
+  String get lightThemeToggleSubtitle => 'Naudoti šviesią spalvų schemą vietoj tamsios';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Perjungti tarp sąrašo ir tinklelio rodinio';
+  String get noteLayoutToggleTitle => 'Perjungti tarp sąrašo ir tinklelio rodinio';
 
   @override
   String get manageRelaysTitle => 'Tvarkyti reles';
 
   @override
-  String get republishAllNotesButton =>
-      'Iš naujo paskelbti visus sinchronizuotus užrašus';
+  String get republishAllNotesButton => 'Iš naujo paskelbti visus sinchronizuotus užrašus';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -389,8 +377,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get sectionAccount => 'Paskyra';
 
   @override
-  String get accountLocalOnlyMessage =>
-      '„Echoes“ naudojama vietoje — nesinchronizuojama su Nostr';
+  String get accountLocalOnlyMessage => '„Echoes“ naudojama vietoje — nesinchronizuojama su Nostr';
 
   @override
   String get accountSignInButton => 'Prisijungti';
@@ -421,8 +408,7 @@ class AppLocalizationsLt extends AppLocalizations {
       'Kiekvienas užrašas pirmiausia išsaugomas vietoje, todėl programėlė veikia visiškai neprisijungus. Niekas nepalieka jūsų įrenginio, nebent pasirinksite sinchronizuoti.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Neprivaloma sinchronizacija per Nostr';
+  String get onboardingIntroSyncTitle => 'Neprivaloma sinchronizacija per Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -436,8 +422,7 @@ class AppLocalizationsLt extends AppLocalizations {
       'Su Nostr sinchronizuoti užrašai yra šifruojami ištisai, todėl relių operatoriai — ir visi kiti — niekada negali perskaityti jų turinio.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Prisijunkite neatskleisdami savo rakto';
+  String get onboardingIntroAmberTitle => 'Prisijunkite neatskleisdami savo rakto';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -538,8 +523,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get exportPasswordDialogTitle => 'Įveskite slaptažodį';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Nustatykite šio eksporto slaptažodį';
+  String get exportSetPasswordDialogTitle => 'Nustatykite šio eksporto slaptažodį';
 
   @override
   String get importPasswordDialogTitle => 'Įveskite eksporto slaptažodį';
@@ -558,8 +542,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get importNotesButton => 'Importuoti užrašus';
 
   @override
-  String get importNotesSubtitle =>
-      'Atkurkite užrašus iš anksčiau eksportuoto failo';
+  String get importNotesSubtitle => 'Atkurkite užrašus iš anksčiau eksportuoto failo';
 
   @override
   String get exportNotesSuccess => 'Užrašai eksportuoti';
@@ -638,8 +621,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get shareAddRecipientButton => 'Pridėti';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Tai netinkamas npub arba viešasis raktas';
+  String get shareInvalidRecipientError => 'Tai netinkamas npub arba viešasis raktas';
 
   @override
   String get shareRecipientNotFoundError => 'Nerasta Nostr paskyra tuo vardu';
@@ -654,8 +636,7 @@ class AppLocalizationsLt extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Jau bendrinama su šiuo asmeniu';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Negalite bendrinti užrašo su savimi';
+  String get shareCannotShareWithSelfError => 'Negalite bendrinti užrašo su savimi';
 
   @override
   String get shareRecipientsHeader => 'Bendrinama su';

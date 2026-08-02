@@ -21,11 +21,11 @@ class UploadProviderOption {
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'label': label,
-        'protocol': protocol.name,
-        'baseUrl': baseUrl,
-      };
+    'id': id,
+    'label': label,
+    'protocol': protocol.name,
+    'baseUrl': baseUrl,
+  };
 
   factory UploadProviderOption.fromJson(Map<String, dynamic> json) {
     return UploadProviderOption(

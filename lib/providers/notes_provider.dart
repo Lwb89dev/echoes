@@ -40,9 +40,7 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
       final stored = await ref.read(localStorageServiceProvider).saveNote(note);
       final index = current.indexWhere((n) => n.id == stored.id);
       if (index >= 0) {
-        return [
-          for (final n in current) n.id == stored.id ? stored : n,
-        ];
+        return [for (final n in current) n.id == stored.id ? stored : n];
       }
       return [stored, ...current];
     });
@@ -101,7 +99,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     final author = ref.read(authProvider).value;
     if (note.nostrEventId != null && author != null) {
       final relays = ref.read(relayProvider).value ?? const [];
-      await ref.read(nostrServiceProvider).deleteNoteEvent(note: note, author: author, relays: relays);
+      await ref
+          .read(nostrServiceProvider)
+          .deleteNoteEvent(note: note, author: author, relays: relays);
     }
   }
 
@@ -121,12 +121,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     }
     final relays = ref.read(relayProvider).value ?? const [];
     final uploadProvider = ref.read(uploadProviderProvider);
-    final syncedNote = await ref.read(syncServiceProvider).syncNote(
-          note: note,
-          author: author,
-          relays: relays,
-          uploadProvider: uploadProvider,
-        );
+    final syncedNote = await ref
+        .read(syncServiceProvider)
+        .syncNote(note: note, author: author, relays: relays, uploadProvider: uploadProvider);
 
     final current = state.value ?? const <Note>[];
     final index = current.indexWhere((n) => n.id == syncedNote.id);
@@ -150,11 +147,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
       throw StateError('Cannot unsync without a Nostr account.');
     }
     final relays = ref.read(relayProvider).value ?? const [];
-    final unsyncedNote = await ref.read(syncServiceProvider).unsyncNote(
-          note: note,
-          author: author,
-          relays: relays,
-        );
+    final unsyncedNote = await ref
+        .read(syncServiceProvider)
+        .unsyncNote(note: note, author: author, relays: relays);
 
     final current = state.value ?? const <Note>[];
     final index = current.indexWhere((n) => n.id == unsyncedNote.id);
@@ -175,10 +170,14 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   Future<Note> shareNote(Note note, List<String> recipients) async {
     developer.log('NotesNotifier.shareNote called: ${note.id}', name: 'NotesNotifier');
     final author = ref.read(authProvider).value;
-    if (author == null) throw StateError('Cannot share without a Nostr account.');
+    if (author == null) {
+      throw StateError('Cannot share without a Nostr account.');
+    }
     final relays = ref.read(relayProvider).value ?? const [];
     final uploadProvider = ref.read(uploadProviderProvider);
-    final shared = await ref.read(syncServiceProvider).shareNote(
+    final shared = await ref
+        .read(syncServiceProvider)
+        .shareNote(
           note: note,
           recipients: recipients,
           author: author,
@@ -193,9 +192,13 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   Future<Note> stopSharingWith(Note note, String recipientPubHex) async {
     developer.log('NotesNotifier.stopSharingWith called: ${note.id}', name: 'NotesNotifier');
     final author = ref.read(authProvider).value;
-    if (author == null) throw StateError('Cannot change sharing without a Nostr account.');
+    if (author == null) {
+      throw StateError('Cannot change sharing without a Nostr account.');
+    }
     final relays = ref.read(relayProvider).value ?? const [];
-    final updated = await ref.read(syncServiceProvider).stopSharingWith(
+    final updated = await ref
+        .read(syncServiceProvider)
+        .stopSharingWith(
           note: note,
           recipientPubHex: recipientPubHex,
           author: author,
@@ -211,10 +214,14 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   Future<void> abandonSharedNote(Note note) async {
     developer.log('NotesNotifier.abandonSharedNote called: ${note.id}', name: 'NotesNotifier');
     final author = ref.read(authProvider).value;
-    if (author == null) throw StateError('Cannot abandon without a Nostr account.');
+    if (author == null) {
+      throw StateError('Cannot abandon without a Nostr account.');
+    }
     final relays = ref.read(relayProvider).value ?? const [];
 
-    await ref.read(syncServiceProvider).abandonSharedNote(note: note, author: author, relays: relays);
+    await ref
+        .read(syncServiceProvider)
+        .abandonSharedNote(note: note, author: author, relays: relays);
 
     await ref.read(localStorageServiceProvider).deleteNote(note.id);
     final uploadService = ref.read(attachmentUploadServiceProvider);
@@ -231,9 +238,7 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     final current = state.value ?? const <Note>[];
     final index = current.indexWhere((n) => n.id == note.id);
     state = AsyncData(
-      index >= 0
-          ? [for (final n in current) n.id == note.id ? note : n]
-          : [note, ...current],
+      index >= 0 ? [for (final n in current) n.id == note.id ? note : n] : [note, ...current],
     );
   }
 
@@ -261,7 +266,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
       try {
         final relays = ref.read(relayProvider).value ?? const [];
         final uploadProvider = ref.read(uploadProviderProvider);
-        await ref.read(syncServiceProvider).runSyncCycle(
+        await ref
+            .read(syncServiceProvider)
+            .runSyncCycle(
               author: author,
               relays: relays,
               uploadProvider: uploadProvider,
@@ -303,7 +310,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     final relays = ref.read(relayProvider).value ?? const [];
     final uploadProvider = ref.read(uploadProviderProvider);
     final notes = state.value ?? const <Note>[];
-    final count = await ref.read(syncServiceProvider).republishAllSyncedNotes(
+    final count = await ref
+        .read(syncServiceProvider)
+        .republishAllSyncedNotes(
           notes: notes,
           author: author,
           relays: relays,
@@ -321,7 +330,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   /// `note_actions.dart` is what decides whether/which password to collect.
   Future<String> exportNotes({Iterable<String>? noteIds, String? password}) {
     developer.log('NotesNotifier.exportNotes called', name: 'NotesNotifier');
-    return ref.read(localStorageServiceProvider).exportNotesAsJson(noteIds: noteIds, password: password);
+    return ref
+        .read(localStorageServiceProvider)
+        .exportNotesAsJson(noteIds: noteIds, password: password);
   }
 
   /// Imports notes from a JSON string previously produced by [exportNotes]

@@ -85,5 +85,6 @@ class NoteEncryptionNotifier extends AsyncNotifier<NoteEncryptionState> {
   }
 }
 
-final noteEncryptionProvider =
-    AsyncNotifierProvider<NoteEncryptionNotifier, NoteEncryptionState>(NoteEncryptionNotifier.new);
+final noteEncryptionProvider = AsyncNotifierProvider<NoteEncryptionNotifier, NoteEncryptionState>(
+  NoteEncryptionNotifier.new,
+);

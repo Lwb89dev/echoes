@@ -21,7 +21,7 @@ import 'note_encryption_service.dart';
 /// because there is no network connection.
 class LocalStorageService {
   LocalStorageService({required NoteEncryptionService noteEncryptionService})
-      : _noteEncryption = noteEncryptionService;
+    : _noteEncryption = noteEncryptionService;
 
   final NoteEncryptionService _noteEncryption;
 
@@ -114,7 +114,10 @@ class LocalStorageService {
     } catch (e) {
       // Undecodable stored copy (corrupt, or the encryption key was
       // rotated out from under it) — nothing usable to merge from.
-      developer.log('Could not decode stored note ${incoming.id} for merge: $e', name: 'LocalStorageService');
+      developer.log(
+        'Could not decode stored note ${incoming.id} for merge: $e',
+        name: 'LocalStorageService',
+      );
       return incoming;
     }
 
@@ -172,7 +175,7 @@ class LocalStorageService {
     developer.log('LocalStorageService.exportNotesAsJson called', name: 'LocalStorageService');
     final notes = await loadNotes();
     final selected = noteIds == null ? notes : notes.where((n) => noteIds.contains(n.id)).toList();
-    final notesJson = selected.map((n) => n.toJson()).toList();
+    final notesJson = selected.map((n) => n.toExportJson()).toList();
 
     if (password == null) {
       return jsonEncode({
@@ -183,7 +186,10 @@ class LocalStorageService {
       });
     }
 
-    final encrypted = await _noteEncryption.encryptExportWithNewPassword(jsonEncode(notesJson), password);
+    final encrypted = await _noteEncryption.encryptExportWithNewPassword(
+      jsonEncode(notesJson),
+      password,
+    );
     return jsonEncode({
       'version': 1,
       'exportedAt': DateTime.now().toIso8601String(),
@@ -219,6 +225,9 @@ class LocalStorageService {
   /// written (new or updated).
   Future<int> importNotesFromJson(String json, {String? password}) async {
     developer.log('LocalStorageService.importNotesFromJson called', name: 'LocalStorageService');
+    if (utf8.encode(json).length > AppConstants.maxImportBytes) {
+      throw const FormatException('Import file exceeds the size limit.');
+    }
     final decoded = jsonDecode(json) as Map<String, dynamic>;
 
     final List<dynamic> rawNotes;
@@ -231,7 +240,15 @@ class LocalStorageService {
     } else {
       rawNotes = decoded['notes'] as List<dynamic>? ?? const [];
     }
-    final incomingNotes = rawNotes.map((e) => Note.fromJson(e as Map<String, dynamic>)).toList();
+    if (rawNotes.length > AppConstants.maxImportedNotes) {
+      throw const FormatException('Import file contains too many notes.');
+    }
+    final incomingNotes = rawNotes.map((entry) {
+      final note = Note.fromJson(entry as Map<String, dynamic>);
+      return note.copyWith(
+        attachments: note.attachments.map((attachment) => attachment.withoutLocalPath()).toList(),
+      );
+    }).toList();
 
     final existingById = {for (final note in await loadNotes()) note.id: note};
     var written = 0;
@@ -276,7 +293,8 @@ class LocalStorageService {
   /// Checks [password] against the saved verifier without unlocking the
   /// session — used to confirm a password before using it to encrypt a
   /// note export (see [exportNotesAsJson]) rather than to read notes.
-  Future<bool> verifyNoteEncryptionPassword(String password) => _noteEncryption.verifyPassword(password);
+  Future<bool> verifyNoteEncryptionPassword(String password) =>
+      _noteEncryption.verifyPassword(password);
 
   /// Turns encryption on with [password]: reads back the existing notes
   /// (still plaintext at this point), derives the key, then rewrites every
@@ -304,10 +322,14 @@ class LocalStorageService {
       throw StateError('Wrong password.');
     }
     final existingNotes = await loadNotes();
-    await _noteEncryption.disable();
+    final box = _requireNotesBox;
     for (final note in existingNotes) {
-      await saveNote(note);
+      await box.put(note.id, {'enc': false, 'json': jsonEncode(note.toJson())});
     }
+    // Remove the key configuration only after every note is safely plaintext.
+    // If a write above fails, encryption remains enabled and a retry can read
+    // the mix of encrypted/plain entries without losing data.
+    await _noteEncryption.disable();
   }
 
   // ---------------------------------------------------------------------
@@ -324,10 +346,7 @@ class LocalStorageService {
   /// used for [LoginMethod.privateKey]: with Amber there is no key to save.
   Future<void> savePrivateKey(String privateKeyHex) async {
     developer.log('LocalStorageService.savePrivateKey called', name: 'LocalStorageService');
-    await _secureStorage.write(
-      key: AppConstants.secureStoragePrivateKeyKey,
-      value: privateKeyHex,
-    );
+    await _secureStorage.write(key: AppConstants.secureStoragePrivateKeyKey, value: privateKeyHex);
   }
 
   /// Reads the saved private key, if any (null when there is no local
@@ -361,7 +380,11 @@ class LocalStorageService {
     final raw = await _secureStorage.read(key: AppConstants.secureStorageBunkerSessionKey);
     if (raw == null) return null;
     try {
-      return Nip46Session.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      final session = Nip46Session.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      if (session.secret == null) return session;
+      final sanitized = session.withoutSecret();
+      await saveBunkerSession(sanitized);
+      return sanitized;
     } catch (e) {
       developer.log('Could not decode stored bunker session: $e', name: 'LocalStorageService');
       return null;
@@ -373,12 +396,12 @@ class LocalStorageService {
     await _secureStorage.delete(key: AppConstants.secureStorageBunkerSessionKey);
   }
 
-  /// Clears the whole local session (private key + pubkey + login method):
-  /// used on logout, valid for both [LoginMethod.privateKey] and
-  /// [LoginMethod.amber].
+  /// Clears the whole local session, including both possible local secrets
+  /// (private key and bunker transport key), public key and login method.
   Future<void> clearSession() async {
     developer.log('LocalStorageService.clearSession called', name: 'LocalStorageService');
     await clearPrivateKey();
+    await clearBunkerSession();
     final prefs = await _prefs;
     await prefs.remove(AppConstants.prefsPublicKeyKey);
     await prefs.remove(AppConstants.prefsLoginMethodKey);
@@ -405,7 +428,10 @@ class LocalStorageService {
   /// [LoginMethod.amber]), so [AuthNotifier.build] can rebuild the right
   /// kind of session on app restart.
   Future<void> saveLoginMethod(LoginMethod method) async {
-    developer.log('LocalStorageService.saveLoginMethod called: $method', name: 'LocalStorageService');
+    developer.log(
+      'LocalStorageService.saveLoginMethod called: $method',
+      name: 'LocalStorageService',
+    );
     final prefs = await _prefs;
     await prefs.setString(AppConstants.prefsLoginMethodKey, method.name);
   }
@@ -445,9 +471,7 @@ class LocalStorageService {
     final raw = prefs.getString(AppConstants.prefsRelaysKey);
     if (raw == null) return const [];
     final decoded = jsonDecode(raw) as List<dynamic>;
-    return decoded
-        .map((e) => Relay.fromJson(e as Map<String, dynamic>))
-        .toList();
+    return decoded.map((e) => Relay.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   Future<void> saveRelays(List<Relay> relays) async {
@@ -473,7 +497,10 @@ class LocalStorageService {
   }
 
   Future<void> saveLastSyncTime(DateTime time) async {
-    developer.log('LocalStorageService.saveLastSyncTime called: $time', name: 'LocalStorageService');
+    developer.log(
+      'LocalStorageService.saveLastSyncTime called: $time',
+      name: 'LocalStorageService',
+    );
     final prefs = await _prefs;
     await prefs.setString(AppConstants.prefsLastSyncKey, time.toIso8601String());
   }

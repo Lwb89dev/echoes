@@ -33,9 +33,12 @@ class SyncService {
     required LocalStorageService localStorageService,
     required NostrService nostrService,
     required AttachmentUploadService attachmentUploadService,
-  })  : _localStorageService = localStorageService, // ignore: prefer_initializing_formals
-        _nostrService = nostrService, // ignore: prefer_initializing_formals
-        _attachmentUploadService = attachmentUploadService; // ignore: prefer_initializing_formals
+  }) : // Public constructor names intentionally differ from private fields.
+       // ignore: prefer_initializing_formals
+       _localStorageService = localStorageService,
+       _nostrService = nostrService, // ignore: prefer_initializing_formals
+       // ignore: prefer_initializing_formals
+       _attachmentUploadService = attachmentUploadService;
 
   final LocalStorageService _localStorageService;
   final NostrService _nostrService;
@@ -113,11 +116,49 @@ class SyncService {
       author: author,
       uploadProvider: uploadProvider,
     );
+    if (noteWithUploads.ownerPubkey != null) {
+      return _publishEditProposal(noteWithUploads, author: author, relays: relays);
+    }
+
     final event = await _nostrService.createNoteEvent(noteWithUploads, author);
     final eventId = await _nostrService.publishNote(event, relays);
-    final syncedNote = noteWithUploads.copyWith(synced: true, nostrEventId: eventId);
+    final publishing = noteWithUploads.copyWith(synced: false, nostrEventId: eventId);
+    await _localStorageService.saveNote(publishing);
+    await _publishRecipientCopies(publishing, author: author, relays: relays);
+    final syncedNote = publishing.copyWith(synced: true);
     await _localStorageService.saveNote(syncedNote);
     return syncedNote;
+  }
+
+  Future<Note> _publishEditProposal(
+    Note note, {
+    required User author,
+    required List<Relay> relays,
+  }) async {
+    final event = await _nostrService.createEditProposalEvent(
+      note: note,
+      author: author,
+      ownerPubHex: note.ownerPubkey!,
+    );
+    await _nostrService.publishNote(event, relays);
+    final synced = note.copyWith(synced: true);
+    await _localStorageService.saveNote(synced);
+    return synced;
+  }
+
+  Future<void> _publishRecipientCopies(
+    Note note, {
+    required User author,
+    required List<Relay> relays,
+  }) async {
+    for (final recipient in note.sharedWith) {
+      final event = await _nostrService.createSharedNoteEvent(
+        note: note,
+        author: author,
+        recipientPubHex: recipient,
+      );
+      await _nostrService.publishNote(event, relays);
+    }
   }
 
   /// Uploads every not-yet-uploaded attachment on [note] (encrypted, via
@@ -241,21 +282,23 @@ class SyncService {
     if (relays.isEmpty) throw StateError('No relay configured for syncing.');
 
     final merged = {...note.sharedWith, ...recipients}..remove(author.publicKeyHex);
-    final updated = note.copyWith(sharedWith: merged.toList());
-    final uploaded = await _uploadPendingAttachments(note: updated, author: author, uploadProvider: uploadProvider);
+    final updated = note.copyWith(sharedWith: merged.toList(), synced: false);
+    // Persist the user's intent before touching the network. If any publish
+    // fails, auto-sync can resume instead of forgetting recipients that were
+    // already partially published.
+    await _localStorageService.saveNote(updated);
+    final uploaded = await _uploadPendingAttachments(
+      note: updated,
+      author: author,
+      uploadProvider: uploadProvider,
+    );
 
     final selfEvent = await _nostrService.createNoteEvent(uploaded, author);
     final eventId = await _nostrService.publishNote(selfEvent, relays);
-    final result = uploaded.copyWith(synced: true, nostrEventId: eventId);
-
-    for (final recipient in result.sharedWith) {
-      final shareEvent = await _nostrService.createSharedNoteEvent(
-        note: result,
-        author: author,
-        recipientPubHex: recipient,
-      );
-      await _nostrService.publishNote(shareEvent, relays);
-    }
+    final publishing = uploaded.copyWith(synced: false, nostrEventId: eventId);
+    await _localStorageService.saveNote(publishing);
+    await _publishRecipientCopies(publishing, author: author, relays: relays);
+    final result = publishing.copyWith(synced: true);
     await _localStorageService.saveNote(result);
     return result;
   }
@@ -278,19 +321,26 @@ class SyncService {
     if (!await isOnline()) throw StateError('No network connection.');
     if (relays.isEmpty) throw StateError('No relay configured for syncing.');
 
-    await _nostrService.deleteSharedNoteEvent(
-      noteId: note.id,
-      recipientPubHex: recipientPubHex,
-      author: author,
-      relays: relays,
-    );
-
     final remaining = note.sharedWith.where((r) => r != recipientPubHex).toList();
-    final updated = note.copyWith(sharedWith: remaining);
+    final updated = note.copyWith(sharedWith: remaining, synced: false);
+    await _localStorageService.saveNote(updated);
     final selfEvent = await _nostrService.createNoteEvent(updated, author);
     final eventId = await _nostrService.publishNote(selfEvent, relays);
     final result = updated.copyWith(synced: true, nostrEventId: eventId);
     await _localStorageService.saveNote(result);
+    try {
+      await _nostrService.deleteSharedNoteEvent(
+        noteId: note.id,
+        recipientPubHex: recipientPubHex,
+        author: author,
+        relays: relays,
+      );
+    } catch (e) {
+      // The canonical and local copies already exclude this recipient, so no
+      // future update can reach them. Retraction of already-shared data is
+      // best-effort, just like data they may already have downloaded.
+      developer.log('Could not retract removed recipient copy: $e', name: 'SyncService');
+    }
     return result;
   }
 
@@ -319,7 +369,10 @@ class SyncService {
       } catch (e) {
         // The tombstone above already guarantees we can't re-hook; the
         // owner-side drop is a bonus, not required for correctness.
-        developer.log('Abandon leave-signal failed (tombstone still applies): $e', name: 'SyncService');
+        developer.log(
+          'Abandon leave-signal failed (tombstone still applies): $e',
+          name: 'SyncService',
+        );
       }
     }
   }
@@ -327,15 +380,18 @@ class SyncService {
   /// Fetches everything addressed to me and applies it, with strict
   /// authorization so an untrusted relay (or a stranger) can't inject or
   /// hijack notes. Runs inside [runSyncCycle].
-  Future<void> _processIncomingShares({
-    required User author,
-    required List<Relay> relays,
-  }) async {
+  Future<void> _processIncomingShares({required User author, required List<Relay> relays}) async {
     final since = await _localStorageService.loadLastShareSyncTime();
-    final fetch = await _nostrService.fetchSharesAddressedTo(me: author, relays: relays, since: since);
+    final fetch = await _nostrService.fetchSharesAddressedTo(
+      me: author,
+      relays: relays,
+      since: since,
+    );
     if (fetch.items.isEmpty) {
       if (fetch.complete) {
-        await _localStorageService.saveLastShareSyncTime(DateTime.now().subtract(const Duration(minutes: 1)));
+        await _localStorageService.saveLastShareSyncTime(
+          DateTime.now().subtract(const Duration(minutes: 1)),
+        );
       }
       return;
     }
@@ -355,10 +411,15 @@ class SyncService {
           continue;
         }
         final note = item.note!;
-        if (abandoned.contains(note.id)) continue; // Permanently left — never re-hook.
+        if (abandoned.contains(note.id)) {
+          continue; // Permanently left — never re-hook.
+        }
         await _applyIncomingNote(note: note, sender: item.sender, author: author);
       } catch (e) {
-        developer.log('Skipped a bad incoming shared item from ${item.sender}: $e', name: 'SyncService');
+        developer.log(
+          'Skipped a bad incoming shared item from ${item.sender}: $e',
+          name: 'SyncService',
+        );
       }
     }
 
@@ -367,7 +428,9 @@ class SyncService {
     // still unprocessed and moving the bookmark past them would drop them
     // for good. Leaving it lets the next cycle pick up the remainder.
     if (fetch.complete && items.length <= AppConstants.maxIncomingSharesPerCycle) {
-      await _localStorageService.saveLastShareSyncTime(DateTime.now().subtract(const Duration(minutes: 1)));
+      await _localStorageService.saveLastShareSyncTime(
+        DateTime.now().subtract(const Duration(minutes: 1)),
+      );
     }
   }
 
@@ -405,10 +468,15 @@ class SyncService {
       // I own this note. The only inbound events allowed to touch it are
       // edit proposals from an actual current recipient of it.
       if (!existing.sharedWith.contains(sender)) {
-        developer.log('Rejected inbound edit for owned note ${note.id} from non-recipient $sender', name: 'SyncService');
+        developer.log(
+          'Rejected inbound edit for owned note ${note.id} from non-recipient $sender',
+          name: 'SyncService',
+        );
         return;
       }
-      if (!note.updatedAt.isAfter(existing.updatedAt)) return; // Not newer: keep mine.
+      if (!note.updatedAt.isAfter(existing.updatedAt)) {
+        return; // Not newer: keep mine.
+      }
       // Adopt the recipient's content but stay the owner and keep my
       // recipient list; synced=false makes the next cycle re-publish the
       // merged version to the self copy and every recipient (convergence).
@@ -424,26 +492,34 @@ class SyncService {
 
     // I hold this as a note shared with me. Only its real owner may update it.
     if (existing.ownerPubkey != sender) {
-      developer.log('Rejected inbound update for ${note.id}: sender $sender is not owner ${existing.ownerPubkey}', name: 'SyncService');
+      developer.log(
+        'Rejected inbound update for ${note.id}: sender $sender is not owner ${existing.ownerPubkey}',
+        name: 'SyncService',
+      );
       return;
     }
-    if (!note.updatedAt.isAfter(existing.updatedAt)) return; // My local edit (or copy) is newer: keep it.
-    await _localStorageService.saveNote(note.copyWith(
-      ownerPubkey: sender,
-      sharedWith: const [],
-      synced: true,
-      nostrEventId: null,
-    ));
+    if (!note.updatedAt.isAfter(existing.updatedAt)) {
+      return; // My local edit (or copy) is newer: keep it.
+    }
+    await _localStorageService.saveNote(
+      note.copyWith(ownerPubkey: sender, sharedWith: const [], synced: true, nostrEventId: null),
+    );
   }
 
   /// Applies a control message (currently only "leave"): if I own the note
   /// and the sender really is one of its recipients, drop them and delete
   /// their copy from the relays.
-  Future<void> _applyControl(IncomingShare item, {required User author, required List<Relay> relays}) async {
+  Future<void> _applyControl(
+    IncomingShare item, {
+    required User author,
+    required List<Relay> relays,
+  }) async {
     if (item.controlType != NoteSharing.controlLeave) return;
     final noteId = item.controlNoteId!;
     final owned = _noteById(await _localStorageService.loadNotes(), noteId);
-    if (owned == null || owned.ownerPubkey != null || !owned.sharedWith.contains(item.sender)) return;
+    if (owned == null || owned.ownerPubkey != null || !owned.sharedWith.contains(item.sender)) {
+      return;
+    }
 
     final remaining = owned.sharedWith.where((r) => r != item.sender).toList();
     // synced=false so the next cycle republishes the self copy with the
@@ -494,13 +570,18 @@ class SyncService {
     // another; error handling stays per-caller — the shared cycle completes
     // with its error, and each joiner independently swallows (silent) or
     // rethrows (explicit refresh) it.
-    final cycle = _cycleInFlight ??=
-        _runSyncCycleExclusive(author: author, relays: relays, uploadProvider: uploadProvider)
-            .whenComplete(() => _cycleInFlight = null);
+    final cycle = _cycleInFlight ??= _runSyncCycleExclusive(
+      author: author,
+      relays: relays,
+      uploadProvider: uploadProvider,
+    ).whenComplete(() => _cycleInFlight = null);
     try {
       await cycle;
     } catch (e) {
-      developer.log('runSyncCycle failed${silent ? ', will retry next cycle' : ''}: $e', name: 'SyncService');
+      developer.log(
+        'runSyncCycle failed${silent ? ', will retry next cycle' : ''}: $e',
+        name: 'SyncService',
+      );
       if (!silent) rethrow;
     }
   }
@@ -542,7 +623,8 @@ class SyncService {
         // owned note the user has already synced once, or a note shared with
         // me that I've edited (published as an edit proposal). Those, and
         // only those, need their attachments uploaded first.
-        final willPublish = !note.synced && (note.ownerPubkey == null ? note.nostrEventId != null : true);
+        final ownedPublishIntent = note.nostrEventId != null || note.sharedWith.isNotEmpty;
+        final willPublish = !note.synced && (note.ownerPubkey == null ? ownedPublishIntent : true);
         final needsUpload = willPublish && note.attachments.any((a) => !a.isUploaded);
         if (!needsUpload) {
           readyToPublish.add(note);
@@ -550,7 +632,11 @@ class SyncService {
         }
         try {
           readyToPublish.add(
-            await _uploadPendingAttachments(note: note, author: author, uploadProvider: uploadProvider),
+            await _uploadPendingAttachments(
+              note: note,
+              author: author,
+              uploadProvider: uploadProvider,
+            ),
           );
         } catch (e) {
           developer.log(

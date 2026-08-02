@@ -18,8 +18,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get importAccountButton => 'Импортировать учётную запись Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Приватный ключ (nsec) вашей учётной записи Nostr';
+  String get importAccountFieldLabel => 'Приватный ключ (nsec) вашей учётной записи Nostr';
 
   @override
   String get importButton => 'Импортировать';
@@ -34,8 +33,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get bunkerConnectButton => 'Подключить';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Подтвердите подключение в подписанте и вернитесь';
+  String get bunkerAuthPrompt => 'Подтвердите подключение в подписанте и вернитесь';
 
   @override
   String get relaysTitle => 'Реле';
@@ -56,8 +54,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noSearchResultsMessage => 'Совпадений нет.';
 
   @override
-  String get emptyNotesMessage =>
-      'Заметок пока нет. Нажмите +, чтобы создать новую.';
+  String get emptyNotesMessage => 'Заметок пока нет. Нажмите +, чтобы создать новую.';
 
   @override
   String get notesTabLabel => 'Заметки';
@@ -66,8 +63,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get diaryTabLabel => 'Дневник';
 
   @override
-  String get emptyDiaryMessage =>
-      'Записей в дневнике пока нет. Нажмите +, чтобы написать.';
+  String get emptyDiaryMessage => 'Записей в дневнике пока нет. Нажмите +, чтобы написать.';
 
   @override
   String get diaryToday => 'Сегодня';
@@ -167,8 +163,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Скрыть выполненные пункты';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Все пункты выполнены и скрыты.';
+  String get allChecklistItemsCompletedHidden => 'Все пункты выполнены и скрыты.';
 
   @override
   String get deleteCompletedItemsButton => 'Удалить выполненные пункты';
@@ -295,8 +290,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get lockNotesNowTitle => 'Заблокировать заметки сейчас';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Для просмотра заметок снова потребуется пароль';
+  String get lockNotesNowSubtitle => 'Для просмотра заметок снова потребуется пароль';
 
   @override
   String get setPasswordDialogTitle => 'Установить пароль';
@@ -319,8 +313,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get enableButton => 'Включить';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Введите пароль, чтобы отключить шифрование';
+  String get disablePasswordDialogTitle => 'Введите пароль, чтобы отключить шифрование';
 
   @override
   String get disableButton => 'Отключить';
@@ -332,8 +325,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get lightThemeToggleTitle => 'Светлая тема';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Использовать светлую цветовую схему вместо тёмной';
+  String get lightThemeToggleSubtitle => 'Использовать светлую цветовую схему вместо тёмной';
 
   @override
   String get noteLayoutToggleTitle => 'Переключение между списком и сеткой';
@@ -342,8 +334,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get manageRelaysTitle => 'Управление реле';
 
   @override
-  String get republishAllNotesButton =>
-      'Переопубликовать все синхронизированные заметки';
+  String get republishAllNotesButton => 'Переопубликовать все синхронизированные заметки';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -387,8 +378,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sectionAccount => 'Аккаунт';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes используется локально — без синхронизации с Nostr';
+  String get accountLocalOnlyMessage => 'Echoes используется локально — без синхронизации с Nostr';
 
   @override
   String get accountSignInButton => 'Войти';
@@ -412,16 +402,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Добро пожаловать в Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Ваши заметки всегда на вашем устройстве';
+  String get onboardingIntroLocalTitle => 'Ваши заметки всегда на вашем устройстве';
 
   @override
   String get onboardingIntroLocalBody =>
       'Каждая заметка сначала сохраняется локально, поэтому приложение полностью работает offline. Ничего не покидает ваше устройство, если вы не решите синхронизировать данные.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Необязательная синхронизация через Nostr';
+  String get onboardingIntroSyncTitle => 'Необязательная синхронизация через Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -455,8 +443,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onboardingBackButton => 'Назад';
 
   @override
-  String get onboardingSkipButton =>
-      'Пропустить — использовать Echoes только локально';
+  String get onboardingSkipButton => 'Пропустить — использовать Echoes только локально';
 
   @override
   String get onboardingRelayTitle => 'Выберите реле для синхронизации';
@@ -530,15 +517,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Зашифровать этот файл';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Рекомендуется — защищает резервную копию паролем';
+  String get exportEncryptToggleSubtitle => 'Рекомендуется — защищает резервную копию паролем';
 
   @override
   String get exportPasswordDialogTitle => 'Введите свой пароль';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Установите пароль для этого экспорта';
+  String get exportSetPasswordDialogTitle => 'Установите пароль для этого экспорта';
 
   @override
   String get importPasswordDialogTitle => 'Введите пароль экспорта';
@@ -557,8 +542,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get importNotesButton => 'Импортировать заметки';
 
   @override
-  String get importNotesSubtitle =>
-      'Восстановите заметки из ранее экспортированного файла';
+  String get importNotesSubtitle => 'Восстановите заметки из ранее экспортированного файла';
 
   @override
   String get exportNotesSuccess => 'Заметки экспортированы';
@@ -637,12 +621,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shareAddRecipientButton => 'Добавить';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Это не действительный npub или открытый ключ';
+  String get shareInvalidRecipientError => 'Это не действительный npub или открытый ключ';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Учётная запись Nostr для этого имени не найдена';
+  String get shareRecipientNotFoundError => 'Учётная запись Nostr для этого имени не найдена';
 
   @override
   String get shareConfirmTitle => 'Поделиться этой заметкой?';
@@ -654,8 +636,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Уже предоставлено этому человеку';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Нельзя поделиться заметкой с самим собой';
+  String get shareCannotShareWithSelfError => 'Нельзя поделиться заметкой с самим собой';
 
   @override
   String get shareRecipientsHeader => 'Доступно для';

@@ -18,8 +18,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get importAccountButton => 'Importă cont Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Cheia privată (nsec) a contului tău Nostr';
+  String get importAccountFieldLabel => 'Cheia privată (nsec) a contului tău Nostr';
 
   @override
   String get importButton => 'Importă';
@@ -34,8 +33,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get bunkerConnectButton => 'Conectează';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Aprobă conexiunea în semnatarul tău, apoi revino';
+  String get bunkerAuthPrompt => 'Aprobă conexiunea în semnatarul tău, apoi revino';
 
   @override
   String get relaysTitle => 'Relee';
@@ -56,8 +54,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get noSearchResultsMessage => 'Nicio potrivire.';
 
   @override
-  String get emptyNotesMessage =>
-      'Încă nu ai notițe. Atinge + pentru a crea una.';
+  String get emptyNotesMessage => 'Încă nu ai notițe. Atinge + pentru a crea una.';
 
   @override
   String get notesTabLabel => 'Notițe';
@@ -66,8 +63,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get diaryTabLabel => 'Jurnal';
 
   @override
-  String get emptyDiaryMessage =>
-      'Încă nu există intrări în jurnal. Atinge + pentru a scrie una.';
+  String get emptyDiaryMessage => 'Încă nu există intrări în jurnal. Atinge + pentru a scrie una.';
 
   @override
   String get diaryToday => 'Azi';
@@ -167,15 +163,13 @@ class AppLocalizationsRo extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Ascunde elementele finalizate';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Toate elementele sunt finalizate și ascunse.';
+  String get allChecklistItemsCompletedHidden => 'Toate elementele sunt finalizate și ascunse.';
 
   @override
   String get deleteCompletedItemsButton => 'Șterge elementele finalizate';
 
   @override
-  String get deleteCompletedItemsConfirmTitle =>
-      'Ștergi elementele finalizate?';
+  String get deleteCompletedItemsConfirmTitle => 'Ștergi elementele finalizate?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
@@ -283,8 +277,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get loadingLabel => 'Se încarcă…';
 
   @override
-  String get encryptionLoadError =>
-      'Setările de criptare nu au putut fi încărcate';
+  String get encryptionLoadError => 'Setările de criptare nu au putut fi încărcate';
 
   @override
   String get encryptionToggleTitle => 'Protejează notițele cu o parolă';
@@ -297,8 +290,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get lockNotesNowTitle => 'Blochează notițele acum';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Va fi necesară din nou parola pentru a vedea notițele';
+  String get lockNotesNowSubtitle => 'Va fi necesară din nou parola pentru a vedea notițele';
 
   @override
   String get setPasswordDialogTitle => 'Setează o parolă';
@@ -321,8 +313,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get enableButton => 'Activează';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Introdu parola pentru a dezactiva criptarea';
+  String get disablePasswordDialogTitle => 'Introdu parola pentru a dezactiva criptarea';
 
   @override
   String get disableButton => 'Dezactivează';
@@ -338,8 +329,7 @@ class AppLocalizationsRo extends AppLocalizations {
       'Utilizează o schemă de culori deschisă în loc de întunecată';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Comută între vizualizarea listă și grilă';
+  String get noteLayoutToggleTitle => 'Comută între vizualizarea listă și grilă';
 
   @override
   String get manageRelaysTitle => 'Gestionează releele';
@@ -389,8 +379,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get sectionAccount => 'Cont';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes este folosit local — nesincronizat cu Nostr';
+  String get accountLocalOnlyMessage => 'Echoes este folosit local — nesincronizat cu Nostr';
 
   @override
   String get accountSignInButton => 'Conectare';
@@ -414,8 +403,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Bine ai venit în Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Notițele tale, mereu pe dispozitivul tău';
+  String get onboardingIntroLocalTitle => 'Notițele tale, mereu pe dispozitivul tău';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -436,8 +424,7 @@ class AppLocalizationsRo extends AppLocalizations {
       'Notițele sincronizate cu Nostr sunt criptate integral, astfel încât operatorii releelor — și oricine altcineva — nu pot citi niciodată conținutul lor.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Conectează-te fără a-ți expune cheia';
+  String get onboardingIntroAmberTitle => 'Conectează-te fără a-ți expune cheia';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -531,15 +518,13 @@ class AppLocalizationsRo extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Criptează acest fișier';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Recomandat — protejează copia de rezervă cu o parolă';
+  String get exportEncryptToggleSubtitle => 'Recomandat — protejează copia de rezervă cu o parolă';
 
   @override
   String get exportPasswordDialogTitle => 'Introdu parola ta';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Setează o parolă pentru această exportare';
+  String get exportSetPasswordDialogTitle => 'Setează o parolă pentru această exportare';
 
   @override
   String get importPasswordDialogTitle => 'Introdu parola exportului';
@@ -558,8 +543,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get importNotesButton => 'Importă notițe';
 
   @override
-  String get importNotesSubtitle =>
-      'Restaurează notițe dintr-un fișier exportat anterior';
+  String get importNotesSubtitle => 'Restaurează notițe dintr-un fișier exportat anterior';
 
   @override
   String get exportNotesSuccess => 'Notițe exportate';
@@ -632,19 +616,16 @@ class AppLocalizationsRo extends AppLocalizations {
   String get shareNoteTitle => 'Partajează nota';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub sau cheia publică a destinatarului';
+  String get shareRecipientFieldLabel => 'npub sau cheia publică a destinatarului';
 
   @override
   String get shareAddRecipientButton => 'Adaugă';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Nu este un npub sau o cheie publică validă';
+  String get shareInvalidRecipientError => 'Nu este un npub sau o cheie publică validă';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Niciun cont Nostr găsit pentru acest nume';
+  String get shareRecipientNotFoundError => 'Niciun cont Nostr găsit pentru acest nume';
 
   @override
   String get shareConfirmTitle => 'Distribui această notiță?';
@@ -656,8 +637,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Deja partajată cu această persoană';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Nu poți partaja o notă cu tine însuți';
+  String get shareCannotShareWithSelfError => 'Nu poți partaja o notă cu tine însuți';
 
   @override
   String get shareRecipientsHeader => 'Partajată cu';
@@ -693,8 +673,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get abandonSharedNoteButton => 'Părăsește această notă partajată';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Părăsești această notă partajată?';
+  String get abandonSharedNoteConfirmTitle => 'Părăsești această notă partajată?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

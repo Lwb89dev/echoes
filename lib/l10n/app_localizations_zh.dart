@@ -333,8 +333,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get republishAllNotesButton => '重新发布所有已同步的笔记';
 
   @override
-  String get republishAllNotesSubtitle =>
-      '用已在其他地方分享的笔记补齐上方每个中继 — 在刚添加新中继（如自托管备份中继）后很有用';
+  String get republishAllNotesSubtitle => '用已在其他地方分享的笔记补齐上方每个中继 — 在刚添加新中继（如自托管备份中继）后很有用';
 
   @override
   String republishAllNotesSuccess(int count) {
@@ -400,29 +399,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingIntroLocalTitle => '您的笔记，始终在您的设备上';
 
   @override
-  String get onboardingIntroLocalBody =>
-      '每条笔记都会先保存在本地，因此应用可以完全离线使用。除非您选择同步，否则任何内容都不会离开您的设备。';
+  String get onboardingIntroLocalBody => '每条笔记都会先保存在本地，因此应用可以完全离线使用。除非您选择同步，否则任何内容都不会离开您的设备。';
 
   @override
   String get onboardingIntroSyncTitle => '通过 Nostr 进行可选同步';
 
   @override
-  String get onboardingIntroSyncBody =>
-      '开启同步以备份您的笔记，并使用开放的 Nostr 协议和您选择的中继在其他设备上阅读它们。';
+  String get onboardingIntroSyncBody => '开启同步以备份您的笔记，并使用开放的 Nostr 协议和您选择的中继在其他设备上阅读它们。';
 
   @override
   String get onboardingIntroEncryptionTitle => '始终加密';
 
   @override
-  String get onboardingIntroEncryptionBody =>
-      '同步到 Nostr 的笔记均经过端到端加密，因此中继运营者及其他任何人都无法读取其内容。';
+  String get onboardingIntroEncryptionBody => '同步到 Nostr 的笔记均经过端到端加密，因此中继运营者及其他任何人都无法读取其内容。';
 
   @override
   String get onboardingIntroAmberTitle => '登录时无需暴露您的密钥';
 
   @override
-  String get onboardingIntroAmberBody =>
-      '使用 Amber 登录：您的私钥保留在 Amber 中，绝不会与 Echoes 共享。';
+  String get onboardingIntroAmberBody => '使用 Amber 登录：您的私钥保留在 Amber 中，绝不会与 Echoes 共享。';
 
   @override
   String get onboardingIntroSecurityTitle => '设计即安全';
@@ -504,8 +499,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get exportConfirmTitle => '导出笔记';
 
   @override
-  String get exportConfirmBody =>
-      '创建笔记的备份文件。其中还包含所附图片或语音笔记的解密密钥——除非文件已加密，否则任何持有该文件的人都可以读取它们。';
+  String get exportConfirmBody => '创建笔记的备份文件。其中还包含所附图片或语音笔记的解密密钥——除非文件已加密，否则任何持有该文件的人都可以读取它们。';
 
   @override
   String get exportEncryptToggleLabel => '加密此文件';
@@ -639,8 +633,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get stopSharingTooltip => '停止与此人分享';
 
   @override
-  String get shareRevocationNote =>
-      '任何被分享的人都能在其设备上阅读此笔记。移除某人会停止之后的更新，但无法删除其已收到的内容。';
+  String get shareRevocationNote => '任何被分享的人都能在其设备上阅读此笔记。移除某人会停止之后的更新，但无法删除其已收到的内容。';
 
   @override
   String shareError(String error) {
@@ -665,8 +658,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get abandonSharedNoteConfirmTitle => '退出此共享笔记？';
 
   @override
-  String get abandonSharedNoteConfirmBody =>
-      '它将从此设备移除，你将不再收到更新。此操作无法撤销——之后你将无法重新加入。';
+  String get abandonSharedNoteConfirmBody => '它将从此设备移除，你将不再收到更新。此操作无法撤销——之后你将无法重新加入。';
 
   @override
   String abandonSharedNoteError(String error) {

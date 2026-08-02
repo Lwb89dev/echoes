@@ -18,8 +18,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get importAccountButton => 'Импортиране на Nostr акаунт';
 
   @override
-  String get importAccountFieldLabel =>
-      'Частен ключ (nsec) на вашия Nostr акаунт';
+  String get importAccountFieldLabel => 'Частен ключ (nsec) на вашия Nostr акаунт';
 
   @override
   String get importButton => 'Импортиране';
@@ -55,8 +54,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get noSearchResultsMessage => 'Няма съвпадения.';
 
   @override
-  String get emptyNotesMessage =>
-      'Все още няма бележки. Докоснете +, за да създадете нова.';
+  String get emptyNotesMessage => 'Все още няма бележки. Докоснете +, за да създадете нова.';
 
   @override
   String get notesTabLabel => 'Бележки';
@@ -65,8 +63,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get diaryTabLabel => 'Дневник';
 
   @override
-  String get emptyDiaryMessage =>
-      'Все още няма записи в дневника. Докоснете +, за да напишете.';
+  String get emptyDiaryMessage => 'Все още няма записи в дневника. Докоснете +, за да напишете.';
 
   @override
   String get diaryToday => 'Днес';
@@ -166,15 +163,13 @@ class AppLocalizationsBg extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Скрий завършените елементи';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Всички елементи са завършени и скрити.';
+  String get allChecklistItemsCompletedHidden => 'Всички елементи са завършени и скрити.';
 
   @override
   String get deleteCompletedItemsButton => 'Изтрий завършените елементи';
 
   @override
-  String get deleteCompletedItemsConfirmTitle =>
-      'Да се изтрият ли завършените елементи?';
+  String get deleteCompletedItemsConfirmTitle => 'Да се изтрият ли завършените елементи?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
@@ -282,8 +277,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get loadingLabel => 'Зареждане…';
 
   @override
-  String get encryptionLoadError =>
-      'Настройките за криптиране не можаха да се заредят';
+  String get encryptionLoadError => 'Настройките за криптиране не можаха да се заредят';
 
   @override
   String get encryptionToggleTitle => 'Защита на бележките с парола';
@@ -296,8 +290,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get lockNotesNowTitle => 'Заключване на бележките сега';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Изисква паролата отново за преглед на бележките';
+  String get lockNotesNowSubtitle => 'Изисква паролата отново за преглед на бележките';
 
   @override
   String get setPasswordDialogTitle => 'Задаване на парола';
@@ -320,8 +313,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get enableButton => 'Активиране';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Въведете паролата си, за да деактивирате криптирането';
+  String get disablePasswordDialogTitle => 'Въведете паролата си, за да деактивирате криптирането';
 
   @override
   String get disableButton => 'Деактивиране';
@@ -333,19 +325,16 @@ class AppLocalizationsBg extends AppLocalizations {
   String get lightThemeToggleTitle => 'Светла тема';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Използвайте светла цветова схема вместо тъмна';
+  String get lightThemeToggleSubtitle => 'Използвайте светла цветова схема вместо тъмна';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Превключване между изглед списък и мрежа';
+  String get noteLayoutToggleTitle => 'Превключване между изглед списък и мрежа';
 
   @override
   String get manageRelaysTitle => 'Управление на релета';
 
   @override
-  String get republishAllNotesButton =>
-      'Публикувай отново всички синхронизирани бележки';
+  String get republishAllNotesButton => 'Публикувай отново всички синхронизирани бележки';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -389,8 +378,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get sectionAccount => 'Акаунт';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes се използва локално — без синхронизация с Nostr';
+  String get accountLocalOnlyMessage => 'Echoes се използва локално — без синхронизация с Nostr';
 
   @override
   String get accountSignInButton => 'Вход';
@@ -414,16 +402,14 @@ class AppLocalizationsBg extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Добре дошли в Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Вашите бележки, винаги на устройството ви';
+  String get onboardingIntroLocalTitle => 'Вашите бележки, винаги на устройството ви';
 
   @override
   String get onboardingIntroLocalBody =>
       'Всяка бележка се запазва първо локално, така че приложението работи изцяло офлайн. Нищо не напуска устройството ви, освен ако не изберете да го синхронизирате.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Незадължителна синхронизация чрез Nostr';
+  String get onboardingIntroSyncTitle => 'Незадължителна синхронизация чрез Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -531,8 +517,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Криптирай този файл';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Препоръчително — защитава резервното копие с парола';
+  String get exportEncryptToggleSubtitle => 'Препоръчително — защитава резервното копие с парола';
 
   @override
   String get exportPasswordDialogTitle => 'Въведете паролата си';
@@ -557,8 +542,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get importNotesButton => 'Импортиране на бележки';
 
   @override
-  String get importNotesSubtitle =>
-      'Възстановете бележки от файл, експортиран по-рано';
+  String get importNotesSubtitle => 'Възстановете бележки от файл, експортиран по-рано';
 
   @override
   String get exportNotesSuccess => 'Бележките са експортирани';
@@ -637,12 +621,10 @@ class AppLocalizationsBg extends AppLocalizations {
   String get shareAddRecipientButton => 'Добави';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Това не е валиден npub или публичен ключ';
+  String get shareInvalidRecipientError => 'Това не е валиден npub или публичен ключ';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Не е намерен Nostr акаунт за това име';
+  String get shareRecipientNotFoundError => 'Не е намерен Nostr акаунт за това име';
 
   @override
   String get shareConfirmTitle => 'Споделяне на тази бележка?';
@@ -654,8 +636,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Вече е споделена с този човек';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Не можете да споделите бележка със себе си';
+  String get shareCannotShareWithSelfError => 'Не можете да споделите бележка със себе си';
 
   @override
   String get shareRecipientsHeader => 'Споделена с';
@@ -691,8 +672,7 @@ class AppLocalizationsBg extends AppLocalizations {
   String get abandonSharedNoteButton => 'Напусни тази споделена бележка';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Да напуснете тази споделена бележка?';
+  String get abandonSharedNoteConfirmTitle => 'Да напуснете тази споделена бележка?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

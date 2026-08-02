@@ -201,7 +201,9 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
       // Reuse the already-resolved preview when it matches what's in the
       // field (no second network round-trip); otherwise resolve on the spot
       // so hitting Add before the debounce fires still works.
-      preview = (_preview != null && _preview!.query == raw) ? _preview! : await _resolveRecipient(raw);
+      preview = (_preview != null && _preview!.query == raw)
+          ? _preview!
+          : await _resolveRecipient(raw);
     } catch (_) {
       setState(() {
         _busy = false;
@@ -322,8 +324,7 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name ?? npub, style: Theme.of(context).textTheme.titleMedium),
-                  if (name != null)
-                    Text(npub, style: Theme.of(context).textTheme.bodySmall),
+                  if (name != null) Text(npub, style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
             ),
@@ -493,7 +494,10 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
           switchOutCurve: Curves.easeIn,
           child: _resolving
               ? KeyedSubtree(key: const ValueKey('resolving'), child: _resolvingRow(l))
-              : KeyedSubtree(key: ValueKey('preview:${_preview!.hex}'), child: _previewCard(_preview!)),
+              : KeyedSubtree(
+                  key: ValueKey('preview:${_preview!.hex}'),
+                  child: _previewCard(_preview!),
+                ),
         ),
       ] else
         ..._contactSuggestions(contacts),
@@ -521,9 +525,9 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
       const SizedBox(height: 8),
       Text(
         l.shareRevocationNote,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
     ];
   }
@@ -531,11 +535,7 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
   Widget _resolvingRow(AppLocalizations l) {
     return Row(
       children: [
-        const SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        ),
+        const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
         const SizedBox(width: 12),
         Text(l.loadingLabel, style: Theme.of(context).textTheme.bodyMedium),
       ],
@@ -562,15 +562,18 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
     if (q.isEmpty || _looksResolvable(q)) return const [];
     final needle = q.toLowerCase();
     final service = ref.read(nostrServiceProvider);
-    return contacts.where((c) {
-      final label = c.label?.toLowerCase();
-      if (label != null && label.contains(needle)) return true;
-      try {
-        return service.publicKeyToNpub(c.publicKeyHex).toLowerCase().contains(needle);
-      } catch (_) {
-        return false;
-      }
-    }).take(5).toList();
+    return contacts
+        .where((c) {
+          final label = c.label?.toLowerCase();
+          if (label != null && label.contains(needle)) return true;
+          try {
+            return service.publicKeyToNpub(c.publicKeyHex).toLowerCase().contains(needle);
+          } catch (_) {
+            return false;
+          }
+        })
+        .take(5)
+        .toList();
   }
 
   List<Widget> _contactSuggestions(List<NostrProfile> contacts) {
@@ -652,9 +655,9 @@ class _ShareNoteSheetState extends ConsumerState<ShareNoteSheet> {
       const SizedBox(height: 8),
       Text(
         l.sharedNoteEditableNote,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
       const SizedBox(height: 20),
       if (_error != null) ...[

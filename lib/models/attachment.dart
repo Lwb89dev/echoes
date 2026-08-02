@@ -147,21 +147,21 @@ class Attachment {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': type.name,
-        'localPath': localPath,
-        'url': url,
-        'decryptionKeyBase64': decryptionKeyBase64,
-        'decryptionNonceBase64': decryptionNonceBase64,
-        'encryptionAlgorithm': encryptionAlgorithm,
-        'mimeType': mimeType,
-        'sizeBytes': sizeBytes,
-        'sha256OfEncrypted': sha256OfEncrypted,
-        'durationSeconds': durationSeconds,
-        'width': width,
-        'height': height,
-        'recordedAt': recordedAt?.toIso8601String(),
-      };
+    'id': id,
+    'type': type.name,
+    'localPath': localPath,
+    'url': url,
+    'decryptionKeyBase64': decryptionKeyBase64,
+    'decryptionNonceBase64': decryptionNonceBase64,
+    'encryptionAlgorithm': encryptionAlgorithm,
+    'mimeType': mimeType,
+    'sizeBytes': sizeBytes,
+    'sha256OfEncrypted': sha256OfEncrypted,
+    'durationSeconds': durationSeconds,
+    'width': width,
+    'height': height,
+    'recordedAt': recordedAt?.toIso8601String(),
+  };
 
   factory Attachment.fromJson(Map<String, dynamic> json) {
     return Attachment(

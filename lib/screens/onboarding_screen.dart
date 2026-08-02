@@ -117,32 +117,20 @@ class _OnboardingBottomBar extends StatelessWidget {
             width: 72,
             child: isFirst
                 ? null
-                : TextButton(
-                    onPressed: onBack,
-                    child: Text(l.onboardingBackButton),
-                  ),
+                : TextButton(onPressed: onBack, child: Text(l.onboardingBackButton)),
           ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                pageCount,
-                (i) => _Dot(active: i == page),
-              ),
+              children: List.generate(pageCount, (i) => _Dot(active: i == page)),
             ),
           ),
           if (isLast)
-            FilledButton(
-              onPressed: onFinish,
-              child: Text(l.onboardingFinishButton),
-            )
+            FilledButton(onPressed: onFinish, child: Text(l.onboardingFinishButton))
           else if (page == 1)
             TextButton(onPressed: onSkip, child: Text(l.onboardingSkipButton))
           else
-            FilledButton(
-              onPressed: onNext,
-              child: Text(l.onboardingNextButton),
-            ),
+            FilledButton(onPressed: onNext, child: Text(l.onboardingNextButton)),
         ],
       ),
     );
@@ -187,16 +175,9 @@ class _IntroPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.graphic_eq,
-              size: 56,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(Icons.graphic_eq, size: 56, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 16),
-            Text(
-              l.onboardingWelcomeTitle,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            Text(l.onboardingWelcomeTitle, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 24),
             _FeatureRow(
               icon: Icons.smartphone,
@@ -233,11 +214,7 @@ class _IntroPage extends StatelessWidget {
 }
 
 class _FeatureRow extends StatelessWidget {
-  const _FeatureRow({
-    required this.icon,
-    required this.title,
-    required this.body,
-  });
+  const _FeatureRow({required this.icon, required this.title, required this.body});
 
   final IconData icon;
   final String title;
@@ -286,11 +263,7 @@ class _LoginPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(
-              Icons.key,
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(Icons.key, size: 48, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 16),
             Text(
               l.loginSubtitle,
@@ -323,21 +296,11 @@ class _RelaySetupPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              Icons.dns_outlined,
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            Icon(Icons.dns_outlined, size: 48, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 16),
-            Text(
-              l.onboardingRelayTitle,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(l.onboardingRelayTitle, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
-            Text(
-              l.onboardingRelayBody,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text(l.onboardingRelayBody, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16),
             const RelayUrlInput(),
             const SizedBox(height: 8),
@@ -348,8 +311,7 @@ class _RelaySetupPage extends ConsumerWidget {
                   ? const SizedBox.shrink()
                   : RelayListView(relays: relays, shrinkWrap: true),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) =>
-                  Text(l.genericErrorPrefix(error.toString())),
+              error: (error, stackTrace) => Text(l.genericErrorPrefix(error.toString())),
             ),
           ],
         ),

@@ -41,16 +41,19 @@ class IncomingShare {
     required String sender,
     required DateTime createdAt,
     required Note note,
-  }) =>
-      IncomingShare._(sender: sender, createdAt: createdAt, note: note);
+  }) => IncomingShare._(sender: sender, createdAt: createdAt, note: note);
 
   factory IncomingShare.control({
     required String sender,
     required DateTime createdAt,
     required String type,
     required String noteId,
-  }) =>
-      IncomingShare._(sender: sender, createdAt: createdAt, controlType: type, controlNoteId: noteId);
+  }) => IncomingShare._(
+    sender: sender,
+    createdAt: createdAt,
+    controlType: type,
+    controlNoteId: noteId,
+  );
 
   bool get isControl => controlType != null;
 }
@@ -71,6 +74,8 @@ class IncomingShare {
 /// when the private key is held locally.
 class NostrService {
   final Nostr _nostr = Nostr.instance;
+  static const _maxFutureEventSkew = Duration(minutes: 10);
+  static const _timestampMatchTolerance = Duration(seconds: 2);
 
   final Amberflutter _amber = Amberflutter();
 
@@ -194,7 +199,9 @@ class NostrService {
 
         if (const {301, 302, 303, 307, 308}.contains(response.statusCode)) {
           final location = response.headers['location'];
-          if (location == null) throw const FormatException('Redirect without a location.');
+          if (location == null) {
+            throw const FormatException('Redirect without a location.');
+          }
           final target = current.resolve(location);
           if (target.scheme != 'https') {
             throw const FormatException('Refusing a redirect off https.');
@@ -284,13 +291,15 @@ class NostrService {
       );
     }
 
-    final result = await _awaitAmber(_amber.getPublicKey(
-      permissions: const [
-        Permission(type: 'sign_event'),
-        Permission(type: 'nip44_encrypt'),
-        Permission(type: 'nip44_decrypt'),
-      ],
-    ));
+    final result = await _awaitAmber(
+      _amber.getPublicKey(
+        permissions: const [
+          Permission(type: 'sign_event'),
+          Permission(type: 'nip44_encrypt'),
+          Permission(type: 'nip44_decrypt'),
+        ],
+      ),
+    );
     final raw = (result['signature'] as String?)?.trim() ?? '';
     if (raw.isEmpty) {
       throw StateError('Amber did not return a public key.');
@@ -306,11 +315,7 @@ class NostrService {
       npub = publicKeyToNpub(publicKeyHex);
     }
 
-    return User(
-      publicKeyHex: publicKeyHex,
-      npub: npub,
-      loginMethod: LoginMethod.amber,
-    );
+    return User(publicKeyHex: publicKeyHex, npub: npub, loginMethod: LoginMethod.amber);
   }
 
   /// Logs in with a NIP-46 remote signer from a `bunker://` token: opens the
@@ -338,7 +343,7 @@ class NostrService {
       if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(userPubHex)) {
         throw const Nip46Exception('The signer returned an invalid public key.');
       }
-      final populated = session.copyWith(userPubHex: userPubHex);
+      final populated = session.copyWith(userPubHex: userPubHex).withoutSecret();
       await _bunkerClient?.dispose();
       _bunkerClient = client;
       return (
@@ -402,14 +407,13 @@ class NostrService {
   /// so every publish would time out even on a successful publish; reads
   /// would silently come back empty the same way.
   Future<void> connectToRelays(List<Relay> relays) async {
-    developer.log('NostrService.connectToRelays called (${relays.length} relays)', name: 'NostrService');
+    developer.log(
+      'NostrService.connectToRelays called (${relays.length} relays)',
+      name: 'NostrService',
+    );
     final urls = relays.map((r) => r.url).toList();
     if (urls.isEmpty) return;
-    await _nostr.relays.init(
-      relaysUrl: urls,
-      retryOnError: true,
-      retryOnClose: true,
-    );
+    await _nostr.relays.init(relaysUrl: urls, retryOnError: true, retryOnClose: true);
   }
 
   Future<void> disconnectFromRelays() async {
@@ -445,19 +449,23 @@ class NostrService {
   /// the far side via [_nostrEventFromMap]) and only kept *indexes* come
   /// back, so nothing non-sendable is ever transferred.
   Future<List<NostrEvent>> _attributedEvents(
-      List<NostrEvent> events, Set<String> expectedAuthors) async {
+    List<NostrEvent> events,
+    Set<String> expectedAuthors,
+  ) async {
     if (events.isEmpty) return const [];
     // Events missing any field required for verification can be dropped
     // right here — they could never pass — which also guarantees the wire
     // maps below are fully non-null for the isolate-side rebuild.
     final candidates = events
-        .where((e) =>
-            e.id != null &&
-            e.sig != null &&
-            e.kind != null &&
-            e.createdAt != null &&
-            (e.content?.length ?? 0) <= AppConstants.maxNoteEventContentChars &&
-            expectedAuthors.contains(e.pubkey))
+        .where(
+          (e) =>
+              e.id != null &&
+              e.sig != null &&
+              e.kind != null &&
+              e.createdAt != null &&
+              (e.content?.length ?? 0) <= AppConstants.maxNoteEventContentChars &&
+              expectedAuthors.contains(e.pubkey),
+        )
         .toList();
     if (candidates.isEmpty) return const [];
 
@@ -470,9 +478,7 @@ class NostrService {
           'sig': e.sig!,
           'pubkey': e.pubkey,
           'created_at': e.createdAt!.millisecondsSinceEpoch ~/ 1000,
-          'tags': [
-            for (final tag in e.tags ?? const <List<String>>[]) List<String>.of(tag),
-          ],
+          'tags': [for (final tag in e.tags ?? const <List<String>>[]) List<String>.of(tag)],
         },
     ];
     final keptIndexes = await Isolate.run(() => _verifiedIndexes(wireMaps));
@@ -503,7 +509,10 @@ class NostrService {
     required String publicKeyHex,
     required List<Relay> relays,
   }) async {
-    developer.log('NostrService.fetchProfileMetadata called for $publicKeyHex', name: 'NostrService');
+    developer.log(
+      'NostrService.fetchProfileMetadata called for $publicKeyHex',
+      name: 'NostrService',
+    );
     // The user's configured relays are chosen for *note storage* — there's
     // no reason to expect they also carry this account's profile, which
     // was very likely published by a different Nostr client to that
@@ -511,10 +520,7 @@ class NostrService {
     // metadata-oriented relays alongside them (deduplicated) is what lets
     // Settings actually find a name/avatar in practice — see
     // [profileMetadataFallbackRelayUrls].
-    final urls = {
-      ...relays.map((r) => r.url),
-      ...profileMetadataFallbackRelayUrls,
-    };
+    final urls = {...relays.map((r) => r.url), ...profileMetadataFallbackRelayUrls};
     final queryRelays = urls.map((url) => Relay(url: url)).toList();
 
     // Uses the same all-relays-EOSE [_gatherEvents] helper as note fetching,
@@ -574,13 +580,20 @@ class NostrService {
     required String publicKeyHex,
     required List<Relay> relays,
   }) async {
-    developer.log('NostrService.fetchContactPubkeys called for $publicKeyHex', name: 'NostrService');
+    developer.log(
+      'NostrService.fetchContactPubkeys called for $publicKeyHex',
+      name: 'NostrService',
+    );
     if (relays.isEmpty) return const [];
 
     final gathered = await _gatherEvents(
       request: NostrRequest(
         filters: [
-          NostrFilter(authors: [publicKeyHex], kinds: const [AppConstants.contactListEventKind], limit: 1),
+          NostrFilter(
+            authors: [publicKeyHex],
+            kinds: const [AppConstants.contactListEventKind],
+            limit: 1,
+          ),
         ],
       ),
       relays: relays,
@@ -618,13 +631,13 @@ class NostrService {
     required List<String> publicKeyHexes,
     required List<Relay> relays,
   }) async {
-    developer.log('NostrService.fetchProfilesBatch called (${publicKeyHexes.length} pubkeys)', name: 'NostrService');
+    developer.log(
+      'NostrService.fetchProfilesBatch called (${publicKeyHexes.length} pubkeys)',
+      name: 'NostrService',
+    );
     if (publicKeyHexes.isEmpty || relays.isEmpty) return const [];
 
-    final urls = {
-      ...relays.map((r) => r.url),
-      ...profileMetadataFallbackRelayUrls,
-    };
+    final urls = {...relays.map((r) => r.url), ...profileMetadataFallbackRelayUrls};
     final queryRelays = urls.map((url) => Relay(url: url)).toList();
 
     final filters = <NostrFilter>[];
@@ -781,10 +794,7 @@ class NostrService {
     final content = await _encryptFor(
       author: author,
       peerPubHex: ownerPubHex,
-      plaintext: jsonEncode({
-        NoteSharing.controlTypeKey: NoteSharing.controlLeave,
-        'id': noteId,
-      }),
+      plaintext: jsonEncode({NoteSharing.controlTypeKey: NoteSharing.controlLeave, 'id': noteId}),
     );
     return signGenericEvent(
       kind: AppConstants.noteEventKind,
@@ -876,10 +886,15 @@ class NostrService {
     if (senderPubHex == me.publicKeyHex) return null;
 
     try {
-      final plaintext = await _decryptFrom(author: me, peerPubHex: senderPubHex, ciphertext: content);
+      final plaintext = await _decryptFrom(
+        author: me,
+        peerPubHex: senderPubHex,
+        ciphertext: content,
+      );
       final json = jsonDecode(plaintext) as Map<String, dynamic>;
 
       final createdAt = event.createdAt ?? DateTime.now();
+      if (_isUnreasonablyFuture(createdAt)) return null;
       final control = json[NoteSharing.controlTypeKey];
       if (control is String) {
         final noteId = json['id'];
@@ -893,6 +908,7 @@ class NostrService {
       }
 
       final parsed = Note.fromJson(json);
+      if (!_timestampsMatch(parsed.updatedAt, createdAt)) return null;
       // Sanitize the sender's attachments: a received attachment must only
       // ever be fetched from its remote (https, hash-checked) url — never
       // from a `localPath` the sender chose, which could point at a file on
@@ -927,11 +943,9 @@ class NostrService {
           recipientPublicKeyHex: peerPubHex,
         );
       case LoginMethod.amber:
-        final result = await _awaitAmber(_amber.nip44Encrypt(
-          plaintext: plaintext,
-          currentUser: author.npub,
-          pubKey: peerPubHex,
-        ));
+        final result = await _awaitAmber(
+          _amber.nip44Encrypt(plaintext: plaintext, currentUser: author.npub, pubKey: peerPubHex),
+        );
         final encrypted = (result['signature'] as String?) ?? '';
         if (encrypted.isEmpty) {
           throw StateError('Amber returned no encrypted content.');
@@ -961,11 +975,9 @@ class NostrService {
           senderPublicKeyHex: peerPubHex,
         );
       case LoginMethod.amber:
-        final result = await _awaitAmber(_amber.nip44Decrypt(
-          ciphertext: ciphertext,
-          currentUser: author.npub,
-          pubKey: peerPubHex,
-        ));
+        final result = await _awaitAmber(
+          _amber.nip44Decrypt(ciphertext: ciphertext, currentUser: author.npub, pubKey: peerPubHex),
+        );
         final decrypted = result['signature'] as String?;
         if (decrypted == null) {
           throw StateError('Amber returned no decrypted content.');
@@ -1015,10 +1027,9 @@ class NostrService {
           'tags': tags,
           'content': content,
         };
-        final signResult = await _awaitAmber(_amber.signEvent(
-          currentUser: author.npub,
-          eventJson: jsonEncode(unsignedEvent),
-        ));
+        final signResult = await _awaitAmber(
+          _amber.signEvent(currentUser: author.npub, eventJson: jsonEncode(unsignedEvent)),
+        );
         final signedJson = signResult['event'] as String?;
         if (signedJson == null) {
           throw StateError('Amber returned no signed event.');
@@ -1036,8 +1047,10 @@ class NostrService {
         // The client verifies the returned event is validly signed by the
         // account's own key before handing it back, so a relay can't slip in
         // a differently-keyed event here.
-        final signedJson = await _requireBunkerClient()
-            .signEvent(unsignedEvent, expectedPubkey: author.publicKeyHex);
+        final signedJson = await _requireBunkerClient().signEvent(
+          unsignedEvent,
+          expectedPubkey: author.publicKeyHex,
+        );
         return _nostrEventFromMap(jsonDecode(signedJson) as Map<String, dynamic>);
     }
   }
@@ -1088,7 +1101,10 @@ class NostrService {
     DateTime? since,
     Duration timeout = const Duration(seconds: 20),
   }) async {
-    developer.log('NostrService.fetchNotesFromRelay called for ${author.publicKeyHex}', name: 'NostrService');
+    developer.log(
+      'NostrService.fetchNotesFromRelay called for ${author.publicKeyHex}',
+      name: 'NostrService',
+    );
     if (relays.isEmpty) return (notes: const <Note>[], complete: true);
 
     final gathered = await _gatherEvents(
@@ -1192,9 +1208,11 @@ class NostrService {
     // Notes *shared with me* (someone else owns them) never get a self copy;
     // my only outbound event for them is an edit proposal to their owner, so
     // they publish regardless of `nostrEventId`.
-    final unsyncedNotes = localNotes
-        .where((n) => !n.synced && (n.ownerPubkey == null ? n.nostrEventId != null : true))
-        .toList();
+    final unsyncedNotes = localNotes.where((note) {
+      if (note.synced) return false;
+      if (note.ownerPubkey != null) return true;
+      return note.nostrEventId != null || note.sharedWith.isNotEmpty;
+    }).toList();
     final syncedNotes = <Note>[];
     for (final note in unsyncedNotes) {
       try {
@@ -1204,16 +1222,22 @@ class NostrService {
           final event = await createNoteEvent(note, author);
           final eventId = await publishNote(event, relays);
           for (final recipient in note.sharedWith) {
-            final shareEvent =
-                await createSharedNoteEvent(note: note, author: author, recipientPubHex: recipient);
+            final shareEvent = await createSharedNoteEvent(
+              note: note,
+              author: author,
+              recipientPubHex: recipient,
+            );
             await publishNote(shareEvent, relays);
           }
           syncedNotes.add(note.copyWith(synced: true, nostrEventId: eventId));
         } else {
           // Shared with me: publish an edit proposal back to the owner, who
           // merges it and re-publishes to everyone (implicit acceptance).
-          final editEvent =
-              await createEditProposalEvent(note: note, author: author, ownerPubHex: note.ownerPubkey!);
+          final editEvent = await createEditProposalEvent(
+            note: note,
+            author: author,
+            ownerPubHex: note.ownerPubkey!,
+          );
           await publishNote(editEvent, relays);
           syncedNotes.add(note.copyWith(synced: true));
         }
@@ -1285,7 +1309,10 @@ class NostrService {
     // hostile relay wasting CPU/memory on hashing and decryption attempts
     // that were never going to succeed — see [AppConstants.maxNoteEventContentChars].
     if (content.length > AppConstants.maxNoteEventContentChars) {
-      developer.log('Note event $eventId content exceeds the size cap — dropped', name: 'NostrService');
+      developer.log(
+        'Note event $eventId content exceeds the size cap — dropped',
+        name: 'NostrService',
+      );
       return null;
     }
     // Relays are untrusted: recompute the id from the event's own fields
@@ -1301,7 +1328,10 @@ class NostrService {
     // decryptable content without the private key), but the outer envelope
     // (id, tags, created_at as delivered) isn't otherwise checked at all.
     if (!_isVerifiedEvent(event)) {
-      developer.log('Note event $eventId failed id/signature verification — dropped', name: 'NostrService');
+      developer.log(
+        'Note event $eventId failed id/signature verification — dropped',
+        name: 'NostrService',
+      );
       return null;
     }
 
@@ -1312,7 +1342,20 @@ class NostrService {
         ciphertext: content,
       );
       final json = jsonDecode(plaintext) as Map<String, dynamic>;
-      return Note.fromJson(json).copyWith(synced: true, nostrEventId: eventId);
+      final parsed = Note.fromJson(json);
+      final createdAt = event.createdAt!;
+      if (_isUnreasonablyFuture(createdAt) || !_timestampsMatch(parsed.updatedAt, createdAt)) {
+        developer.log(
+          'Note event $eventId has an invalid payload/event timestamp — dropped',
+          name: 'NostrService',
+        );
+        return null;
+      }
+      return parsed.copyWith(
+        attachments: parsed.attachments.map((attachment) => attachment.withoutLocalPath()).toList(),
+        synced: true,
+        nostrEventId: eventId,
+      );
     } catch (e) {
       developer.log('Could not decrypt/parse note event $eventId: $e', name: 'NostrService');
       return null;
@@ -1344,6 +1387,15 @@ class NostrService {
     } catch (_) {
       return false;
     }
+  }
+
+  static bool _isUnreasonablyFuture(DateTime timestamp) {
+    return timestamp.isAfter(DateTime.now().add(_maxFutureEventSkew));
+  }
+
+  static bool _timestampsMatch(DateTime payload, DateTime envelope) {
+    final difference = payload.difference(envelope).abs();
+    return difference <= _timestampMatchTolerance;
   }
 
   /// Static (no instance state) so it can also run on the background

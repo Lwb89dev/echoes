@@ -18,8 +18,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get importAccountButton => 'Importa account Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Chiave privata (nsec) del tuo account Nostr';
+  String get importAccountFieldLabel => 'Chiave privata (nsec) del tuo account Nostr';
 
   @override
   String get importButton => 'Importa';
@@ -28,15 +27,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get bunkerLoginButton => 'Collega un firmatario remoto (bunker)';
 
   @override
-  String get bunkerFieldLabel =>
-      'Incolla il tuo token di connessione bunker://';
+  String get bunkerFieldLabel => 'Incolla il tuo token di connessione bunker://';
 
   @override
   String get bunkerConnectButton => 'Connetti';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Approva la connessione nel tuo firmatario, poi torna qui';
+  String get bunkerAuthPrompt => 'Approva la connessione nel tuo firmatario, poi torna qui';
 
   @override
   String get relaysTitle => 'Relay';
@@ -66,8 +63,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get diaryTabLabel => 'Diario';
 
   @override
-  String get emptyDiaryMessage =>
-      'Nessuna voce di diario. Tocca + per scriverne una.';
+  String get emptyDiaryMessage => 'Nessuna voce di diario. Tocca + per scriverne una.';
 
   @override
   String get diaryToday => 'Oggi';
@@ -167,15 +163,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Nascondi elementi completati';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Tutti gli elementi sono completati e nascosti.';
+  String get allChecklistItemsCompletedHidden => 'Tutti gli elementi sono completati e nascosti.';
 
   @override
   String get deleteCompletedItemsButton => 'Elimina elementi completati';
 
   @override
-  String get deleteCompletedItemsConfirmTitle =>
-      'Eliminare gli elementi completati?';
+  String get deleteCompletedItemsConfirmTitle => 'Eliminare gli elementi completati?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
@@ -283,8 +277,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get loadingLabel => 'Caricamento…';
 
   @override
-  String get encryptionLoadError =>
-      'Impossibile caricare le impostazioni di cifratura';
+  String get encryptionLoadError => 'Impossibile caricare le impostazioni di cifratura';
 
   @override
   String get encryptionToggleTitle => 'Proteggi le note con una password';
@@ -297,8 +290,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get lockNotesNowTitle => 'Blocca le note ora';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Per vedere le note servirà di nuovo la password';
+  String get lockNotesNowSubtitle => 'Per vedere le note servirà di nuovo la password';
 
   @override
   String get setPasswordDialogTitle => 'Imposta una password';
@@ -321,8 +313,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get enableButton => 'Attiva';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Inserisci la password per disattivare la cifratura';
+  String get disablePasswordDialogTitle => 'Inserisci la password per disattivare la cifratura';
 
   @override
   String get disableButton => 'Disattiva';
@@ -334,19 +325,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get lightThemeToggleTitle => 'Tema chiaro';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Usa una combinazione di colori chiara invece che scura';
+  String get lightThemeToggleSubtitle => 'Usa una combinazione di colori chiara invece che scura';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Passa dalla vista elenco alla vista griglia';
+  String get noteLayoutToggleTitle => 'Passa dalla vista elenco alla vista griglia';
 
   @override
   String get manageRelaysTitle => 'Gestisci relay';
 
   @override
-  String get republishAllNotesButton =>
-      'Ripubblica tutte le note sincronizzate';
+  String get republishAllNotesButton => 'Ripubblica tutte le note sincronizzate';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -390,8 +378,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sectionAccount => 'Account';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes in uso in locale — non sincronizzato con Nostr';
+  String get accountLocalOnlyMessage => 'Echoes in uso in locale — non sincronizzato con Nostr';
 
   @override
   String get accountSignInButton => 'Accedi';
@@ -415,16 +402,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Benvenuto in Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Le tue note, sempre sul tuo dispositivo';
+  String get onboardingIntroLocalTitle => 'Le tue note, sempre sul tuo dispositivo';
 
   @override
   String get onboardingIntroLocalBody =>
       'Ogni nota viene salvata prima in locale, quindi l\'app funziona completamente offline. Niente lascia il tuo dispositivo a meno che tu non scelga di sincronizzarlo.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Sincronizzazione facoltativa su Nostr';
+  String get onboardingIntroSyncTitle => 'Sincronizzazione facoltativa su Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -532,19 +517,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Cifra questo file';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Consigliato — protegge il backup con una password';
+  String get exportEncryptToggleSubtitle => 'Consigliato — protegge il backup con una password';
 
   @override
   String get exportPasswordDialogTitle => 'Inserisci la tua password';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Imposta una password per questa esportazione';
+  String get exportSetPasswordDialogTitle => 'Imposta una password per questa esportazione';
 
   @override
-  String get importPasswordDialogTitle =>
-      'Inserisci la password dell\'esportazione';
+  String get importPasswordDialogTitle => 'Inserisci la password dell\'esportazione';
 
   @override
   String get sectionData => 'Dati';
@@ -560,8 +542,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get importNotesButton => 'Importa note';
 
   @override
-  String get importNotesSubtitle =>
-      'Ripristina le note da un file esportato in precedenza';
+  String get importNotesSubtitle => 'Ripristina le note da un file esportato in precedenza';
 
   @override
   String get exportNotesSuccess => 'Note esportate';
@@ -634,19 +615,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get shareNoteTitle => 'Condividi nota';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub o chiave pubblica del destinatario';
+  String get shareRecipientFieldLabel => 'npub o chiave pubblica del destinatario';
 
   @override
   String get shareAddRecipientButton => 'Aggiungi';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Non è un npub o una chiave pubblica valida';
+  String get shareInvalidRecipientError => 'Non è un npub o una chiave pubblica valida';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Nessun account Nostr trovato per quel nome';
+  String get shareRecipientNotFoundError => 'Nessun account Nostr trovato per quel nome';
 
   @override
   String get shareConfirmTitle => 'Condividere questa nota?';
@@ -658,8 +636,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Già condivisa con questa persona';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Non puoi condividere una nota con te stesso';
+  String get shareCannotShareWithSelfError => 'Non puoi condividere una nota con te stesso';
 
   @override
   String get shareRecipientsHeader => 'Condivisa con';
@@ -695,8 +672,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get abandonSharedNoteButton => 'Abbandona questa nota condivisa';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Abbandonare questa nota condivisa?';
+  String get abandonSharedNoteConfirmTitle => 'Abbandonare questa nota condivisa?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

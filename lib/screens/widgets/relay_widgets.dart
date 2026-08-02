@@ -48,10 +48,7 @@ class _RelayUrlInputState extends ConsumerState<RelayUrlInput> {
           ),
         ),
         const SizedBox(width: 8),
-        IconButton.filled(
-          icon: const Icon(Icons.add),
-          onPressed: _addRelay,
-        ),
+        IconButton.filled(icon: const Icon(Icons.add), onPressed: _addRelay),
       ],
     );
   }
@@ -66,7 +63,8 @@ class SuggestedRelayList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUrls = ref.watch(relayProvider).value?.map((r) => r.url).toSet() ?? const <String>{};
+    final currentUrls =
+        ref.watch(relayProvider).value?.map((r) => r.url).toSet() ?? const <String>{};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

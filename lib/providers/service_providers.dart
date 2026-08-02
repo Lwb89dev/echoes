@@ -18,9 +18,7 @@ final noteEncryptionServiceProvider = Provider<NoteEncryptionService>((ref) {
 });
 
 final localStorageServiceProvider = Provider<LocalStorageService>((ref) {
-  return LocalStorageService(
-    noteEncryptionService: ref.watch(noteEncryptionServiceProvider),
-  );
+  return LocalStorageService(noteEncryptionService: ref.watch(noteEncryptionServiceProvider));
 });
 
 final nostrServiceProvider = Provider<NostrService>((ref) {

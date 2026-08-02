@@ -1,11 +1,11 @@
 {
-    "name": "echoes",
-    "short_name": "echoes",
+    "name": "Echoes",
+    "short_name": "Echoes",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#00796B",
     "theme_color": "#00796B",
-    "description": "A new Flutter project.",
+    "description": "Private, offline-first notes synchronized over Nostr.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

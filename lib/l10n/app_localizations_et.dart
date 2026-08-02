@@ -33,8 +33,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get bunkerConnectButton => 'Ühenda';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Kinnita ühendus oma allkirjastajas ja tule tagasi';
+  String get bunkerAuthPrompt => 'Kinnita ühendus oma allkirjastajas ja tule tagasi';
 
   @override
   String get relaysTitle => 'Relee';
@@ -55,8 +54,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get noSearchResultsMessage => 'Vasteid pole.';
 
   @override
-  String get emptyNotesMessage =>
-      'Märkmeid pole veel. Uue loomiseks puuduta +.';
+  String get emptyNotesMessage => 'Märkmeid pole veel. Uue loomiseks puuduta +.';
 
   @override
   String get notesTabLabel => 'Märkmed';
@@ -65,8 +63,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get diaryTabLabel => 'Päevik';
 
   @override
-  String get emptyDiaryMessage =>
-      'Päevikus pole veel sissekandeid. Puuduta +, et üks kirjutada.';
+  String get emptyDiaryMessage => 'Päevikus pole veel sissekandeid. Puuduta +, et üks kirjutada.';
 
   @override
   String get diaryToday => 'Täna';
@@ -166,15 +163,13 @@ class AppLocalizationsEt extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Peida tehtud üksused';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Kõik üksused on tehtud ja peidetud.';
+  String get allChecklistItemsCompletedHidden => 'Kõik üksused on tehtud ja peidetud.';
 
   @override
   String get deleteCompletedItemsButton => 'Kustuta tehtud üksused';
 
   @override
-  String get deleteCompletedItemsConfirmTitle =>
-      'Kas kustutada tehtud üksused?';
+  String get deleteCompletedItemsConfirmTitle => 'Kas kustutada tehtud üksused?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
@@ -231,8 +226,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get editVoiceTimestampButton => 'Muuda ajatemplit';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Häälmärkmed ei ole selles seadmes toetatud';
+  String get voiceNoteUnsupportedOnPlatform => 'Häälmärkmed ei ole selles seadmes toetatud';
 
   @override
   String get formatBoldTooltip => 'Paks';
@@ -295,8 +289,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get lockNotesNowTitle => 'Lukusta märkmed kohe';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Märgete vaatamiseks on vaja parooli uuesti sisestada';
+  String get lockNotesNowSubtitle => 'Märgete vaatamiseks on vaja parooli uuesti sisestada';
 
   @override
   String get setPasswordDialogTitle => 'Määra parool';
@@ -319,8 +312,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get enableButton => 'Aktiveeri';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Sisesta parool krüptimise keelamiseks';
+  String get disablePasswordDialogTitle => 'Sisesta parool krüptimise keelamiseks';
 
   @override
   String get disableButton => 'Keela';
@@ -332,8 +324,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get lightThemeToggleTitle => 'Hele teema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Kasuta tumeda asemel heledat värviskeemi';
+  String get lightThemeToggleSubtitle => 'Kasuta tumeda asemel heledat värviskeemi';
 
   @override
   String get noteLayoutToggleTitle => 'Lülitu loendi- ja ruudustikuvaate vahel';
@@ -342,8 +333,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get manageRelaysTitle => 'Halda releesid';
 
   @override
-  String get republishAllNotesButton =>
-      'Avalda kõik sünkroonitud märkmed uuesti';
+  String get republishAllNotesButton => 'Avalda kõik sünkroonitud märkmed uuesti';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -387,8 +377,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get sectionAccount => 'Konto';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes kasutamine kohalikult — Nostriga ei sünkroonita';
+  String get accountLocalOnlyMessage => 'Echoes kasutamine kohalikult — Nostriga ei sünkroonita';
 
   @override
   String get accountSignInButton => 'Logi sisse';
@@ -419,8 +408,7 @@ class AppLocalizationsEt extends AppLocalizations {
       'Iga märge salvestatakse kõigepealt kohalikult, nii et rakendus töötab täielikult võrguühenduseta. Miski ei lahku sinu seadmest, kui sa ei vali sünkroonimist.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Valikuline sünkroonimine Nostri kaudu';
+  String get onboardingIntroSyncTitle => 'Valikuline sünkroonimine Nostri kaudu';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -454,8 +442,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get onboardingBackButton => 'Tagasi';
 
   @override
-  String get onboardingSkipButton =>
-      'Jäta vahele — kasuta Echoesi ainult kohalikult';
+  String get onboardingSkipButton => 'Jäta vahele — kasuta Echoesi ainult kohalikult';
 
   @override
   String get onboardingRelayTitle => 'Vali sünkroonimiseks releed';
@@ -529,15 +516,13 @@ class AppLocalizationsEt extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Krüpti see fail';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Soovitatav — kaitseb varukoopiat parooliga';
+  String get exportEncryptToggleSubtitle => 'Soovitatav — kaitseb varukoopiat parooliga';
 
   @override
   String get exportPasswordDialogTitle => 'Sisestage oma parool';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Määrake selle ekspordi jaoks parool';
+  String get exportSetPasswordDialogTitle => 'Määrake selle ekspordi jaoks parool';
 
   @override
   String get importPasswordDialogTitle => 'Sisestage ekspordi parool';
@@ -635,12 +620,10 @@ class AppLocalizationsEt extends AppLocalizations {
   String get shareAddRecipientButton => 'Lisa';
 
   @override
-  String get shareInvalidRecipientError =>
-      'See pole kehtiv npub ega avalik võti';
+  String get shareInvalidRecipientError => 'See pole kehtiv npub ega avalik võti';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Selle nimega Nostri kontot ei leitud';
+  String get shareRecipientNotFoundError => 'Selle nimega Nostri kontot ei leitud';
 
   @override
   String get shareConfirmTitle => 'Kas jagada seda märkust?';
@@ -652,8 +635,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Selle inimesega on juba jagatud';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Sa ei saa märkust iseendaga jagada';
+  String get shareCannotShareWithSelfError => 'Sa ei saa märkust iseendaga jagada';
 
   @override
   String get shareRecipientsHeader => 'Jagatud kasutajaga';
@@ -689,8 +671,7 @@ class AppLocalizationsEt extends AppLocalizations {
   String get abandonSharedNoteButton => 'Lahku sellest jagatud märkusest';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Kas lahkuda sellest jagatud märkusest?';
+  String get abandonSharedNoteConfirmTitle => 'Kas lahkuda sellest jagatud märkusest?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

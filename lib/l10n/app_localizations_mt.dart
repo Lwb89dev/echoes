@@ -18,8 +18,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get importAccountButton => 'Importa kont Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Ċavetta privata (nsec) tal-kont Nostr tiegħek';
+  String get importAccountFieldLabel => 'Ċavetta privata (nsec) tal-kont Nostr tiegħek';
 
   @override
   String get importButton => 'Importa';
@@ -28,15 +27,13 @@ class AppLocalizationsMt extends AppLocalizations {
   String get bunkerLoginButton => 'Qabbad firmatarju remot (bunker)';
 
   @override
-  String get bunkerFieldLabel =>
-      'Waħħal it-token tal-konnessjoni bunker:// tiegħek';
+  String get bunkerFieldLabel => 'Waħħal it-token tal-konnessjoni bunker:// tiegħek';
 
   @override
   String get bunkerConnectButton => 'Qabbad';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Approva l-konnessjoni fil-firmatarju tiegħek u erġa\' lura';
+  String get bunkerAuthPrompt => 'Approva l-konnessjoni fil-firmatarju tiegħek u erġa\' lura';
 
   @override
   String get relaysTitle => 'Relays';
@@ -57,8 +54,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get noSearchResultsMessage => 'L-ebda riżultat.';
 
   @override
-  String get emptyNotesMessage =>
-      'Għad m\'hemm l-ebda nota. Mess + biex toħloq waħda.';
+  String get emptyNotesMessage => 'Għad m\'hemm l-ebda nota. Mess + biex toħloq waħda.';
 
   @override
   String get notesTabLabel => 'Noti';
@@ -67,8 +63,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get diaryTabLabel => 'Djarju';
 
   @override
-  String get emptyDiaryMessage =>
-      'Għad m\'hemmx entrati fid-djarju. Għafas + biex tikteb waħda.';
+  String get emptyDiaryMessage => 'Għad m\'hemmx entrati fid-djarju. Għafas + biex tikteb waħda.';
 
   @override
   String get diaryToday => 'Illum';
@@ -168,8 +163,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Aħbi l-elementi lesti';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'L-elementi kollha huma lesti u moħbija.';
+  String get allChecklistItemsCompletedHidden => 'L-elementi kollha huma lesti u moħbija.';
 
   @override
   String get deleteCompletedItemsButton => 'Ħassar l-elementi lesti';
@@ -232,8 +226,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get editVoiceTimestampButton => 'Editja t-timbru tal-ħin';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Noti bil-vuċi mhumiex sostnuti fuq dan l-apparat';
+  String get voiceNoteUnsupportedOnPlatform => 'Noti bil-vuċi mhumiex sostnuti fuq dan l-apparat';
 
   @override
   String get formatBoldTooltip => 'Grassett';
@@ -283,8 +276,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get loadingLabel => 'Qed jgħabbi…';
 
   @override
-  String get encryptionLoadError =>
-      'Ma setgħux jitgħabbew is-settings tal-kriptaġġ';
+  String get encryptionLoadError => 'Ma setgħux jitgħabbew is-settings tal-kriptaġġ';
 
   @override
   String get encryptionToggleTitle => 'Ipproteġi n-noti b\'password';
@@ -297,8 +289,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get lockNotesNowTitle => 'Issakkar in-noti issa';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Il-password tkun meħtieġa mill-ġdid biex tara n-noti';
+  String get lockNotesNowSubtitle => 'Il-password tkun meħtieġa mill-ġdid biex tara n-noti';
 
   @override
   String get setPasswordDialogTitle => 'Issettja password';
@@ -334,8 +325,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get lightThemeToggleTitle => 'Tema ċara';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Uża skema ta\' kuluri ċari minflok skura';
+  String get lightThemeToggleSubtitle => 'Uża skema ta\' kuluri ċari minflok skura';
 
   @override
   String get noteLayoutToggleTitle => 'Aqleb bejn il-lista u l-gradilja';
@@ -344,8 +334,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get manageRelaysTitle => 'Immaniġġja r-relays';
 
   @override
-  String get republishAllNotesButton =>
-      'Erġa\' ippubblika n-noti sinkronizzati kollha';
+  String get republishAllNotesButton => 'Erġa\' ippubblika n-noti sinkronizzati kollha';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -389,8 +378,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get sectionAccount => 'Kont';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Qed tuża Echoes lokalment — mhux sinkronizzat ma\' Nostr';
+  String get accountLocalOnlyMessage => 'Qed tuża Echoes lokalment — mhux sinkronizzat ma\' Nostr';
 
   @override
   String get accountSignInButton => 'Idħol';
@@ -414,16 +402,14 @@ class AppLocalizationsMt extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Merħba f\'Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'In-noti tiegħek, dejjem fuq l-apparat tiegħek';
+  String get onboardingIntroLocalTitle => 'In-noti tiegħek, dejjem fuq l-apparat tiegħek';
 
   @override
   String get onboardingIntroLocalBody =>
       'Kull nota tiġi salvata lokalment l-ewwel, biex l-app taħdem kompletament offline. Xejn ma jitlaq mill-apparat tiegħek sakemm ma tagħżilx li tissinkronizzah.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Sinkronizzazzjoni fakultattiva permezz ta\' Nostr';
+  String get onboardingIntroSyncTitle => 'Sinkronizzazzjoni fakultattiva permezz ta\' Nostr';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -437,8 +423,7 @@ class AppLocalizationsMt extends AppLocalizations {
       'In-noti sinkronizzati ma\' Nostr huma kriptati minn tarf sa tarf, biex l-operaturi tar-relay — u kulħadd ħaddieħor — qatt ma jkunu jistgħu jaqraw il-kontenut tagħhom.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Idħol mingħajr ma tesponi ċ-ċavetta tiegħek';
+  String get onboardingIntroAmberTitle => 'Idħol mingħajr ma tesponi ċ-ċavetta tiegħek';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -532,19 +517,16 @@ class AppLocalizationsMt extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Kripta dan il-fajl';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Rakkomandat — jipproteġi l-backup b\'password';
+  String get exportEncryptToggleSubtitle => 'Rakkomandat — jipproteġi l-backup b\'password';
 
   @override
   String get exportPasswordDialogTitle => 'Daħħal il-password tiegħek';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Issettja password għal din l-esportazzjoni';
+  String get exportSetPasswordDialogTitle => 'Issettja password għal din l-esportazzjoni';
 
   @override
-  String get importPasswordDialogTitle =>
-      'Daħħal il-password tal-esportazzjoni';
+  String get importPasswordDialogTitle => 'Daħħal il-password tal-esportazzjoni';
 
   @override
   String get sectionData => 'Data';
@@ -633,19 +615,16 @@ class AppLocalizationsMt extends AppLocalizations {
   String get shareNoteTitle => 'Aqsam nota';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub jew ċavetta pubblika tar-riċevitur';
+  String get shareRecipientFieldLabel => 'npub jew ċavetta pubblika tar-riċevitur';
 
   @override
   String get shareAddRecipientButton => 'Żid';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Dan mhux npub jew ċavetta pubblika valida';
+  String get shareInvalidRecipientError => 'Dan mhux npub jew ċavetta pubblika valida';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Ma nstab ebda kont Nostr għal dak l-isem';
+  String get shareRecipientNotFoundError => 'Ma nstab ebda kont Nostr għal dak l-isem';
 
   @override
   String get shareConfirmTitle => 'Aqsam din in-nota?';
@@ -657,8 +636,7 @@ class AppLocalizationsMt extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Diġà maqsuma ma\' din il-persuna';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Ma tistax taqsam nota miegħek innifsek';
+  String get shareCannotShareWithSelfError => 'Ma tistax taqsam nota miegħek innifsek';
 
   @override
   String get shareRecipientsHeader => 'Maqsuma ma\'';

@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:dart_nostr/dart_nostr.dart';
 
 import '../utils/crypto.dart';
+import '../utils/network_url.dart';
 
 /// A NIP-46 ("Nostr Connect" / remote signing) client — the desktop- and
 /// mobile-friendly alternative to holding an nsec or to Amber's Android-only
@@ -35,7 +36,9 @@ import '../utils/crypto.dart';
 ///    secret, not any decrypted payload.
 class Nip46Client {
   Nip46Client({required this.session, this.onAuthChallenge})
-      : _clientKeyPairs = _nostr.keys.generateKeyPairFromExistingPrivateKey(session.clientPrivateKeyHex);
+    : _clientKeyPairs = Nostr.instance.keys.generateKeyPairFromExistingPrivateKey(
+        session.clientPrivateKeyHex,
+      );
 
   final Nip46Session session;
 
@@ -53,7 +56,12 @@ class Nip46Client {
   /// notes to — silently sending the user's (encrypted, but still) note
   /// events to a relay they only added to reach their signer. Isolating the
   /// transport keeps signer traffic and note traffic on separate sockets.
-  static final Nostr _nostr = Nostr();
+  ///
+  /// This must also be per-client, not static: during account replacement the
+  /// old client is disposed after the new one connects. A shared transport
+  /// would let the old client's `freeAllResources()` tear down the new
+  /// session's sockets.
+  final Nostr _nostr = Nostr();
   final _pending = <String, Completer<String>>{};
   final _authNotified = <String>{};
   NostrEventsStream? _subscription;
@@ -92,7 +100,10 @@ class Nip46Client {
   /// `get_public_key`, returning it. Throws on timeout or signer error.
   Future<String> connectAndGetPubkey() async {
     await start();
-    final params = <String>[session.remoteSignerPubHex, if (session.secret != null) session.secret!];
+    final params = <String>[
+      session.remoteSignerPubHex,
+      if (session.secret != null) session.secret!,
+    ];
     await _request('connect', params);
     return getPublicKey();
   }
@@ -103,12 +114,17 @@ class Nip46Client {
   /// `id`/`sig`) and returns the signed event JSON. The returned event is
   /// verified to be validly signed by [expectedPubkey] before it's trusted —
   /// so a compromised relay can't slip back a differently-keyed event.
-  Future<String> signEvent(Map<String, dynamic> unsignedEvent, {required String expectedPubkey}) async {
+  Future<String> signEvent(
+    Map<String, dynamic> unsignedEvent, {
+    required String expectedPubkey,
+  }) async {
     final signedJson = await _request('sign_event', [jsonEncode(unsignedEvent)]);
     final map = jsonDecode(signedJson) as Map<String, dynamic>;
     final event = _eventFromMap(map);
     if (event.pubkey != expectedPubkey || !_isVerified(event)) {
-      throw const Nip46Exception('Signer returned an event with an invalid or unexpected signature.');
+      throw const Nip46Exception(
+        'Signer returned an event with an invalid or unexpected signature.',
+      );
     }
     return signedJson;
   }
@@ -125,7 +141,9 @@ class Nip46Client {
     _streamSub = null;
     _subscription = null;
     for (final completer in _pending.values) {
-      if (!completer.isCompleted) completer.completeError(const Nip46Exception('Client disposed.'));
+      if (!completer.isCompleted) {
+        completer.completeError(const Nip46Exception('Client disposed.'));
+      }
     }
     _pending.clear();
     // Close the dedicated transport's sockets so logout doesn't leave a live
@@ -168,13 +186,15 @@ class Nip46Client {
       _pending.remove(id);
       throw Nip46Exception('Could not reach the signer relay: $e');
     }
-    return completer.future.timeout(
-      _requestTimeout,
-      onTimeout: () {
-        _pending.remove(id);
-        throw const Nip46Exception('The signer did not respond in time.');
-      },
-    );
+    try {
+      return await completer.future.timeout(
+        _requestTimeout,
+        onTimeout: () => throw const Nip46Exception('The signer did not respond in time.'),
+      );
+    } finally {
+      _pending.remove(id);
+      _authNotified.remove(id);
+    }
   }
 
   /// Validates and dispatches one inbound event. Every check here is a
@@ -205,8 +225,12 @@ class Nip46Client {
 
     // An auth challenge is not the final answer: surface the URL once and
     // keep the request pending for the real result on the same id.
-    if (response.authUrl != null && (response.result == null || response.result!.isEmpty) && response.error == null) {
-      if (_authNotified.add(response.id)) onAuthChallenge?.call(response.authUrl!);
+    if (response.authUrl != null &&
+        (response.result == null || response.result!.isEmpty) &&
+        response.error == null) {
+      if (_authNotified.add(response.id)) {
+        onAuthChallenge?.call(response.authUrl!);
+      }
       return;
     }
 
@@ -220,7 +244,9 @@ class Nip46Client {
 
   bool _pTaggedToClient(NostrEvent event) {
     for (final tag in event.tags ?? const <List<String>>[]) {
-      if (tag.length >= 2 && tag[0] == 'p' && tag[1] == clientPublicKeyHex) return true;
+      if (tag.length >= 2 && tag[0] == 'p' && tag[1] == clientPublicKeyHex) {
+        return true;
+      }
     }
     return false;
   }
@@ -323,28 +349,37 @@ class Nip46Session {
   final String? secret;
 
   Nip46Session copyWith({String? userPubHex}) => Nip46Session(
-        clientPrivateKeyHex: clientPrivateKeyHex,
-        remoteSignerPubHex: remoteSignerPubHex,
-        relays: relays,
-        userPubHex: userPubHex ?? this.userPubHex,
-        secret: secret,
-      );
+    clientPrivateKeyHex: clientPrivateKeyHex,
+    remoteSignerPubHex: remoteSignerPubHex,
+    relays: relays,
+    userPubHex: userPubHex ?? this.userPubHex,
+    secret: secret,
+  );
+
+  /// The connect secret is single-use bootstrap material. It has no purpose
+  /// after the handshake and must not remain in the persisted session.
+  Nip46Session withoutSecret() => Nip46Session(
+    clientPrivateKeyHex: clientPrivateKeyHex,
+    remoteSignerPubHex: remoteSignerPubHex,
+    relays: relays,
+    userPubHex: userPubHex,
+  );
 
   Map<String, dynamic> toJson() => {
-        'clientPrivateKeyHex': clientPrivateKeyHex,
-        'remoteSignerPubHex': remoteSignerPubHex,
-        'relays': relays,
-        'userPubHex': userPubHex,
-        'secret': secret,
-      };
+    'clientPrivateKeyHex': clientPrivateKeyHex,
+    'remoteSignerPubHex': remoteSignerPubHex,
+    'relays': relays,
+    'userPubHex': userPubHex,
+    'secret': secret,
+  };
 
   factory Nip46Session.fromJson(Map<String, dynamic> json) => Nip46Session(
-        clientPrivateKeyHex: json['clientPrivateKeyHex'] as String,
-        remoteSignerPubHex: json['remoteSignerPubHex'] as String,
-        relays: (json['relays'] as List<dynamic>).map((e) => e as String).toList(),
-        userPubHex: json['userPubHex'] as String,
-        secret: json['secret'] as String?,
-      );
+    clientPrivateKeyHex: json['clientPrivateKeyHex'] as String,
+    remoteSignerPubHex: json['remoteSignerPubHex'] as String,
+    relays: (json['relays'] as List<dynamic>).map((e) => e as String).toList(),
+    userPubHex: json['userPubHex'] as String,
+    secret: json['secret'] as String?,
+  ).._validate();
 
   /// Parses a `bunker://<signer-pubkey-hex>?relay=<url>&relay=<url>&secret=<s>`
   /// token into a session with a freshly generated ephemeral client key.
@@ -355,25 +390,64 @@ class Nip46Session {
     if (!trimmed.startsWith('bunker://')) {
       throw const Nip46Exception('Not a bunker:// connection token.');
     }
-    // Reparse under a scheme Uri understands, so the host (signer pubkey) and
-    // query are decoded by the standard parser rather than by hand.
-    final parsed = Uri.parse('https://${trimmed.substring('bunker://'.length)}');
-    final signer = parsed.host.toLowerCase();
-    if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(signer)) {
+    final tokenBody = trimmed.substring('bunker://'.length);
+    final queryStart = tokenBody.indexOf('?');
+    final rawSigner = queryStart == -1 ? tokenBody : tokenBody.substring(0, queryStart);
+    if (!RegExp(r'^[0-9a-fA-F]{64}$').hasMatch(rawSigner)) {
       throw const Nip46Exception('The bunker token has an invalid signer public key.');
     }
-    final relays = parsed.queryParametersAll['relay'] ?? const [];
-    final wssRelays = relays.where((r) => r.startsWith('wss://') || r.startsWith('ws://')).toList();
-    if (wssRelays.isEmpty) {
-      throw const Nip46Exception('The bunker token names no relay to reach the signer on.');
+    // Reparse under a scheme Uri understands, so the host (signer pubkey) and
+    // query are decoded by the standard parser rather than by hand.
+    final parsed = Uri.parse('https://$tokenBody');
+    final signer = parsed.host.toLowerCase();
+    if (parsed.authority.toLowerCase() != signer ||
+        parsed.userInfo.isNotEmpty ||
+        parsed.hasPort ||
+        (parsed.path.isNotEmpty && parsed.path != '/') ||
+        parsed.fragment.isNotEmpty) {
+      throw const Nip46Exception('The bunker token has an invalid authority or path.');
     }
-    return Nip46Session(
+    final relays = parsed.queryParametersAll['relay'] ?? const [];
+    final relayUrls = <String>[];
+    for (final relay in relays) {
+      try {
+        relayUrls.add(requireWebSocketUri(relay).toString());
+      } on FormatException {
+        // Ignore unrelated/malformed relay parameters as long as one valid
+        // relay remains.
+      }
+    }
+    if (relayUrls.isEmpty) {
+      throw const Nip46Exception('The bunker token names no valid relay to reach the signer on.');
+    }
+    final session = Nip46Session(
       clientPrivateKeyHex: clientPrivateKeyHex,
       remoteSignerPubHex: signer,
-      relays: wssRelays,
+      relays: relayUrls,
       userPubHex: '', // filled after connect
       secret: parsed.queryParameters['secret'],
     );
+    session._validate(allowEmptyUserPubkey: true);
+    return session;
+  }
+
+  void _validate({bool allowEmptyUserPubkey = false}) {
+    final hex64 = RegExp(r'^[0-9a-fA-F]{64}$');
+    if (!hex64.hasMatch(clientPrivateKeyHex) ||
+        !hex64.hasMatch(remoteSignerPubHex) ||
+        (!allowEmptyUserPubkey && !hex64.hasMatch(userPubHex))) {
+      throw const Nip46Exception('The bunker session contains invalid key material.');
+    }
+    if (relays.isEmpty) {
+      throw const Nip46Exception('The bunker session contains no relay.');
+    }
+    for (final relay in relays) {
+      try {
+        requireWebSocketUri(relay);
+      } on FormatException {
+        throw const Nip46Exception('The bunker session contains an invalid relay.');
+      }
+    }
   }
 }
 

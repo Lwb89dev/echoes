@@ -29,10 +29,7 @@ class NoteEncryptionService {
   static const _saltLength = 16;
   static const _verifierPlaintext = 'echoes-note-encryption-verifier';
 
-  final Pbkdf2 _pbkdf2 = Pbkdf2.hmacSha256(
-    iterations: _pbkdf2Iterations,
-    bits: _keyBits,
-  );
+  final Pbkdf2 _pbkdf2 = Pbkdf2.hmacSha256(iterations: _pbkdf2Iterations, bits: _keyBits);
   final AesGcm _aesGcm = AesGcm.with256bits();
 
   SecretKey? _cachedKey;
@@ -90,10 +87,11 @@ class NoteEncryptionService {
     final verifierB64 = prefs.getString(AppConstants.prefsNoteEncryptionVerifierKey);
     final verifierNonceB64 = prefs.getString(AppConstants.prefsNoteEncryptionVerifierNonceKey);
     final verifierMacB64 = prefs.getString(AppConstants.prefsNoteEncryptionVerifierMacKey);
-    if (saltB64 == null || verifierB64 == null || verifierNonceB64 == null || verifierMacB64 == null) {
-      throw StateError(
-        'No encryption configuration found: password protection is not enabled.',
-      );
+    if (saltB64 == null ||
+        verifierB64 == null ||
+        verifierNonceB64 == null ||
+        verifierMacB64 == null) {
+      throw StateError('No encryption configuration found: password protection is not enabled.');
     }
 
     final key = await _deriveKey(password, base64Decode(saltB64));
@@ -125,10 +123,7 @@ class NoteEncryptionService {
     final salt = _randomBytes(_saltLength);
     final key = await _deriveKey(password, salt);
 
-    final verifierBox = await _aesGcm.encrypt(
-      utf8.encode(_verifierPlaintext),
-      secretKey: key,
-    );
+    final verifierBox = await _aesGcm.encrypt(utf8.encode(_verifierPlaintext), secretKey: key);
 
     final prefs = await _prefs;
     await prefs.setString(AppConstants.prefsNoteEncryptionSaltKey, base64Encode(salt));
@@ -157,12 +152,16 @@ class NoteEncryptionService {
   Future<void> disable() async {
     developer.log('NoteEncryptionService.disable called', name: 'NoteEncryptionService');
     final prefs = await _prefs;
+    // The caller has already rewritten every note in plaintext. Flip the
+    // authoritative flag first: a crash during best-effort metadata cleanup
+    // then leaves readable notes plus harmless stale verifier material,
+    // instead of `enabled=true` with a partially deleted key configuration.
+    await prefs.setBool(AppConstants.prefsNoteEncryptionEnabledKey, false);
+    _cachedKey = null;
     await prefs.remove(AppConstants.prefsNoteEncryptionSaltKey);
     await prefs.remove(AppConstants.prefsNoteEncryptionVerifierKey);
     await prefs.remove(AppConstants.prefsNoteEncryptionVerifierNonceKey);
     await prefs.remove(AppConstants.prefsNoteEncryptionVerifierMacKey);
-    await prefs.setBool(AppConstants.prefsNoteEncryptionEnabledKey, false);
-    _cachedKey = null;
   }
 
   /// Encrypts a string (typically a [Note]'s JSON) with the cached key.
@@ -205,7 +204,10 @@ class NoteEncryptionService {
   /// from [password], returning a self-contained map — including its own
   /// salt — that [decryptExportWithPassword] can later reverse with just
   /// the same password, no other saved state required.
-  Future<Map<String, dynamic>> encryptExportWithNewPassword(String plaintext, String password) async {
+  Future<Map<String, dynamic>> encryptExportWithNewPassword(
+    String plaintext,
+    String password,
+  ) async {
     final salt = _randomBytes(_saltLength);
     final key = await _deriveKey(password, salt);
     final box = await _aesGcm.encrypt(utf8.encode(plaintext), secretKey: key);
@@ -221,17 +223,45 @@ class NoteEncryptionService {
   /// [SecretBoxAuthenticationError] on a wrong password — callers should
   /// catch that specifically to show an inline "wrong password" message.
   Future<String> decryptExportWithPassword(Map<String, dynamic> stored, String password) async {
-    final salt = base64Decode(stored['salt'] as String);
+    final salt = _decodeExportField(stored, 'salt', exactLength: _saltLength);
+    final nonce = _decodeExportField(stored, 'nonce', exactLength: 12);
+    final mac = _decodeExportField(stored, 'mac', exactLength: 16);
+    final ciphertext = _decodeExportField(
+      stored,
+      'ciphertext',
+      maxLength: AppConstants.maxImportBytes,
+    );
     final key = await _deriveKey(password, salt);
     final plaintext = await _aesGcm.decrypt(
-      SecretBox(
-        base64Decode(stored['ciphertext'] as String),
-        nonce: base64Decode(stored['nonce'] as String),
-        mac: Mac(base64Decode(stored['mac'] as String)),
-      ),
+      SecretBox(ciphertext, nonce: nonce, mac: Mac(mac)),
       secretKey: key,
     );
     return utf8.decode(plaintext);
+  }
+
+  List<int> _decodeExportField(
+    Map<String, dynamic> stored,
+    String name, {
+    int? exactLength,
+    int? maxLength,
+  }) {
+    final encoded = stored[name];
+    if (encoded is! String) {
+      throw FormatException('Encrypted export is missing $name.');
+    }
+    final List<int> decoded;
+    try {
+      decoded = base64Decode(encoded);
+    } on FormatException {
+      throw FormatException('Encrypted export has invalid $name.');
+    }
+    if (exactLength != null && decoded.length != exactLength) {
+      throw FormatException('Encrypted export has invalid $name length.');
+    }
+    if (maxLength != null && decoded.length > maxLength) {
+      throw FormatException('Encrypted export $name exceeds the size limit.');
+    }
+    return decoded;
   }
 
   SecretKey _requireCachedKey() {

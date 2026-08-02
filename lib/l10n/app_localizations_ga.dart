@@ -18,8 +18,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get importAccountButton => 'Iompórtáil cuntas Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Eochair phríobháideach (nsec) do chuntais Nostr';
+  String get importAccountFieldLabel => 'Eochair phríobháideach (nsec) do chuntais Nostr';
 
   @override
   String get importButton => 'Iompórtáil';
@@ -34,8 +33,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get bunkerConnectButton => 'Ceangail';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Ceadaigh an ceangal i do shínitheoir agus fill ansin';
+  String get bunkerAuthPrompt => 'Ceadaigh an ceangal i do shínitheoir agus fill ansin';
 
   @override
   String get relaysTitle => 'Athsheachadáin';
@@ -56,8 +54,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get noSearchResultsMessage => 'Gan torthaí.';
 
   @override
-  String get emptyNotesMessage =>
-      'Níl aon nótaí ann fós. Tapáil + chun ceann a chruthú.';
+  String get emptyNotesMessage => 'Níl aon nótaí ann fós. Tapáil + chun ceann a chruthú.';
 
   @override
   String get notesTabLabel => 'Nótaí';
@@ -66,8 +63,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get diaryTabLabel => 'Dialann';
 
   @override
-  String get emptyDiaryMessage =>
-      'Níl aon iontráil dialainne fós. Tapáil + chun ceann a scríobh.';
+  String get emptyDiaryMessage => 'Níl aon iontráil dialainne fós. Tapáil + chun ceann a scríobh.';
 
   @override
   String get diaryToday => 'Inniu';
@@ -167,8 +163,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Folaigh míreanna déanta';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Tá gach mír déanta agus folaithe.';
+  String get allChecklistItemsCompletedHidden => 'Tá gach mír déanta agus folaithe.';
 
   @override
   String get deleteCompletedItemsButton => 'Scrios míreanna déanta';
@@ -231,8 +226,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get editVoiceTimestampButton => 'Cuir an stampa ama in eagar';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Ní thacaítear le nótaí gutha ar an bhfeiste seo';
+  String get voiceNoteUnsupportedOnPlatform => 'Ní thacaítear le nótaí gutha ar an bhfeiste seo';
 
   @override
   String get formatBoldTooltip => 'Trom';
@@ -282,8 +276,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get loadingLabel => 'Á luchtú…';
 
   @override
-  String get encryptionLoadError =>
-      'Níorbh fhéidir socruithe criptithe a luchtú';
+  String get encryptionLoadError => 'Níorbh fhéidir socruithe criptithe a luchtú';
 
   @override
   String get encryptionToggleTitle => 'Cosain nótaí le focal faire';
@@ -320,8 +313,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get enableButton => 'Cumasaigh';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Iontráil d\'fhocal faire chun an criptiú a dhíchumasú';
+  String get disablePasswordDialogTitle => 'Iontráil d\'fhocal faire chun an criptiú a dhíchumasú';
 
   @override
   String get disableButton => 'Díchumasaigh';
@@ -333,12 +325,10 @@ class AppLocalizationsGa extends AppLocalizations {
   String get lightThemeToggleTitle => 'Téama geal';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Úsáid scéim dathanna gheal in ionad dorcha';
+  String get lightThemeToggleSubtitle => 'Úsáid scéim dathanna gheal in ionad dorcha';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Athraigh idir amharc liosta agus greille';
+  String get noteLayoutToggleTitle => 'Athraigh idir amharc liosta agus greille';
 
   @override
   String get manageRelaysTitle => 'Bainistigh athsheachadáin';
@@ -388,8 +378,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get sectionAccount => 'Cuntas';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes á úsáid go háitiúil — gan sioncronú le Nostr';
+  String get accountLocalOnlyMessage => 'Echoes á úsáid go háitiúil — gan sioncronú le Nostr';
 
   @override
   String get accountSignInButton => 'Sínigh isteach';
@@ -413,8 +402,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Fáilte go Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Do chuid nótaí, i gcónaí ar do ghléas';
+  String get onboardingIntroLocalTitle => 'Do chuid nótaí, i gcónaí ar do ghléas';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -435,8 +423,7 @@ class AppLocalizationsGa extends AppLocalizations {
       'Tá nótaí atá sioncronaithe le Nostr criptithe ó cheann go ceann, sa chaoi nach féidir le hoibreoirí athsheachadáin — ná duine ar bith eile — a bhfuil iontu a léamh riamh.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Sínigh isteach gan d\'eochair a nochtadh';
+  String get onboardingIntroAmberTitle => 'Sínigh isteach gan d\'eochair a nochtadh';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -459,8 +446,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get onboardingSkipButton => 'Ná bac — úsáid Echoes go háitiúil amháin';
 
   @override
-  String get onboardingRelayTitle =>
-      'Roghnaigh athsheachadáin le haghaidh sioncronaithe';
+  String get onboardingRelayTitle => 'Roghnaigh athsheachadáin le haghaidh sioncronaithe';
 
   @override
   String get onboardingRelayBody =>
@@ -531,19 +517,16 @@ class AppLocalizationsGa extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Criptigh an comhad seo';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Molta — cosnaíonn sé an cúltaca le pasfhocal';
+  String get exportEncryptToggleSubtitle => 'Molta — cosnaíonn sé an cúltaca le pasfhocal';
 
   @override
   String get exportPasswordDialogTitle => 'Cuir isteach do phasfhocal';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Socraigh pasfhocal don easpórtáil seo';
+  String get exportSetPasswordDialogTitle => 'Socraigh pasfhocal don easpórtáil seo';
 
   @override
-  String get importPasswordDialogTitle =>
-      'Cuir isteach pasfhocal na heaspórtála';
+  String get importPasswordDialogTitle => 'Cuir isteach pasfhocal na heaspórtála';
 
   @override
   String get sectionData => 'Sonraí';
@@ -559,8 +542,7 @@ class AppLocalizationsGa extends AppLocalizations {
   String get importNotesButton => 'Iompórtáil nótaí';
 
   @override
-  String get importNotesSubtitle =>
-      'Athchóirigh nótaí ó chomhad a easpórtáladh roimhe seo';
+  String get importNotesSubtitle => 'Athchóirigh nótaí ó chomhad a easpórtáladh roimhe seo';
 
   @override
   String get exportNotesSuccess => 'Nótaí easpórtáilte';
@@ -633,19 +615,16 @@ class AppLocalizationsGa extends AppLocalizations {
   String get shareNoteTitle => 'Comhroinn nóta';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub nó eochair phoiblí an fhaighteora';
+  String get shareRecipientFieldLabel => 'npub nó eochair phoiblí an fhaighteora';
 
   @override
   String get shareAddRecipientButton => 'Cuir leis';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Ní npub ná eochair phoiblí bhailí é sin';
+  String get shareInvalidRecipientError => 'Ní npub ná eochair phoiblí bhailí é sin';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Níor aimsíodh aon chuntas Nostr don ainm sin';
+  String get shareRecipientNotFoundError => 'Níor aimsíodh aon chuntas Nostr don ainm sin';
 
   @override
   String get shareConfirmTitle => 'An nóta seo a roinnt?';
@@ -654,19 +633,16 @@ class AppLocalizationsGa extends AppLocalizations {
   String get shareConfirmButton => 'Roinn';
 
   @override
-  String get shareAlreadyRecipientError =>
-      'Comhroinnte leis an duine seo cheana';
+  String get shareAlreadyRecipientError => 'Comhroinnte leis an duine seo cheana';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Ní féidir leat nóta a chomhroinnt leat féin';
+  String get shareCannotShareWithSelfError => 'Ní féidir leat nóta a chomhroinnt leat féin';
 
   @override
   String get shareRecipientsHeader => 'Comhroinnte le';
 
   @override
-  String get shareNoRecipientsMessage =>
-      'Níl sé comhroinnte le duine ar bith fós.';
+  String get shareNoRecipientsMessage => 'Níl sé comhroinnte le duine ar bith fós.';
 
   @override
   String get stopSharingTooltip => 'Stop á chomhroinnt leis an duine seo';

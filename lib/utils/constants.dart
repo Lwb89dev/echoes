@@ -112,6 +112,15 @@ class AppConstants {
   /// declares a larger `sizeBytes` is rejected before a single byte is read.
   static const int maxAttachmentBytes = 50 * 1024 * 1024;
 
+  /// Bounds user-selected import files before JSON decoding and object
+  /// allocation. Imports are untrusted input even though the picker requires
+  /// an explicit user action.
+  static const int maxImportBytes = 50 * 1024 * 1024;
+
+  /// Prevents a compact JSON file containing millions of tiny note objects
+  /// from monopolising memory and storage in one import.
+  static const int maxImportedNotes = 10000;
+
   /// Upper bound on how many inbound shared items one sync cycle will apply.
   /// Anyone on the network can publish an event `p`-tagging you (a note
   /// "shared" with you), just like anyone can send you a Nostr DM — so this

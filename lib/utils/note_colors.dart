@@ -13,14 +13,14 @@ extension NoteColorSwatch on NoteColor {
   /// than the initial "100" pick (too washed-out per user feedback), still
   /// squarely pastel rather than a highlighter/neon tone.
   Color get background => switch (this) {
-        NoteColor.yellow => const Color(0xFFFFF59D),
-        NoteColor.red => const Color(0xFFEF9A9A),
-        NoteColor.purple => const Color(0xFFCE93D8),
-        NoteColor.blue => const Color(0xFF90CAF9),
-        NoteColor.green => const Color(0xFFA5D6A7),
-        NoteColor.orange => const Color(0xFFFFCC80),
-        NoteColor.white => const Color(0xFFFFFFFF),
-      };
+    NoteColor.yellow => const Color(0xFFFFF59D),
+    NoteColor.red => const Color(0xFFEF9A9A),
+    NoteColor.purple => const Color(0xFFCE93D8),
+    NoteColor.blue => const Color(0xFF90CAF9),
+    NoteColor.green => const Color(0xFFA5D6A7),
+    NoteColor.orange => const Color(0xFFFFCC80),
+    NoteColor.white => const Color(0xFFFFFFFF),
+  };
 
   /// The color to render *text* in in front of [background] — see
   /// [readableTextColorOn] for how this is decided.

@@ -87,8 +87,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deleteNoteConfirmTitle => 'このメモを削除しますか?';
 
   @override
-  String get deleteNoteConfirmBody =>
-      'この操作は元に戻せません。このメモが同期されていた場合、リレーからも削除されます。';
+  String get deleteNoteConfirmBody => 'この操作は元に戻せません。このメモが同期されていた場合、リレーからも削除されます。';
 
   @override
   String deleteNotesConfirmTitle(int count) {
@@ -96,8 +95,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get deleteNotesConfirmBody =>
-      'この操作は元に戻せません。これらのメモの一部が同期されていた場合、リレーからも削除されます。';
+  String get deleteNotesConfirmBody => 'この操作は元に戻せません。これらのメモの一部が同期されていた場合、リレーからも削除されます。';
 
   @override
   String selectionCount(int count) {
@@ -423,8 +421,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingIntroAmberTitle => '鍵を公開せずにサインイン';
 
   @override
-  String get onboardingIntroAmberBody =>
-      'Amberを使ってサインインすれば、秘密鍵はAmber内に保持され、Echoesと共有されることはありません。';
+  String get onboardingIntroAmberBody => 'Amberを使ってサインインすれば、秘密鍵はAmber内に保持され、Echoesと共有されることはありません。';
 
   @override
   String get onboardingIntroSecurityTitle => '設計段階からのセキュリティ';
@@ -668,8 +665,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get abandonSharedNoteConfirmTitle => 'この共有メモから退出しますか？';
 
   @override
-  String get abandonSharedNoteConfirmBody =>
-      'この端末から削除され、更新を受け取らなくなります。取り消せません — 後で再参加はできません。';
+  String get abandonSharedNoteConfirmBody => 'この端末から削除され、更新を受け取らなくなります。取り消せません — 後で再参加はできません。';
 
   @override
   String abandonSharedNoteError(String error) {

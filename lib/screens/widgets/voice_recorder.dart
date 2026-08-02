@@ -186,7 +186,10 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
               IconButton.filled(
                 icon: const Icon(Icons.fiber_manual_record),
                 tooltip: l.recordVoiceNoteTooltip,
-                style: IconButton.styleFrom(backgroundColor: recordRed, foregroundColor: Colors.white),
+                style: IconButton.styleFrom(
+                  backgroundColor: recordRed,
+                  foregroundColor: Colors.white,
+                ),
                 onPressed: _start,
               ),
             ],
@@ -217,7 +220,10 @@ class _VoiceRecorderState extends State<VoiceRecorder> with SingleTickerProvider
             IconButton.filled(
               icon: const Icon(Icons.stop),
               tooltip: l.stopRecordingTooltip,
-              style: IconButton.styleFrom(backgroundColor: recordRed, foregroundColor: Colors.white),
+              style: IconButton.styleFrom(
+                backgroundColor: recordRed,
+                foregroundColor: Colors.white,
+              ),
               onPressed: starting ? null : _stop,
             ),
           ],

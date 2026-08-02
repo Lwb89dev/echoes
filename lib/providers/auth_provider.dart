@@ -18,7 +18,10 @@ import 'service_providers.dart';
 class AuthNotifier extends AsyncNotifier<User?> {
   @override
   Future<User?> build() async {
-    developer.log('AuthNotifier.build called (checking for a local Nostr account)', name: 'AuthNotifier');
+    developer.log(
+      'AuthNotifier.build called (checking for a local Nostr account)',
+      name: 'AuthNotifier',
+    );
 
     final localStorageService = ref.read(localStorageServiceProvider);
     final publicKeyHex = await localStorageService.loadPublicKey();
@@ -37,7 +40,9 @@ class AuthNotifier extends AsyncNotifier<User?> {
 
     if (loginMethod == LoginMethod.bunker) {
       final session = await localStorageService.loadBunkerSession();
-      if (session == null) return null; // Inconsistent state: treat as logged out.
+      if (session == null) {
+        return null; // Inconsistent state: treat as logged out.
+      }
       // Reopening the transport can't block startup on an offline signer:
       // restore the session immediately; the first sign/decrypt reconnects or
       // surfaces its own error. A failed restore falls back to logged out.
@@ -50,7 +55,9 @@ class AuthNotifier extends AsyncNotifier<User?> {
     }
 
     final privateKeyHex = await localStorageService.loadPrivateKey();
-    if (privateKeyHex == null) return null; // Inconsistent state: treat as logged out.
+    if (privateKeyHex == null) {
+      return null; // Inconsistent state: treat as logged out.
+    }
     return nostrService.login(privateKeyHex);
   }
 
@@ -59,13 +66,19 @@ class AuthNotifier extends AsyncNotifier<User?> {
   /// ephemeral client key (inside the session) are kept here. Available on
   /// every platform. [onAuthChallenge] is called if the signer asks the user
   /// to approve the connection out of band (open the URL it returns).
-  Future<void> loginWithBunker(String bunkerUri, {void Function(String authUrl)? onAuthChallenge}) async {
+  Future<void> loginWithBunker(
+    String bunkerUri, {
+    void Function(String authUrl)? onAuthChallenge,
+  }) async {
     developer.log('AuthNotifier.loginWithBunker called', name: 'AuthNotifier');
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final nostrService = ref.read(nostrServiceProvider);
       final localStorageService = ref.read(localStorageServiceProvider);
-      final result = await nostrService.loginWithBunker(bunkerUri, onAuthChallenge: onAuthChallenge);
+      final result = await nostrService.loginWithBunker(
+        bunkerUri,
+        onAuthChallenge: onAuthChallenge,
+      );
       await localStorageService.saveBunkerSession(result.session);
       await localStorageService.savePublicKey(result.user.publicKeyHex);
       await localStorageService.saveLoginMethod(LoginMethod.bunker);
@@ -126,7 +139,6 @@ class AuthNotifier extends AsyncNotifier<User?> {
     // Tear down the live bunker transport (if any) and wipe its stored
     // session, alongside the rest of the local session.
     await ref.read(nostrServiceProvider).logoutBunker();
-    await localStorageService.clearBunkerSession();
     await localStorageService.clearSession();
     state = const AsyncData(null);
   }

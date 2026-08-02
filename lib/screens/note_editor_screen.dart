@@ -137,9 +137,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// user already attached silently becomes inaccessible.
   List<Attachment> get _unreferencedImageAttachments {
     final body = _bodyController.text;
-    return _imageAttachments
-        .where((a) => !body.contains('attachment://${a.id}'))
-        .toList();
+    return _imageAttachments.where((a) => !body.contains('attachment://${a.id}')).toList();
   }
 
   /// Same idea as [_unreferencedImageAttachments], for voice notes: a new
@@ -150,9 +148,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// recorded before this existed still fall back to showing it here.
   List<Attachment> get _unreferencedAudioAttachments {
     final body = _bodyController.text;
-    return _audioAttachments
-        .where((a) => !body.contains('attachment://${a.id}'))
-        .toList();
+    return _audioAttachments.where((a) => !body.contains('attachment://${a.id}')).toList();
   }
 
   bool _showRecorder = false;
@@ -215,17 +211,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _color = note?.color;
     _ownerPubkey = note?.ownerPubkey;
     _sharedWith = note?.sharedWith ?? const [];
-    _titleController = TextEditingController(text: note?.title ?? '')
-      ..addListener(_markDirty);
+    _titleController = TextEditingController(text: note?.title ?? '')..addListener(_markDirty);
     _bodyController = TextEditingController(text: note?.body ?? '')
       ..addListener(_markDirty)
       ..addListener(_onBodySelectionChanged);
     _isChecklist = note?.isChecklist ?? (_isNewNote && widget.startAsChecklist);
     _attachments.addAll(note?.attachments ?? const <Attachment>[]);
-    _showRecorder =
-        _isNewNote &&
-        widget.startRecording &&
-        PlatformSupport.supportsVoiceNotes;
+    _showRecorder = _isNewNote && widget.startRecording && PlatformSupport.supportsVoiceNotes;
     // A checklist has nothing sensible to *read* — it's a working list,
     // not prose — so it skips the read-only view entirely and always
     // opens straight into editing, same as a brand-new note.
@@ -233,9 +225,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
     for (final item in note?.items ?? const <ChecklistItem>[]) {
       _checklistDone.add(item.done);
-      _checklistControllers.add(
-        TextEditingController(text: item.text)..addListener(_markDirty),
-      );
+      _checklistControllers.add(TextEditingController(text: item.text)..addListener(_markDirty));
       _checklistFocusNodes.add(FocusNode());
     }
 
@@ -317,8 +307,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// handle) still notifies a `TextEditingController`'s listeners.
   void _onBodySelectionChanged() {
     final hasSelection =
-        _bodyController.selection.isValid &&
-        !_bodyController.selection.isCollapsed;
+        _bodyController.selection.isValid && !_bodyController.selection.isCollapsed;
     if (hasSelection != _showFormattingToolbar) {
       setState(() => _showFormattingToolbar = hasSelection);
     }
@@ -383,10 +372,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final focusNode = FocusNode();
     setState(() {
       _checklistDone.insert(insertAt, false);
-      _checklistControllers.insert(
-        insertAt,
-        TextEditingController()..addListener(_markDirty),
-      );
+      _checklistControllers.insert(insertAt, TextEditingController()..addListener(_markDirty));
       _checklistFocusNodes.insert(insertAt, focusNode);
       _synced = false;
     });
@@ -432,9 +418,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(l.deleteCompletedItemsConfirmTitle),
-        content: Text(
-          l.deleteCompletedItemsConfirmBody(completedIndices.length),
-        ),
+        content: Text(l.deleteCompletedItemsConfirmBody(completedIndices.length)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -521,10 +505,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final selection = _bodyController.selection;
     final insertAt = selection.isValid ? selection.start : text.length;
     final needsLeadingNewline = insertAt > 0 && text[insertAt - 1] != '\n';
-    final needsTrailingNewline =
-        insertAt < text.length && text[insertAt] != '\n';
-    final insertion =
-        '${needsLeadingNewline ? '\n' : ''}$token${needsTrailingNewline ? '\n' : ''}';
+    final needsTrailingNewline = insertAt < text.length && text[insertAt] != '\n';
+    final insertion = '${needsLeadingNewline ? '\n' : ''}$token${needsTrailingNewline ? '\n' : ''}';
     _bodyController.text = text.replaceRange(insertAt, insertAt, insertion);
   }
 
@@ -645,10 +627,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     setState(() {
       _bodyController.value = TextEditingValue(
         text: text.replaceRange(start, end, insertion),
-        selection: TextSelection(
-          baseOffset: urlOffset,
-          extentOffset: urlOffset + 3,
-        ),
+        selection: TextSelection(baseOffset: urlOffset, extentOffset: urlOffset + 3),
       );
     });
   }
@@ -661,10 +640,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// choice, so picking the wrong option isn't a one-tap commit with no
   /// way to reconsider. Returns the chosen size keyword, or null if the
   /// sheet was dismissed/cancelled without confirming.
-  Future<String?> _pickImageSize({
-    required String? currentSize,
-    VoidCallback? onRemove,
-  }) async {
+  Future<String?> _pickImageSize({required String? currentSize, VoidCallback? onRemove}) async {
     final l = AppLocalizations.of(context);
     var selected = currentSize ?? 'medium';
     return showModalBottomSheet<String>(
@@ -733,10 +709,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// Handles a tap on an already-inserted inline image (see
   /// [_MarkdownPreview]/[_InlineAttachmentImage]): offers the same
   /// small/medium/full size choices as adding one, plus removal.
-  Future<void> _editInlineImage(
-    Attachment attachment,
-    String? currentSize,
-  ) async {
+  Future<void> _editInlineImage(Attachment attachment, String? currentSize) async {
     final size = await _pickImageSize(
       currentSize: currentSize,
       onRemove: () => _removeInlineAttachment(attachment),
@@ -859,9 +832,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     );
     if (result == null) return; // Dismissed without picking anything.
 
-    final newColor = identical(result, noColorSentinel)
-        ? null
-        : result as NoteColor;
+    final newColor = identical(result, noColorSentinel) ? null : result as NoteColor;
     if (newColor == _color) return;
     setState(() {
       _color = newColor;
@@ -921,10 +892,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   Note _buildNote() {
     final items = <ChecklistItem>[
       for (var i = 0; i < _checklistControllers.length; i++)
-        ChecklistItem(
-          text: _checklistControllers[i].text,
-          done: _checklistDone[i],
-        ),
+        ChecklistItem(text: _checklistControllers[i].text, done: _checklistDone[i]),
     ];
 
     return Note(
@@ -1095,14 +1063,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         controller: _titleController,
         decoration: InputDecoration(
           hintText: l.titleFieldLabel,
-          hintStyle: color != null
-              ? TextStyle(color: mutedTextColorOn(color.background))
-              : null,
+          hintStyle: color != null ? TextStyle(color: mutedTextColorOn(color.background)) : null,
           border: InputBorder.none,
         ),
-        style: Theme.of(
-          context,
-        ).textTheme.titleLarge?.copyWith(color: titleColor),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: titleColor),
         cursorColor: titleColor,
       );
     }
@@ -1149,12 +1113,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ? null
             : SystemUiOverlayStyle(
                 statusBarColor: color.background,
-                statusBarIconBrightness: isLightNoteColor
-                    ? Brightness.dark
-                    : Brightness.light,
-                statusBarBrightness: isLightNoteColor
-                    ? Brightness.light
-                    : Brightness.dark,
+                statusBarIconBrightness: isLightNoteColor ? Brightness.dark : Brightness.light,
+                statusBarBrightness: isLightNoteColor ? Brightness.light : Brightness.dark,
               ),
         title: _buildAppBarTitle(l),
         actions: [
@@ -1189,18 +1149,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                                   ? Icons.cloud_sync_outlined
                                   : Icons.cloud_off_outlined),
                       ),
-                      tooltip: _synced
-                          ? l.unsyncNoteTooltip
-                          : l.syncNoteTooltip,
+                      tooltip: _synced ? l.unsyncNoteTooltip : l.syncNoteTooltip,
                       style: IconButton.styleFrom(
                         side: BorderSide(
-                          color: _synced
-                              ? colorScheme.primary
-                              : colorScheme.outline,
+                          color: _synced ? colorScheme.primary : colorScheme.outline,
                         ),
-                        foregroundColor: _synced
-                            ? colorScheme.primary
-                            : colorScheme.outline,
+                        foregroundColor: _synced ? colorScheme.primary : colorScheme.outline,
                       ),
                       onPressed: _synced ? _unsyncNow : _syncNow,
                     ),
@@ -1239,11 +1193,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               onPressed: _delete,
             ),
           if (_editing)
-            IconButton(
-              icon: const Icon(Icons.check),
-              tooltip: l.saveTooltip,
-              onPressed: _save,
-            ),
+            IconButton(icon: const Icon(Icons.check), tooltip: l.saveTooltip, onPressed: _save),
         ],
       ),
       body: _NoteColorReveal(
@@ -1258,12 +1208,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           // above) — only the actual content needs pushing back down
           // below the now-transparent app bar's real height, or it'd
           // render right underneath it.
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top + kToolbarHeight,
-          ),
-          child: _applyNoteColorTheme(
-            _editing ? _buildEditBody(l) : _buildViewBody(l),
-          ),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight),
+          child: _applyNoteColorTheme(_editing ? _buildEditBody(l) : _buildViewBody(l)),
         ),
       ),
     );
@@ -1296,18 +1242,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final mutedColor = mutedTextColorOn(color.background);
     return Theme(
       data: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(
-          onSurface: onColor,
-          onSurfaceVariant: mutedColor,
-        ),
-        textTheme: theme.textTheme.apply(
-          bodyColor: onColor,
-          displayColor: onColor,
-        ),
-        primaryTextTheme: theme.primaryTextTheme.apply(
-          bodyColor: onColor,
-          displayColor: onColor,
-        ),
+        colorScheme: theme.colorScheme.copyWith(onSurface: onColor, onSurfaceVariant: mutedColor),
+        textTheme: theme.textTheme.apply(bodyColor: onColor, displayColor: onColor),
+        primaryTextTheme: theme.primaryTextTheme.apply(bodyColor: onColor, displayColor: onColor),
         iconTheme: theme.iconTheme.copyWith(color: onColor),
         hintColor: mutedColor,
       ),
@@ -1327,15 +1264,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_isDiaryEntry)
-              _DiaryDateSelector(date: _entryDate!, onTap: _pickEntryDate),
+            if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _pickEntryDate),
             if (_isChecklist) ...[
               _ChecklistToolbar(
                 doneCount: _checklistDone.where((done) => done).length,
                 totalCount: _checklistDone.length,
                 hideCompleted: _hideCompleted,
-                onToggleHideCompleted: () =>
-                    setState(() => _hideCompleted = !_hideCompleted),
+                onToggleHideCompleted: () => setState(() => _hideCompleted = !_hideCompleted),
                 onDeleteCompleted: _deleteCompletedChecklistItems,
               ),
               _ChecklistEditor(
@@ -1345,8 +1280,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 onToggleDone: _setChecklistItemDone,
                 onSubmitted: _addChecklistItemAfter,
                 onRemove: _removeChecklistItem,
-                onAddItem: () =>
-                    _addChecklistItemAfter(_checklistControllers.length - 1),
+                onAddItem: () => _addChecklistItemAfter(_checklistControllers.length - 1),
                 hideCompleted: _hideCompleted,
               ),
               const SizedBox(height: 8),
@@ -1355,10 +1289,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               _voiceRecorderSlot(),
               TextField(
                 controller: _bodyController,
-                decoration: InputDecoration(
-                  labelText: l.bodyFieldHint,
-                  border: InputBorder.none,
-                ),
+                decoration: InputDecoration(labelText: l.bodyFieldHint, border: InputBorder.none),
                 maxLines: null,
                 minLines: 10,
               ),
@@ -1381,8 +1312,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                   key: ValueKey(attachment.id),
                   attachment: attachment,
                   onRemove: () => _removeAttachment(attachment),
-                  onSetTimestamp: (timestamp) =>
-                      _setAttachmentTimestamp(attachment.id, timestamp),
+                  onSetTimestamp: (timestamp) => _setAttachmentTimestamp(attachment.id, timestamp),
                 ),
               ),
           ],
@@ -1419,9 +1349,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     // aren't supported (see [PlatformSupport.supportsVoiceNotes]) — the
     // slot simply stays empty until there's a selection to format.
     if (!PlatformSupport.supportsVoiceNotes) return const SizedBox.shrink();
-    return _VoiceRecorderTrigger(
-      onTap: () => setState(() => _showRecorder = true),
-    );
+    return _VoiceRecorderTrigger(onTap: () => setState(() => _showRecorder = true));
   }
 
   /// The read-only rendered view an existing note opens into: rendered
@@ -1448,11 +1376,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (_isDiaryEntry)
-                    _DiaryDateSelector(
-                      date: _entryDate!,
-                      onTap: _enterEditMode,
-                    ),
+                  if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _enterEditMode),
                   _MarkdownPreview(
                     text: _bodyController.text,
                     attachments: _attachments,
@@ -1468,10 +1392,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                   ),
                   if (_unreferencedImageAttachments.isNotEmpty) ...[
                     const SizedBox(height: 12),
-                    _AttachmentsStrip(
-                      attachments: _unreferencedImageAttachments,
-                      onRemove: null,
-                    ),
+                    _AttachmentsStrip(attachments: _unreferencedImageAttachments, onRemove: null),
                   ],
                   for (final attachment in _unreferencedAudioAttachments)
                     Padding(
@@ -1504,7 +1425,6 @@ String _noteColorLabel(NoteColor color, AppLocalizations l) => switch (color) {
   NoteColor.white => l.noteColorWhite,
 };
 
-
 /// The date chip shown at the top of a diary entry (see
 /// [NoteEditorScreen.isDiaryEntry]) — tapping it opens a date picker (see
 /// [_NoteEditorScreenState._pickEntryDate]) to log the entry under a day
@@ -1536,21 +1456,13 @@ class _DiaryDateSelector extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.edit_calendar_outlined,
-                size: 16,
-                color: colorScheme.onPrimaryContainer,
-              ),
+              Icon(Icons.edit_calendar_outlined, size: 16, color: colorScheme.onPrimaryContainer),
               const SizedBox(width: 6),
               Text(
-                Formatter.diaryDateLabel(
-                  date,
-                  l,
-                  Localizations.localeOf(context),
-                ),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: colorScheme.onPrimaryContainer,
-                ),
+                Formatter.diaryDateLabel(date, l, Localizations.localeOf(context)),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(color: colorScheme.onPrimaryContainer),
               ),
             ],
           ),
@@ -1635,7 +1547,6 @@ class _AttachmentChip extends ConsumerWidget {
   }
 }
 
-
 /// Row of markdown formatting shortcuts shown above the body field while
 /// editing a non-checklist note (see [_NoteEditorScreenState._buildEditBody]):
 /// bold/italic/heading/bulleted-list/link, each just inserting or wrapping
@@ -1665,17 +1576,13 @@ class _VoiceRecorderTrigger extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            Icon(
-              Icons.mic_none_outlined,
-              size: 18,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            Icon(Icons.mic_none_outlined, size: 18, color: colorScheme.onSurfaceVariant),
             const SizedBox(width: 8),
             Text(
               l.recordVoiceNoteTooltip,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -1726,11 +1633,7 @@ class _FormattingToolbar extends StatelessWidget {
             tooltip: l.formatListTooltip,
             onPressed: onList,
           ),
-          IconButton(
-            icon: const Icon(Icons.link),
-            tooltip: l.formatLinkTooltip,
-            onPressed: onLink,
-          ),
+          IconButton(icon: const Icon(Icons.link), tooltip: l.formatLinkTooltip, onPressed: onLink),
         ],
       ),
     );
@@ -1770,22 +1673,18 @@ class _ChecklistToolbar extends StatelessWidget {
           Expanded(
             child: Text(
               l.checklistProgress(doneCount, totalCount),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
           ),
           if (doneCount > 0) ...[
             IconButton(
               icon: Icon(
-                hideCompleted
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
+                hideCompleted ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                 size: 20,
               ),
-              tooltip: hideCompleted
-                  ? l.showCompletedItemsTooltip
-                  : l.hideCompletedItemsTooltip,
+              tooltip: hideCompleted ? l.showCompletedItemsTooltip : l.hideCompletedItemsTooltip,
               visualDensity: VisualDensity.compact,
               onPressed: onToggleHideCompleted,
             ),
@@ -1849,18 +1748,12 @@ class _ChecklistEditor extends StatelessWidget {
         if (hideCompleted && visibleIndices.isEmpty && controllers.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              l.allChecklistItemsCompletedHidden,
-              style: TextStyle(color: doneTextColor),
-            ),
+            child: Text(l.allChecklistItemsCompletedHidden, style: TextStyle(color: doneTextColor)),
           ),
         for (final i in visibleIndices)
           Row(
             children: [
-              Checkbox(
-                value: doneFlags[i],
-                onChanged: (value) => onToggleDone(i, value ?? false),
-              ),
+              Checkbox(value: doneFlags[i], onChanged: (value) => onToggleDone(i, value ?? false)),
               Expanded(
                 child: TextField(
                   controller: controllers[i],
@@ -1876,9 +1769,7 @@ class _ChecklistEditor extends StatelessWidget {
                   onEditingComplete: () {},
                   onSubmitted: (_) => onSubmitted(i),
                   style: TextStyle(
-                    decoration: doneFlags[i]
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
+                    decoration: doneFlags[i] ? TextDecoration.lineThrough : TextDecoration.none,
                     color: doneFlags[i] ? doneTextColor : null,
                   ),
                   decoration: InputDecoration(
@@ -1887,10 +1778,7 @@ class _ChecklistEditor extends StatelessWidget {
                   ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.close, size: 18),
-                onPressed: () => onRemove(i),
-              ),
+              IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => onRemove(i)),
             ],
           ),
         Align(

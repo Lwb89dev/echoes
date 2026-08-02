@@ -33,8 +33,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get bunkerConnectButton => 'Yhdistä';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Hyväksy yhteys allekirjoittajassasi ja palaa takaisin';
+  String get bunkerAuthPrompt => 'Hyväksy yhteys allekirjoittajassasi ja palaa takaisin';
 
   @override
   String get relaysTitle => 'Relet';
@@ -55,8 +54,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noSearchResultsMessage => 'Ei osumia.';
 
   @override
-  String get emptyNotesMessage =>
-      'Ei vielä muistiinpanoja. Luo uusi napauttamalla +.';
+  String get emptyNotesMessage => 'Ei vielä muistiinpanoja. Luo uusi napauttamalla +.';
 
   @override
   String get notesTabLabel => 'Muistiinpanot';
@@ -65,8 +63,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get diaryTabLabel => 'Päiväkirja';
 
   @override
-  String get emptyDiaryMessage =>
-      'Ei vielä päiväkirjamerkintöjä. Napauta + kirjoittaaksesi.';
+  String get emptyDiaryMessage => 'Ei vielä päiväkirjamerkintöjä. Napauta + kirjoittaaksesi.';
 
   @override
   String get diaryToday => 'Tänään';
@@ -166,8 +163,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Piilota valmiit kohdat';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Kaikki kohdat ovat valmiita ja piilotettuja.';
+  String get allChecklistItemsCompletedHidden => 'Kaikki kohdat ovat valmiita ja piilotettuja.';
 
   @override
   String get deleteCompletedItemsButton => 'Poista valmiit kohdat';
@@ -230,8 +226,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get editVoiceTimestampButton => 'Muokkaa aikaleimaa';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Äänimuistiinpanoja ei tueta tällä laitteella';
+  String get voiceNoteUnsupportedOnPlatform => 'Äänimuistiinpanoja ei tueta tällä laitteella';
 
   @override
   String get formatBoldTooltip => 'Lihavointi';
@@ -294,8 +289,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get lockNotesNowTitle => 'Lukitse muistiinpanot nyt';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Muistiinpanojen näyttäminen vaatii salasanan uudelleen';
+  String get lockNotesNowSubtitle => 'Muistiinpanojen näyttäminen vaatii salasanan uudelleen';
 
   @override
   String get setPasswordDialogTitle => 'Aseta salasana';
@@ -318,8 +312,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get enableButton => 'Ota käyttöön';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Anna salasanasi poistaaksesi salauksen käytöstä';
+  String get disablePasswordDialogTitle => 'Anna salasanasi poistaaksesi salauksen käytöstä';
 
   @override
   String get disableButton => 'Poista käytöstä';
@@ -331,19 +324,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get lightThemeToggleTitle => 'Vaalea teema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Käytä vaaleaa väriteemaa tumman sijaan';
+  String get lightThemeToggleSubtitle => 'Käytä vaaleaa väriteemaa tumman sijaan';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Vaihda luettelo- ja ruudukkonäkymän välillä';
+  String get noteLayoutToggleTitle => 'Vaihda luettelo- ja ruudukkonäkymän välillä';
 
   @override
   String get manageRelaysTitle => 'Hallitse releitä';
 
   @override
-  String get republishAllNotesButton =>
-      'Julkaise kaikki synkronoidut muistiinpanot uudelleen';
+  String get republishAllNotesButton => 'Julkaise kaikki synkronoidut muistiinpanot uudelleen';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -412,16 +402,14 @@ class AppLocalizationsFi extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Tervetuloa Echoesiin';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Muistiinpanosi ovat aina laitteellasi';
+  String get onboardingIntroLocalTitle => 'Muistiinpanosi ovat aina laitteellasi';
 
   @override
   String get onboardingIntroLocalBody =>
       'Jokainen muistiinpano tallennetaan ensin paikallisesti, joten sovellus toimii täysin offline-tilassa. Mikään ei poistu laitteeltasi, ellet valitse synkronointia.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Valinnainen synkronointi Nostrin kautta';
+  String get onboardingIntroSyncTitle => 'Valinnainen synkronointi Nostrin kautta';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -455,8 +443,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get onboardingBackButton => 'Takaisin';
 
   @override
-  String get onboardingSkipButton =>
-      'Ohita — käytä Echoesia vain paikallisesti';
+  String get onboardingSkipButton => 'Ohita — käytä Echoesia vain paikallisesti';
 
   @override
   String get onboardingRelayTitle => 'Valitse relet synkronointiin';
@@ -530,8 +517,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Salaa tämä tiedosto';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Suositeltu — suojaa varmuuskopion salasanalla';
+  String get exportEncryptToggleSubtitle => 'Suositeltu — suojaa varmuuskopion salasanalla';
 
   @override
   String get exportPasswordDialogTitle => 'Anna salasanasi';
@@ -556,8 +542,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get importNotesButton => 'Tuo muistiinpanot';
 
   @override
-  String get importNotesSubtitle =>
-      'Palauta muistiinpanot aiemmin viedystä tiedostosta';
+  String get importNotesSubtitle => 'Palauta muistiinpanot aiemmin viedystä tiedostosta';
 
   @override
   String get exportNotesSuccess => 'Muistiinpanot viety';
@@ -630,15 +615,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get shareNoteTitle => 'Jaa muistiinpano';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'Vastaanottajan npub tai julkinen avain';
+  String get shareRecipientFieldLabel => 'Vastaanottajan npub tai julkinen avain';
 
   @override
   String get shareAddRecipientButton => 'Lisää';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Tämä ei ole kelvollinen npub tai julkinen avain';
+  String get shareInvalidRecipientError => 'Tämä ei ole kelvollinen npub tai julkinen avain';
 
   @override
   String get shareRecipientNotFoundError => 'Nimelle ei löytynyt Nostr-tiliä';
@@ -653,8 +636,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Jaettu jo tämän henkilön kanssa';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Et voi jakaa muistiinpanoa itsesi kanssa';
+  String get shareCannotShareWithSelfError => 'Et voi jakaa muistiinpanoa itsesi kanssa';
 
   @override
   String get shareRecipientsHeader => 'Jaettu käyttäjälle';
@@ -690,8 +672,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get abandonSharedNoteButton => 'Poistu tästä jaetusta muistiinpanosta';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Poistutaanko tästä jaetusta muistiinpanosta?';
+  String get abandonSharedNoteConfirmTitle => 'Poistutaanko tästä jaetusta muistiinpanosta?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

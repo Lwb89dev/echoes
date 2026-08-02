@@ -33,11 +33,7 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.graphic_eq,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                Icon(Icons.graphic_eq, size: 64, color: Theme.of(context).colorScheme.primary),
                 const SizedBox(height: 16),
                 Text(AppConstants.appName, style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 8),
@@ -49,9 +45,9 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 32),
                 NostrLoginForm(
                   onLoggedIn: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    );
+                    Navigator.of(
+                      context,
+                    ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
                   },
                 ),
               ],

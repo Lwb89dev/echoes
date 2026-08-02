@@ -13,6 +13,7 @@ import '../models/attachment.dart';
 import '../models/upload_provider.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
+import '../utils/network_url.dart';
 import 'file_cache_service.dart';
 import 'nostr_service.dart';
 
@@ -50,8 +51,9 @@ class AttachmentUploadService {
   AttachmentUploadService({
     required NostrService nostrService,
     required FileCacheService fileCacheService,
-  })  : _nostrService = nostrService, // ignore: prefer_initializing_formals
-        _fileCacheService = fileCacheService; // ignore: prefer_initializing_formals
+  }) : _nostrService = nostrService, // ignore: prefer_initializing_formals
+       // ignore: prefer_initializing_formals
+       _fileCacheService = fileCacheService;
 
   final NostrService _nostrService;
   final FileCacheService _fileCacheService;
@@ -63,6 +65,8 @@ class AttachmentUploadService {
   /// ciphertext when uploading (see [upload]) since Blossom/NIP-96 only
   /// deal in one opaque blob, then split back off on [getDecrypted].
   static const _macLength = 16;
+  static const _maxResponseBytes = 256 * 1024;
+  static const _maxRedirects = 5;
 
   /// Encrypts [pending]'s local file and uploads the ciphertext to
   /// [provider] under [author]'s authorization (NIP-98 for a NIP-96 host,
@@ -88,7 +92,10 @@ class AttachmentUploadService {
         'Attachment ${pending.id} original file no longer exists at $localPath — it cannot be uploaded.',
       );
     }
-    developer.log('AttachmentUploadService.upload called: ${pending.id}', name: 'AttachmentUploadService');
+    developer.log(
+      'AttachmentUploadService.upload called: ${pending.id}',
+      name: 'AttachmentUploadService',
+    );
 
     final plainBytes = await localFile.readAsBytes();
     final key = _randomBytes(32);
@@ -116,7 +123,10 @@ class AttachmentUploadService {
     try {
       await File(localPath).delete();
     } catch (e) {
-      developer.log('Could not delete local attachment file after upload: $e', name: 'AttachmentUploadService');
+      developer.log(
+        'Could not delete local attachment file after upload: $e',
+        name: 'AttachmentUploadService',
+      );
     }
 
     return Attachment.uploaded(
@@ -149,7 +159,12 @@ class AttachmentUploadService {
     required User author,
   }) async {
     try {
-      return await _uploadToProvider(provider: provider, bytes: bytes, mimeType: mimeType, author: author);
+      return await _uploadToProvider(
+        provider: provider,
+        bytes: bytes,
+        mimeType: mimeType,
+        author: author,
+      );
     } catch (primaryError) {
       final fallback = _fallbackFor(provider);
       if (fallback == null) rethrow;
@@ -158,7 +173,12 @@ class AttachmentUploadService {
         name: 'AttachmentUploadService',
       );
       try {
-        return await _uploadToProvider(provider: fallback, bytes: bytes, mimeType: mimeType, author: author);
+        return await _uploadToProvider(
+          provider: fallback,
+          bytes: bytes,
+          mimeType: mimeType,
+          author: author,
+        );
       } catch (fallbackError) {
         throw StateError(
           'Upload failed on ${provider.baseUrl} ($primaryError) and on the fallback ${fallback.baseUrl} ($fallbackError).',
@@ -174,16 +194,28 @@ class AttachmentUploadService {
     required User author,
   }) {
     return switch (provider.protocol) {
-      UploadProtocol.blossom =>
-        _uploadToBlossom(baseUrl: provider.baseUrl, bytes: bytes, mimeType: mimeType, author: author),
-      UploadProtocol.nip96 =>
-        _uploadToNip96(baseUrl: provider.baseUrl, bytes: bytes, mimeType: mimeType, author: author),
+      UploadProtocol.blossom => _uploadToBlossom(
+        baseUrl: provider.baseUrl,
+        bytes: bytes,
+        mimeType: mimeType,
+        author: author,
+      ),
+      UploadProtocol.nip96 => _uploadToNip96(
+        baseUrl: provider.baseUrl,
+        bytes: bytes,
+        mimeType: mimeType,
+        author: author,
+      ),
     };
   }
 
   UploadProviderOption? _fallbackFor(UploadProviderOption provider) {
-    if (provider.id == blossomHzrd149Provider.id) return blossomNostrDownloadProvider;
-    if (provider.id == blossomNostrDownloadProvider.id) return blossomHzrd149Provider;
+    if (provider.id == blossomHzrd149Provider.id) {
+      return blossomNostrDownloadProvider;
+    }
+    if (provider.id == blossomNostrDownloadProvider.id) {
+      return blossomHzrd149Provider;
+    }
     return null;
   }
 
@@ -196,21 +228,29 @@ class AttachmentUploadService {
   /// deleted the note it belonged to. Best-effort on both fronts: file
   /// cleanup can't be allowed to fail a deletion that already happened.
   Future<void> discardLocalData(Attachment attachment) async {
-    developer.log('AttachmentUploadService.discardLocalData called: ${attachment.id}', name: 'AttachmentUploadService');
+    developer.log(
+      'AttachmentUploadService.discardLocalData called: ${attachment.id}',
+      name: 'AttachmentUploadService',
+    );
     final localPath = attachment.localPath;
     if (localPath != null) {
       try {
         final file = File(localPath);
         if (await file.exists()) await file.delete();
       } catch (e) {
-        developer.log('Could not delete local attachment file: $e', name: 'AttachmentUploadService');
+        developer.log(
+          'Could not delete local attachment file: $e',
+          name: 'AttachmentUploadService',
+        );
       }
     }
     // Mirrors [getDecrypted]'s own cache-key derivation, including the
     // legacy url-hash fallback for attachments that predate
     // `sha256OfEncrypted`.
     final url = attachment.url;
-    final cacheKey = attachment.sha256OfEncrypted ?? (url != null ? sha256.convert(utf8.encode(url)).toString() : null);
+    final cacheKey =
+        attachment.sha256OfEncrypted ??
+        (url != null ? sha256.convert(utf8.encode(url)).toString() : null);
     if (cacheKey != null) {
       await _fileCacheService.remove(cacheKey);
     }
@@ -235,6 +275,14 @@ class AttachmentUploadService {
       throw StateError('Attachment ${attachment.id} has not been uploaded yet.');
     }
     _requireHttps(url);
+    if (attachment.encryptionAlgorithm != 'aes-gcm') {
+      throw StateError('Attachment ${attachment.id} uses an unsupported encryption algorithm.');
+    }
+    if (expectedHash != null && !RegExp(r'^[0-9a-f]{64}$').hasMatch(expectedHash)) {
+      throw StateError('Attachment ${attachment.id} has an invalid encrypted hash.');
+    }
+    final key = _decodeExactBase64(keyB64, 32, field: 'key');
+    final nonce = _decodeExactBase64(nonceB64, 12, field: 'nonce');
 
     final cacheKey = expectedHash ?? sha256.convert(utf8.encode(url)).toString();
     // Voice notes are stored durably (see [_durable]); everything else in the
@@ -248,7 +296,8 @@ class AttachmentUploadService {
     // shipped, must still play — and must not be considered missing just
     // because its host blob has since been GC'd. Found in the wrong store, it
     // migrates to the right one on the next download-triggering miss.
-    final cached = await _fileCacheService.get(cacheKey, persistent: durable) ??
+    final cached =
+        await _fileCacheService.get(cacheKey, persistent: durable) ??
         await _fileCacheService.get(cacheKey, persistent: !durable);
     if (cached != null) return cached;
 
@@ -256,9 +305,14 @@ class AttachmentUploadService {
     // of it (the streamed read below also enforces the cap for a host that
     // lies about or omits its size).
     if (attachment.sizeBytes != null && attachment.sizeBytes! > AppConstants.maxAttachmentBytes) {
-      throw StateError('Attachment ${attachment.id} declares ${attachment.sizeBytes} bytes, over the cap.');
+      throw StateError(
+        'Attachment ${attachment.id} declares ${attachment.sizeBytes} bytes, over the cap.',
+      );
     }
-    developer.log('AttachmentUploadService.getDecrypted downloading: ${attachment.id}', name: 'AttachmentUploadService');
+    developer.log(
+      'AttachmentUploadService.getDecrypted downloading: ${attachment.id}',
+      name: 'AttachmentUploadService',
+    );
     final encryptedBytes = await _downloadBounded(url, AppConstants.maxAttachmentBytes);
 
     if (expectedHash != null) {
@@ -275,9 +329,9 @@ class AttachmentUploadService {
     }
     final cipherText = encryptedBytes.sublist(0, encryptedBytes.length - _macLength);
     final mac = encryptedBytes.sublist(encryptedBytes.length - _macLength);
-    final secretBox = SecretBox(cipherText, nonce: base64Decode(nonceB64), mac: Mac(mac));
+    final secretBox = SecretBox(cipherText, nonce: nonce, mac: Mac(mac));
 
-    final plainBytes = await _aesGcm.decrypt(secretBox, secretKey: SecretKey(base64Decode(keyB64)));
+    final plainBytes = await _aesGcm.decrypt(secretBox, secretKey: SecretKey(key));
     return _fileCacheService.put(cacheKey, Uint8List.fromList(plainBytes), persistent: durable);
   }
 
@@ -287,25 +341,57 @@ class AttachmentUploadService {
   /// a stalled host from hanging the fetch. Callers verify the returned bytes
   /// against the attachment's expected hash before trusting them.
   Future<Uint8List> _downloadBounded(String url, int maxBytes) async {
+    var current = requireHttpsUri(url);
     final client = http.Client();
     try {
-      final request = http.Request('GET', Uri.parse(url));
-      final response = await client.send(request).timeout(const Duration(seconds: 15));
-      if (response.statusCode != 200) {
-        throw StateError('Could not download attachment (HTTP ${response.statusCode}).');
-      }
-      final declared = response.contentLength;
-      if (declared != null && declared > maxBytes) {
-        throw StateError('Attachment body declares $declared bytes, over the $maxBytes cap.');
-      }
-      final builder = BytesBuilder(copy: false);
-      await for (final chunk in response.stream.timeout(const Duration(seconds: 15))) {
-        builder.add(chunk);
-        if (builder.length > maxBytes) {
-          throw StateError('Attachment body exceeded the $maxBytes byte cap mid-download.');
+      for (var hop = 0; hop <= _maxRedirects; hop++) {
+        final request = http.Request('GET', current)..followRedirects = false;
+        final response = await client.send(request).timeout(const Duration(seconds: 15));
+        if (_isRedirect(response.statusCode)) {
+          current = _secureRedirectTarget(current, response.headers['location']);
+          continue;
         }
+        if (response.statusCode != 200) {
+          throw StateError('Could not download attachment (HTTP ${response.statusCode}).');
+        }
+        final declared = response.contentLength;
+        if (declared != null && declared > maxBytes) {
+          throw StateError('Attachment body declares $declared bytes, over the $maxBytes cap.');
+        }
+        return _readBytesBounded(response.stream, maxBytes);
       }
-      return builder.takeBytes();
+      throw StateError('Attachment download exceeded the redirect limit.');
+    } finally {
+      client.close();
+    }
+  }
+
+  Future<Uint8List> _readBytesBounded(Stream<List<int>> stream, int maxBytes) async {
+    final builder = BytesBuilder(copy: false);
+    await for (final chunk in stream.timeout(const Duration(seconds: 15))) {
+      builder.add(chunk);
+      if (builder.length > maxBytes) {
+        throw StateError('HTTP response exceeded the $maxBytes byte cap.');
+      }
+    }
+    return builder.takeBytes();
+  }
+
+  bool _isRedirect(int statusCode) => const {301, 302, 303, 307, 308}.contains(statusCode);
+
+  Uri _secureRedirectTarget(Uri current, String? location) {
+    if (location == null) {
+      throw StateError('Redirect response has no location.');
+    }
+    return requireHttpsUri(current.resolve(location).toString());
+  }
+
+  Future<_BoundedResponse> _sendBounded(http.BaseRequest request) async {
+    final client = http.Client();
+    try {
+      final streamed = await client.send(request).timeout(const Duration(seconds: 30));
+      final bytes = await _readBytesBounded(streamed.stream, _maxResponseBytes);
+      return _BoundedResponse(streamed.statusCode, utf8.decode(bytes));
     } finally {
       client.close();
     }
@@ -329,12 +415,12 @@ class AttachmentUploadService {
     required User author,
   }) async {
     _requireHttps(baseUrl);
-    final uploadUrl = '$baseUrl/upload';
+    final uploadUrl = requireHttpsUri(baseUrl).resolve('/upload');
     final authHeader = await _blossomAuthHeader(verb: 'upload', body: bytes, author: author);
 
-    final response = await http.put(
-      Uri.parse(uploadUrl),
-      headers: {
+    final request = http.Request('PUT', uploadUrl)
+      ..followRedirects = false
+      ..headers.addAll({
         // The bytes themselves are already ciphertext — this only tells
         // the host "this was an image/audio file", not what's in it. Some
         // real-world Blossom servers reject a generic application/
@@ -347,11 +433,13 @@ class AttachmentUploadService {
         // ciphertext regardless of what Content-Type is declared.)
         'Content-Type': mimeType,
         'Authorization': authHeader,
-      },
-      body: bytes,
-    ).timeout(const Duration(seconds: 30));
+      })
+      ..bodyBytes = bytes;
+    final response = await _sendBounded(request);
     if (response.statusCode != 200 && response.statusCode != 201) {
-      throw StateError('Blossom upload failed (HTTP ${response.statusCode}): ${response.body}');
+      throw StateError(
+        'Blossom upload failed (HTTP ${response.statusCode}): ${_safeExcerpt(response.body)}',
+      );
     }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
@@ -376,7 +464,12 @@ class AttachmentUploadService {
   }) async {
     _requireHttps(baseUrl);
     final apiUrl = await _discoverNip96ApiUrl(baseUrl);
-    final authHeader = await _nip98AuthHeader(url: apiUrl, method: 'POST', body: bytes, author: author);
+    final authHeader = await _nip98AuthHeader(
+      url: apiUrl,
+      method: 'POST',
+      body: bytes,
+      author: author,
+    );
 
     // The bytes are already ciphertext — declaring the real category on
     // the file part's own `Content-Type` only tells the host "this was an
@@ -403,37 +496,40 @@ class AttachmentUploadService {
     // It's a fixed generic name — never the user's original filename,
     // which could itself be identifying — carrying only an extension that
     // matches the already-disclosed category.
-    final request = http.MultipartRequest('POST', Uri.parse(apiUrl))
+    final request = http.MultipartRequest('POST', requireHttpsUri(apiUrl))
+      ..followRedirects = false
       ..headers['Authorization'] = authHeader
-      ..files.add(http.MultipartFile.fromBytes(
-        'file',
-        bytes,
-        filename: 'attachment.${_extensionForMime(mimeType)}',
-        contentType: MediaType.parse(mimeType),
-      ));
+      ..files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          bytes,
+          filename: 'attachment.${_extensionForMime(mimeType)}',
+          contentType: MediaType.parse(mimeType),
+        ),
+      );
 
-    final streamedResponse = await request.send().timeout(const Duration(seconds: 30));
-    final response = await http.Response.fromStream(streamedResponse);
+    final response = await _sendBounded(request);
     // 202 Accepted shows up in the wild for NIP-96 hosts that queue
     // post-processing (e.g. transcoding) rather than finishing it inline;
     // treating only 200/201 as success rejects an upload that actually
     // succeeded.
     if (response.statusCode != 200 && response.statusCode != 201 && response.statusCode != 202) {
-      throw StateError('NIP-96 upload failed (HTTP ${response.statusCode}): ${response.body}');
+      throw StateError(
+        'NIP-96 upload failed (HTTP ${response.statusCode}): ${_safeExcerpt(response.body)}',
+      );
     }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
     final nip94Tags = (json['nip94_event'] as Map<String, dynamic>?)?['tags'] as List<dynamic>?;
     for (final tag in nip94Tags ?? const []) {
-      final entry = tag as List<dynamic>;
-      if (entry.isNotEmpty && entry[0] == 'url') {
-        final url = entry[1] as String;
-        // Same reasoning as the Blossom path above: the response is
-        // untrusted input, re-validate before trusting it as a future
-        // download target.
-        _requireHttps(url);
-        return url;
+      if (tag is! List || tag.length < 2 || tag[0] != 'url' || tag[1] is! String) {
+        continue;
       }
+      final url = tag[1] as String;
+      // Same reasoning as the Blossom path above: the response is untrusted
+      // input, re-validate before trusting it as a future download target.
+      _requireHttps(url);
+      return url;
     }
     throw StateError('NIP-96 response did not include a url tag.');
   }
@@ -443,12 +539,12 @@ class AttachmentUploadService {
   /// makes "custom NIP-96 server" configurations in Settings work without
   /// this app needing to know each server's endpoint layout in advance.
   Future<String> _discoverNip96ApiUrl(String baseUrl) async {
-    final wellKnownUrl = '$baseUrl/.well-known/nostr/nip96.json';
-    _requireHttps(wellKnownUrl);
+    final baseUri = requireHttpsUri(baseUrl);
+    final wellKnownUrl = baseUri.resolve('/.well-known/nostr/nip96.json');
     // Capped like every other third-party fetch: this descriptor is a few
     // hundred bytes of JSON, so 256 KiB is a generous bound that still stops
     // a hostile host from streaming an endless body into `jsonDecode`.
-    final bytes = await _downloadBounded(wellKnownUrl, 256 * 1024);
+    final bytes = await _downloadBounded(wellKnownUrl.toString(), _maxResponseBytes);
     final json = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
     final apiUrl = json['api_url'] as String?;
     if (apiUrl == null) {
@@ -459,9 +555,7 @@ class AttachmentUploadService {
     // could point at a plain-http endpoint even though `baseUrl` itself
     // checked out as https. Re-validate the *resolved* URL rather than
     // trusting a value this app didn't construct itself.
-    final resolved = apiUrl.startsWith('http') ? apiUrl : '$baseUrl$apiUrl';
-    _requireHttps(resolved);
-    return resolved;
+    return requireHttpsUri(baseUri.resolve(apiUrl).toString()).toString();
   }
 
   // ---------------------------------------------------------------------
@@ -534,9 +628,29 @@ class AttachmentUploadService {
   // ---------------------------------------------------------------------
 
   void _requireHttps(String url) {
-    if (!url.startsWith('https://')) {
+    try {
+      requireHttpsUri(url);
+    } on FormatException {
       throw ArgumentError('Refusing a non-HTTPS attachment URL/provider: $url');
     }
+  }
+
+  String _safeExcerpt(String body) {
+    final oneLine = body.replaceAll(RegExp(r'\s+'), ' ').trim();
+    return oneLine.length <= 512 ? oneLine : '${oneLine.substring(0, 512)}…';
+  }
+
+  List<int> _decodeExactBase64(String encoded, int expectedLength, {required String field}) {
+    final List<int> decoded;
+    try {
+      decoded = base64Decode(encoded);
+    } on FormatException {
+      throw StateError('Attachment has an invalid base64 $field.');
+    }
+    if (decoded.length != expectedLength) {
+      throw StateError('Attachment has an invalid $field length.');
+    }
+    return decoded;
   }
 
   /// A plausible file extension for [mimeType], used only for the generic
@@ -560,4 +674,11 @@ class AttachmentUploadService {
   Uint8List _randomBytes(int length) {
     return Uint8List.fromList(List<int>.generate(length, (_) => _secureRandom.nextInt(256)));
   }
+}
+
+class _BoundedResponse {
+  const _BoundedResponse(this.statusCode, this.body);
+
+  final int statusCode;
+  final String body;
 }

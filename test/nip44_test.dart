@@ -40,9 +40,9 @@ String _publicKeyHexFrom(String privateKeyHex) {
 }
 
 void main() {
-  final vectors = json.decode(
-    File('test/fixtures/nip44.vectors.json').readAsStringSync(),
-  ) as Map<String, dynamic>;
+  final vectors =
+      json.decode(File('test/fixtures/nip44.vectors.json').readAsStringSync())
+          as Map<String, dynamic>;
   final v2 = vectors['v2'] as Map<String, dynamic>;
   final valid = v2['valid'] as Map<String, dynamic>;
   final invalid = v2['invalid'] as Map<String, dynamic>;
@@ -62,10 +62,7 @@ void main() {
     for (final entry in valid['get_conversation_key'] as List) {
       final v = entry as Map<String, dynamic>;
       test(v['note'] as String, () {
-        final actual = Nip44.conversationKeyForTesting(
-          v['sec1'] as String,
-          v['pub2'] as String,
-        );
+        final actual = Nip44.conversationKeyForTesting(v['sec1'] as String, v['pub2'] as String);
         expect(_bytesToHex(actual), v['conversation_key']);
       });
     }
@@ -100,7 +97,11 @@ void main() {
           recipientPublicKeyHex: pub2,
           customNonce: nonce,
         );
-        expect(encrypted, v['ciphertext'], reason: 'ciphertext must match the fixed-nonce vector exactly');
+        expect(
+          encrypted,
+          v['ciphertext'],
+          reason: 'ciphertext must match the fixed-nonce vector exactly',
+        );
 
         final decrypted = Nip44.decrypt(
           payload: v['ciphertext'] as String,

@@ -9,6 +9,15 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+# `dart format` page width. The codebase was written to a ~100-column style
+# (with long, deliberately descriptive comments); the formatter default of 80
+# wraps those onto extra lines and hurts readability without adding value here.
+# 100 keeps signatures and comments on one line where they were, and — being
+# configured rather than passed ad hoc — keeps every future `dart format` run
+# consistent.
+formatter:
+  page_width: 100
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`

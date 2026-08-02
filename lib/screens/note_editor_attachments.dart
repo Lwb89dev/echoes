@@ -23,21 +23,16 @@ part of 'note_editor_screen.dart';
 /// Caching the `Future` once per attachment identity (here, in State)
 /// lets it actually run to completion and settle.
 class _ImageAttachmentPreview extends ConsumerStatefulWidget {
-  const _ImageAttachmentPreview({
-    required this.attachment,
-    this.fit = BoxFit.cover,
-  });
+  const _ImageAttachmentPreview({required this.attachment, this.fit = BoxFit.cover});
 
   final Attachment attachment;
   final BoxFit fit;
 
   @override
-  ConsumerState<_ImageAttachmentPreview> createState() =>
-      _ImageAttachmentPreviewState();
+  ConsumerState<_ImageAttachmentPreview> createState() => _ImageAttachmentPreviewState();
 }
 
-class _ImageAttachmentPreviewState
-    extends ConsumerState<_ImageAttachmentPreview> {
+class _ImageAttachmentPreviewState extends ConsumerState<_ImageAttachmentPreview> {
   /// The still-on-disk local original, when there is one — checked once
   /// per attachment identity (not on every build) in [_resolveSource].
   File? _localFile;
@@ -72,13 +67,9 @@ class _ImageAttachmentPreviewState
   /// whose `localPath` never meant anything here.
   void _resolveSource() {
     final localPath = widget.attachment.localPath;
-    _localFile = localPath != null && File(localPath).existsSync()
-        ? File(localPath)
-        : null;
+    _localFile = localPath != null && File(localPath).existsSync() ? File(localPath) : null;
     _decryptFuture = _localFile == null && widget.attachment.isUploaded
-        ? ref
-              .read(attachmentUploadServiceProvider)
-              .getDecrypted(widget.attachment)
+        ? ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)
         : null;
   }
 
@@ -87,12 +78,7 @@ class _ImageAttachmentPreviewState
     return Container(
       color: colorScheme.surfaceContainerHighest,
       padding: const EdgeInsets.all(12),
-      child: Center(
-        child: Icon(
-          Icons.image_not_supported_outlined,
-          color: colorScheme.outline,
-        ),
-      ),
+      child: Center(child: Icon(Icons.image_not_supported_outlined, color: colorScheme.outline)),
     );
   }
 
@@ -106,8 +92,7 @@ class _ImageAttachmentPreviewState
         // The file passing existsSync in [_resolveSource] doesn't
         // guarantee it decodes (truncated write, deleted since) — degrade
         // to the placeholder, never Flutter's red error box.
-        errorBuilder: (context, error, stackTrace) =>
-            _missingPlaceholder(context),
+        errorBuilder: (context, error, stackTrace) => _missingPlaceholder(context),
       );
     }
     if (_decryptFuture == null) {
@@ -127,16 +112,13 @@ class _ImageAttachmentPreviewState
                     icon: const Icon(Icons.refresh),
                     onPressed: () => setState(_resolveSource),
                   )
-                : const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
+                : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
           );
         }
         return Image.file(
           file,
           fit: widget.fit,
-          errorBuilder: (context, error, stackTrace) =>
-              _missingPlaceholder(context),
+          errorBuilder: (context, error, stackTrace) => _missingPlaceholder(context),
         );
       },
     );
@@ -171,8 +153,7 @@ class _MarkdownPreview extends StatelessWidget {
   /// used.
   final void Function(Attachment attachment) onRemoveVoice;
 
-  final void Function(Attachment attachment, DateTime timestamp)
-  onSetVoiceTimestamp;
+  final void Function(Attachment attachment, DateTime timestamp) onSetVoiceTimestamp;
 
   Attachment? _findAttachment(String id) {
     for (final attachment in attachments) {
@@ -208,8 +189,7 @@ class _MarkdownPreview extends StatelessWidget {
                 key: ValueKey(attachment.id),
                 attachment: attachment,
                 onRemove: () => onRemoveVoice(attachment),
-                onSetTimestamp: (timestamp) =>
-                    onSetVoiceTimestamp(attachment, timestamp),
+                onSetTimestamp: (timestamp) => onSetVoiceTimestamp(attachment, timestamp),
               ),
             ),
           );
@@ -253,10 +233,7 @@ class _InlineAttachmentImage extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: _ImageAttachmentPreview(
-            attachment: attachment,
-            fit: BoxFit.contain,
-          ),
+          child: _ImageAttachmentPreview(attachment: attachment, fit: BoxFit.contain),
         ),
       ),
     );
@@ -291,8 +268,7 @@ class _VoiceMessageBubble extends ConsumerStatefulWidget {
   final VoidCallback? onRemove;
 
   @override
-  ConsumerState<_VoiceMessageBubble> createState() =>
-      _VoiceMessageBubbleState();
+  ConsumerState<_VoiceMessageBubble> createState() => _VoiceMessageBubbleState();
 }
 
 class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
@@ -362,14 +338,9 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
         path = localPath;
       } else if (widget.attachment.isUploaded) {
         path =
-            (await ref
-                    .read(attachmentUploadServiceProvider)
-                    .getDecrypted(widget.attachment))
-                .path;
+            (await ref.read(attachmentUploadServiceProvider).getDecrypted(widget.attachment)).path;
       } else {
-        throw StateError(
-          'Voice note file is missing locally and was never uploaded.',
-        );
+        throw StateError('Voice note file is missing locally and was never uploaded.');
       }
       await _playerController.preparePlayer(path: path, noOfSamples: 60);
       if (!mounted) return;
@@ -408,11 +379,7 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
       builder: (sheetContext) => SafeArea(
         child: ListTile(
           leading: const Icon(Icons.schedule_outlined),
-          title: Text(
-            hasTimestamp
-                ? l.editVoiceTimestampButton
-                : l.addVoiceTimestampButton,
-          ),
+          title: Text(hasTimestamp ? l.editVoiceTimestampButton : l.addVoiceTimestampButton),
           onTap: () {
             Navigator.of(sheetContext).pop();
             _pickTimestamp();
@@ -443,9 +410,7 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
       initialTime: TimeOfDay.fromDateTime(initial),
     );
     if (time == null || !mounted) return;
-    widget.onSetTimestamp(
-      DateTime(date.year, date.month, date.day, time.hour, time.minute),
-    );
+    widget.onSetTimestamp(DateTime(date.year, date.month, date.day, time.hour, time.minute));
   }
 
   @override
@@ -480,21 +445,15 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
                   ),
                   Expanded(
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).voiceNoteUnsupportedOnPlatform,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: onBubble,
-                      ),
+                      AppLocalizations.of(context).voiceNoteUnsupportedOnPlatform,
+                      style: theme.textTheme.bodySmall?.copyWith(color: onBubble),
                     ),
                   ),
                   const SizedBox(width: 8),
                   if (duration != null)
                     Text(
                       _formatDuration(duration),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: onBubble,
-                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(color: onBubble),
                     ),
                   if (widget.onRemove != null)
                     IconButton(
@@ -507,10 +466,7 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
                 Padding(
                   padding: const EdgeInsets.only(left: 16, bottom: 4),
                   child: Text(
-                    Formatter.voiceTimestampLabel(
-                      recordedAt,
-                      Localizations.localeOf(context),
-                    ),
+                    Formatter.voiceTimestampLabel(recordedAt, Localizations.localeOf(context)),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: onBubble.withValues(alpha: 0.7),
                     ),
@@ -541,17 +497,12 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
                 IconButton(
                   icon: _error != null
                       ? Icon(Icons.error_outline, color: onBubble)
-                      : Icon(
-                          playing ? Icons.pause : Icons.play_arrow,
-                          color: onBubble,
-                        ),
+                      : Icon(playing ? Icons.pause : Icons.play_arrow, color: onBubble),
                   // Tapping the error state retries preparation instead of
                   // doing nothing — matches `_ImageAttachmentPreview`'s own
                   // retry-on-tap for the same "download/decrypt failed"
                   // situation.
-                  onPressed: _error != null
-                      ? _prepare
-                      : (_ready ? _toggle : null),
+                  onPressed: _error != null ? _prepare : (_ready ? _toggle : null),
                 ),
                 Expanded(
                   child: _ready
@@ -577,9 +528,7 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
                                 : const SizedBox(
                                     width: 16,
                                     height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
+                                    child: CircularProgressIndicator(strokeWidth: 2),
                                   ),
                           ),
                         ),
@@ -601,10 +550,7 @@ class _VoiceMessageBubbleState extends ConsumerState<_VoiceMessageBubble> {
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 4),
                 child: Text(
-                  Formatter.voiceTimestampLabel(
-                    recordedAt,
-                    Localizations.localeOf(context),
-                  ),
+                  Formatter.voiceTimestampLabel(recordedAt, Localizations.localeOf(context)),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: onBubble.withValues(alpha: 0.7),
                   ),

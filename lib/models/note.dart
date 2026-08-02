@@ -6,28 +6,16 @@ class ChecklistItem {
   final String text;
   final bool done;
 
-  const ChecklistItem({
-    required this.text,
-    this.done = false,
-  });
+  const ChecklistItem({required this.text, this.done = false});
 
   ChecklistItem copyWith({String? text, bool? done}) {
-    return ChecklistItem(
-      text: text ?? this.text,
-      done: done ?? this.done,
-    );
+    return ChecklistItem(text: text ?? this.text, done: done ?? this.done);
   }
 
-  Map<String, dynamic> toJson() => {
-        'text': text,
-        'done': done,
-      };
+  Map<String, dynamic> toJson() => {'text': text, 'done': done};
 
   factory ChecklistItem.fromJson(Map<String, dynamic> json) {
-    return ChecklistItem(
-      text: json['text'] as String,
-      done: json['done'] as bool? ?? false,
-    );
+    return ChecklistItem(text: json['text'] as String, done: json['done'] as bool? ?? false);
   }
 }
 
@@ -126,9 +114,7 @@ class Note {
   String get preview {
     final source = isChecklist ? items.map((e) => e.text).join(', ') : bodyWithoutAttachmentTokens;
     final singleLine = source.replaceAll('\n', ' ').trim();
-    return singleLine.length <= 120
-        ? singleLine
-        : '${singleLine.substring(0, 120)}…';
+    return singleLine.length <= 120 ? singleLine : '${singleLine.substring(0, 120)}…';
   }
 
   // `nostrEventId` uses a sentinel default instead of the usual `x ?? this.x`
@@ -175,22 +161,22 @@ class Note {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'body': body,
-        'items': items.map((e) => e.toJson()).toList(),
-        'isChecklist': isChecklist,
-        'attachments': attachments.map((a) => a.toJson()).toList(),
-        'createdAt': createdAt.toIso8601String(),
-        'updatedAt': updatedAt.toIso8601String(),
-        'synced': synced,
-        'nostrEventId': nostrEventId,
-        'isDiaryEntry': isDiaryEntry,
-        'entryDate': entryDate?.toIso8601String(),
-        'color': color?.name,
-        'ownerPubkey': ownerPubkey,
-        'sharedWith': sharedWith,
-      };
+    'id': id,
+    'title': title,
+    'body': body,
+    'items': items.map((e) => e.toJson()).toList(),
+    'isChecklist': isChecklist,
+    'attachments': attachments.map((a) => a.toJson()).toList(),
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'synced': synced,
+    'nostrEventId': nostrEventId,
+    'isDiaryEntry': isDiaryEntry,
+    'entryDate': entryDate?.toIso8601String(),
+    'color': color?.name,
+    'ownerPubkey': ownerPubkey,
+    'sharedWith': sharedWith,
+  };
 
   /// Wire format for the per-recipient shared copy: the note's actual
   /// content, minus everything that is either local-only state or that a
@@ -207,6 +193,15 @@ class Note {
     json.remove('nostrEventId');
     // Never ship this device's local file paths to a recipient — they can
     // embed a username and are meaningless (and unsafe to trust) elsewhere.
+    json['attachments'] = attachments.map((a) => a.withoutLocalPath().toJson()).toList();
+    return json;
+  }
+
+  /// Portable backup representation. Device-local attachment paths are
+  /// deliberately excluded: they leak usernames and are unsafe to trust when
+  /// an export is imported on another device.
+  Map<String, dynamic> toExportJson() {
+    final json = toJson();
     json['attachments'] = attachments.map((a) => a.withoutLocalPath().toJson()).toList();
     return json;
   }

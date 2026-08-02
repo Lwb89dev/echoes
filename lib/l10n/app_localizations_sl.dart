@@ -18,8 +18,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get importAccountButton => 'Uvozi račun Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Zasebni ključ (nsec) vašega računa Nostr';
+  String get importAccountFieldLabel => 'Zasebni ključ (nsec) vašega računa Nostr';
 
   @override
   String get importButton => 'Uvozi';
@@ -34,8 +33,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get bunkerConnectButton => 'Poveži';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Odobri povezavo v svojem podpisniku in se vrni';
+  String get bunkerAuthPrompt => 'Odobri povezavo v svojem podpisniku in se vrni';
 
   @override
   String get relaysTitle => 'Releji';
@@ -56,8 +54,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get noSearchResultsMessage => 'Ni zadetkov.';
 
   @override
-  String get emptyNotesMessage =>
-      'Še ni zabeležk. Dotaknite se +, da ustvarite novo.';
+  String get emptyNotesMessage => 'Še ni zabeležk. Dotaknite se +, da ustvarite novo.';
 
   @override
   String get notesTabLabel => 'Zapiski';
@@ -66,8 +63,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get diaryTabLabel => 'Dnevnik';
 
   @override
-  String get emptyDiaryMessage =>
-      'V dnevniku še ni vnosov. Tapnite +, da ga napišete.';
+  String get emptyDiaryMessage => 'V dnevniku še ni vnosov. Tapnite +, da ga napišete.';
 
   @override
   String get diaryToday => 'Danes';
@@ -167,8 +163,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Skrij dokončane postavke';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Vse postavke so dokončane in skrite.';
+  String get allChecklistItemsCompletedHidden => 'Vse postavke so dokončane in skrite.';
 
   @override
   String get deleteCompletedItemsButton => 'Izbriši dokončane postavke';
@@ -231,8 +226,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get editVoiceTimestampButton => 'Uredi časovni žig';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Glasovni zapiski niso podprti v tej napravi';
+  String get voiceNoteUnsupportedOnPlatform => 'Glasovni zapiski niso podprti v tej napravi';
 
   @override
   String get formatBoldTooltip => 'Krepko';
@@ -282,8 +276,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get loadingLabel => 'Nalaganje…';
 
   @override
-  String get encryptionLoadError =>
-      'Nastavitev šifriranja ni bilo mogoče naložiti';
+  String get encryptionLoadError => 'Nastavitev šifriranja ni bilo mogoče naložiti';
 
   @override
   String get encryptionToggleTitle => 'Zaščiti zabeležke z geslom';
@@ -296,8 +289,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get lockNotesNowTitle => 'Zakleni zabeležke zdaj';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Za ogled zabeležk bo znova potrebno geslo';
+  String get lockNotesNowSubtitle => 'Za ogled zabeležk bo znova potrebno geslo';
 
   @override
   String get setPasswordDialogTitle => 'Nastavi geslo';
@@ -320,8 +312,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get enableButton => 'Omogoči';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Vnesite geslo za onemogočanje šifriranja';
+  String get disablePasswordDialogTitle => 'Vnesite geslo za onemogočanje šifriranja';
 
   @override
   String get disableButton => 'Onemogoči';
@@ -333,8 +324,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get lightThemeToggleTitle => 'Svetla tema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Uporabi svetlo barvno shemo namesto temne';
+  String get lightThemeToggleSubtitle => 'Uporabi svetlo barvno shemo namesto temne';
 
   @override
   String get noteLayoutToggleTitle => 'Preklop med pogledom seznama in mreže';
@@ -343,8 +333,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get manageRelaysTitle => 'Upravljanje relejev';
 
   @override
-  String get republishAllNotesButton =>
-      'Znova objavi vse sinhronizirane zapiske';
+  String get republishAllNotesButton => 'Znova objavi vse sinhronizirane zapiske';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -388,8 +377,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get sectionAccount => 'Račun';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes se uporablja lokalno — ni sinhronizirano z Nostr';
+  String get accountLocalOnlyMessage => 'Echoes se uporablja lokalno — ni sinhronizirano z Nostr';
 
   @override
   String get accountSignInButton => 'Prijava';
@@ -413,8 +401,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Dobrodošli v Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Vaše zabeležke, vedno na vaši napravi';
+  String get onboardingIntroLocalTitle => 'Vaše zabeležke, vedno na vaši napravi';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -435,8 +422,7 @@ class AppLocalizationsSl extends AppLocalizations {
       'Zabeležke, sinhronizirane z Nostr, so šifrirane od konca do konca, zato upravljavci relejev — in nihče drug — nikoli ne morejo prebrati njihove vsebine.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Prijavite se, ne da bi razkrili svoj ključ';
+  String get onboardingIntroAmberTitle => 'Prijavite se, ne da bi razkrili svoj ključ';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -456,8 +442,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get onboardingBackButton => 'Nazaj';
 
   @override
-  String get onboardingSkipButton =>
-      'Preskoči — uporabljaj Echoes samo lokalno';
+  String get onboardingSkipButton => 'Preskoči — uporabljaj Echoes samo lokalno';
 
   @override
   String get onboardingRelayTitle => 'Izberite releje za sinhronizacijo';
@@ -531,8 +516,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Šifriraj to datoteko';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Priporočeno — ščiti varnostno kopijo z geslom';
+  String get exportEncryptToggleSubtitle => 'Priporočeno — ščiti varnostno kopijo z geslom';
 
   @override
   String get exportPasswordDialogTitle => 'Vnesite svoje geslo';
@@ -557,8 +541,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get importNotesButton => 'Uvozi zabeležke';
 
   @override
-  String get importNotesSubtitle =>
-      'Obnovite zabeležke iz predhodno izvožene datoteke';
+  String get importNotesSubtitle => 'Obnovite zabeležke iz predhodno izvožene datoteke';
 
   @override
   String get exportNotesSuccess => 'Zabeležke izvožene';
@@ -637,12 +620,10 @@ class AppLocalizationsSl extends AppLocalizations {
   String get shareAddRecipientButton => 'Dodaj';
 
   @override
-  String get shareInvalidRecipientError =>
-      'To ni veljaven npub ali javni ključ';
+  String get shareInvalidRecipientError => 'To ni veljaven npub ali javni ključ';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Za to ime ni bilo najdenega računa Nostr';
+  String get shareRecipientNotFoundError => 'Za to ime ni bilo najdenega računa Nostr';
 
   @override
   String get shareConfirmTitle => 'Deliti to opombo?';
@@ -654,8 +635,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get shareAlreadyRecipientError => 'S to osebo je že deljeno';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Zapiska ne morete deliti s samim seboj';
+  String get shareCannotShareWithSelfError => 'Zapiska ne morete deliti s samim seboj';
 
   @override
   String get shareRecipientsHeader => 'Deljeno z';

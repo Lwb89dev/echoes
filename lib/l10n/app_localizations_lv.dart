@@ -18,8 +18,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get importAccountButton => 'Importēt Nostr kontu';
 
   @override
-  String get importAccountFieldLabel =>
-      'Jūsu Nostr konta privātā atslēga (nsec)';
+  String get importAccountFieldLabel => 'Jūsu Nostr konta privātā atslēga (nsec)';
 
   @override
   String get importButton => 'Importēt';
@@ -34,8 +33,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get bunkerConnectButton => 'Savienot';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Apstiprini savienojumu savā parakstītājā un atgriezies';
+  String get bunkerAuthPrompt => 'Apstiprini savienojumu savā parakstītājā un atgriezies';
 
   @override
   String get relaysTitle => 'Releji';
@@ -56,8 +54,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get noSearchResultsMessage => 'Nav atbilstību.';
 
   @override
-  String get emptyNotesMessage =>
-      'Vēl nav piezīmju. Pieskarieties +, lai izveidotu jaunu.';
+  String get emptyNotesMessage => 'Vēl nav piezīmju. Pieskarieties +, lai izveidotu jaunu.';
 
   @override
   String get notesTabLabel => 'Piezīmes';
@@ -167,8 +164,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Slēpt pabeigtos punktus';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Visi punkti ir pabeigti un paslēpti.';
+  String get allChecklistItemsCompletedHidden => 'Visi punkti ir pabeigti un paslēpti.';
 
   @override
   String get deleteCompletedItemsButton => 'Dzēst pabeigtos punktus';
@@ -231,8 +227,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get editVoiceTimestampButton => 'Rediģēt laika zīmogu';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Balss piezīmes šajā ierīcē netiek atbalstītas';
+  String get voiceNoteUnsupportedOnPlatform => 'Balss piezīmes šajā ierīcē netiek atbalstītas';
 
   @override
   String get formatBoldTooltip => 'Treknraksts';
@@ -295,8 +290,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get lockNotesNowTitle => 'Bloķēt piezīmes tagad';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Lai skatītu piezīmes, atkal būs nepieciešama parole';
+  String get lockNotesNowSubtitle => 'Lai skatītu piezīmes, atkal būs nepieciešama parole';
 
   @override
   String get setPasswordDialogTitle => 'Iestatīt paroli';
@@ -319,8 +313,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get enableButton => 'Iespējot';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Ievadiet paroli, lai atspējotu šifrēšanu';
+  String get disablePasswordDialogTitle => 'Ievadiet paroli, lai atspējotu šifrēšanu';
 
   @override
   String get disableButton => 'Atspējot';
@@ -332,19 +325,16 @@ class AppLocalizationsLv extends AppLocalizations {
   String get lightThemeToggleTitle => 'Gaiša tēma';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Izmantot gaišu krāsu shēmu tumšas vietā';
+  String get lightThemeToggleSubtitle => 'Izmantot gaišu krāsu shēmu tumšas vietā';
 
   @override
-  String get noteLayoutToggleTitle =>
-      'Pārslēgties starp saraksta un režģa skatu';
+  String get noteLayoutToggleTitle => 'Pārslēgties starp saraksta un režģa skatu';
 
   @override
   String get manageRelaysTitle => 'Pārvaldīt relejus';
 
   @override
-  String get republishAllNotesButton =>
-      'Atkārtoti publicēt visas sinhronizētās piezīmes';
+  String get republishAllNotesButton => 'Atkārtoti publicēt visas sinhronizētās piezīmes';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -361,16 +351,14 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
-  String get forceFullResyncButton =>
-      'Piespiest pilnu atkārtotu sinhronizāciju';
+  String get forceFullResyncButton => 'Piespiest pilnu atkārtotu sinhronizāciju';
 
   @override
   String get forceFullResyncSubtitle =>
       'Atkārtoti pārbauda releja serveros piezīmes pilnu vēsturi, nevis tikai jauno — noderīgi, ja sinhronizācija šķiet iestrēgusi un izlaiž vecākas piezīmes, piemēram, pēc nesasniedzama releja servera novēršanas';
 
   @override
-  String get forceFullResyncSuccess =>
-      'Piezīmes atjauninātas no releja serveriem';
+  String get forceFullResyncSuccess => 'Piezīmes atjauninātas no releja serveriem';
 
   @override
   String forceFullResyncError(String error) {
@@ -436,8 +424,7 @@ class AppLocalizationsLv extends AppLocalizations {
       'Ar Nostr sinhronizētās piezīmes ir šifrētas no gala līdz galam, tāpēc releju operatori — un ikviens cits — nekad nevar izlasīt to saturu.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Pierakstieties, neatklājot savu atslēgu';
+  String get onboardingIntroAmberTitle => 'Pierakstieties, neatklājot savu atslēgu';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -531,8 +518,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Šifrēt šo failu';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Ieteicams — aizsargā dublējumu ar paroli';
+  String get exportEncryptToggleSubtitle => 'Ieteicams — aizsargā dublējumu ar paroli';
 
   @override
   String get exportPasswordDialogTitle => 'Ievadiet savu paroli';
@@ -557,8 +543,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get importNotesButton => 'Importēt piezīmes';
 
   @override
-  String get importNotesSubtitle =>
-      'Atjaunojiet piezīmes no iepriekš eksportēta faila';
+  String get importNotesSubtitle => 'Atjaunojiet piezīmes no iepriekš eksportēta faila';
 
   @override
   String get exportNotesSuccess => 'Piezīmes eksportētas';
@@ -637,12 +622,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get shareAddRecipientButton => 'Pievienot';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Tas nav derīgs npub vai publiskā atslēga';
+  String get shareInvalidRecipientError => 'Tas nav derīgs npub vai publiskā atslēga';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Šim vārdam netika atrasts neviens Nostr konts';
+  String get shareRecipientNotFoundError => 'Šim vārdam netika atrasts neviens Nostr konts';
 
   @override
   String get shareConfirmTitle => 'Kopīgot šo piezīmi?';

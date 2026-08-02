@@ -18,8 +18,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get importAccountButton => 'Uvezi Nostr račun';
 
   @override
-  String get importAccountFieldLabel =>
-      'Privatni ključ (nsec) vašeg Nostr računa';
+  String get importAccountFieldLabel => 'Privatni ključ (nsec) vašeg Nostr računa';
 
   @override
   String get importButton => 'Uvezi';
@@ -55,8 +54,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get noSearchResultsMessage => 'Nema podudaranja.';
 
   @override
-  String get emptyNotesMessage =>
-      'Još nema bilješki. Dodirnite + za izradu nove.';
+  String get emptyNotesMessage => 'Još nema bilješki. Dodirnite + za izradu nove.';
 
   @override
   String get notesTabLabel => 'Bilješke';
@@ -166,8 +164,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Sakrij dovršene stavke';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Sve su stavke dovršene i skrivene.';
+  String get allChecklistItemsCompletedHidden => 'Sve su stavke dovršene i skrivene.';
 
   @override
   String get deleteCompletedItemsButton => 'Izbriši dovršene stavke';
@@ -230,8 +227,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get editVoiceTimestampButton => 'Uredi vremensku oznaku';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Glasovne bilješke nisu podržane na ovom uređaju';
+  String get voiceNoteUnsupportedOnPlatform => 'Glasovne bilješke nisu podržane na ovom uređaju';
 
   @override
   String get formatBoldTooltip => 'Podebljano';
@@ -294,8 +290,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get lockNotesNowTitle => 'Zaključaj bilješke sada';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Za pregled bilješki ponovno će biti potrebna lozinka';
+  String get lockNotesNowSubtitle => 'Za pregled bilješki ponovno će biti potrebna lozinka';
 
   @override
   String get setPasswordDialogTitle => 'Postavi lozinku';
@@ -318,8 +313,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get enableButton => 'Aktiviraj';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Unesite lozinku za deaktiviranje šifriranja';
+  String get disablePasswordDialogTitle => 'Unesite lozinku za deaktiviranje šifriranja';
 
   @override
   String get disableButton => 'Deaktiviraj';
@@ -331,8 +325,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get lightThemeToggleTitle => 'Svijetla tema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Koristi svijetlu shemu boja umjesto tamne';
+  String get lightThemeToggleSubtitle => 'Koristi svijetlu shemu boja umjesto tamne';
 
   @override
   String get noteLayoutToggleTitle => 'Prebaci između prikaza popisa i mreže';
@@ -341,8 +334,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get manageRelaysTitle => 'Upravljanje relejima';
 
   @override
-  String get republishAllNotesButton =>
-      'Ponovno objavi sve sinkronizirane bilješke';
+  String get republishAllNotesButton => 'Ponovno objavi sve sinkronizirane bilješke';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -386,8 +378,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get sectionAccount => 'Račun';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Echoes se koristi lokalno — bez sinkronizacije s Nostrom';
+  String get accountLocalOnlyMessage => 'Echoes se koristi lokalno — bez sinkronizacije s Nostrom';
 
   @override
   String get accountSignInButton => 'Prijava';
@@ -411,16 +402,14 @@ class AppLocalizationsHr extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Dobrodošli u Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Vaše bilješke, uvijek na vašem uređaju';
+  String get onboardingIntroLocalTitle => 'Vaše bilješke, uvijek na vašem uređaju';
 
   @override
   String get onboardingIntroLocalBody =>
       'Svaka bilješka prvo se sprema lokalno, tako da aplikacija radi potpuno izvanmrežno. Ništa ne napušta vaš uređaj osim ako ne odaberete sinkronizaciju.';
 
   @override
-  String get onboardingIntroSyncTitle =>
-      'Neobavezna sinkronizacija putem Nostra';
+  String get onboardingIntroSyncTitle => 'Neobavezna sinkronizacija putem Nostra';
 
   @override
   String get onboardingIntroSyncBody =>
@@ -528,8 +517,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get exportEncryptToggleLabel => 'Šifriraj ovu datoteku';
 
   @override
-  String get exportEncryptToggleSubtitle =>
-      'Preporučeno — štiti sigurnosnu kopiju lozinkom';
+  String get exportEncryptToggleSubtitle => 'Preporučeno — štiti sigurnosnu kopiju lozinkom';
 
   @override
   String get exportPasswordDialogTitle => 'Unesite svoju lozinku';
@@ -554,8 +542,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get importNotesButton => 'Uvezi bilješke';
 
   @override
-  String get importNotesSubtitle =>
-      'Vratite bilješke iz prethodno izvezene datoteke';
+  String get importNotesSubtitle => 'Vratite bilješke iz prethodno izvezene datoteke';
 
   @override
   String get exportNotesSuccess => 'Bilješke izvezene';
@@ -637,8 +624,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get shareInvalidRecipientError => 'To nije valjan npub ni javni ključ';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Nije pronađen Nostr račun za to ime';
+  String get shareRecipientNotFoundError => 'Nije pronađen Nostr račun za to ime';
 
   @override
   String get shareConfirmTitle => 'Podijeliti ovu bilješku?';
@@ -650,8 +636,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Već podijeljeno s ovom osobom';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Ne možete podijeliti bilješku sa samim sobom';
+  String get shareCannotShareWithSelfError => 'Ne možete podijeliti bilješku sa samim sobom';
 
   @override
   String get shareRecipientsHeader => 'Podijeljeno s';
@@ -687,8 +672,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get abandonSharedNoteButton => 'Napusti ovu dijeljenu bilješku';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Napustiti ovu dijeljenu bilješku?';
+  String get abandonSharedNoteConfirmTitle => 'Napustiti ovu dijeljenu bilješku?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

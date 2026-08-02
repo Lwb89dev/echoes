@@ -18,8 +18,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get importAccountButton => 'Importar conta Nostr';
 
   @override
-  String get importAccountFieldLabel =>
-      'Chave privada (nsec) da tua conta Nostr';
+  String get importAccountFieldLabel => 'Chave privada (nsec) da tua conta Nostr';
 
   @override
   String get importButton => 'Importar';
@@ -55,8 +54,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get noSearchResultsMessage => 'Sem resultados.';
 
   @override
-  String get emptyNotesMessage =>
-      'Ainda não há notas. Toca em + para criar uma.';
+  String get emptyNotesMessage => 'Ainda não há notas. Toca em + para criar uma.';
 
   @override
   String get notesTabLabel => 'Notas';
@@ -65,8 +63,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get diaryTabLabel => 'Diário';
 
   @override
-  String get emptyDiaryMessage =>
-      'Ainda não há entradas no diário. Toque em + para escrever uma.';
+  String get emptyDiaryMessage => 'Ainda não há entradas no diário. Toque em + para escrever uma.';
 
   @override
   String get diaryToday => 'Hoje';
@@ -166,15 +163,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Ocultar itens concluídos';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Todos os itens estão concluídos e ocultos.';
+  String get allChecklistItemsCompletedHidden => 'Todos os itens estão concluídos e ocultos.';
 
   @override
   String get deleteCompletedItemsButton => 'Eliminar itens concluídos';
 
   @override
-  String get deleteCompletedItemsConfirmTitle =>
-      'Eliminar os itens concluídos?';
+  String get deleteCompletedItemsConfirmTitle => 'Eliminar os itens concluídos?';
 
   @override
   String deleteCompletedItemsConfirmBody(int count) {
@@ -282,8 +277,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loadingLabel => 'A carregar…';
 
   @override
-  String get encryptionLoadError =>
-      'Não foi possível carregar as definições de encriptação';
+  String get encryptionLoadError => 'Não foi possível carregar as definições de encriptação';
 
   @override
   String get encryptionToggleTitle => 'Proteger notas com palavra-passe';
@@ -333,8 +327,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get lightThemeToggleTitle => 'Tema claro';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Usar um esquema de cores claro em vez de escuro';
+  String get lightThemeToggleSubtitle => 'Usar um esquema de cores claro em vez de escuro';
 
   @override
   String get noteLayoutToggleTitle => 'Alternar entre vista de lista e grelha';
@@ -343,8 +336,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get manageRelaysTitle => 'Gerir relés';
 
   @override
-  String get republishAllNotesButton =>
-      'Republicar todas as notas sincronizadas';
+  String get republishAllNotesButton => 'Republicar todas as notas sincronizadas';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -388,8 +380,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get sectionAccount => 'Conta';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'A usar o Echoes localmente — não sincronizado com o Nostr';
+  String get accountLocalOnlyMessage => 'A usar o Echoes localmente — não sincronizado com o Nostr';
 
   @override
   String get accountSignInButton => 'Iniciar sessão';
@@ -413,8 +404,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Bem-vindo ao Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'As tuas notas, sempre no teu dispositivo';
+  String get onboardingIntroLocalTitle => 'As tuas notas, sempre no teu dispositivo';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -536,12 +526,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get exportPasswordDialogTitle => 'Introduza a sua palavra-passe';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Defina uma palavra-passe para esta exportação';
+  String get exportSetPasswordDialogTitle => 'Defina uma palavra-passe para esta exportação';
 
   @override
-  String get importPasswordDialogTitle =>
-      'Introduza a palavra-passe da exportação';
+  String get importPasswordDialogTitle => 'Introduza a palavra-passe da exportação';
 
   @override
   String get sectionData => 'Dados';
@@ -631,19 +619,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get shareNoteTitle => 'Partilhar nota';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'npub ou chave pública do destinatário';
+  String get shareRecipientFieldLabel => 'npub ou chave pública do destinatário';
 
   @override
   String get shareAddRecipientButton => 'Adicionar';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Não é um npub nem uma chave pública válida';
+  String get shareInvalidRecipientError => 'Não é um npub nem uma chave pública válida';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Nenhuma conta Nostr encontrada para esse nome';
+  String get shareRecipientNotFoundError => 'Nenhuma conta Nostr encontrada para esse nome';
 
   @override
   String get shareConfirmTitle => 'Partilhar esta nota?';
@@ -655,8 +640,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Já partilhada com esta pessoa';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Não pode partilhar uma nota consigo mesmo';
+  String get shareCannotShareWithSelfError => 'Não pode partilhar uma nota consigo mesmo';
 
   @override
   String get shareRecipientsHeader => 'Partilhada com';

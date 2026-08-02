@@ -18,8 +18,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get importAccountButton => 'Importera Nostr-konto';
 
   @override
-  String get importAccountFieldLabel =>
-      'Privat nyckel (nsec) för ditt Nostr-konto';
+  String get importAccountFieldLabel => 'Privat nyckel (nsec) för ditt Nostr-konto';
 
   @override
   String get importButton => 'Importera';
@@ -34,8 +33,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get bunkerConnectButton => 'Anslut';
 
   @override
-  String get bunkerAuthPrompt =>
-      'Godkänn anslutningen i din signerare och kom tillbaka';
+  String get bunkerAuthPrompt => 'Godkänn anslutningen i din signerare och kom tillbaka';
 
   @override
   String get relaysTitle => 'Reläer';
@@ -56,8 +54,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noSearchResultsMessage => 'Inga träffar.';
 
   @override
-  String get emptyNotesMessage =>
-      'Inga anteckningar än. Tryck på + för att skapa en.';
+  String get emptyNotesMessage => 'Inga anteckningar än. Tryck på + för att skapa en.';
 
   @override
   String get notesTabLabel => 'Anteckningar';
@@ -66,8 +63,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get diaryTabLabel => 'Dagbok';
 
   @override
-  String get emptyDiaryMessage =>
-      'Inga dagboksinlägg ännu. Tryck på + för att skriva ett.';
+  String get emptyDiaryMessage => 'Inga dagboksinlägg ännu. Tryck på + för att skriva ett.';
 
   @override
   String get diaryToday => 'Idag';
@@ -167,8 +163,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get hideCompletedItemsTooltip => 'Dölj klara punkter';
 
   @override
-  String get allChecklistItemsCompletedHidden =>
-      'Alla punkter är klara och dolda.';
+  String get allChecklistItemsCompletedHidden => 'Alla punkter är klara och dolda.';
 
   @override
   String get deleteCompletedItemsButton => 'Ta bort klara punkter';
@@ -231,8 +226,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get editVoiceTimestampButton => 'Redigera tidsstämpel';
 
   @override
-  String get voiceNoteUnsupportedOnPlatform =>
-      'Röstanteckningar stöds inte på den här enheten';
+  String get voiceNoteUnsupportedOnPlatform => 'Röstanteckningar stöds inte på den här enheten';
 
   @override
   String get formatBoldTooltip => 'Fet';
@@ -282,8 +276,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get loadingLabel => 'Läser in…';
 
   @override
-  String get encryptionLoadError =>
-      'Kunde inte läsa in krypteringsinställningarna';
+  String get encryptionLoadError => 'Kunde inte läsa in krypteringsinställningarna';
 
   @override
   String get encryptionToggleTitle => 'Skydda anteckningar med ett lösenord';
@@ -296,8 +289,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get lockNotesNowTitle => 'Lås anteckningar nu';
 
   @override
-  String get lockNotesNowSubtitle =>
-      'Lösenordet krävs igen för att visa anteckningarna';
+  String get lockNotesNowSubtitle => 'Lösenordet krävs igen för att visa anteckningarna';
 
   @override
   String get setPasswordDialogTitle => 'Ange ett lösenord';
@@ -320,8 +312,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get enableButton => 'Aktivera';
 
   @override
-  String get disablePasswordDialogTitle =>
-      'Ange ditt lösenord för att inaktivera kryptering';
+  String get disablePasswordDialogTitle => 'Ange ditt lösenord för att inaktivera kryptering';
 
   @override
   String get disableButton => 'Inaktivera';
@@ -333,8 +324,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get lightThemeToggleTitle => 'Ljust tema';
 
   @override
-  String get lightThemeToggleSubtitle =>
-      'Använd ett ljust färgschema istället för mörkt';
+  String get lightThemeToggleSubtitle => 'Använd ett ljust färgschema istället för mörkt';
 
   @override
   String get noteLayoutToggleTitle => 'Växla mellan list- och rutnätsvy';
@@ -343,8 +333,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get manageRelaysTitle => 'Hantera reläer';
 
   @override
-  String get republishAllNotesButton =>
-      'Publicera om alla synkroniserade anteckningar';
+  String get republishAllNotesButton => 'Publicera om alla synkroniserade anteckningar';
 
   @override
   String get republishAllNotesSubtitle =>
@@ -388,8 +377,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get sectionAccount => 'Konto';
 
   @override
-  String get accountLocalOnlyMessage =>
-      'Använder Echoes lokalt — synkroniseras inte med Nostr';
+  String get accountLocalOnlyMessage => 'Använder Echoes lokalt — synkroniseras inte med Nostr';
 
   @override
   String get accountSignInButton => 'Logga in';
@@ -413,8 +401,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Välkommen till Echoes';
 
   @override
-  String get onboardingIntroLocalTitle =>
-      'Dina anteckningar, alltid på din enhet';
+  String get onboardingIntroLocalTitle => 'Dina anteckningar, alltid på din enhet';
 
   @override
   String get onboardingIntroLocalBody =>
@@ -435,8 +422,7 @@ class AppLocalizationsSv extends AppLocalizations {
       'Anteckningar som synkroniseras till Nostr är end-to-end-krypterade, så relädrifter — och alla andra — kan aldrig läsa innehållet.';
 
   @override
-  String get onboardingIntroAmberTitle =>
-      'Logga in utan att exponera din nyckel';
+  String get onboardingIntroAmberTitle => 'Logga in utan att exponera din nyckel';
 
   @override
   String get onboardingIntroAmberBody =>
@@ -537,8 +523,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get exportPasswordDialogTitle => 'Ange ditt lösenord';
 
   @override
-  String get exportSetPasswordDialogTitle =>
-      'Ange ett lösenord för denna export';
+  String get exportSetPasswordDialogTitle => 'Ange ett lösenord för denna export';
 
   @override
   String get importPasswordDialogTitle => 'Ange exportens lösenord';
@@ -557,8 +542,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get importNotesButton => 'Importera anteckningar';
 
   @override
-  String get importNotesSubtitle =>
-      'Återställ anteckningar från en tidigare exporterad fil';
+  String get importNotesSubtitle => 'Återställ anteckningar från en tidigare exporterad fil';
 
   @override
   String get exportNotesSuccess => 'Anteckningar exporterade';
@@ -631,19 +615,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get shareNoteTitle => 'Dela anteckning';
 
   @override
-  String get shareRecipientFieldLabel =>
-      'Mottagarens npub eller offentliga nyckel';
+  String get shareRecipientFieldLabel => 'Mottagarens npub eller offentliga nyckel';
 
   @override
   String get shareAddRecipientButton => 'Lägg till';
 
   @override
-  String get shareInvalidRecipientError =>
-      'Det är inte en giltig npub eller offentlig nyckel';
+  String get shareInvalidRecipientError => 'Det är inte en giltig npub eller offentlig nyckel';
 
   @override
-  String get shareRecipientNotFoundError =>
-      'Inget Nostr-konto hittades för det namnet';
+  String get shareRecipientNotFoundError => 'Inget Nostr-konto hittades för det namnet';
 
   @override
   String get shareConfirmTitle => 'Dela den här anteckningen?';
@@ -655,8 +636,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get shareAlreadyRecipientError => 'Redan delad med den här personen';
 
   @override
-  String get shareCannotShareWithSelfError =>
-      'Du kan inte dela en anteckning med dig själv';
+  String get shareCannotShareWithSelfError => 'Du kan inte dela en anteckning med dig själv';
 
   @override
   String get shareRecipientsHeader => 'Delad med';
@@ -692,8 +672,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get abandonSharedNoteButton => 'Lämna den här delade anteckningen';
 
   @override
-  String get abandonSharedNoteConfirmTitle =>
-      'Lämna den här delade anteckningen?';
+  String get abandonSharedNoteConfirmTitle => 'Lämna den här delade anteckningen?';
 
   @override
   String get abandonSharedNoteConfirmBody =>

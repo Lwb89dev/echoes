@@ -19,7 +19,10 @@ void main() {
       final signer = keys.generateKeyPair();
       final uri =
           'bunker://${signer.public}?relay=wss://relay.one&relay=wss://relay.two&secret=abc123';
-      final session = Nip46Session.fromBunkerUri(uri, clientPrivateKeyHex: keys.generatePrivateKey());
+      final session = Nip46Session.fromBunkerUri(
+        uri,
+        clientPrivateKeyHex: keys.generatePrivateKey(),
+      );
       expect(session.remoteSignerPubHex, signer.public);
       expect(session.relays, ['wss://relay.one', 'wss://relay.two']);
       expect(session.secret, 'abc123');
@@ -27,14 +30,20 @@ void main() {
 
     test('rejects a non-bunker token', () {
       expect(
-        () => Nip46Session.fromBunkerUri('nostr://whatever', clientPrivateKeyHex: keys.generatePrivateKey()),
+        () => Nip46Session.fromBunkerUri(
+          'nostr://whatever',
+          clientPrivateKeyHex: keys.generatePrivateKey(),
+        ),
         throwsA(isA<Nip46Exception>()),
       );
     });
 
     test('rejects an invalid signer pubkey', () {
       expect(
-        () => Nip46Session.fromBunkerUri('bunker://not-hex?relay=wss://r', clientPrivateKeyHex: keys.generatePrivateKey()),
+        () => Nip46Session.fromBunkerUri(
+          'bunker://not-hex?relay=wss://r',
+          clientPrivateKeyHex: keys.generatePrivateKey(),
+        ),
         throwsA(isA<Nip46Exception>()),
       );
     });
@@ -42,7 +51,10 @@ void main() {
     test('rejects a token with no relay', () {
       final signer = keys.generateKeyPair();
       expect(
-        () => Nip46Session.fromBunkerUri('bunker://${signer.public}', clientPrivateKeyHex: keys.generatePrivateKey()),
+        () => Nip46Session.fromBunkerUri(
+          'bunker://${signer.public}',
+          clientPrivateKeyHex: keys.generatePrivateKey(),
+        ),
         throwsA(isA<Nip46Exception>()),
       );
     });
@@ -50,8 +62,60 @@ void main() {
     test('ignores a non-ws relay value', () {
       final signer = keys.generateKeyPair();
       final uri = 'bunker://${signer.public}?relay=https://evil.example&relay=wss://ok';
-      final session = Nip46Session.fromBunkerUri(uri, clientPrivateKeyHex: keys.generatePrivateKey());
+      final session = Nip46Session.fromBunkerUri(
+        uri,
+        clientPrivateKeyHex: keys.generatePrivateKey(),
+      );
       expect(session.relays, ['wss://ok']);
+    });
+
+    test('accepts a plain ws:// relay (self-hosted bunker on a trusted LAN)', () {
+      final signer = keys.generateKeyPair();
+      final session = Nip46Session.fromBunkerUri(
+        'bunker://${signer.public}?relay=ws://192.168.1.10:4869',
+        clientPrivateKeyHex: keys.generatePrivateKey(),
+      );
+      expect(session.relays, ['ws://192.168.1.10:4869']);
+    });
+
+    test('rejects authority smuggling and unexpected paths', () {
+      final signer = keys.generateKeyPair();
+      for (final suffix in [
+        '@${signer.public}?relay=wss://relay.example',
+        '${signer.public}:443?relay=wss://relay.example',
+        '${signer.public}/unexpected?relay=wss://relay.example',
+      ]) {
+        expect(
+          () => Nip46Session.fromBunkerUri(
+            'bunker://$suffix',
+            clientPrivateKeyHex: keys.generatePrivateKey(),
+          ),
+          throwsA(isA<Nip46Exception>()),
+        );
+      }
+    });
+
+    test('rejects malformed persisted sessions', () {
+      expect(
+        () => Nip46Session.fromJson({
+          'clientPrivateKeyHex': 'not-a-key',
+          'remoteSignerPubHex': 'also-not-a-key',
+          'relays': ['wss://relay.example'],
+          'userPubHex': 'invalid',
+        }),
+        throwsA(isA<Nip46Exception>()),
+      );
+    });
+
+    test('drops a single-use secret after the handshake', () {
+      final signer = keys.generateKeyPair();
+      final session = Nip46Session.fromBunkerUri(
+        'bunker://${signer.public}?relay=wss://relay.example&secret=once',
+        clientPrivateKeyHex: keys.generatePrivateKey(),
+      ).copyWith(userPubHex: signer.public).withoutSecret();
+
+      expect(session.secret, isNull);
+      expect(session.toJson()['secret'], isNull);
     });
   });
 
