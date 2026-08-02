@@ -8,14 +8,28 @@ import 'package:flutter/widgets.dart';
 /// width: [ConstrainedBox] only ever *caps* the width, so on a phone
 /// (always under [maxWidth]) this centers nothing and changes nothing.
 class MaxWidthCenter extends StatelessWidget {
-  const MaxWidthCenter({super.key, required this.child, this.maxWidth = 720});
+  const MaxWidthCenter({
+    super.key,
+    required this.child,
+    this.maxWidth = 720,
+    this.alignment = Alignment.center,
+  });
 
   final Widget child;
   final double maxWidth;
 
+  /// How the width-capped child sits in the available space. Defaults to
+  /// [Alignment.center] (horizontally centered, and vertically centered when
+  /// the parent is taller than the child). Pass [Alignment.topCenter] when the
+  /// child lives inside a full-height box but should read from the top — e.g.
+  /// a note's read view, whose tap target fills the screen but whose text must
+  /// start at the top, not float in the vertical middle for a short note.
+  final AlignmentGeometry alignment;
+
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: alignment,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: child,

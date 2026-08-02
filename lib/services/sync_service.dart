@@ -71,6 +71,19 @@ class SyncService {
       onCycleCompleted?.call();
     }
 
+    // Sync once right now, not only on the next timer tick. This is what
+    // starts auto-sync at app open (see [syncLifecycleProvider], which starts
+    // it the moment an account resolves), so notes are pulled fresh on launch
+    // instead of up to [AppConstants.syncPollInterval] later — the periodic
+    // timer below only fires *after* its first interval, and the connectivity
+    // listener only fires on a *change*, so with a connection already up at
+    // launch neither would trigger an initial sync. Fire-and-forget and
+    // `silent` (the default): a launch-time relay hiccup must never surface as
+    // an error, and cycles are serialized so this can't race the ones below.
+    // Local-only notes (never synced, no `nostrEventId`) are untouched, same
+    // as every cycle — see [syncLocalNotes].
+    cycle();
+
     _pollTimer = Timer.periodic(AppConstants.syncPollInterval, (_) => cycle());
 
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((results) {

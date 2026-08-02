@@ -1371,8 +1371,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           padding: const EdgeInsets.all(16),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            // Top-align: the box is full-height so a tap anywhere enters edit
+            // mode, but the note's text must start at the top, not float in
+            // the vertical middle for a short note (default is center).
             child: MaxWidthCenter(
               maxWidth: 760,
+              alignment: Alignment.topCenter,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1738,6 +1742,13 @@ class _ChecklistEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final doneTextColor = Theme.of(context).disabledColor;
+    // "Add item" reads as a de-emphasized action, not note content: use the
+    // muted-text color rather than the default (primary/accent) button color.
+    // Inside a colored note this resolves — via [_applyNoteColorTheme] — to a
+    // dark gray derived from the note's own background (distinct from the
+    // black note text); on an uncolored note it's the theme's own muted gray,
+    // which stays readable in both light and dark mode.
+    final addItemColor = Theme.of(context).colorScheme.onSurfaceVariant;
     final visibleIndices = [
       for (var i = 0; i < controllers.length; i++)
         if (!hideCompleted || !doneFlags[i]) i,
@@ -1785,6 +1796,7 @@ class _ChecklistEditor extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
             onPressed: onAddItem,
+            style: TextButton.styleFrom(foregroundColor: addItemColor),
             icon: const Icon(Icons.add),
             label: Text(l.addItemButton),
           ),
