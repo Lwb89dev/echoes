@@ -65,3 +65,4 @@ key.properties
 *.p12
 *.mobileprovision
 *.cer
+dist/

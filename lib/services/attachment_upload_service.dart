@@ -252,16 +252,14 @@ class AttachmentUploadService {
         await _fileCacheService.get(cacheKey, persistent: !durable);
     if (cached != null) return cached;
 
-    developer.log('AttachmentUploadService.getDecrypted downloading: ${attachment.id}', name: 'AttachmentUploadService');
-    // Without a timeout, an unreachable-but-not-actively-refusing host
-    // (e.g. one that's down at the network level rather than returning a
-    // clean error) leaves this hanging indefinitely instead of surfacing
-    // an error the retry button (see `_ImageAttachmentPreview`) can act on.
-    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 15));
-    if (response.statusCode != 200) {
-      throw StateError('Could not download attachment (HTTP ${response.statusCode}).');
+    // Reject a blob that *declares* itself oversized before fetching a byte
+    // of it (the streamed read below also enforces the cap for a host that
+    // lies about or omits its size).
+    if (attachment.sizeBytes != null && attachment.sizeBytes! > AppConstants.maxAttachmentBytes) {
+      throw StateError('Attachment ${attachment.id} declares ${attachment.sizeBytes} bytes, over the cap.');
     }
-    final encryptedBytes = response.bodyBytes;
+    developer.log('AttachmentUploadService.getDecrypted downloading: ${attachment.id}', name: 'AttachmentUploadService');
+    final encryptedBytes = await _downloadBounded(url, AppConstants.maxAttachmentBytes);
 
     if (expectedHash != null) {
       final actualHash = sha256.convert(encryptedBytes).toString();
@@ -281,6 +279,36 @@ class AttachmentUploadService {
 
     final plainBytes = await _aesGcm.decrypt(secretBox, secretKey: SecretKey(base64Decode(keyB64)));
     return _fileCacheService.put(cacheKey, Uint8List.fromList(plainBytes), persistent: durable);
+  }
+
+  /// GETs [url] into memory, aborting the moment the body passes [maxBytes]
+  /// rather than buffering however much the host decides to send (which
+  /// `http.get` does unconditionally). A 15s idle timeout on the stream keeps
+  /// a stalled host from hanging the fetch. Callers verify the returned bytes
+  /// against the attachment's expected hash before trusting them.
+  Future<Uint8List> _downloadBounded(String url, int maxBytes) async {
+    final client = http.Client();
+    try {
+      final request = http.Request('GET', Uri.parse(url));
+      final response = await client.send(request).timeout(const Duration(seconds: 15));
+      if (response.statusCode != 200) {
+        throw StateError('Could not download attachment (HTTP ${response.statusCode}).');
+      }
+      final declared = response.contentLength;
+      if (declared != null && declared > maxBytes) {
+        throw StateError('Attachment body declares $declared bytes, over the $maxBytes cap.');
+      }
+      final builder = BytesBuilder(copy: false);
+      await for (final chunk in response.stream.timeout(const Duration(seconds: 15))) {
+        builder.add(chunk);
+        if (builder.length > maxBytes) {
+          throw StateError('Attachment body exceeded the $maxBytes byte cap mid-download.');
+        }
+      }
+      return builder.takeBytes();
+    } finally {
+      client.close();
+    }
   }
 
   /// Whether [attachment]'s decrypted copy must survive an OS cache purge.
@@ -415,12 +443,13 @@ class AttachmentUploadService {
   /// makes "custom NIP-96 server" configurations in Settings work without
   /// this app needing to know each server's endpoint layout in advance.
   Future<String> _discoverNip96ApiUrl(String baseUrl) async {
-    final wellKnownUrl = Uri.parse('$baseUrl/.well-known/nostr/nip96.json');
-    final response = await http.get(wellKnownUrl).timeout(const Duration(seconds: 10));
-    if (response.statusCode != 200) {
-      throw StateError('Could not discover the NIP-96 upload endpoint for $baseUrl (HTTP ${response.statusCode}).');
-    }
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    final wellKnownUrl = '$baseUrl/.well-known/nostr/nip96.json';
+    _requireHttps(wellKnownUrl);
+    // Capped like every other third-party fetch: this descriptor is a few
+    // hundred bytes of JSON, so 256 KiB is a generous bound that still stops
+    // a hostile host from streaming an endless body into `jsonDecode`.
+    final bytes = await _downloadBounded(wellKnownUrl, 256 * 1024);
+    final json = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
     final apiUrl = json['api_url'] as String?;
     if (apiUrl == null) {
       throw StateError('$baseUrl/.well-known/nostr/nip96.json is missing "api_url".');

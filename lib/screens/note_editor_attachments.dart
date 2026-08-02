@@ -186,13 +186,12 @@ class _MarkdownPreview extends StatelessWidget {
     if (text.trim().isEmpty) return const SizedBox.shrink();
     return MarkdownBody(
       data: text,
-      // Justify body paragraphs (flush to both margins) in the read view —
-      // `spaceBetween` is what flutter_markdown_plus maps to
-      // `TextAlign.justify`. Headings/lists/code keep their default `start`
-      // alignment: justifying a two-word heading or a code line reads worse
-      // than it helps.
-      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-          .copyWith(textAlign: WrapAlignment.spaceBetween),
+      // Plain, normally-aligned text: the theme defaults leave paragraphs
+      // left-aligned (start), which is how prose should read. An earlier
+      // experiment set this to justify (`WrapAlignment.spaceBetween`), but on
+      // short lines it stretched the spacing so the text looked centered/
+      // spread rather than tidy — reverted.
+      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
       imageBuilder: (uri, title, alt) {
         final attachment = _findAttachment(uri.host);
         if (attachment == null) {

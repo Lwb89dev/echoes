@@ -99,6 +99,14 @@ class AppConstants {
   /// hashing and attempting to decrypt.
   static const int maxNoteEventContentChars = 200000;
 
+  /// Hard ceiling on an attachment blob download (encrypted image/voice
+  /// bytes). Without it, `http.get` buffers whatever a host chooses to send,
+  /// so a hostile or misbehaving file host could answer an attachment fetch
+  /// with a multi-gigabyte body and OOM the app. 50 MiB is far above any
+  /// real note image or voice note yet still a firm bound; a blob that
+  /// declares a larger `sizeBytes` is rejected before a single byte is read.
+  static const int maxAttachmentBytes = 50 * 1024 * 1024;
+
   /// Upper bound on how many inbound shared items one sync cycle will apply.
   /// Anyone on the network can publish an event `p`-tagging you (a note
   /// "shared" with you), just like anyone can send you a Nostr DM — so this
