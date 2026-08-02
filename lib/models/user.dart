@@ -8,6 +8,15 @@ enum LoginMethod {
   /// External signer (Amber, NIP-55, Android only). The app never sees the
   /// private key: every signing/encryption op goes through an intent to Amber.
   amber,
+
+  /// Remote signer over NIP-46 ("bunker"): the private key stays in a bunker
+  /// (Amber acting as one, nsec.app, nsecbunker, …) reachable over relays.
+  /// Works on every platform, unlike Amber's Android-only intents. The app
+  /// never sees the private key; signing/encryption/decryption go to the
+  /// signer as encrypted kind-24133 requests (see `Nip46Client`). The live
+  /// connection lives in `NostrService`; the persisted session (which holds
+  /// the ephemeral client key) lives in secure storage only.
+  bunker,
 }
 
 /// Identity of the logged-in Nostr account: public key in hex form + its

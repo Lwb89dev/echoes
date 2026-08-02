@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
@@ -21,11 +22,14 @@ class NostrLoginForm extends ConsumerStatefulWidget {
 
 class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
   final _importController = TextEditingController();
+  final _bunkerController = TextEditingController();
   bool _showImportField = false;
+  bool _showBunkerField = false;
 
   @override
   void dispose() {
     _importController.dispose();
+    _bunkerController.dispose();
     super.dispose();
   }
 
@@ -39,6 +43,25 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
     if (privateKey.isEmpty) return;
     await ref.read(authProvider.notifier).importAccount(privateKey);
     _notifyIfLoggedIn();
+  }
+
+  Future<void> _loginWithBunker() async {
+    final token = _bunkerController.text.trim();
+    if (token.isEmpty) return;
+    await ref.read(authProvider.notifier).loginWithBunker(token, onAuthChallenge: _openAuthChallenge);
+    _notifyIfLoggedIn();
+  }
+
+  /// The signer asked the user to approve the connection out of band: open the
+  /// URL it handed us and tell the user to approve there. The connect call is
+  /// still waiting, so the real result lands once they do.
+  Future<void> _openAuthChallenge(String authUrl) async {
+    final l = AppLocalizations.of(context);
+    final uri = Uri.tryParse(authUrl);
+    if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.bunkerAuthPrompt)));
+    }
   }
 
   void _notifyIfLoggedIn() {
@@ -100,6 +123,36 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
           FilledButton(
             onPressed: isLoading ? null : _importAccount,
             child: Text(l.importButton),
+          ),
+        ],
+        const SizedBox(height: 12),
+        // Remote signer (NIP-46 "bunker") — every platform, unlike Amber.
+        // The private key stays in the signer; the app only ever holds an
+        // ephemeral connection key.
+        OutlinedButton.icon(
+          onPressed: isLoading
+              ? null
+              : () => setState(() => _showBunkerField = !_showBunkerField),
+          icon: const Icon(Icons.hub_outlined),
+          label: Text(l.bunkerLoginButton),
+        ),
+        if (_showBunkerField) ...[
+          const SizedBox(height: 16),
+          TextField(
+            controller: _bunkerController,
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(
+              labelText: l.bunkerFieldLabel,
+              hintText: 'bunker://…',
+              border: const OutlineInputBorder(),
+            ),
+            onSubmitted: (_) => _loginWithBunker(),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: isLoading ? null : _loginWithBunker,
+            child: Text(l.bunkerConnectButton),
           ),
         ],
         if (isLoading) ...[

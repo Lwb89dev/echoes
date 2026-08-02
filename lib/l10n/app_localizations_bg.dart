@@ -25,6 +25,18 @@ class AppLocalizationsBg extends AppLocalizations {
   String get importButton => 'Импортиране';
 
   @override
+  String get bunkerLoginButton => 'Свързване на отдалечен подписващ (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Постави своя bunker:// токен за връзка';
+
+  @override
+  String get bunkerConnectButton => 'Свързване';
+
+  @override
+  String get bunkerAuthPrompt => 'Одобри връзката в подписващия и се върни';
+
+  @override
   String get relaysTitle => 'Релета';
 
   @override

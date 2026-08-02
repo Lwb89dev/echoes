@@ -24,6 +24,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get importButton => 'Tuo';
 
   @override
+  String get bunkerLoginButton => 'Yhdistä etäallekirjoittaja (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Liitä bunker://-yhteystunnuksesi';
+
+  @override
+  String get bunkerConnectButton => 'Yhdistä';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Hyväksy yhteys allekirjoittajassasi ja palaa takaisin';
+
+  @override
   String get relaysTitle => 'Relet';
 
   @override

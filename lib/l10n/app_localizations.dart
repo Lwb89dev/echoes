@@ -178,6 +178,30 @@ abstract class AppLocalizations {
   /// **'Import'**
   String get importButton;
 
+  /// No description provided for @bunkerLoginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a remote signer (bunker)'**
+  String get bunkerLoginButton;
+
+  /// No description provided for @bunkerFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste your bunker:// connection token'**
+  String get bunkerFieldLabel;
+
+  /// No description provided for @bunkerConnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get bunkerConnectButton;
+
+  /// No description provided for @bunkerAuthPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve the connection in your signer, then come back'**
+  String get bunkerAuthPrompt;
+
   /// No description provided for @relaysTitle.
   ///
   /// In en, this message translates to:

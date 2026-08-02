@@ -25,6 +25,19 @@ class AppLocalizationsSl extends AppLocalizations {
   String get importButton => 'Uvozi';
 
   @override
+  String get bunkerLoginButton => 'Poveži oddaljeni podpisnik (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Prilepi svoj povezovalni žeton bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Poveži';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Odobri povezavo v svojem podpisniku in se vrni';
+
+  @override
   String get relaysTitle => 'Releji';
 
   @override

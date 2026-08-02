@@ -25,6 +25,19 @@ class AppLocalizationsEl extends AppLocalizations {
   String get importButton => 'Εισαγωγή';
 
   @override
+  String get bunkerLoginButton => 'Σύνδεση απομακρυσμένου υπογράφοντα (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Επικόλλησε το token σύνδεσης bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Σύνδεση';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Ενέκρινε τη σύνδεση στον υπογράφοντά σου και επίστρεψε';
+
+  @override
   String get relaysTitle => 'Relays';
 
   @override

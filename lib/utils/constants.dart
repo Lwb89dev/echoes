@@ -83,6 +83,11 @@ class AppConstants {
   /// flutter_secure_storage key for the private key (nsec/hex).
   static const String secureStoragePrivateKeyKey = 'echoes.privkey';
 
+  /// flutter_secure_storage key for the NIP-46 bunker session JSON. Stored
+  /// here, never in SharedPreferences, because the session embeds the
+  /// ephemeral client private key used to talk to the remote signer.
+  static const String secureStorageBunkerSessionKey = 'echoes.bunker_session';
+
   /// Name of the Hive box that holds the notes.
   static const String notesBoxName = 'echoes_notes';
 

@@ -10,6 +10,7 @@ import '../models/note.dart';
 import '../models/relay.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
+import 'nip46_client.dart';
 import 'note_encryption_service.dart';
 
 /// Single facade for all local persistence: notes (Hive), settings and relay
@@ -340,6 +341,36 @@ class LocalStorageService {
   Future<void> clearPrivateKey() async {
     developer.log('LocalStorageService.clearPrivateKey called', name: 'LocalStorageService');
     await _secureStorage.delete(key: AppConstants.secureStoragePrivateKeyKey);
+  }
+
+  /// Persists the NIP-46 bunker [session] JSON in the native keystore. It
+  /// carries the ephemeral client key, so it belongs in secure storage,
+  /// never in SharedPreferences.
+  Future<void> saveBunkerSession(Nip46Session session) async {
+    developer.log('LocalStorageService.saveBunkerSession called', name: 'LocalStorageService');
+    await _secureStorage.write(
+      key: AppConstants.secureStorageBunkerSessionKey,
+      value: jsonEncode(session.toJson()),
+    );
+  }
+
+  /// Reads the saved bunker session, or null if there isn't one (or it's
+  /// unreadable — treated as "no session" rather than crashing login).
+  Future<Nip46Session?> loadBunkerSession() async {
+    developer.log('LocalStorageService.loadBunkerSession called', name: 'LocalStorageService');
+    final raw = await _secureStorage.read(key: AppConstants.secureStorageBunkerSessionKey);
+    if (raw == null) return null;
+    try {
+      return Nip46Session.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (e) {
+      developer.log('Could not decode stored bunker session: $e', name: 'LocalStorageService');
+      return null;
+    }
+  }
+
+  Future<void> clearBunkerSession() async {
+    developer.log('LocalStorageService.clearBunkerSession called', name: 'LocalStorageService');
+    await _secureStorage.delete(key: AppConstants.secureStorageBunkerSessionKey);
   }
 
   /// Clears the whole local session (private key + pubkey + login method):

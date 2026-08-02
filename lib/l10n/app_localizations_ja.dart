@@ -24,6 +24,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get importButton => 'インポート';
 
   @override
+  String get bunkerLoginButton => 'リモート署名者（bunker）を接続';
+
+  @override
+  String get bunkerFieldLabel => 'bunker:// 接続トークンを貼り付け';
+
+  @override
+  String get bunkerConnectButton => '接続';
+
+  @override
+  String get bunkerAuthPrompt => '署名者で接続を承認してから戻ってください';
+
+  @override
   String get relaysTitle => 'リレー';
 
   @override

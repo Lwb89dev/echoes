@@ -25,6 +25,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get importButton => 'Importera';
 
   @override
+  String get bunkerLoginButton => 'Anslut en fjärrsignerare (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Klistra in din bunker://-anslutningstoken';
+
+  @override
+  String get bunkerConnectButton => 'Anslut';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Godkänn anslutningen i din signerare och kom tillbaka';
+
+  @override
   String get relaysTitle => 'Reläer';
 
   @override

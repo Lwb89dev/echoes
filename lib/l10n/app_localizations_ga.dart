@@ -25,6 +25,19 @@ class AppLocalizationsGa extends AppLocalizations {
   String get importButton => 'Iompórtáil';
 
   @override
+  String get bunkerLoginButton => 'Ceangail sínitheoir cianda (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Greamaigh do chomhartha ceangail bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Ceangail';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Ceadaigh an ceangal i do shínitheoir agus fill ansin';
+
+  @override
   String get relaysTitle => 'Athsheachadáin';
 
   @override

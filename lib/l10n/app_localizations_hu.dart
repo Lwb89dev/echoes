@@ -24,6 +24,19 @@ class AppLocalizationsHu extends AppLocalizations {
   String get importButton => 'Importálás';
 
   @override
+  String get bunkerLoginButton => 'Távoli aláíró csatlakoztatása (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Illeszd be a bunker:// kapcsolati tokened';
+
+  @override
+  String get bunkerConnectButton => 'Csatlakozás';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Hagyd jóvá a kapcsolatot az aláíródban, majd térj vissza';
+
+  @override
   String get relaysTitle => 'Relék';
 
   @override

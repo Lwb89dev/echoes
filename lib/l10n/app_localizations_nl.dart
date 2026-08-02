@@ -25,6 +25,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importButton => 'Importeren';
 
   @override
+  String get bunkerLoginButton => 'Verbind een externe ondertekenaar (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Plak je bunker://-verbindingstoken';
+
+  @override
+  String get bunkerConnectButton => 'Verbinden';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Keur de verbinding goed in je ondertekenaar en kom terug';
+
+  @override
   String get relaysTitle => 'Relays';
 
   @override

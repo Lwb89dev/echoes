@@ -24,6 +24,19 @@ class AppLocalizationsSk extends AppLocalizations {
   String get importButton => 'Importovať';
 
   @override
+  String get bunkerLoginButton => 'Pripojiť vzdialený podpisovač (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Vložte svoj pripojovací token bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Pripojiť';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Schváľte pripojenie vo svojom podpisovači a vráťte sa';
+
+  @override
   String get relaysTitle => 'Relé';
 
   @override

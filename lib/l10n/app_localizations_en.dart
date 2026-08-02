@@ -25,6 +25,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importButton => 'Import';
 
   @override
+  String get bunkerLoginButton => 'Connect a remote signer (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Paste your bunker:// connection token';
+
+  @override
+  String get bunkerConnectButton => 'Connect';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Approve the connection in your signer, then come back';
+
+  @override
   String get relaysTitle => 'Relays';
 
   @override

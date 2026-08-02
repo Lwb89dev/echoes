@@ -24,6 +24,19 @@ class AppLocalizationsEt extends AppLocalizations {
   String get importButton => 'Impordi';
 
   @override
+  String get bunkerLoginButton => 'Ühenda kaugallkirjastaja (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Kleebi oma bunker:// ühendustoken';
+
+  @override
+  String get bunkerConnectButton => 'Ühenda';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Kinnita ühendus oma allkirjastajas ja tule tagasi';
+
+  @override
   String get relaysTitle => 'Relee';
 
   @override

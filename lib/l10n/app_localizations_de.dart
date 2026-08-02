@@ -25,6 +25,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get importButton => 'Importieren';
 
   @override
+  String get bunkerLoginButton => 'Entfernten Signierer verbinden (Bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Füge deinen bunker://-Verbindungstoken ein';
+
+  @override
+  String get bunkerConnectButton => 'Verbinden';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Bestätige die Verbindung in deinem Signierer und komm zurück';
+
+  @override
   String get relaysTitle => 'Relays';
 
   @override

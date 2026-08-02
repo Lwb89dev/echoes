@@ -25,6 +25,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get importButton => 'Импортировать';
 
   @override
+  String get bunkerLoginButton => 'Подключить удалённый подписант (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Вставьте свой токен подключения bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Подключить';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Подтвердите подключение в подписанте и вернитесь';
+
+  @override
   String get relaysTitle => 'Реле';
 
   @override

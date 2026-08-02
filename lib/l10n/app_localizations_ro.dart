@@ -25,6 +25,19 @@ class AppLocalizationsRo extends AppLocalizations {
   String get importButton => 'Importă';
 
   @override
+  String get bunkerLoginButton => 'Conectează un semnatar la distanță (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Lipește tokenul tău de conexiune bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Conectează';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Aprobă conexiunea în semnatarul tău, apoi revino';
+
+  @override
   String get relaysTitle => 'Relee';
 
   @override

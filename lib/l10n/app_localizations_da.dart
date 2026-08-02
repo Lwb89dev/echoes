@@ -25,6 +25,19 @@ class AppLocalizationsDa extends AppLocalizations {
   String get importButton => 'Importér';
 
   @override
+  String get bunkerLoginButton => 'Forbind en fjernsigner (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Indsæt dit bunker://-forbindelsestoken';
+
+  @override
+  String get bunkerConnectButton => 'Forbind';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Godkend forbindelsen i din signer, og kom tilbage';
+
+  @override
   String get relaysTitle => 'Relæer';
 
   @override

@@ -25,6 +25,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importButton => 'Importovat';
 
   @override
+  String get bunkerLoginButton => 'Připojit vzdálený podpisovač (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Vložte svůj připojovací token bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Připojit';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Schvalte připojení ve svém podpisovači a vraťte se';
+
+  @override
   String get relaysTitle => 'Relé';
 
   @override

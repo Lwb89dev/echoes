@@ -15,6 +15,7 @@ import '../models/user.dart';
 import '../utils/constants.dart';
 import '../utils/crypto.dart';
 import '../utils/note_sharing.dart';
+import 'nip46_client.dart';
 
 /// One decrypted event addressed to the local user: either a note update
 /// (a share from an owner, or an edit proposal from a recipient — the
@@ -72,6 +73,12 @@ class NostrService {
   final Nostr _nostr = Nostr.instance;
 
   final Amberflutter _amber = Amberflutter();
+
+  /// The live NIP-46 connection for a [LoginMethod.bunker] session, or null
+  /// for any other login method. Held here (not on [User]) so it survives as
+  /// a single long-lived transport for the whole session; set by
+  /// [loginWithBunker]/[restoreBunkerSession] and torn down by [logoutBunker].
+  Nip46Client? _bunkerClient;
 
   // -------------------------------------------------------------------
   // Identity / login
@@ -304,6 +311,78 @@ class NostrService {
       npub: npub,
       loginMethod: LoginMethod.amber,
     );
+  }
+
+  /// Logs in with a NIP-46 remote signer from a `bunker://` token: opens the
+  /// transport, performs the `connect` handshake and reads the account's
+  /// pubkey. Returns the [User] plus the fully-populated [Nip46Session] the
+  /// caller must persist (it holds the ephemeral client key — secure storage
+  /// only). [onAuthChallenge] is invoked if the signer wants the user to
+  /// approve the connection out of band (open the returned URL); the connect
+  /// call keeps waiting for the real result afterwards.
+  ///
+  /// Works identically on Android and Linux — nothing here is platform
+  /// specific, which is the whole reason it's offered alongside (Android-only)
+  /// Amber.
+  Future<({User user, Nip46Session session})> loginWithBunker(
+    String bunkerUri, {
+    void Function(String authUrl)? onAuthChallenge,
+  }) async {
+    developer.log('NostrService.loginWithBunker called', name: 'NostrService');
+    final clientPrivateKeyHex = _nostr.keys.generatePrivateKey();
+    final session = Nip46Session.fromBunkerUri(bunkerUri, clientPrivateKeyHex: clientPrivateKeyHex);
+
+    final client = Nip46Client(session: session, onAuthChallenge: onAuthChallenge);
+    try {
+      final userPubHex = await client.connectAndGetPubkey();
+      if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(userPubHex)) {
+        throw const Nip46Exception('The signer returned an invalid public key.');
+      }
+      final populated = session.copyWith(userPubHex: userPubHex);
+      await _bunkerClient?.dispose();
+      _bunkerClient = client;
+      return (
+        user: User(
+          publicKeyHex: userPubHex,
+          npub: publicKeyToNpub(userPubHex),
+          loginMethod: LoginMethod.bunker,
+        ),
+        session: populated,
+      );
+    } catch (e) {
+      await client.dispose();
+      rethrow;
+    }
+  }
+
+  /// Rebuilds a bunker connection from a persisted [session] at app startup —
+  /// no handshake or user interaction, just reopen the transport. The pubkey
+  /// is already known from the stored session.
+  Future<User> restoreBunkerSession(Nip46Session session) async {
+    developer.log('NostrService.restoreBunkerSession called', name: 'NostrService');
+    final client = Nip46Client(session: session);
+    await client.start();
+    await _bunkerClient?.dispose();
+    _bunkerClient = client;
+    return User(
+      publicKeyHex: session.userPubHex,
+      npub: publicKeyToNpub(session.userPubHex),
+      loginMethod: LoginMethod.bunker,
+    );
+  }
+
+  /// Tears down the live bunker connection, if any. Called on logout.
+  Future<void> logoutBunker() async {
+    await _bunkerClient?.dispose();
+    _bunkerClient = null;
+  }
+
+  Nip46Client _requireBunkerClient() {
+    final client = _bunkerClient;
+    if (client == null) {
+      throw const Nip46Exception('No active bunker connection — please sign in again.');
+    }
+    return client;
   }
 
   // -------------------------------------------------------------------
@@ -858,6 +937,8 @@ class NostrService {
           throw StateError('Amber returned no encrypted content.');
         }
         return encrypted;
+      case LoginMethod.bunker:
+        return _requireBunkerClient().nip44Encrypt(peerPubkey: peerPubHex, plaintext: plaintext);
     }
   }
 
@@ -890,6 +971,8 @@ class NostrService {
           throw StateError('Amber returned no decrypted content.');
         }
         return decrypted;
+      case LoginMethod.bunker:
+        return _requireBunkerClient().nip44Decrypt(peerPubkey: peerPubHex, ciphertext: ciphertext);
     }
   }
 
@@ -940,6 +1023,21 @@ class NostrService {
         if (signedJson == null) {
           throw StateError('Amber returned no signed event.');
         }
+        return _nostrEventFromMap(jsonDecode(signedJson) as Map<String, dynamic>);
+
+      case LoginMethod.bunker:
+        final unsignedEvent = {
+          'pubkey': author.publicKeyHex,
+          'created_at': effectiveCreatedAt.millisecondsSinceEpoch ~/ 1000,
+          'kind': kind,
+          'tags': tags,
+          'content': content,
+        };
+        // The client verifies the returned event is validly signed by the
+        // account's own key before handing it back, so a relay can't slip in
+        // a differently-keyed event here.
+        final signedJson = await _requireBunkerClient()
+            .signEvent(unsignedEvent, expectedPubkey: author.publicKeyHex);
         return _nostrEventFromMap(jsonDecode(signedJson) as Map<String, dynamic>);
     }
   }

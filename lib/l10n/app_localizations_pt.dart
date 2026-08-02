@@ -25,6 +25,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get importButton => 'Importar';
 
   @override
+  String get bunkerLoginButton => 'Ligar um assinador remoto (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Cola o teu token de ligação bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Ligar';
+
+  @override
+  String get bunkerAuthPrompt => 'Aprova a ligação no teu assinador e volta';
+
+  @override
   String get relaysTitle => 'Relays';
 
   @override

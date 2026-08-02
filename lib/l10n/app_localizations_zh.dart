@@ -24,6 +24,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importButton => '导入';
 
   @override
+  String get bunkerLoginButton => '连接远程签名器（bunker）';
+
+  @override
+  String get bunkerFieldLabel => '粘贴你的 bunker:// 连接令牌';
+
+  @override
+  String get bunkerConnectButton => '连接';
+
+  @override
+  String get bunkerAuthPrompt => '在你的签名器中批准连接，然后返回';
+
+  @override
   String get relaysTitle => '中继';
 
   @override

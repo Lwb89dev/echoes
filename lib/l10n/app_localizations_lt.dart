@@ -25,6 +25,20 @@ class AppLocalizationsLt extends AppLocalizations {
   String get importButton => 'Importuoti';
 
   @override
+  String get bunkerLoginButton => 'Prijungti nuotolinį pasirašytoją (bunker)';
+
+  @override
+  String get bunkerFieldLabel =>
+      'Įklijuokite savo bunker:// prisijungimo raktą';
+
+  @override
+  String get bunkerConnectButton => 'Prijungti';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Patvirtinkite ryšį savo pasirašytojuje ir grįžkite';
+
+  @override
   String get relaysTitle => 'Relės';
 
   @override

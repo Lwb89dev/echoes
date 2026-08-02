@@ -25,6 +25,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importButton => 'Importuj';
 
   @override
+  String get bunkerLoginButton => 'Połącz zdalny podpisywacz (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Wklej swój token połączenia bunker://';
+
+  @override
+  String get bunkerConnectButton => 'Połącz';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Zatwierdź połączenie w swoim podpisywaczu i wróć';
+
+  @override
   String get relaysTitle => 'Przekaźniki';
 
   @override

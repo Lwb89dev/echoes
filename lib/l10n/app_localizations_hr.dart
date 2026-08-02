@@ -25,6 +25,18 @@ class AppLocalizationsHr extends AppLocalizations {
   String get importButton => 'Uvezi';
 
   @override
+  String get bunkerLoginButton => 'Poveži udaljeni potpisnik (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Zalijepi svoj bunker:// token za povezivanje';
+
+  @override
+  String get bunkerConnectButton => 'Poveži';
+
+  @override
+  String get bunkerAuthPrompt => 'Odobri vezu u svom potpisniku pa se vrati';
+
+  @override
   String get relaysTitle => 'Releji';
 
   @override

@@ -35,9 +35,42 @@ class AuthNotifier extends AsyncNotifier<User?> {
       );
     }
 
+    if (loginMethod == LoginMethod.bunker) {
+      final session = await localStorageService.loadBunkerSession();
+      if (session == null) return null; // Inconsistent state: treat as logged out.
+      // Reopening the transport can't block startup on an offline signer:
+      // restore the session immediately; the first sign/decrypt reconnects or
+      // surfaces its own error. A failed restore falls back to logged out.
+      try {
+        return await nostrService.restoreBunkerSession(session);
+      } catch (e) {
+        developer.log('Could not restore bunker session: $e', name: 'AuthNotifier');
+        return null;
+      }
+    }
+
     final privateKeyHex = await localStorageService.loadPrivateKey();
     if (privateKeyHex == null) return null; // Inconsistent state: treat as logged out.
     return nostrService.login(privateKeyHex);
+  }
+
+  /// Login with a NIP-46 remote signer ("bunker") from a `bunker://` token.
+  /// The private key stays in the signer; only the account pubkey and an
+  /// ephemeral client key (inside the session) are kept here. Available on
+  /// every platform. [onAuthChallenge] is called if the signer asks the user
+  /// to approve the connection out of band (open the URL it returns).
+  Future<void> loginWithBunker(String bunkerUri, {void Function(String authUrl)? onAuthChallenge}) async {
+    developer.log('AuthNotifier.loginWithBunker called', name: 'AuthNotifier');
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final nostrService = ref.read(nostrServiceProvider);
+      final localStorageService = ref.read(localStorageServiceProvider);
+      final result = await nostrService.loginWithBunker(bunkerUri, onAuthChallenge: onAuthChallenge);
+      await localStorageService.saveBunkerSession(result.session);
+      await localStorageService.savePublicKey(result.user.publicKeyHex);
+      await localStorageService.saveLoginMethod(LoginMethod.bunker);
+      return result.user;
+    });
   }
 
   /// Imports an existing Nostr account from a private key (hex or nsec).
@@ -90,6 +123,10 @@ class AuthNotifier extends AsyncNotifier<User?> {
   Future<void> logout() async {
     developer.log('AuthNotifier.logout called', name: 'AuthNotifier');
     final localStorageService = ref.read(localStorageServiceProvider);
+    // Tear down the live bunker transport (if any) and wipe its stored
+    // session, alongside the rest of the local session.
+    await ref.read(nostrServiceProvider).logoutBunker();
+    await localStorageService.clearBunkerSession();
     await localStorageService.clearSession();
     state = const AsyncData(null);
   }

@@ -25,6 +25,19 @@ class AppLocalizationsLv extends AppLocalizations {
   String get importButton => 'Importēt';
 
   @override
+  String get bunkerLoginButton => 'Pievienot attālo parakstītāju (bunker)';
+
+  @override
+  String get bunkerFieldLabel => 'Ielīmē savu bunker:// savienojuma marķieri';
+
+  @override
+  String get bunkerConnectButton => 'Savienot';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Apstiprini savienojumu savā parakstītājā un atgriezies';
+
+  @override
   String get relaysTitle => 'Releji';
 
   @override

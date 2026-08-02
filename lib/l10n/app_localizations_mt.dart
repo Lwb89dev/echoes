@@ -25,6 +25,20 @@ class AppLocalizationsMt extends AppLocalizations {
   String get importButton => 'Importa';
 
   @override
+  String get bunkerLoginButton => 'Qabbad firmatarju remot (bunker)';
+
+  @override
+  String get bunkerFieldLabel =>
+      'Waħħal it-token tal-konnessjoni bunker:// tiegħek';
+
+  @override
+  String get bunkerConnectButton => 'Qabbad';
+
+  @override
+  String get bunkerAuthPrompt =>
+      'Approva l-konnessjoni fil-firmatarju tiegħek u erġa\' lura';
+
+  @override
   String get relaysTitle => 'Relays';
 
   @override
