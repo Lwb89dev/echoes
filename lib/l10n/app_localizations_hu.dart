@@ -152,6 +152,28 @@ class AppLocalizationsHu extends AppLocalizations {
   String get addItemButton => 'Elem hozzáadása';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Kész ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Már a listán van, kész';
+
+  @override
+  String get restoreChecklistItemButton => 'Visszaállítás';
+
+  @override
+  String get noteSyncedMessage => 'Jegyzet szinkronizálva';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'A jegyzet először lett szinkronizálva';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Szinkronizálva $total relayből $accepted relayre';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done/$total kész';
   }

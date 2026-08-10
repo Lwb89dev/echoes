@@ -85,6 +85,14 @@
   "bodyFieldHint": "Write here... (markdown supported)",
   "checklistItemHint": "Checklist item",
   "addItemButton": "Add item",
+  "completedItemsSection": "Completed ({count})",
+  "@completedItemsSection": { "placeholders": { "count": { "type": "int" } } },
+  "duplicateChecklistItemMessage": "Already on this list, completed",
+  "restoreChecklistItemButton": "Restore",
+  "noteSyncedMessage": "Note synced",
+  "noteSyncedFirstTimeMessage": "Note synced for the first time",
+  "notePartiallySyncedMessage": "Synced to {accepted} of {total} relays",
+  "@notePartiallySyncedMessage": { "placeholders": { "accepted": { "type": "int" }, "total": { "type": "int" } } },
   "checklistProgress": "{done} of {total} done",
   "@checklistProgress": {
     "placeholders": {

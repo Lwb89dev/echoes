@@ -36,6 +36,11 @@
   <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.4.5" date="2026-08-02">
+      <description>
+        <p>New visual identity, and a redesigned checklist: completed items move into a collapsed section, typing suggests entries you already ticked off, and previews show only what is still to do. Also fixes notes appearing synced when only some relays accepted them, and re-uploads image and voice attachments that a file host has deleted.</p>
+      </description>
+    </release>
     <release version="0.4.4" date="2026-08-02">
       <description>
         <p>Adds signing in with a NIP-46 remote signer ("bunker") on every platform — your private key stays in the signer and never reaches Echoes. Plus a hardening pass on note sync and attachment downloads, and note text back to normal (left-aligned) formatting.</p>

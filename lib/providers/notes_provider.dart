@@ -113,7 +113,7 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   /// sync): it rethrows so the editor screen can show an inline error and
   /// leave the cloud icon showing "not synced", while [state] keeps
   /// reflecting the last known-good note list.
-  Future<Note> syncNote(Note note) async {
+  Future<({Note note, int accepted, int total})> syncNote(Note note) async {
     developer.log('NotesNotifier.syncNote called: ${note.id}', name: 'NotesNotifier');
     final author = ref.read(authProvider).value;
     if (author == null) {
@@ -121,9 +121,10 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     }
     final relays = ref.read(relayProvider).value ?? const [];
     final uploadProvider = ref.read(uploadProviderProvider);
-    final syncedNote = await ref
+    final result = await ref
         .read(syncServiceProvider)
         .syncNote(note: note, author: author, relays: relays, uploadProvider: uploadProvider);
+    final syncedNote = result.note;
 
     final current = state.value ?? const <Note>[];
     final index = current.indexWhere((n) => n.id == syncedNote.id);
@@ -132,7 +133,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
           ? [for (final n in current) n.id == syncedNote.id ? syncedNote : n]
           : [syncedNote, ...current],
     );
-    return syncedNote;
+    // Relay coverage travels with the note so the editor can say "published
+    // to 2 of 4 relays" instead of a bare "synced" that hides a partial write.
+    return result;
   }
 
   /// Retracts a previously-synced [note] from the relays (NIP-09 deletion
@@ -273,6 +276,10 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
               relays: relays,
               uploadProvider: uploadProvider,
               silent: false,
+              // An explicit refresh is the moment to also check whether any
+              // file host has dropped an attachment blob — the user is asking
+              // for a thorough pass, not the cheap periodic one.
+              repairAttachments: true,
             );
       } catch (e) {
         syncError = e;

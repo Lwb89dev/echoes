@@ -153,6 +153,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addItemButton => 'Ajouter un élément';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Terminés ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Déjà dans cette liste, terminé';
+
+  @override
+  String get restoreChecklistItemButton => 'Restaurer';
+
+  @override
+  String get noteSyncedMessage => 'Note synchronisée';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Note synchronisée pour la première fois';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Synchronisée sur $accepted relais sur $total';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done sur $total terminés';
   }

@@ -152,6 +152,28 @@ class AppLocalizationsLt extends AppLocalizations {
   String get addItemButton => 'Pridėti elementą';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Atlikta ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Jau šiame sąraše, atlikta';
+
+  @override
+  String get restoreChecklistItemButton => 'Atkurti';
+
+  @override
+  String get noteSyncedMessage => 'Užrašas sinchronizuotas';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Užrašas sinchronizuotas pirmą kartą';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Sinchronizuota su $accepted iš $total relių';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return 'Atlikta $done iš $total';
   }

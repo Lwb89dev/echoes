@@ -150,6 +150,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addItemButton => '添加项目';
 
   @override
+  String completedItemsSection(int count) {
+    return '已完成 ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => '已在此列表中，已完成';
+
+  @override
+  String get restoreChecklistItemButton => '恢复';
+
+  @override
+  String get noteSyncedMessage => '笔记已同步';
+
+  @override
+  String get noteSyncedFirstTimeMessage => '笔记已首次同步';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return '已同步到 $total 个中继中的 $accepted 个';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '已完成 $done/$total';
   }

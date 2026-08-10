@@ -16,6 +16,7 @@ import '../models/note.dart';
 import '../providers/auth_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/service_providers.dart';
+import '../utils/app_messenger.dart';
 import '../utils/formatter.dart';
 import '../utils/note_colors.dart';
 import '../utils/platform_support.dart';
@@ -161,12 +162,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// [VoiceRecorder] the rest of the time (see [_buildEditBody]).
   bool _showFormattingToolbar = false;
 
-  /// Checklist-only, transient (not persisted, not part of [Note]): whether
-  /// already-checked-off items are hidden from both the read view and the
-  /// editor — see [_ChecklistToolbar]. Resets to "show everything" the next
-  /// time this note is opened, same as every other purely-visual toggle in
-  /// this screen.
-  bool _hideCompleted = false;
+  /// Checklist-only, transient: the row being typed in, plus every
+  /// *completed* item whose text starts with what's been typed so far.
+  /// Drives the as-you-type suggestions in [_ChecklistEditor] — the point
+  /// being that on a long shopping list you re-type "oli" rather than
+  /// hunting through dozens of ticked-off rows for "olive oil", and would
+  /// otherwise end up with a second copy of it.
+  ({int row, List<int> matches})? _completedSuggestions;
 
   /// This note's own background color (see [NoteColor]), null for "no
   /// override, use the app's normal surface color" — editable via the
@@ -225,8 +227,21 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
     for (final item in note?.items ?? const <ChecklistItem>[]) {
       _checklistDone.add(item.done);
-      _checklistControllers.add(TextEditingController(text: item.text)..addListener(_markDirty));
-      _checklistFocusNodes.add(FocusNode());
+      _checklistControllers.add(_newChecklistController(item.text));
+      _checklistFocusNodes.add(_newChecklistFocusNode());
+    }
+
+    // A brand-new checklist starts with one empty row, already focused. With
+    // no row at all there is no text field on screen — nothing to type into
+    // and no caret to signal the list is ready for input, which reads as a
+    // broken screen rather than an empty one.
+    if (_isChecklist && _checklistControllers.isEmpty) {
+      _checklistDone.add(false);
+      _checklistControllers.add(_newChecklistController());
+      _checklistFocusNodes.add(_newChecklistFocusNode());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _checklistFocusNodes.first.requestFocus();
+      });
     }
 
     // Keeps this screen's private `_attachments` copy in step with upload
@@ -365,14 +380,105 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     super.dispose();
   }
 
+  /// Every checklist row's controller is built here so each one carries the
+  /// same two listeners: the shared dirty/autosave marker, and the live
+  /// prefix match that powers [_completedSuggestions].
+  TextEditingController _newChecklistController([String text = '']) {
+    return TextEditingController(text: text)
+      ..addListener(_markDirty)
+      ..addListener(_refreshCompletedSuggestions);
+  }
+
+  /// Rows suggest against the *focused* row, so the focus node has to drive a
+  /// recompute too — otherwise moving between rows would leave the previous
+  /// row's suggestions on screen.
+  FocusNode _newChecklistFocusNode() => FocusNode()..addListener(_refreshCompletedSuggestions);
+
+  /// Recomputes [_completedSuggestions] as the user types or moves between
+  /// rows. Cheap (a scan of this list's own rows, no I/O) and only repaints
+  /// when the answer actually changes, so it can run on every keystroke.
+  void _refreshCompletedSuggestions() {
+    final next = _findCompletedSuggestions();
+    if (!_sameSuggestions(next, _completedSuggestions)) {
+      setState(() => _completedSuggestions = next);
+    }
+  }
+
+  /// Records compare by identity for their list field, so the match lists
+  /// need comparing element-wise — otherwise every keystroke would repaint
+  /// even when the suggestions are unchanged.
+  bool _sameSuggestions(({int row, List<int> matches})? a, ({int row, List<int> matches})? b) {
+    if (a == null || b == null) return a == null && b == null;
+    if (a.row != b.row || a.matches.length != b.matches.length) return false;
+    for (var i = 0; i < a.matches.length; i++) {
+      if (a.matches[i] != b.matches[i]) return false;
+    }
+    return true;
+  }
+
+  /// Completed items whose text *starts with* what's currently typed in the
+  /// focused row, matched case-insensitively and ignoring surrounding
+  /// spaces. Prefix rather than whole-word on purpose: typing "o" should
+  /// already narrow to everything starting with "o", "ol" narrows further,
+  /// and so on — nobody should have to retype a whole entry to be told it
+  /// already exists. Null when there's nothing to suggest.
+  ({int row, List<int> matches})? _findCompletedSuggestions() {
+    final row = _focusedChecklistRow();
+    if (row == null) return null;
+    final typed = _checklistControllers[row].text.trim().toLowerCase();
+    if (typed.isEmpty) return null;
+
+    final matches = <int>[];
+    for (var i = 0; i < _checklistControllers.length; i++) {
+      if (i == row || !_checklistDone[i]) continue;
+      if (_checklistControllers[i].text.trim().toLowerCase().startsWith(typed)) {
+        matches.add(i);
+        // A handful is enough to pick from; more would bury the list itself.
+        if (matches.length == _maxCompletedSuggestions) break;
+      }
+    }
+    return matches.isEmpty ? null : (row: row, matches: matches);
+  }
+
+  static const _maxCompletedSuggestions = 5;
+
+  int? _focusedChecklistRow() {
+    for (var i = 0; i < _checklistFocusNodes.length; i++) {
+      if (_checklistFocusNodes[i].hasFocus) return i;
+    }
+    return null;
+  }
+
+  /// Picks suggestion [existing]: un-ticks that completed item (putting it
+  /// back among the things still to do) and drops the row being typed, since
+  /// the two are the same item and keeping the pair is exactly what these
+  /// suggestions exist to prevent.
+  void _restoreCompletedItem(int existing) {
+    final suggestions = _completedSuggestions;
+    if (suggestions == null) return;
+    final typedRow = suggestions.row;
+    // The typed row's focus node is disposed below; let go of focus first so
+    // the framework isn't left holding a node that's about to disappear.
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _checklistDone[existing] = false;
+      _checklistDone.removeAt(typedRow);
+      _checklistControllers.removeAt(typedRow).dispose();
+      _checklistFocusNodes.removeAt(typedRow).dispose();
+      _completedSuggestions = null;
+      _synced = false;
+    });
+    _scheduleAutosave();
+  }
+
   /// Inserts a new empty checklist row right after [index] and moves keyboard
   /// focus to it. Passing -1 inserts (and focuses) the first row.
   void _addChecklistItemAfter(int index) {
     final insertAt = index + 1;
-    final focusNode = FocusNode();
+    final focusNode = _newChecklistFocusNode();
     setState(() {
       _checklistDone.insert(insertAt, false);
-      _checklistControllers.insert(insertAt, TextEditingController()..addListener(_markDirty));
+      _checklistControllers.insert(insertAt, _newChecklistController());
       _checklistFocusNodes.insert(insertAt, focusNode);
       _synced = false;
     });
@@ -389,6 +495,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       _checklistDone.removeAt(index);
       _checklistControllers.removeAt(index).dispose();
       _checklistFocusNodes.removeAt(index).dispose();
+      // Row indices shifted; a hint computed against the old ones would
+      // point at the wrong rows (same below, wherever rows move).
+      _completedSuggestions = _findCompletedSuggestions();
       _synced = false;
     });
     _scheduleAutosave();
@@ -397,6 +506,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   void _setChecklistItemDone(int index, bool done) {
     setState(() {
       _checklistDone[index] = done;
+      _completedSuggestions = _findCompletedSuggestions();
       _synced = false;
     });
     _scheduleAutosave();
@@ -439,6 +549,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         _checklistControllers.removeAt(index).dispose();
         _checklistFocusNodes.removeAt(index).dispose();
       }
+      _completedSuggestions = _findCompletedSuggestions();
       _synced = false;
     });
     _scheduleAutosave();
@@ -961,6 +1072,13 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// any `await` below — every provider lookup and the note's text
   /// content — and nothing after that first line touches `ref` or a
   /// controller again, however long the upload/publish takes.
+  /// Publishes this note now. Deliberately reports through
+  /// [showAppSnackBar] rather than this screen's own messenger: uploading
+  /// attachments and publishing to every relay can take a while, the work
+  /// belongs to [NotesNotifier] (so it keeps running once started), and the
+  /// user is free to leave the editor meanwhile. Tying the outcome to this
+  /// widget being alive meant a sync that finished after they left said
+  /// nothing at all — success *and* failure went silent.
   Future<void> _syncNow() async {
     final l = AppLocalizations.of(context);
     setState(() => _syncing = true);
@@ -968,6 +1086,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final author = ref.read(authProvider).value;
     final notesNotifier = ref.read(notesProvider.notifier);
     final draft = _buildNote();
+    // Captured before the await: afterwards `_nostrEventId` may have been
+    // filled in, and "first time" is the more reassuring of the two messages.
+    final firstPublish = _nostrEventId == null;
 
     try {
       if (author == null) {
@@ -978,7 +1099,16 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       // the upload/publish below: a failure partway through must not lose
       // the edit, only leave it (still, correctly) marked unsynced.
       await notesNotifier.saveNote(draft);
-      final syncedNote = await notesNotifier.syncNote(draft);
+      final result = await notesNotifier.syncNote(draft);
+      final syncedNote = result.note;
+      // Say plainly when only some relays took it: "synced" while sitting on
+      // one relay out of four is exactly how a note ends up missing on
+      // another device, so that case must not read the same as a full write.
+      showAppSnackBar(
+        result.accepted < result.total
+            ? l.notePartiallySyncedMessage(result.accepted, result.total)
+            : (firstPublish ? l.noteSyncedFirstTimeMessage : l.noteSyncedMessage),
+      );
       if (!mounted) return;
       setState(() {
         // Reflects whatever SyncService just uploaded (urls/decryption
@@ -993,14 +1123,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         _syncing = false;
       });
     } catch (e) {
+      // Reported globally too: a failure the user never sees is worse than
+      // one they see on a different screen.
+      showAppSnackBar(l.syncNoteError(e.toString()));
       if (!mounted) return;
       setState(() {
         _synced = false;
         _syncing = false;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l.syncNoteError(e.toString()))));
     }
   }
 
@@ -1096,106 +1226,122 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final appBarOnColor = color?.onBackground;
     final isLightNoteColor = appBarOnColor == Colors.black;
 
-    return Scaffold(
-      // Paired with the app bar's own background below going fully
-      // transparent: this is what lets [_NoteColorReveal] paint one
-      // single, continuous circle across the *entire* screen — app bar
-      // and status-bar strip included — instead of the reveal stopping
-      // at the body's own top edge with the app bar snapping separately.
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: appBarOnColor,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        systemOverlayStyle: color == null
-            ? null
-            : SystemUiOverlayStyle(
-                statusBarColor: color.background,
-                statusBarIconBrightness: isLightNoteColor ? Brightness.dark : Brightness.light,
-                statusBarBrightness: isLightNoteColor ? Brightness.light : Brightness.dark,
-              ),
-        title: _buildAppBarTitle(l),
-        actions: [
-          if (hasNostrAccount)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: _syncing
-                  ? const SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
+    // Built as a local so the body below can offset itself by this bar's
+    // *real* height: it is two rows tall (actions, then the title — see
+    // `bottom`), not the standard one, and hard-coding kToolbarHeight while
+    // `extendBodyBehindAppBar` is on would slide the content up underneath it.
+    final appBar = AppBar(
+      backgroundColor: Colors.transparent,
+      foregroundColor: appBarOnColor,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      systemOverlayStyle: color == null
+          ? null
+          : SystemUiOverlayStyle(
+              statusBarColor: color.background,
+              statusBarIconBrightness: isLightNoteColor ? Brightness.dark : Brightness.light,
+              statusBarBrightness: isLightNoteColor ? Brightness.light : Brightness.dark,
+            ),
+      // No title on this row: it belongs to the action icons alone. With up
+      // to six of them, a title sharing the row was squeezed down to a few
+      // characters — or ran straight into them. It moves to `bottom` below.
+      actions: [
+        if (hasNostrAccount)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: _syncing
+                ? const SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       ),
-                    )
-                  : IconButton.outlined(
-                      // Three visually distinct states: never synced (plain
-                      // "off" cloud), synced and up to date (filled cloud,
-                      // primary color), and previously synced but edited
-                      // since (a "needs sync" cloud, same outline color as
-                      // "never synced" since the tap action is identical —
-                      // publish now — but a different icon shape so editing
-                      // an already-shared note doesn't look identical to a
-                      // note that was never shared at all).
-                      icon: Icon(
-                        _synced
-                            ? Icons.cloud_done_outlined
-                            : (_nostrEventId != null
-                                  ? Icons.cloud_sync_outlined
-                                  : Icons.cloud_off_outlined),
-                      ),
-                      tooltip: _synced ? l.unsyncNoteTooltip : l.syncNoteTooltip,
-                      style: IconButton.styleFrom(
-                        side: BorderSide(
-                          color: _synced ? colorScheme.primary : colorScheme.outline,
-                        ),
-                        foregroundColor: _synced ? colorScheme.primary : colorScheme.outline,
-                      ),
-                      onPressed: _synced ? _unsyncNow : _syncNow,
                     ),
-            ),
-          // Replaces the old preview/edit toggle icon: only meaningful
-          // while actively editing a non-checklist note (a checklist has
-          // no image-bearing body to add one into).
-          if (_editing && !_isChecklist)
-            IconButton(
-              icon: const Icon(Icons.add_photo_alternate_outlined),
-              tooltip: l.addImageButton,
-              onPressed: _addImage,
-            ),
-          // Available in both view and edit mode — a self-contained,
-          // lightweight action, same reasoning as the diary date chip and
-          // voice-note timestamp (see [_buildViewBody]'s doc comment).
-          IconButton(
-            icon: const Icon(Icons.palette_outlined),
-            tooltip: l.noteColorButton,
-            onPressed: _pickColor,
+                  )
+                : IconButton.outlined(
+                    // Three visually distinct states: never synced (plain
+                    // "off" cloud), synced and up to date (filled cloud,
+                    // primary color), and previously synced but edited
+                    // since (a "needs sync" cloud, same outline color as
+                    // "never synced" since the tap action is identical —
+                    // publish now — but a different icon shape so editing
+                    // an already-shared note doesn't look identical to a
+                    // note that was never shared at all).
+                    icon: Icon(
+                      _synced
+                          ? Icons.cloud_done_outlined
+                          : (_nostrEventId != null
+                                ? Icons.cloud_sync_outlined
+                                : Icons.cloud_off_outlined),
+                    ),
+                    tooltip: _synced ? l.unsyncNoteTooltip : l.syncNoteTooltip,
+                    style: IconButton.styleFrom(
+                      side: BorderSide(color: _synced ? colorScheme.primary : colorScheme.outline),
+                      foregroundColor: _synced ? colorScheme.primary : colorScheme.outline,
+                    ),
+                    onPressed: _synced ? _unsyncNow : _syncNow,
+                  ),
           ),
-          if (hasNostrAccount)
-            IconButton(
-              icon: Icon(
-                _ownerPubkey != null
-                    ? Icons.people_outline
-                    : (_sharedWith.isEmpty ? Icons.person_add_outlined : Icons.people),
-              ),
-              tooltip: l.shareNoteTooltip,
-              onPressed: _openShareSheet,
+        // Replaces the old preview/edit toggle icon: only meaningful
+        // while actively editing a non-checklist note (a checklist has
+        // no image-bearing body to add one into).
+        if (_editing && !_isChecklist)
+          IconButton(
+            icon: const Icon(Icons.add_photo_alternate_outlined),
+            tooltip: l.addImageButton,
+            onPressed: _addImage,
+          ),
+        // Available in both view and edit mode — a self-contained,
+        // lightweight action, same reasoning as the diary date chip and
+        // voice-note timestamp (see [_buildViewBody]'s doc comment).
+        IconButton(
+          icon: const Icon(Icons.palette_outlined),
+          tooltip: l.noteColorButton,
+          onPressed: _pickColor,
+        ),
+        if (hasNostrAccount)
+          IconButton(
+            icon: Icon(
+              _ownerPubkey != null
+                  ? Icons.people_outline
+                  : (_sharedWith.isEmpty ? Icons.person_add_outlined : Icons.people),
             ),
-          if (!_isNewNote)
-            IconButton(
-              icon: const Icon(Icons.delete_outline),
-              tooltip: l.deleteNoteButton,
-              onPressed: _delete,
-            ),
-          if (_editing)
-            IconButton(icon: const Icon(Icons.check), tooltip: l.saveTooltip, onPressed: _save),
-        ],
+            tooltip: l.shareNoteTooltip,
+            onPressed: _openShareSheet,
+          ),
+        if (!_isNewNote)
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: l.deleteNoteButton,
+            onPressed: _delete,
+          ),
+        if (_editing)
+          IconButton(icon: const Icon(Icons.check), tooltip: l.saveTooltip, onPressed: _save),
+      ],
+      // The title gets a full-width row of its own, directly under the
+      // actions — room for a real title (and a comfortable tap target when
+      // it doubles as the title field while editing).
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: Align(alignment: Alignment.centerLeft, child: _buildAppBarTitle(l)),
+        ),
       ),
+    );
+
+    return Scaffold(
+      // Paired with the app bar's own background being fully transparent:
+      // this is what lets [_NoteColorReveal] paint one single, continuous
+      // circle across the *entire* screen — app bar and status-bar strip
+      // included — instead of the reveal stopping at the body's own top edge
+      // with the app bar snapping separately.
+      extendBodyBehindAppBar: true,
+      appBar: appBar,
       body: _NoteColorReveal(
         // A concrete color either way (never null/transparent): the reveal
         // animates between two solid fills, including the "back to no
@@ -1208,7 +1354,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           // above) — only the actual content needs pushing back down
           // below the now-transparent app bar's real height, or it'd
           // render right underneath it.
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + appBar.preferredSize.height,
+          ),
           child: _applyNoteColorTheme(_editing ? _buildEditBody(l) : _buildViewBody(l)),
         ),
       ),
@@ -1269,8 +1417,6 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               _ChecklistToolbar(
                 doneCount: _checklistDone.where((done) => done).length,
                 totalCount: _checklistDone.length,
-                hideCompleted: _hideCompleted,
-                onToggleHideCompleted: () => setState(() => _hideCompleted = !_hideCompleted),
                 onDeleteCompleted: _deleteCompletedChecklistItems,
               ),
               _ChecklistEditor(
@@ -1281,7 +1427,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 onSubmitted: _addChecklistItemAfter,
                 onRemove: _removeChecklistItem,
                 onAddItem: () => _addChecklistItemAfter(_checklistControllers.length - 1),
-                hideCompleted: _hideCompleted,
+                completedSuggestions: _completedSuggestions,
+                onRestoreCompleted: _restoreCompletedItem,
               ),
               const SizedBox(height: 8),
               _voiceRecorderSlot(),
@@ -1653,15 +1800,11 @@ class _ChecklistToolbar extends StatelessWidget {
   const _ChecklistToolbar({
     required this.doneCount,
     required this.totalCount,
-    required this.hideCompleted,
-    required this.onToggleHideCompleted,
     required this.onDeleteCompleted,
   });
 
   final int doneCount;
   final int totalCount;
-  final bool hideCompleted;
-  final VoidCallback onToggleHideCompleted;
   final VoidCallback onDeleteCompleted;
 
   @override
@@ -1682,29 +1825,31 @@ class _ChecklistToolbar extends StatelessWidget {
               ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
           ),
-          if (doneCount > 0) ...[
-            IconButton(
-              icon: Icon(
-                hideCompleted ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                size: 20,
-              ),
-              tooltip: hideCompleted ? l.showCompletedItemsTooltip : l.hideCompletedItemsTooltip,
-              visualDensity: VisualDensity.compact,
-              onPressed: onToggleHideCompleted,
-            ),
+          // No hide/show toggle any more: completed items now live in their
+          // own collapsed section (see [_ChecklistEditor]), which already is
+          // "hidden until asked for" — a second control for the same thing
+          // would only be one more thing to reason about.
+          if (doneCount > 0)
             IconButton(
               icon: const Icon(Icons.delete_sweep_outlined, size: 20),
               tooltip: l.deleteCompletedItemsButton,
               visualDensity: VisualDensity.compact,
               onPressed: onDeleteCompleted,
             ),
-          ],
         ],
       ),
     );
   }
 }
 
+/// The checklist's editable rows, in three parts: the items still to do, the
+/// "add item" action, and — collapsed by default, below both — everything
+/// already ticked off. Keeping completed items out of the working area (but
+/// one tap away) is what stops a long-running list, a weekly shopping list
+/// above all, from burying today's handful of rows under weeks of history.
+///
+/// Row order in [doneFlags]/[controllers]/[focusNodes] never changes here;
+/// only which section a given index is rendered in does.
 class _ChecklistEditor extends StatelessWidget {
   const _ChecklistEditor({
     required this.doneFlags,
@@ -1714,7 +1859,8 @@ class _ChecklistEditor extends StatelessWidget {
     required this.onSubmitted,
     required this.onRemove,
     required this.onAddItem,
-    this.hideCompleted = false,
+    required this.completedSuggestions,
+    required this.onRestoreCompleted,
   });
 
   final List<bool> doneFlags;
@@ -1733,14 +1879,17 @@ class _ChecklistEditor extends StatelessWidget {
 
   final VoidCallback onAddItem;
 
-  /// See [_ChecklistToolbar]'s toggle — every row still exists at its same
-  /// index in [doneFlags]/[controllers]/[focusNodes] regardless, only
-  /// which ones get a [Row] built for them changes.
-  final bool hideCompleted;
+  /// The row being typed plus the completed items it prefix-matches, if any
+  /// — see [_NoteEditorScreenState._completedSuggestions].
+  final ({int row, List<int> matches})? completedSuggestions;
+
+  /// Called with the index of the completed item the user picked.
+  final void Function(int existing) onRestoreCompleted;
 
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
     final doneTextColor = Theme.of(context).disabledColor;
     // "Add item" reads as a de-emphasized action, not note content: use the
     // muted-text color rather than the default (primary/accent) button color.
@@ -1748,50 +1897,24 @@ class _ChecklistEditor extends StatelessWidget {
     // dark gray derived from the note's own background (distinct from the
     // black note text); on an uncolored note it's the theme's own muted gray,
     // which stays readable in both light and dark mode.
-    final addItemColor = Theme.of(context).colorScheme.onSurfaceVariant;
-    final visibleIndices = [
+    final addItemColor = colorScheme.onSurfaceVariant;
+    final activeIndices = [
       for (var i = 0; i < controllers.length; i++)
-        if (!hideCompleted || !doneFlags[i]) i,
+        if (!doneFlags[i]) i,
+    ];
+    final completedIndices = [
+      for (var i = 0; i < controllers.length; i++)
+        if (doneFlags[i]) i,
     ];
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hideCompleted && visibleIndices.isEmpty && controllers.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(l.allChecklistItemsCompletedHidden, style: TextStyle(color: doneTextColor)),
-          ),
-        for (final i in visibleIndices)
-          Row(
-            children: [
-              Checkbox(value: doneFlags[i], onChanged: (value) => onToggleDone(i, value ?? false)),
-              Expanded(
-                child: TextField(
-                  controller: controllers[i],
-                  focusNode: focusNodes[i],
-                  textInputAction: TextInputAction.next,
-                  // Without this, TextField runs its default
-                  // onEditingComplete behavior (which shifts/drops focus)
-                  // before onSubmitted below gets to move focus to the new
-                  // row itself — the keyboard would briefly close and
-                  // reopen as focus bounces between the two. An empty
-                  // override leaves focus management entirely to
-                  // onSubmitted/_addChecklistItemAfter.
-                  onEditingComplete: () {},
-                  onSubmitted: (_) => onSubmitted(i),
-                  style: TextStyle(
-                    decoration: doneFlags[i] ? TextDecoration.lineThrough : TextDecoration.none,
-                    color: doneFlags[i] ? doneTextColor : null,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: l.checklistItemHint,
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => onRemove(i)),
-            ],
-          ),
+        for (final i in activeIndices) ...[
+          _row(context, i, doneTextColor: doneTextColor),
+          if (completedSuggestions?.row == i)
+            _suggestions(context, l, colorScheme, completedSuggestions!.matches),
+        ],
         Align(
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
@@ -1801,7 +1924,121 @@ class _ChecklistEditor extends StatelessWidget {
             label: Text(l.addItemButton),
           ),
         ),
+        if (completedIndices.isNotEmpty)
+          // `dividerColor: transparent` removes ExpansionTile's own hairlines,
+          // which otherwise cut across the note's colored background.
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              iconColor: addItemColor,
+              collapsedIconColor: addItemColor,
+              title: Text(
+                l.completedItemsSection(completedIndices.length),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: addItemColor),
+              ),
+              children: [
+                for (final i in completedIndices) _row(context, i, doneTextColor: doneTextColor),
+              ],
+            ),
+          ),
       ],
+    );
+  }
+
+  /// One checklist row: tick box, editable text, remove button.
+  Widget _row(BuildContext context, int i, {required Color doneTextColor}) {
+    final l = AppLocalizations.of(context);
+    final done = doneFlags[i];
+    return Row(
+      children: [
+        Checkbox(value: done, onChanged: (value) => onToggleDone(i, value ?? false)),
+        Expanded(
+          child: TextField(
+            controller: controllers[i],
+            focusNode: focusNodes[i],
+            textInputAction: TextInputAction.next,
+            // An explicit, slightly thicker caret in the note's own text
+            // color: the default takes the theme's primary color, which on a
+            // pastel note background can be faint enough that the row gives
+            // no visible sign it's focused and ready for typing.
+            cursorColor: Theme.of(context).colorScheme.onSurface,
+            cursorWidth: 2.5,
+            // Without this, TextField runs its default onEditingComplete
+            // behavior (which shifts/drops focus) before onSubmitted below
+            // gets to move focus to the new row itself — the keyboard would
+            // briefly close and reopen as focus bounces between the two. An
+            // empty override leaves focus management entirely to
+            // onSubmitted/_addChecklistItemAfter.
+            onEditingComplete: () {},
+            onSubmitted: (_) => onSubmitted(i),
+            style: TextStyle(
+              decoration: done ? TextDecoration.lineThrough : TextDecoration.none,
+              color: done ? doneTextColor : null,
+            ),
+            decoration: InputDecoration(hintText: l.checklistItemHint, border: InputBorder.none),
+          ),
+        ),
+        IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => onRemove(i)),
+      ],
+    );
+  }
+
+  /// The as-you-type suggestion list, shown directly under the row being
+  /// typed: every already-completed item starting with what's been entered so
+  /// far. Tapping one puts that item back among the things to do and drops
+  /// the half-typed row, instead of leaving the list with two copies.
+  Widget _suggestions(
+    BuildContext context,
+    AppLocalizations l,
+    ColorScheme colorScheme,
+    List<int> matches,
+  ) {
+    return Card(
+      margin: const EdgeInsets.only(left: 48, right: 8, bottom: 8),
+      color: colorScheme.secondaryContainer,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            child: Text(
+              l.duplicateChecklistItemMessage,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: colorScheme.onSecondaryContainer),
+            ),
+          ),
+          for (final i in matches)
+            InkWell(
+              onTap: () => onRestoreCompleted(i),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        controllers[i].text.trim(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: colorScheme.onSecondaryContainer),
+                      ),
+                    ),
+                    Icon(
+                      Icons.undo,
+                      size: 18,
+                      semanticLabel: l.restoreChecklistItemButton,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

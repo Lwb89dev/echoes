@@ -139,6 +139,102 @@ class AttachmentUploadService {
     );
   }
 
+  /// Re-uploads [attachment] when its blob is no longer on the file host,
+  /// returning the refreshed attachment — or null when nothing needed doing
+  /// (or nothing could be done).
+  ///
+  /// File hosts, the free ones especially, garbage-collect blobs to reclaim
+  /// space. Nothing tells the app when that happens: the note keeps a url and
+  /// a decryption key that now resolve to a 404, so the image or voice note
+  /// simply stops loading — on every device, for good. This makes that
+  /// recoverable *while a local decrypted copy still exists*, which is
+  /// exactly why voice notes keep a durable one (see [_durable]).
+  ///
+  /// Re-encrypts from scratch rather than re-uploading the old ciphertext: a
+  /// fresh key/nonce per upload is the same rule the first upload follows,
+  /// and the caller has to persist the new url/key anyway.
+  ///
+  /// Returns null when the blob is still there, when there is no local copy
+  /// left to re-upload, or when the check itself fails (offline, host down —
+  /// a transient error must not be mistaken for "the file is gone").
+  Future<Attachment?> reuploadIfMissing({
+    required Attachment attachment,
+    required UploadProviderOption provider,
+    required User author,
+  }) async {
+    if (!attachment.isUploaded) return null;
+    final url = attachment.url;
+    final hash = attachment.sha256OfEncrypted;
+    if (url == null || hash == null) return null;
+
+    final stillThere = await _blobExists(url);
+    if (stillThere != false) return null; // present, or unknown — leave it be.
+
+    final localCopy =
+        await _fileCacheService.get(hash, persistent: _durable(attachment)) ??
+        await _fileCacheService.get(hash, persistent: !_durable(attachment));
+    if (localCopy == null) {
+      developer.log(
+        'Attachment ${attachment.id} is gone from its host and no local copy '
+        'remains — nothing to re-upload',
+        name: 'AttachmentUploadService',
+      );
+      return null;
+    }
+
+    developer.log(
+      'Attachment ${attachment.id} vanished from its host — re-uploading from '
+      'the local copy',
+      name: 'AttachmentUploadService',
+    );
+    final plainBytes = await localCopy.readAsBytes();
+    final key = _randomBytes(32);
+    final nonce = _randomBytes(12);
+    final secretBox = await _aesGcm.encrypt(plainBytes, secretKey: SecretKey(key), nonce: nonce);
+    final encryptedBytes = Uint8List.fromList([...secretBox.cipherText, ...secretBox.mac.bytes]);
+    final encryptedHash = sha256.convert(encryptedBytes).toString();
+
+    final newUrl = await _uploadWithFallback(
+      provider: provider,
+      bytes: encryptedBytes,
+      mimeType: attachment.mimeType,
+      author: author,
+    );
+
+    // The plaintext is unchanged but its cache key is derived from the
+    // ciphertext hash, which just changed: re-seed under the new key so the
+    // copy stays findable, and drop the stale entry.
+    await _fileCacheService.put(encryptedHash, plainBytes, persistent: _durable(attachment));
+    await _fileCacheService.remove(hash);
+
+    return Attachment.uploaded(
+      pending: attachment,
+      url: newUrl,
+      decryptionKeyBase64: base64Encode(key),
+      decryptionNonceBase64: base64Encode(nonce),
+      sizeBytes: encryptedBytes.length,
+      sha256OfEncrypted: encryptedHash,
+    );
+  }
+
+  /// Whether [url]'s blob is still on the host: true/false when the host
+  /// answers clearly, null when the answer is inconclusive (network error,
+  /// server error, or a status that says nothing about existence). Only a
+  /// definite "gone" — 404/410 — counts as false, so a flaky host never
+  /// triggers a needless re-upload.
+  Future<bool?> _blobExists(String url) async {
+    try {
+      final uri = requireHttpsUri(url);
+      final response = await http.head(uri).timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) return true;
+      if (response.statusCode == 404 || response.statusCode == 410) return false;
+      return null;
+    } catch (e) {
+      developer.log('Could not check attachment blob at $url: $e', name: 'AttachmentUploadService');
+      return null;
+    }
+  }
+
   /// Uploads to [provider], automatically retrying against the *other*
   /// built-in host (see [builtInUploadProviders]) if the first attempt
   /// fails — but only when [provider] itself is one of those two. A

@@ -66,8 +66,13 @@ class SyncService {
     developer.log('SyncService.startAutoSync called', name: 'SyncService');
     stopAutoSync();
 
-    Future<void> cycle() async {
-      await runSyncCycle(author: author, relays: relays, uploadProvider: uploadProvider);
+    Future<void> cycle({bool repairAttachments = false}) async {
+      await runSyncCycle(
+        author: author,
+        relays: relays,
+        uploadProvider: uploadProvider,
+        repairAttachments: repairAttachments,
+      );
       onCycleCompleted?.call();
     }
 
@@ -82,7 +87,12 @@ class SyncService {
     // an error, and cycles are serialized so this can't race the ones below.
     // Local-only notes (never synced, no `nostrEventId`) are untouched, same
     // as every cycle — see [syncLocalNotes].
-    cycle();
+    //
+    // The launch cycle is also the one that checks whether file hosts have
+    // garbage-collected any attachment blobs (see [_repairMissingAttachments]).
+    // Once per app start, not on every poll: it costs one request per
+    // uploaded attachment, and blobs don't vanish minute to minute.
+    cycle(repairAttachments: true);
 
     _pollTimer = Timer.periodic(AppConstants.syncPollInterval, (_) => cycle());
 
@@ -114,7 +124,7 @@ class SyncService {
   /// this does not swallow failures: the caller needs to know whether the
   /// sync actually succeeded so it can show clear success/failure feedback
   /// instead of a note silently staying unsynced with no explanation.
-  Future<Note> syncNote({
+  Future<({Note note, int accepted, int total})> syncNote({
     required Note note,
     required User author,
     required List<Relay> relays,
@@ -130,17 +140,21 @@ class SyncService {
       uploadProvider: uploadProvider,
     );
     if (noteWithUploads.ownerPubkey != null) {
-      return _publishEditProposal(noteWithUploads, author: author, relays: relays);
+      final proposal = await _publishEditProposal(noteWithUploads, author: author, relays: relays);
+      return (note: proposal, accepted: relays.length, total: relays.length);
     }
 
     final event = await _nostrService.createNoteEvent(noteWithUploads, author);
-    final eventId = await _nostrService.publishNote(event, relays);
-    final publishing = noteWithUploads.copyWith(synced: false, nostrEventId: eventId);
+    // Per-relay result, not just "someone took it": a note accepted by only
+    // one of several relays is still missing from the others, which is what
+    // makes it look synced here and absent on another device.
+    final publish = await _nostrService.publishNoteToRelays(event, relays);
+    final publishing = noteWithUploads.copyWith(synced: false, nostrEventId: publish.eventId);
     await _localStorageService.saveNote(publishing);
     await _publishRecipientCopies(publishing, author: author, relays: relays);
     final syncedNote = publishing.copyWith(synced: true);
     await _localStorageService.saveNote(syncedNote);
-    return syncedNote;
+    return (note: syncedNote, accepted: publish.accepted, total: publish.total);
   }
 
   Future<Note> _publishEditProposal(
@@ -571,6 +585,7 @@ class SyncService {
     required List<Relay> relays,
     required UploadProviderOption uploadProvider,
     bool silent = true,
+    bool repairAttachments = false,
   }) async {
     developer.log('SyncService.runSyncCycle called', name: 'SyncService');
     // Serialize cycles: the poll timer, the connectivity listener (which can
@@ -587,6 +602,7 @@ class SyncService {
       author: author,
       relays: relays,
       uploadProvider: uploadProvider,
+      repairAttachments: repairAttachments,
     ).whenComplete(() => _cycleInFlight = null);
     try {
       await cycle;
@@ -601,6 +617,70 @@ class SyncService {
 
   Future<void>? _cycleInFlight;
 
+  /// Re-uploads attachments whose blob the file host has garbage-collected,
+  /// then republishes the notes that carry them so every device picks up the
+  /// new url and key.
+  ///
+  /// Without this, a purged blob is permanent: the note keeps pointing at a
+  /// url that 404s and the image or voice note is simply gone everywhere,
+  /// even though this device may still hold the decrypted bytes (voice notes
+  /// keep a durable local copy for exactly this reason). Only notes *I* own
+  /// are touched — a note shared with me is its owner's to repair, and I
+  /// have no right to republish it.
+  ///
+  /// Entirely best-effort: any failure is logged and the rest continues, so
+  /// one unreachable host can't stall a sync cycle.
+  Future<void> _repairMissingAttachments({
+    required User author,
+    required List<Relay> relays,
+    required UploadProviderOption uploadProvider,
+  }) async {
+    final notes = await _localStorageService.loadNotes();
+    for (final note in notes) {
+      // Never-synced and shared-with-me notes are out of scope: the first has
+      // nothing published to repair, the second isn't mine to republish.
+      if (note.ownerPubkey != null || note.nostrEventId == null) continue;
+      if (!note.attachments.any((a) => a.isUploaded)) continue;
+
+      var changed = false;
+      final repaired = <Attachment>[];
+      for (final attachment in note.attachments) {
+        try {
+          final fresh = await _attachmentUploadService.reuploadIfMissing(
+            attachment: attachment,
+            provider: uploadProvider,
+            author: author,
+          );
+          repaired.add(fresh ?? attachment);
+          changed = changed || fresh != null;
+        } catch (e) {
+          developer.log('Could not repair attachment ${attachment.id}: $e', name: 'SyncService');
+          repaired.add(attachment);
+        }
+      }
+      if (!changed) continue;
+
+      // Same updatedAt on purpose: the note's *content* did not change, only
+      // where its attachment bytes live. Bumping it would make this device
+      // win every last-write-wins merge for a repair nobody edited.
+      final updated = note.copyWith(attachments: repaired, synced: false);
+      await _localStorageService.saveNote(updated);
+      try {
+        await syncNote(
+          note: updated,
+          author: author,
+          relays: relays,
+          uploadProvider: uploadProvider,
+        );
+      } catch (e) {
+        developer.log(
+          'Repaired attachments for note ${note.id} but could not republish: $e',
+          name: 'SyncService',
+        );
+      }
+    }
+  }
+
   /// The actual cycle body, run at most once at a time (see [runSyncCycle]).
   /// Always throws on failure — the caller-facing wrapper decides per
   /// caller whether that surfaces or just gets logged.
@@ -608,6 +688,7 @@ class SyncService {
     required User author,
     required List<Relay> relays,
     required UploadProviderOption uploadProvider,
+    bool repairAttachments = false,
   }) async {
     if (!await isOnline()) {
       throw StateError('No network connection.');
@@ -693,6 +774,14 @@ class SyncService {
       // proposals from my recipients, leave signals) — its own bookmark,
       // its own don't-advance-on-incomplete rule.
       await _processIncomingShares(author: author, relays: relays);
+
+      if (repairAttachments) {
+        await _repairMissingAttachments(
+          author: author,
+          relays: relays,
+          uploadProvider: uploadProvider,
+        );
+      }
 
       // Only move the bookmark forward when every relay actually confirmed
       // it delivered everything it has (see `fetchNotesFromRelay`'s

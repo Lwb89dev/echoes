@@ -152,6 +152,28 @@ class AppLocalizationsFi extends AppLocalizations {
   String get addItemButton => 'Lisää kohde';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Valmiit ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Jo tällä listalla, valmis';
+
+  @override
+  String get restoreChecklistItemButton => 'Palauta';
+
+  @override
+  String get noteSyncedMessage => 'Muistiinpano synkronoitu';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Muistiinpano synkronoitu ensimmäistä kertaa';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Synkronoitu $accepted/$total välittäjään';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done/$total valmiina';
   }

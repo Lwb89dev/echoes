@@ -152,6 +152,28 @@ class AppLocalizationsRo extends AppLocalizations {
   String get addItemButton => 'Adaugă element';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Finalizate ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Deja pe listă, finalizat';
+
+  @override
+  String get restoreChecklistItemButton => 'Restaurează';
+
+  @override
+  String get noteSyncedMessage => 'Notiță sincronizată';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Notiță sincronizată pentru prima dată';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Sincronizată pe $accepted din $total relee';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done din $total finalizate';
   }

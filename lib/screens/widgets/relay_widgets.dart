@@ -136,9 +136,9 @@ class RelayListView extends ConsumerWidget {
   }
 }
 
-/// Green when the relay accepted a websocket connection, red when it
-/// didn't (or the attempt errored), a neutral grey while the check is
-/// still in flight — see [relayStatusProvider].
+/// Uses Echoes' aqua accent when the relay accepted a websocket connection,
+/// the semantic error color when it didn't, and a neutral tone while the
+/// check is in flight — see [relayStatusProvider].
 class _RelayStatusDot extends StatelessWidget {
   const _RelayStatusDot({required this.status});
 
@@ -146,10 +146,11 @@ class _RelayStatusDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final color = status.when(
-      data: (online) => online ? Colors.green : Colors.red,
-      loading: () => Colors.grey,
-      error: (error, stackTrace) => Colors.red,
+      data: (online) => online ? scheme.tertiary : scheme.error,
+      loading: () => scheme.outline,
+      error: (error, stackTrace) => scheme.error,
     );
     return Container(
       width: 10,

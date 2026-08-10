@@ -6,6 +6,7 @@ import '../providers/onboarding_provider.dart';
 import '../providers/relay_provider.dart';
 import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
+import '../widgets/brand_mark.dart';
 import 'widgets/nostr_login_form.dart';
 import 'widgets/relay_widgets.dart';
 
@@ -175,8 +176,8 @@ class _IntroPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.graphic_eq, size: 56, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 16),
+            const BrandMark(size: 112),
+            const SizedBox(height: 20),
             Text(l.onboardingWelcomeTitle, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 24),
             _FeatureRow(

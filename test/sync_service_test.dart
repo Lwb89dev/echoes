@@ -41,7 +41,7 @@ void main() {
     );
 
     expect(harness.nostr.published, ['self', 'share:recipient-a', 'share:recipient-b']);
-    expect(result.synced, isTrue);
+    expect(result.note.synced, isTrue);
     expect(harness.storage.saved.any((saved) => !saved.synced), isTrue);
   });
 
@@ -55,8 +55,8 @@ void main() {
     );
 
     expect(harness.nostr.published, ['edit:owner-pubkey']);
-    expect(result.synced, isTrue);
-    expect(result.ownerPubkey, 'owner-pubkey');
+    expect(result.note.synced, isTrue);
+    expect(result.note.ownerPubkey, 'owner-pubkey');
   });
 
   test('partial recipient failure leaves a resumable unsynced state', () async {
@@ -149,13 +149,24 @@ class _FakeNostrService extends NostrService {
     return _event('edit:$ownerPubHex');
   }
 
+  // The single publish seam: the real `publishNote` just delegates here, so
+  // overriding this one covers every publish path (self copy, recipient
+  // copies, edit proposals) without the fake having to know which is which.
   @override
-  Future<String> publishNote(NostrEvent event, List<Relay> relays) async {
+  Future<({String eventId, int accepted, int total, List<String> failures})> publishNoteToRelays(
+    NostrEvent event,
+    List<Relay> relays,
+  ) async {
     final label = event.content!;
     published.add(label);
     if (label == failOn) {
       throw StateError('simulated publish failure');
     }
-    return event.id!;
+    return (
+      eventId: event.id!,
+      accepted: relays.length,
+      total: relays.length,
+      failures: const <String>[],
+    );
   }
 }

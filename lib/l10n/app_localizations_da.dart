@@ -152,6 +152,28 @@ class AppLocalizationsDa extends AppLocalizations {
   String get addItemButton => 'Tilføj punkt';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Fuldførte ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Allerede på listen, fuldført';
+
+  @override
+  String get restoreChecklistItemButton => 'Gendan';
+
+  @override
+  String get noteSyncedMessage => 'Note synkroniseret';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Note synkroniseret for første gang';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Synkroniseret til $accepted af $total relæer';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done af $total fuldført';
   }

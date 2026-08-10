@@ -152,6 +152,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addItemButton => 'Добавить пункт';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Выполнено ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Уже в списке, выполнено';
+
+  @override
+  String get restoreChecklistItemButton => 'Восстановить';
+
+  @override
+  String get noteSyncedMessage => 'Заметка синхронизирована';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Заметка синхронизирована впервые';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Синхронизировано с $accepted из $total реле';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return 'Выполнено $done из $total';
   }

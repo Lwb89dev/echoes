@@ -152,6 +152,28 @@ class AppLocalizationsEt extends AppLocalizations {
   String get addItemButton => 'Lisa punkt';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Tehtud ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Juba selles loendis, tehtud';
+
+  @override
+  String get restoreChecklistItemButton => 'Taasta';
+
+  @override
+  String get noteSyncedMessage => 'Märkus sünkroonitud';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Märkus esmakordselt sünkroonitud';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Sünkroonitud $accepted/$total releega';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done/$total tehtud';
   }

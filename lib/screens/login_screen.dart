@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
+import '../widgets/brand_mark.dart';
 import 'home_screen.dart';
 import 'widgets/nostr_login_form.dart';
 
@@ -33,8 +34,8 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.graphic_eq, size: 64, color: Theme.of(context).colorScheme.primary),
-                const SizedBox(height: 16),
+                const BrandMark(size: 128),
+                const SizedBox(height: 20),
                 Text(AppConstants.appName, style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 8),
                 Text(

@@ -152,6 +152,28 @@ class AppLocalizationsSv extends AppLocalizations {
   String get addItemButton => 'Lägg till objekt';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Klara ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Finns redan i listan, klar';
+
+  @override
+  String get restoreChecklistItemButton => 'Återställ';
+
+  @override
+  String get noteSyncedMessage => 'Anteckning synkroniserad';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Anteckning synkroniserad för första gången';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Synkroniserad till $accepted av $total reläer';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done av $total klara';
   }

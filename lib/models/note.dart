@@ -111,8 +111,17 @@ class Note {
   String get bodyWithoutAttachmentTokens => body.replaceAll(_inlineAttachmentToken, '');
 
   /// Short text preview for the list view (title excluded, no newlines).
+  ///
+  /// A checklist previews only what's **still to do**: ticked-off items are
+  /// left out. The preview is what a shopping list is read from at a glance
+  /// in the shop, and listing what's already been picked up (or already at
+  /// home) there is worse than useless — it's how you end up buying the same
+  /// thing twice. An all-done checklist therefore previews as empty, which is
+  /// the honest answer: there is nothing left on it.
   String get preview {
-    final source = isChecklist ? items.map((e) => e.text).join(', ') : bodyWithoutAttachmentTokens;
+    final source = isChecklist
+        ? items.where((e) => !e.done).map((e) => e.text).join(', ')
+        : bodyWithoutAttachmentTokens;
     final singleLine = source.replaceAll('\n', ' ').trim();
     return singleLine.length <= 120 ? singleLine : '${singleLine.substring(0, 120)}…';
   }
@@ -160,6 +169,17 @@ class Note {
     );
   }
 
+  /// Timestamps are written as **UTC** (`…Z`) and read back with `.toLocal()`.
+  ///
+  /// A local `toIso8601String()` carries no zone marker at all, so another
+  /// device parses the same text as its *own* local time — the same wall
+  /// clock, a different instant. Across timezones that silently shifts
+  /// `updatedAt`, which is what last-write-wins merges compare and what the
+  /// payload/envelope timestamp check validates: a note edited elsewhere
+  /// could lose the merge, or be dropped outright, purely because of where
+  /// the two devices are. Reading stays `DateTime.parse(...).toLocal()`, so
+  /// zone-less timestamps written by older versions still load exactly as
+  /// they did before.
   Map<String, dynamic> toJson() => {
     'id': id,
     'title': title,
@@ -167,12 +187,12 @@ class Note {
     'items': items.map((e) => e.toJson()).toList(),
     'isChecklist': isChecklist,
     'attachments': attachments.map((a) => a.toJson()).toList(),
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
+    'createdAt': createdAt.toUtc().toIso8601String(),
+    'updatedAt': updatedAt.toUtc().toIso8601String(),
     'synced': synced,
     'nostrEventId': nostrEventId,
     'isDiaryEntry': isDiaryEntry,
-    'entryDate': entryDate?.toIso8601String(),
+    'entryDate': entryDate?.toUtc().toIso8601String(),
     'color': color?.name,
     'ownerPubkey': ownerPubkey,
     'sharedWith': sharedWith,
@@ -218,12 +238,14 @@ class Note {
       attachments: (json['attachments'] as List<dynamic>? ?? [])
           .map((e) => Attachment.fromJson(e as Map<String, dynamic>))
           .toList(),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: DateTime.parse(json['createdAt'] as String).toLocal(),
+      updatedAt: DateTime.parse(json['updatedAt'] as String).toLocal(),
       synced: json['synced'] as bool? ?? false,
       nostrEventId: json['nostrEventId'] as String?,
       isDiaryEntry: json['isDiaryEntry'] as bool? ?? false,
-      entryDate: json['entryDate'] != null ? DateTime.parse(json['entryDate'] as String) : null,
+      entryDate: json['entryDate'] != null
+          ? DateTime.parse(json['entryDate'] as String).toLocal()
+          : null,
       color: json['color'] != null ? NoteColor.values.byName(json['color'] as String) : null,
       ownerPubkey: json['ownerPubkey'] as String?,
       sharedWith: (json['sharedWith'] as List<dynamic>? ?? const [])

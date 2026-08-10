@@ -1059,20 +1059,72 @@ class NostrService {
   /// configured relay is used for both reading and writing — see [Relay]).
   /// Returns the relay-confirmed event id on success.
   Future<String> publishNote(NostrEvent event, List<Relay> relays) async {
+    final result = await publishNoteToRelays(event, relays);
+    return result.eventId;
+  }
+
+  /// Publishes [event] to **every** relay in [relays] and reports how many
+  /// actually accepted it.
+  ///
+  /// One request per relay on purpose. `dart_nostr`'s own
+  /// `sendEventToRelaysAsync` broadcasts to all of them but resolves on the
+  /// *first* OK it receives, so a note that only one relay out of four
+  /// accepted — the rest rejecting, timing out or being unreachable — looked
+  /// exactly like a fully published one. That is how a note could be marked
+  /// "synced" on the device that wrote it and still be missing on another
+  /// device reading a relay that never got it. Fanning out per relay is what
+  /// makes "published to 1 of 4" distinguishable from "published to 4 of 4".
+  ///
+  /// Still succeeds when at least one relay accepts (the note *is* on the
+  /// network, and a single unreachable relay must not fail the write); the
+  /// caller decides what to tell the user about a partial result.
+  Future<({String eventId, int accepted, int total, List<String> failures})> publishNoteToRelays(
+    NostrEvent event,
+    List<Relay> relays,
+  ) async {
     developer.log('NostrService.publishNote called: ${event.id}', name: 'NostrService');
     if (relays.isEmpty) {
       throw StateError('No relay configured.');
     }
     await connectToRelays(relays);
 
-    final ok = await _nostr.relays.sendEventToRelaysAsync(
-      event,
-      timeout: const Duration(seconds: 10),
-    );
-    if (ok.isEventAccepted != true) {
-      throw StateError('Relay rejected the event: ${ok.message ?? 'unknown reason'}');
+    final failures = <String>[];
+    String? acceptedEventId;
+    // Sequential rather than parallel: the relay pool is shared, the payloads
+    // are small, and a predictable order keeps the failure list readable.
+    for (final relay in relays) {
+      try {
+        final ok = await _nostr.relays.sendEventToRelaysAsync(
+          event,
+          timeout: const Duration(seconds: 10),
+          relays: [relay.url],
+        );
+        if (ok.isEventAccepted == true) {
+          acceptedEventId ??= ok.eventId;
+        } else {
+          failures.add('${relay.url}: ${ok.message ?? 'rejected'}');
+        }
+      } catch (e) {
+        failures.add('${relay.url}: $e');
+      }
     }
-    return ok.eventId;
+
+    if (acceptedEventId == null) {
+      throw StateError('No relay accepted the event — ${failures.join('; ')}');
+    }
+    if (failures.isNotEmpty) {
+      developer.log(
+        'Event ${event.id} reached ${relays.length - failures.length}/${relays.length} relays; '
+        'failures: ${failures.join('; ')}',
+        name: 'NostrService',
+      );
+    }
+    return (
+      eventId: acceptedEventId,
+      accepted: relays.length - failures.length,
+      total: relays.length,
+      failures: failures,
+    );
   }
 
   /// Fetches every note event (Echoes' application kind) authored by

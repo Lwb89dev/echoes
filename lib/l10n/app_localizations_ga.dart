@@ -152,6 +152,28 @@ class AppLocalizationsGa extends AppLocalizations {
   String get addItemButton => 'Cuir mír leis';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Críochnaithe ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Ar an liosta seo cheana, críochnaithe';
+
+  @override
+  String get restoreChecklistItemButton => 'Athchóirigh';
+
+  @override
+  String get noteSyncedMessage => 'Nóta sioncronaithe';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Sioncronaíodh an nóta den chéad uair';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Sioncronaithe le $accepted as $total athsheachadán';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done as $total déanta';
   }

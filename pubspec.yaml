@@ -2,7 +2,7 @@ name: echoes
 description: "Echoes - offline-first note-taking app on the Nostr protocol."
 publish_to: 'none'
 
-version: 0.4.4+8
+version: 0.4.5+9
 
 environment:
   sdk: ^3.12.2
@@ -135,22 +135,27 @@ flutter:
 
   assets:
     - assets/icon/
+    - assets/splash/
 
-# App icon generated from Icons.graphic_eq (see assets/icon/icon.png): solid
-# teal 700 background for iOS/web, adaptive icon (transparent foreground +
-# solid background) for Android. Regenerate with:
+# App icon source (see assets/icon/icon.png): an ivory notebook and quill on
+# Echoes teal. Regenerate platform variants with:
 #   dart run flutter_launcher_icons
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/icon.png"
-  adaptive_icon_background: "#00796B"
-  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  # Android gets a dedicated, transparent foreground with its own generous
+  # safe margin. This avoids AOSP adaptive-icon masks cropping the quill.
+  image_path_android: "assets/icon/android_adaptive_foreground.png"
+  # AOSP then draws only the safe foreground mark, without a coloured tile.
+  adaptive_icon_background: "#00000000"
+  adaptive_icon_foreground: "assets/icon/android_adaptive_foreground.png"
+  adaptive_icon_foreground_inset: 0
   remove_alpha_ios: true
   web:
     generate: true
-    background_color: "#00796B"
-    theme_color: "#00796B"
+    background_color: "#006F70"
+    theme_color: "#006F70"
   # Windows: generates windows/runner/resources/app_icon.ico from the same
   # source image. Linux has no equivalent step here — its icon comes from
   # the hicolor-themed PNG referenced by the Flatpak manifest instead (see
@@ -160,15 +165,17 @@ flutter_launcher_icons:
     image_path: "assets/icon/icon.png"
     icon_size: 256
 
-# Native splash screen (same symbol, teal background in both light and
-# dark, dark-mode-friendly by design). Regenerate with:
+# Native splash screen (the transparent notebook-and-quill mark over Echoes
+# teal). Regenerate with:
 #   dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#00796B"
-  color_dark: "#001E1B"
+  color: "#006F70"
+  color_dark: "#003B3C"
   image: assets/splash/splash_icon.png
   android_12:
-    image: assets/splash/splash_icon.png
-    color: "#00796B"
-    color_dark: "#001E1B"
+    # Android 12 masks the center image to a circle. This 1152px variant
+    # keeps the notebook-and-quill mark inside its documented safe area.
+    image: assets/splash/splash_icon_android12.png
+    color: "#006F70"
+    color_dark: "#003B3C"
   web: false

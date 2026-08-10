@@ -57,6 +57,14 @@
   "bodyFieldHint": "Scrivi qui... (markdown supportato)",
   "checklistItemHint": "Elemento checklist",
   "addItemButton": "Aggiungi elemento",
+  "completedItemsSection": "Completati ({count})",
+  "@completedItemsSection": { "placeholders": { "count": { "type": "int" } } },
+  "duplicateChecklistItemMessage": "Già in questa lista, completato",
+  "restoreChecklistItemButton": "Ripristina",
+  "noteSyncedMessage": "Nota sincronizzata",
+  "noteSyncedFirstTimeMessage": "Nota sincronizzata per la prima volta",
+  "notePartiallySyncedMessage": "Sincronizzata su {accepted} relay su {total}",
+  "@notePartiallySyncedMessage": { "placeholders": { "accepted": { "type": "int" }, "total": { "type": "int" } } },
   "checklistProgress": "{done} di {total} completati",
   "@checklistProgress": {
     "placeholders": {

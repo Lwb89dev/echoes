@@ -152,6 +152,28 @@ class AppLocalizationsBg extends AppLocalizations {
   String get addItemButton => 'Добавяне на елемент';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Завършени ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Вече е в списъка, завършено';
+
+  @override
+  String get restoreChecklistItemButton => 'Възстанови';
+
+  @override
+  String get noteSyncedMessage => 'Бележката е синхронизирана';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Бележката е синхронизирана за първи път';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Синхронизирана с $accepted от $total релета';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done от $total завършени';
   }

@@ -152,6 +152,28 @@ class AppLocalizationsCs extends AppLocalizations {
   String get addItemButton => 'Přidat položku';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Hotovo ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Už je na seznamu, hotovo';
+
+  @override
+  String get restoreChecklistItemButton => 'Obnovit';
+
+  @override
+  String get noteSyncedMessage => 'Poznámka synchronizována';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Poznámka poprvé synchronizována';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Synchronizováno na $accepted z $total relayů';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return 'Hotovo $done z $total';
   }

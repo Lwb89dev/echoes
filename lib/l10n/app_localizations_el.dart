@@ -153,6 +153,28 @@ class AppLocalizationsEl extends AppLocalizations {
   String get addItemButton => 'Προσθήκη στοιχείου';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Ολοκληρωμένα ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Ήδη στη λίστα, ολοκληρωμένο';
+
+  @override
+  String get restoreChecklistItemButton => 'Επαναφορά';
+
+  @override
+  String get noteSyncedMessage => 'Η σημείωση συγχρονίστηκε';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Η σημείωση συγχρονίστηκε για πρώτη φορά';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Συγχρονίστηκε σε $accepted από $total relays';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done από $total ολοκληρώθηκαν';
   }

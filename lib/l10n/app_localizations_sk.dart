@@ -152,6 +152,28 @@ class AppLocalizationsSk extends AppLocalizations {
   String get addItemButton => 'Pridať položku';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Hotové ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Už je v zozname, hotové';
+
+  @override
+  String get restoreChecklistItemButton => 'Obnoviť';
+
+  @override
+  String get noteSyncedMessage => 'Poznámka synchronizovaná';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'Poznámka prvýkrát synchronizovaná';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Synchronizované na $accepted z $total relayov';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return 'Hotovo $done z $total';
   }

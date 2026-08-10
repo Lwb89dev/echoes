@@ -404,6 +404,42 @@ abstract class AppLocalizations {
   /// **'Add item'**
   String get addItemButton;
 
+  /// No description provided for @completedItemsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed ({count})'**
+  String completedItemsSection(int count);
+
+  /// No description provided for @duplicateChecklistItemMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Already on this list, completed'**
+  String get duplicateChecklistItemMessage;
+
+  /// No description provided for @restoreChecklistItemButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreChecklistItemButton;
+
+  /// No description provided for @noteSyncedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Note synced'**
+  String get noteSyncedMessage;
+
+  /// No description provided for @noteSyncedFirstTimeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Note synced for the first time'**
+  String get noteSyncedFirstTimeMessage;
+
+  /// No description provided for @notePartiallySyncedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced to {accepted} of {total} relays'**
+  String notePartiallySyncedMessage(int accepted, int total);
+
   /// No description provided for @checklistProgress.
   ///
   /// In en, this message translates to:

@@ -245,13 +245,17 @@ class _RefreshableNotesBody extends ConsumerWidget {
 }
 
 /// Whether [note] matches a (already-lowercased, trimmed) search [query] —
-/// title, body, and every checklist item's text, so a search finds a
-/// checklist note by an item's wording even though [Note.preview] joins
-/// those same items with commas rather than showing the raw body. Matches
-/// against [Note.bodyWithoutAttachmentTokens], not the raw body: internal
-/// `attachment://<uuid>` markup would otherwise make e.g. a search for
-/// "attachment" (or any hex fragment) hit notes it visibly has nothing to
-/// do with.
+/// title, body, and every checklist item's text.
+///
+/// Deliberately searches **all** checklist items, ticked-off ones included,
+/// unlike [Note.preview], which shows only what's still to do: "which list
+/// did I put olive oil on?" is a perfectly good reason to search, and
+/// whether the item has since been checked off doesn't change the answer.
+///
+/// Matches against [Note.bodyWithoutAttachmentTokens], not the raw body:
+/// internal `attachment://<uuid>` markup would otherwise make e.g. a search
+/// for "attachment" (or any hex fragment) hit notes it visibly has nothing
+/// to do with.
 bool _matchesQuery(Note note, String query) {
   if (note.title.toLowerCase().contains(query)) return true;
   if (note.bodyWithoutAttachmentTokens.toLowerCase().contains(query)) {
@@ -959,7 +963,11 @@ class _NewNoteFabState extends ConsumerState<_NewNoteFab> with SingleTickerProvi
             turns: open ? 1.125 : 0,
             duration: const Duration(milliseconds: 400),
             curve: Curves.easeOutBack,
-            child: const Icon(Icons.add),
+            // Bigger than the 24dp default inside the same-sized button, so
+            // the glyph reads as a confident "+"/"×" rather than a small mark
+            // floating in the middle. (Material's icon font ships a single
+            // weight, so size — not a bold variant — is the lever here.)
+            child: const Icon(Icons.add, size: 34),
           ),
         ),
       ],

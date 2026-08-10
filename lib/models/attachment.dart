@@ -160,7 +160,7 @@ class Attachment {
     'durationSeconds': durationSeconds,
     'width': width,
     'height': height,
-    'recordedAt': recordedAt?.toIso8601String(),
+    'recordedAt': recordedAt?.toUtc().toIso8601String(),
   };
 
   factory Attachment.fromJson(Map<String, dynamic> json) {
@@ -178,7 +178,9 @@ class Attachment {
       durationSeconds: json['durationSeconds'] as int?,
       width: json['width'] as int?,
       height: json['height'] as int?,
-      recordedAt: json['recordedAt'] != null ? DateTime.parse(json['recordedAt'] as String) : null,
+      recordedAt: json['recordedAt'] != null
+          ? DateTime.parse(json['recordedAt'] as String).toLocal()
+          : null,
     );
   }
 }

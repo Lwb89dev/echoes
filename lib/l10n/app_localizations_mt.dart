@@ -152,6 +152,28 @@ class AppLocalizationsMt extends AppLocalizations {
   String get addItemButton => 'Żid element';
 
   @override
+  String completedItemsSection(int count) {
+    return 'Lesti ($count)';
+  }
+
+  @override
+  String get duplicateChecklistItemMessage => 'Diġà f\'din il-lista, lest';
+
+  @override
+  String get restoreChecklistItemButton => 'Irkupra';
+
+  @override
+  String get noteSyncedMessage => 'In-nota ġiet sinkronizzata';
+
+  @override
+  String get noteSyncedFirstTimeMessage => 'In-nota ġiet sinkronizzata għall-ewwel darba';
+
+  @override
+  String notePartiallySyncedMessage(int accepted, int total) {
+    return 'Sinkronizzata ma\' $accepted minn $total relays';
+  }
+
+  @override
   String checklistProgress(int done, int total) {
     return '$done minn $total lesti';
   }
