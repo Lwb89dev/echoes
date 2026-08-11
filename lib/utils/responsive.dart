@@ -32,7 +32,14 @@ class MaxWidthCenter extends StatelessWidget {
       alignment: alignment,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        child: child,
+        // `width: double.infinity` — i.e. "as wide as allowed", which inside
+        // the ConstrainedBox means min(available, maxWidth) — is what makes
+        // this a *max-width* container rather than a shrink-wrap one.
+        // Without it the child only takes its intrinsic width and [Align]
+        // then centres that narrow block: a short note or paragraph ended up
+        // floating in the middle of the screen instead of starting at the
+        // leading edge, which reads exactly like unwanted centring.
+        child: SizedBox(width: double.infinity, child: child),
       ),
     );
   }

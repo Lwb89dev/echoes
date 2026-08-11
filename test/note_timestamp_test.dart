@@ -8,13 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 /// trip through a relay decides whether an edit made on one device ever wins
 /// (or is even accepted) on another.
 void main() {
-  Note noteAt(DateTime updatedAt) => Note(
-    id: 'n1',
-    title: 't',
-    body: 'b',
-    createdAt: updatedAt,
-    updatedAt: updatedAt,
-  );
+  Note noteAt(DateTime updatedAt) =>
+      Note(id: 'n1', title: 't', body: 'b', createdAt: updatedAt, updatedAt: updatedAt);
 
   test('serialized timestamps carry an explicit zone', () {
     final json = noteAt(DateTime(2026, 8, 2, 14, 30)).toJson();
@@ -36,10 +31,7 @@ void main() {
     // What a device in another timezone receives: 12:30Z is 14:30 in Rome.
     final json = noteAt(DateTime(2026, 8, 2, 14, 30)).toJson();
     final decoded = Note.fromJson(json);
-    expect(
-      decoded.updatedAt.toUtc(),
-      DateTime(2026, 8, 2, 14, 30).toUtc(),
-    );
+    expect(decoded.updatedAt.toUtc(), DateTime(2026, 8, 2, 14, 30).toUtc());
   });
 
   test('zone-less timestamps written by older versions still load', () {

@@ -847,17 +847,70 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     );
     setState(() {
       _attachments.add(attachment);
+      // Inserted at the caret, so a recording lands *inside* the text where
+      // it was taken rather than at the bottom — a lecture snippet sitting
+      // right under the paragraph it belongs to.
       if (!_isChecklist) _insertVoiceToken(attachment.id);
       _showRecorder = false;
+      // Surfaces the timestamp opt-out for this recording only; cleared as
+      // soon as the user answers it or records another (see [_justRecordedId]).
+      _justRecordedId = attachment.id;
       _synced = false;
     });
     _scheduleAutosave();
   }
 
+  /// The voice note recorded a moment ago, while its "keep the timestamp?"
+  /// prompt is still on screen. Transient and never persisted — the note
+  /// itself only stores whether [Attachment.recordedAt] is set.
+  String? _justRecordedId;
+
+  /// The prompt shown right under the recorder after a take: a single
+  /// checkbox, ticked by default, deciding whether this recording is stamped
+  /// with the moment it was captured. Shown at capture time because that is
+  /// when the answer is obvious — afterwards it's a long-press on the bubble,
+  /// which nobody discovers.
+  Widget _justRecordedPrompt(AppLocalizations l) {
+    final id = _justRecordedId;
+    if (id == null) return const SizedBox.shrink();
+    final index = _attachments.indexWhere((a) => a.id == id);
+    if (index == -1) return const SizedBox.shrink();
+
+    final recordedAt = _attachments[index].recordedAt;
+    final locale = Localizations.localeOf(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Checkbox(
+            value: recordedAt != null,
+            visualDensity: VisualDensity.compact,
+            onChanged: (checked) =>
+                _setAttachmentTimestamp(id, (checked ?? false) ? DateTime.now() : null),
+          ),
+          Expanded(
+            child: Text(
+              recordedAt == null
+                  ? l.addVoiceTimestampButton
+                  : Formatter.voiceTimestampLabel(recordedAt, locale),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close, size: 18),
+            tooltip: l.cancelButton,
+            visualDensity: VisualDensity.compact,
+            onPressed: () => setState(() => _justRecordedId = null),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Sets or edits a voice note's [Attachment.recordedAt] — the long-press
   /// menu on [_VoiceMessageBubble], defaulting to the moment recording
   /// stopped but freely editable to log it under a different time.
-  void _setAttachmentTimestamp(String attachmentId, DateTime timestamp) {
+  void _setAttachmentTimestamp(String attachmentId, DateTime? timestamp) {
     setState(() {
       final index = _attachments.indexWhere((a) => a.id == attachmentId);
       if (index == -1) return;
@@ -1195,6 +1248,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           hintText: l.titleFieldLabel,
           hintStyle: color != null ? TextStyle(color: mutedTextColorOn(color.background)) : null,
           border: InputBorder.none,
+          // The title sits in the app bar, on top of the note's own colour
+          // (or the app surface). The app-wide filled input style would paint
+          // an opaque slab across it — right in a form, wrong for a title
+          // that should read as part of the note it belongs to.
+          filled: false,
+          isDense: true,
         ),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(color: titleColor),
         cursorColor: titleColor,
@@ -1395,6 +1454,15 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         primaryTextTheme: theme.primaryTextTheme.apply(bodyColor: onColor, displayColor: onColor),
         iconTheme: theme.iconTheme.copyWith(color: onColor),
         hintColor: mutedColor,
+        // The app-wide input theme fills every text field with an opaque
+        // surface colour. That is right on a normal screen and wrong here:
+        // on a coloured note it paints a pale slab behind the title and body
+        // while editing, so the note's own colour only shows around the
+        // edges. Editing a note should look like writing on the note.
+        inputDecorationTheme: theme.inputDecorationTheme.copyWith(
+          filled: false,
+          fillColor: Colors.transparent,
+        ),
       ),
       child: child,
     );
@@ -1434,6 +1502,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               _voiceRecorderSlot(),
             ] else ...[
               _voiceRecorderSlot(),
+              _justRecordedPrompt(l),
+              // Breathing room between the recorder/formatting slot and the
+              // body: without it the record button sits right on top of the
+              // first line of text, close enough to look like part of it.
+              const SizedBox(height: 12),
               TextField(
                 controller: _bodyController,
                 decoration: InputDecoration(labelText: l.bodyFieldHint, border: InputBorder.none),

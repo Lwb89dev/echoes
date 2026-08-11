@@ -127,7 +127,10 @@ class Attachment {
   /// The other transition an [Attachment] goes through: the user manually
   /// (re)setting [recordedAt] on a voice note (see `_VoiceMessageBubble`'s
   /// long-press menu). Everything else about it is unchanged.
-  Attachment withRecordedAt(DateTime recordedAt) {
+  /// A copy with [recordedAt] set — or cleared, when passed null: the
+  /// timestamp is opt-in per recording (see the prompt shown right after one
+  /// is captured), so removing it has to be as expressible as setting it.
+  Attachment withRecordedAt(DateTime? recordedAt) {
     return Attachment(
       id: id,
       type: type,

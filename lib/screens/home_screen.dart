@@ -8,6 +8,7 @@ import '../providers/fab_menu_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/note_encryption_provider.dart';
 import '../providers/note_layout_provider.dart';
+import '../providers/note_order_provider.dart';
 import '../providers/note_search_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/selection_provider.dart';
@@ -19,6 +20,7 @@ import '../utils/responsive.dart';
 import 'note_editor_screen.dart';
 import 'settings_screen.dart';
 import 'widgets/note_actions.dart';
+import 'widgets/reorderable_note.dart';
 
 /// List of all notes (local + synced), with a FAB to create a new one and
 /// pull-to-refresh to force a manual sync from the relays.
@@ -343,18 +345,33 @@ class _NotesList extends ConsumerWidget {
       );
     }
 
+    // The user's hand-arranged order, applied here rather than in
+    // [_RefreshableNotesBody] so the diary tab keeps its own by-date grouping.
+    final ordered = applyNoteOrder(notes, ref.watch(noteOrderProvider));
+    // Reordering a *filtered* list would persist an arrangement covering
+    // notes that aren't on screen, so it's off while searching.
+    final canReorder = ref.watch(noteSearchProvider).trim().isEmpty;
+
+    void move(int from, int to) {
+      final next = [...ordered];
+      next.insert(to, next.removeAt(from));
+      ref.read(noteOrderProvider.notifier).setOrder([for (final note in next) note.id]);
+    }
+
     return switch (layout) {
-      NoteLayout.list => _NotesListView(notes: notes),
-      NoteLayout.grid => _NotesGridView(notes: notes),
+      NoteLayout.list => _NotesListView(notes: ordered, canReorder: canReorder, onMove: move),
+      NoteLayout.grid => _NotesGridView(notes: ordered, canReorder: canReorder, onMove: move),
     };
   }
 }
 
 /// The original single-column layout.
 class _NotesListView extends ConsumerWidget {
-  const _NotesListView({required this.notes});
+  const _NotesListView({required this.notes, required this.canReorder, required this.onMove});
 
   final List<Note> notes;
+  final bool canReorder;
+  final void Function(int from, int to) onMove;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -374,54 +391,61 @@ class _NotesListView extends ConsumerWidget {
           // the selected-row tint) alone otherwise.
           final textColor = note.color?.onBackground;
           final mutedColor = note.color != null ? mutedTextColorOn(note.color!.background) : null;
-          return ListTile(
-            tileColor: note.color?.background,
-            selected: selected,
-            leading: selectionMode
-                ? Icon(selected ? Icons.check_circle : Icons.circle_outlined)
-                : Icon(note.isChecklist ? Icons.checklist : Icons.notes),
-            title: Text(
-              note.title.isEmpty ? l.untitledNote : note.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: textColor != null ? TextStyle(color: textColor) : null,
+          return ReorderableNote(
+            index: index,
+            // Long-press selects (below); a selected card can then be dragged
+            // straight onto another to take its place.
+            enabled: canReorder && selected,
+            onMove: onMove,
+            child: ListTile(
+              tileColor: note.color?.background,
+              selected: selected,
+              leading: selectionMode
+                  ? Icon(selected ? Icons.check_circle : Icons.circle_outlined)
+                  : Icon(note.isChecklist ? Icons.checklist : Icons.notes),
+              title: Text(
+                note.title.isEmpty ? l.untitledNote : note.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textColor != null ? TextStyle(color: textColor) : null,
+              ),
+              subtitle: Text(
+                note.preview,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: mutedColor != null ? TextStyle(color: mutedColor) : null,
+              ),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    Formatter.relativeTimestamp(note.updatedAt, l),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
+                  ),
+                  const SizedBox(height: 4),
+                  // Same three-state icon as the cloud button in
+                  // NoteEditorScreen: never synced, up to date, or edited
+                  // locally since the last sync (still unsynced, but distinct
+                  // from "never shared" — see that screen's class doc).
+                  Icon(
+                    note.synced
+                        ? Icons.cloud_done_outlined
+                        : (note.nostrEventId != null
+                              ? Icons.cloud_sync_outlined
+                              : Icons.cloud_off_outlined),
+                    size: 16,
+                    color: note.synced
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
+                  ),
+                ],
+              ),
+              onTap: () => _openNote(context, ref, note, selectionMode),
+              // Long-press always toggles: with nothing selected yet, that's
+              // exactly "start selecting, with this note as the first pick".
+              onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
             ),
-            subtitle: Text(
-              note.preview,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: mutedColor != null ? TextStyle(color: mutedColor) : null,
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  Formatter.relativeTimestamp(note.updatedAt, l),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
-                ),
-                const SizedBox(height: 4),
-                // Same three-state icon as the cloud button in
-                // NoteEditorScreen: never synced, up to date, or edited
-                // locally since the last sync (still unsynced, but distinct
-                // from "never shared" — see that screen's class doc).
-                Icon(
-                  note.synced
-                      ? Icons.cloud_done_outlined
-                      : (note.nostrEventId != null
-                            ? Icons.cloud_sync_outlined
-                            : Icons.cloud_off_outlined),
-                  size: 16,
-                  color: note.synced
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline,
-                ),
-              ],
-            ),
-            onTap: () => _openNote(context, ref, note, selectionMode),
-            // Long-press always toggles: with nothing selected yet, that's
-            // exactly "start selecting, with this note as the first pick".
-            onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
           );
         },
       ),
@@ -435,9 +459,11 @@ class _NotesListView extends ConsumerWidget {
 /// `MasonryGridView` — a plain `GridView` forces every tile to the same
 /// height, which is exactly the "post-it" look this isn't going for).
 class _NotesGridView extends ConsumerWidget {
-  const _NotesGridView({required this.notes});
+  const _NotesGridView({required this.notes, required this.canReorder, required this.onMove});
 
   final List<Note> notes;
+  final bool canReorder;
+  final void Function(int from, int to) onMove;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -465,63 +491,70 @@ class _NotesGridView extends ConsumerWidget {
           final mutedColor = !selected && note.color != null
               ? mutedTextColorOn(note.color!.background)
               : null;
-          return Card(
-            clipBehavior: Clip.antiAlias,
-            color: cardColor,
-            child: InkWell(
-              onTap: () => _openNote(context, ref, note, selectionMode),
-              onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          selectionMode
-                              ? (selected ? Icons.check_circle : Icons.circle_outlined)
-                              : (note.isChecklist ? Icons.checklist : Icons.notes),
-                          size: 18,
-                          color: mutedColor ?? colorScheme.onSurfaceVariant,
-                        ),
-                        const Spacer(),
-                        Icon(
-                          note.synced
-                              ? Icons.cloud_done_outlined
-                              : (note.nostrEventId != null
-                                    ? Icons.cloud_sync_outlined
-                                    : Icons.cloud_off_outlined),
-                          size: 14,
-                          color: note.synced ? colorScheme.primary : colorScheme.outline,
+          return ReorderableNote(
+            index: index,
+            // Long-press selects the card; a selected card can then be
+            // dragged onto another to take its place.
+            enabled: canReorder && selected,
+            onMove: onMove,
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              color: cardColor,
+              child: InkWell(
+                onTap: () => _openNote(context, ref, note, selectionMode),
+                onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            selectionMode
+                                ? (selected ? Icons.check_circle : Icons.circle_outlined)
+                                : (note.isChecklist ? Icons.checklist : Icons.notes),
+                            size: 18,
+                            color: mutedColor ?? colorScheme.onSurfaceVariant,
+                          ),
+                          const Spacer(),
+                          Icon(
+                            note.synced
+                                ? Icons.cloud_done_outlined
+                                : (note.nostrEventId != null
+                                      ? Icons.cloud_sync_outlined
+                                      : Icons.cloud_off_outlined),
+                            size: 14,
+                            color: note.synced ? colorScheme.primary : colorScheme.outline,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        note.title.isEmpty ? l.untitledNote : note.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor),
+                      ),
+                      if (note.preview.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          note.preview,
+                          maxLines: 6,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      note.title.isEmpty ? l.untitledNote : note.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor),
-                    ),
-                    if (note.preview.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
-                        note.preview,
-                        maxLines: 6,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
+                        Formatter.relativeTimestamp(note.updatedAt, l),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: mutedColor ?? colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
-                    const SizedBox(height: 8),
-                    Text(
-                      Formatter.relativeTimestamp(note.updatedAt, l),
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: mutedColor ?? colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
