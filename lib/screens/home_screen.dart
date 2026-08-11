@@ -393,9 +393,10 @@ class _NotesListView extends ConsumerWidget {
           final mutedColor = note.color != null ? mutedTextColorOn(note.color!.background) : null;
           return ReorderableNote(
             index: index,
-            // Long-press selects (below); a selected card can then be dragged
-            // straight onto another to take its place.
-            enabled: canReorder && selected,
+            // Only the selected card can be lifted, but every card must be
+            // able to receive it — otherwise the drag has nowhere to land.
+            canDrag: canReorder && selected,
+            canReceive: canReorder,
             onMove: onMove,
             child: ListTile(
               tileColor: note.color?.background,
@@ -493,9 +494,10 @@ class _NotesGridView extends ConsumerWidget {
               : null;
           return ReorderableNote(
             index: index,
-            // Long-press selects the card; a selected card can then be
-            // dragged onto another to take its place.
-            enabled: canReorder && selected,
+            // Only the selected card can be lifted, but every card must be
+            // able to receive it — otherwise the drag has nowhere to land.
+            canDrag: canReorder && selected,
+            canReceive: canReorder,
             onMove: onMove,
             child: Card(
               clipBehavior: Clip.antiAlias,

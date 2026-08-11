@@ -19,7 +19,8 @@ class ReorderableNote extends StatefulWidget {
   const ReorderableNote({
     super.key,
     required this.index,
-    required this.enabled,
+    required this.canDrag,
+    required this.canReceive,
     required this.onMove,
     required this.child,
   });
@@ -27,10 +28,17 @@ class ReorderableNote extends StatefulWidget {
   /// This card's position in the currently displayed list.
   final int index;
 
-  /// True only for a selected card outside of search: dragging a filtered
-  /// subset would write back an arrangement covering notes the user can't
-  /// currently see.
-  final bool enabled;
+  /// Whether this card can be **picked up**. True only for a selected card
+  /// outside of search: dragging a filtered subset would write back an
+  /// arrangement covering notes the user can't currently see.
+  final bool canDrag;
+
+  /// Whether this card can be **dropped onto**. Deliberately independent of
+  /// [canDrag] and true for every card while reordering is possible: only the
+  /// selected note can be lifted, but it has to be able to land on any of the
+  /// others. Tying the two together left the lifted card with nowhere to go —
+  /// the drag started and then silently did nothing.
+  final bool canReceive;
 
   /// Called with the dragged card's index and the index it was dropped on.
   final void Function(int from, int to) onMove;
@@ -46,13 +54,14 @@ class _ReorderableNoteState extends State<ReorderableNote> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enabled) return widget.child;
+    // Nothing to do at all: not liftable and not a landing spot.
+    if (!widget.canDrag && !widget.canReceive) return widget.child;
 
     return DragTarget<int>(
       // Never accept a card onto itself: it would be a no-op move that still
       // repaints and rewrites the saved order.
       onWillAcceptWithDetails: (details) {
-        final accepts = details.data != widget.index;
+        final accepts = widget.canReceive && details.data != widget.index;
         if (accepts && !_hovered) setState(() => _hovered = true);
         return accepts;
       },
@@ -79,28 +88,37 @@ class _ReorderableNoteState extends State<ReorderableNote> {
                 width: 2,
               ),
             ),
-            // The card's on-screen width has to be measured here, where it is
-            // actually laid out: a `feedback` widget is given unbounded
-            // constraints, so without pinning it the card would balloon to its
-            // intrinsic width the instant it's picked up.
-            // A plain Draggable, not a LongPressDraggable: the long press
-            // already happened — it is what selected this card and enabled
-            // dragging in the first place. Asking for a second one would make
-            // reordering a press-wait-press-wait affair.
-            child: LayoutBuilder(
-              builder: (context, constraints) => Draggable<int>(
-                data: widget.index,
-                // Lifted copy that follows the finger: scaled up a touch and
-                // given a real shadow, so it reads as picked up rather than
-                // smeared across the list.
-                feedback: _LiftedCard(width: constraints.maxWidth, child: widget.child),
-                childWhenDragging: Opacity(opacity: 0.25, child: widget.child),
-                child: widget.child,
-              ),
-            ),
+            child: _draggableOrPlain(),
           ),
         );
       },
+    );
+  }
+
+  /// The card itself: liftable when this is the selected note, otherwise the
+  /// plain card — which is still wrapped by the [DragTarget] above, so it can
+  /// receive whatever is being dragged.
+  Widget _draggableOrPlain() {
+    if (!widget.canDrag) return widget.child;
+    // A plain Draggable, not a LongPressDraggable: the long press already
+    // happened — it is what selected this card and enabled dragging in the
+    // first place. Asking for a second one would make reordering a
+    // press-wait-press-wait affair.
+    //
+    // The card's on-screen width has to be measured here, where it is actually
+    // laid out: a `feedback` widget is given unbounded constraints, so without
+    // pinning it the card would balloon to its intrinsic width the instant
+    // it's picked up.
+    return LayoutBuilder(
+      builder: (context, constraints) => Draggable<int>(
+        data: widget.index,
+        // Lifted copy that follows the finger: scaled up a touch and given a
+        // real shadow, so it reads as picked up rather than smeared across
+        // the list.
+        feedback: _LiftedCard(width: constraints.maxWidth, child: widget.child),
+        childWhenDragging: Opacity(opacity: 0.25, child: widget.child),
+        child: widget.child,
+      ),
     );
   }
 }
