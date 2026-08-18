@@ -356,6 +356,19 @@ class AppLocalizationsHr extends AppLocalizations {
   String get manageRelaysTitle => 'Upravljanje relejima';
 
   @override
+  String get autoSyncOnSaveTitle => 'Objavi pri spremanju';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Bilješke koje već sinkroniziraš ponovno se objavljuju čim ih spremiš. Samo lokalne nikada.';
+
+  @override
+  String get noteBackgroundPhoto => 'Fotografija';
+
+  @override
+  String get noteBackgroundRemove => 'Ukloni fotografiju';
+
+  @override
   String get republishAllNotesButton => 'Ponovno objavi sve sinkronizirane bilješke';
 
   @override

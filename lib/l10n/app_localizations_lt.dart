@@ -355,6 +355,19 @@ class AppLocalizationsLt extends AppLocalizations {
   String get manageRelaysTitle => 'Tvarkyti reles';
 
   @override
+  String get autoSyncOnSaveTitle => 'Skelbti išsaugant';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Jau sinchronizuojami užrašai iš naujo paskelbiami vos juos išsaugojus. Tik vietiniai – niekada.';
+
+  @override
+  String get noteBackgroundPhoto => 'Nuotrauka';
+
+  @override
+  String get noteBackgroundRemove => 'Pašalinti nuotrauką';
+
+  @override
   String get republishAllNotesButton => 'Iš naujo paskelbti visus sinchronizuotus užrašus';
 
   @override

@@ -357,6 +357,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get manageRelaysTitle => 'Relays beheren';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publiceren bij opslaan';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Notities die je al synchroniseert worden opnieuw gepubliceerd zodra je ze opslaat. Lokale notities nooit.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Foto verwijderen';
+
+  @override
   String get republishAllNotesButton => 'Alle gesynchroniseerde notities opnieuw publiceren';
 
   @override

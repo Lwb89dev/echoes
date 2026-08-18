@@ -356,6 +356,19 @@ class AppLocalizationsLv extends AppLocalizations {
   String get manageRelaysTitle => 'Pārvaldīt relejus';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publicēt saglabājot';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Jau sinhronizētās piezīmes tiek publicētas atkārtoti uzreiz pēc saglabāšanas. Tikai vietējās — nekad.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Noņemt foto';
+
+  @override
   String get republishAllNotesButton => 'Atkārtoti publicēt visas sinhronizētās piezīmes';
 
   @override

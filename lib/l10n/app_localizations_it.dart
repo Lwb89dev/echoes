@@ -356,6 +356,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get manageRelaysTitle => 'Gestisci relay';
 
   @override
+  String get autoSyncOnSaveTitle => 'Pubblica al salvataggio';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Le note che già sincronizzi vengono ripubblicate appena le salvi. Le note solo locali non vengono mai pubblicate.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Rimuovi foto';
+
+  @override
   String get republishAllNotesButton => 'Ripubblica tutte le note sincronizzate';
 
   @override

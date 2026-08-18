@@ -356,6 +356,19 @@ class AppLocalizationsMt extends AppLocalizations {
   String get manageRelaysTitle => 'Immaniġġja r-relays';
 
   @override
+  String get autoSyncOnSaveTitle => 'Ippubblika meta tissejvja';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'In-noti li diġà tissinkronizza jerġgħu jiġu ppubblikati hekk kif tissejvjahom. In-noti lokali qatt.';
+
+  @override
+  String get noteBackgroundPhoto => 'Ritratt';
+
+  @override
+  String get noteBackgroundRemove => 'Neħħi r-ritratt';
+
+  @override
   String get republishAllNotesButton => 'Erġa\' ippubblika n-noti sinkronizzati kollha';
 
   @override

@@ -352,6 +352,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get manageRelaysTitle => '管理中继';
 
   @override
+  String get autoSyncOnSaveTitle => '保存时发布';
+
+  @override
+  String get autoSyncOnSaveSubtitle => '已同步的笔记在保存时会立即重新发布。仅本地的笔记永不发布。';
+
+  @override
+  String get noteBackgroundPhoto => '照片';
+
+  @override
+  String get noteBackgroundRemove => '移除照片';
+
+  @override
   String get republishAllNotesButton => '重新发布所有已同步的笔记';
 
   @override

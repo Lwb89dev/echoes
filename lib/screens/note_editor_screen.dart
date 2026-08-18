@@ -14,6 +14,8 @@ import '../l10n/app_localizations.dart';
 import '../models/attachment.dart';
 import '../models/note.dart';
 import '../providers/auth_provider.dart';
+import '../providers/auto_sync_provider.dart';
+import '../providers/note_background_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/service_providers.dart';
 import '../utils/app_messenger.dart';
@@ -962,9 +964,28 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// modal bottom sheet of swatches, applying and closing immediately on
   /// tap — unlike e.g. an image's resize/remove sheet, a color choice has
   /// no wrong-tap consequence worth a separate confirm step.
+  /// This note's custom background photo, if one was chosen (see
+  /// [noteBackgroundProvider]). Null means "no photo" — the note then falls
+  /// back to its [NoteColor], or to the app's normal surface.
+  String? get _backgroundPhotoPath => ref.watch(noteBackgroundProvider)[_noteId];
+
+  bool get _hasCustomBackground => ref.read(noteBackgroundProvider).containsKey(_noteId);
+
+  /// Picks a photo from the user's library and makes it this note's
+  /// background. The file is copied into app storage by the provider, so the
+  /// note doesn't depend on the original staying where it was.
+  Future<void> _pickBackgroundPhoto() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.image);
+    final path = result?.files.single.path;
+    if (path == null) return;
+    await ref.read(noteBackgroundProvider.notifier).setBackground(_noteId, path);
+  }
+
   Future<void> _pickColor() async {
     final l = AppLocalizations.of(context);
     const noColorSentinel = Object();
+    const photoSentinel = Object();
+    const removePhotoSentinel = Object();
 
     final result = await showModalBottomSheet<Object>(
       context: context,
@@ -989,12 +1010,36 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                   selected: _color == option,
                   onTap: () => Navigator.of(sheetContext).pop(option),
                 ),
+              // A photo from the user's own library, as an alternative to the
+              // built-in swatches — same sheet, since "what does this note
+              // look like" is one decision, not two.
+              _PhotoBackgroundOption(
+                label: l.noteBackgroundPhoto,
+                selected: _hasCustomBackground,
+                onTap: () => Navigator.of(sheetContext).pop(photoSentinel),
+              ),
+              if (_hasCustomBackground)
+                _PhotoBackgroundOption(
+                  label: l.noteBackgroundRemove,
+                  selected: false,
+                  icon: Icons.hide_image_outlined,
+                  onTap: () => Navigator.of(sheetContext).pop(removePhotoSentinel),
+                ),
             ],
           ),
         ),
       ),
     );
     if (result == null) return; // Dismissed without picking anything.
+
+    if (identical(result, photoSentinel)) {
+      await _pickBackgroundPhoto();
+      return;
+    }
+    if (identical(result, removePhotoSentinel)) {
+      await ref.read(noteBackgroundProvider.notifier).clearBackground(_noteId);
+      return;
+    }
 
     final newColor = identical(result, noColorSentinel) ? null : result as NoteColor;
     if (newColor == _color) return;
@@ -1102,11 +1147,29 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   Future<void> _save() async {
     await ref.read(notesProvider.notifier).saveNote(_buildNote());
     if (!mounted) return;
+
+    // Republish immediately when this note is already on the relays and the
+    // preference is on (see [autoSyncOnSaveProvider]). Never for a note that
+    // has never been synced: saving must not be able to publish something the
+    // user deliberately kept local. Fire-and-forget — [_syncNow] reports
+    // through the app-wide messenger, so leaving this screen (a checklist
+    // pops straight away, below) doesn't swallow the result.
+    if (_shouldAutoSyncOnSave) unawaited(_syncNow());
+
     if (_isChecklist) {
       Navigator.of(context).pop();
     } else {
       setState(() => _editing = false);
     }
+  }
+
+  /// True when saving should also publish: the preference is on, this note has
+  /// been published before, there's an account to publish with, and the local
+  /// copy actually differs from what's on the relays.
+  bool get _shouldAutoSyncOnSave {
+    if (!ref.read(autoSyncOnSaveProvider)) return false;
+    if (_nostrEventId == null || _synced) return false;
+    return ref.read(authProvider).value != null;
   }
 
   /// Publishes the note. Uploading any not-yet-uploaded attachment first is
@@ -1241,6 +1304,14 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     // be explicit here regardless.
     final color = _color;
     final titleColor = color?.onBackground;
+    // One style for both modes, clearly larger and heavier than the body: at
+    // the default app-bar size the title read as just another line of note
+    // text, so it wasn't obvious which one you were looking at. Using the
+    // same style in read and edit mode also stops the title resizing under
+    // the user's finger the moment they tap into it.
+    final titleStyle = Theme.of(
+      context,
+    ).textTheme.headlineSmall?.copyWith(color: titleColor, fontWeight: FontWeight.w600);
     if (_editing) {
       return TextField(
         controller: _titleController,
@@ -1255,7 +1326,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
           filled: false,
           isDense: true,
         ),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: titleColor),
+        style: titleStyle,
         cursorColor: titleColor,
       );
     }
@@ -1265,7 +1336,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         _titleController.text.isEmpty ? l.untitledNote : _titleController.text,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: titleColor != null ? TextStyle(color: titleColor) : null,
+        style: titleStyle,
       ),
     );
   }
@@ -1407,6 +1478,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         // custom color" direction, which needs just as real a target as
         // any actual [NoteColor] — the theme's own surface color, here.
         color: color?.background ?? Theme.of(context).colorScheme.surface,
+        // A chosen photo sits on top of that fill, behind all the content.
+        // Scrimmed rather than shown raw: note text has to stay readable over
+        // whatever picture the user picked, and a photo at full strength
+        // behind body copy is unreadable more often than not.
+        backgroundPhotoPath: _backgroundPhotoPath,
         child: Padding(
           // The reveal's own background fills the *entire* screen,
           // status bar and app bar included (see `extendBodyBehindAppBar`

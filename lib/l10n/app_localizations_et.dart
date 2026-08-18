@@ -355,6 +355,19 @@ class AppLocalizationsEt extends AppLocalizations {
   String get manageRelaysTitle => 'Halda releesid';
 
   @override
+  String get autoSyncOnSaveTitle => 'Avalda salvestamisel';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Juba sünkroonitud märkused avaldatakse kohe salvestamisel uuesti. Ainult kohalikke ei avaldata kunagi.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Eemalda foto';
+
+  @override
   String get republishAllNotesButton => 'Avalda kõik sünkroonitud märkmed uuesti';
 
   @override

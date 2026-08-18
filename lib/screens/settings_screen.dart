@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../l10n/app_localizations.dart';
 import '../models/upload_provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/auto_sync_provider.dart';
 import '../providers/locale_provider.dart';
 import '../providers/note_encryption_provider.dart';
 import '../providers/notes_provider.dart';
@@ -190,6 +191,14 @@ class _RelaySection extends ConsumerWidget {
         // hand-picking a single shade that would only read right in one
         // brightness. `shape`/`collapsedShape: Border()` also suppress
         // ExpansionTile's own default top/bottom divider lines.
+        // Only ever affects notes already published at least once — a
+        // local-only note stays local regardless (see [autoSyncOnSaveProvider]).
+        SwitchListTile(
+          title: Text(l.autoSyncOnSaveTitle),
+          subtitle: Text(l.autoSyncOnSaveSubtitle),
+          value: ref.watch(autoSyncOnSaveProvider),
+          onChanged: (value) => ref.read(autoSyncOnSaveProvider.notifier).setEnabled(value),
+        ),
         ExpansionTile(
           shape: const Border(),
           collapsedShape: const Border(),

@@ -357,6 +357,19 @@ class AppLocalizationsRo extends AppLocalizations {
   String get manageRelaysTitle => 'Gestionează releele';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publică la salvare';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Notițele deja sincronizate sunt republicate imediat ce le salvezi. Cele doar locale nu sunt publicate niciodată.';
+
+  @override
+  String get noteBackgroundPhoto => 'Fotografie';
+
+  @override
+  String get noteBackgroundRemove => 'Elimină fotografia';
+
+  @override
   String get republishAllNotesButton => 'Republică toate notițele sincronizate';
 
   @override

@@ -356,6 +356,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get manageRelaysTitle => 'Spravovat relé';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publikovat při uložení';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Poznámky, které již synchronizujete, se po uložení znovu publikují. Pouze místní poznámky nikdy.';
+
+  @override
+  String get noteBackgroundPhoto => 'Fotka';
+
+  @override
+  String get noteBackgroundRemove => 'Odebrat fotku';
+
+  @override
   String get republishAllNotesButton => 'Znovu publikovat všechny synchronizované poznámky';
 
   @override

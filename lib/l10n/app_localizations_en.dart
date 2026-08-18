@@ -355,6 +355,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageRelaysTitle => 'Manage relays';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publish on save';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Notes you already sync are republished as soon as you save them. Local-only notes are never published.';
+
+  @override
+  String get noteBackgroundPhoto => 'Photo';
+
+  @override
+  String get noteBackgroundRemove => 'Remove photo';
+
+  @override
   String get republishAllNotesButton => 'Republish all synced notes';
 
   @override

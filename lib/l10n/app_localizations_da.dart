@@ -355,6 +355,19 @@ class AppLocalizationsDa extends AppLocalizations {
   String get manageRelaysTitle => 'Administrer relæer';
 
   @override
+  String get autoSyncOnSaveTitle => 'Udgiv ved gem';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Noter, du allerede synkroniserer, genudgives, så snart du gemmer dem. Kun lokale noter udgives aldrig.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Fjern foto';
+
+  @override
   String get republishAllNotesButton => 'Genudgiv alle synkroniserede noter';
 
   @override

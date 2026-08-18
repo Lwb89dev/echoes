@@ -358,6 +358,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get manageRelaysTitle => 'Gerir relés';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publicar ao guardar';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'As notas que já sincronizas são republicadas assim que as guardas. As notas só locais nunca são publicadas.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Remover foto';
+
+  @override
   String get republishAllNotesButton => 'Republicar todas as notas sincronizadas';
 
   @override

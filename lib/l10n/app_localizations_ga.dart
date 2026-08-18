@@ -356,6 +356,19 @@ class AppLocalizationsGa extends AppLocalizations {
   String get manageRelaysTitle => 'Bainistigh athsheachadáin';
 
   @override
+  String get autoSyncOnSaveTitle => 'Foilsigh agus tú ag sábháil';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Foilsítear nótaí a shioncronaíonn tú cheana chomh luath is a shábhálann tú iad. Ní fhoilsítear nótaí áitiúla riamh.';
+
+  @override
+  String get noteBackgroundPhoto => 'Grianghraf';
+
+  @override
+  String get noteBackgroundRemove => 'Bain an grianghraf';
+
+  @override
   String get republishAllNotesButton => 'Athfhoilsigh gach nóta sioncronaithe';
 
   @override

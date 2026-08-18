@@ -352,6 +352,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get manageRelaysTitle => 'リレーを管理';
 
   @override
+  String get autoSyncOnSaveTitle => '保存時に公開';
+
+  @override
+  String get autoSyncOnSaveSubtitle => 'すでに同期しているノートは保存と同時に再公開されます。ローカルのみのノートは公開されません。';
+
+  @override
+  String get noteBackgroundPhoto => '写真';
+
+  @override
+  String get noteBackgroundRemove => '写真を削除';
+
+  @override
   String get republishAllNotesButton => '同期済みのメモをすべて再公開';
 
   @override

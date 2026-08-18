@@ -356,6 +356,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get manageRelaysTitle => 'Zarządzaj przekaźnikami';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publikuj przy zapisie';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Notatki, które już synchronizujesz, są ponownie publikowane zaraz po zapisaniu. Notatki lokalne nigdy.';
+
+  @override
+  String get noteBackgroundPhoto => 'Zdjęcie';
+
+  @override
+  String get noteBackgroundRemove => 'Usuń zdjęcie';
+
+  @override
   String get republishAllNotesButton => 'Opublikuj ponownie wszystkie zsynchronizowane notatki';
 
   @override

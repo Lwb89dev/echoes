@@ -359,6 +359,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manageRelaysTitle => 'Relais verwalten';
 
   @override
+  String get autoSyncOnSaveTitle => 'Beim Speichern veröffentlichen';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Bereits synchronisierte Notizen werden beim Speichern sofort neu veröffentlicht. Rein lokale Notizen nie.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Foto entfernen';
+
+  @override
   String get republishAllNotesButton => 'Alle synchronisierten Notizen erneut veröffentlichen';
 
   @override

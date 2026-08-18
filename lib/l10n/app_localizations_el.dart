@@ -360,6 +360,19 @@ class AppLocalizationsEl extends AppLocalizations {
   String get manageRelaysTitle => 'Διαχείριση relay';
 
   @override
+  String get autoSyncOnSaveTitle => 'Δημοσίευση κατά την αποθήκευση';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Οι σημειώσεις που ήδη συγχρονίζεις αναδημοσιεύονται μόλις τις αποθηκεύσεις. Οι τοπικές δεν δημοσιεύονται ποτέ.';
+
+  @override
+  String get noteBackgroundPhoto => 'Φωτογραφία';
+
+  @override
+  String get noteBackgroundRemove => 'Αφαίρεση φωτογραφίας';
+
+  @override
   String get republishAllNotesButton => 'Αναδημοσίευση όλων των συγχρονισμένων σημειώσεων';
 
   @override

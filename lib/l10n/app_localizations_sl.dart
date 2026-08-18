@@ -355,6 +355,19 @@ class AppLocalizationsSl extends AppLocalizations {
   String get manageRelaysTitle => 'Upravljanje relejev';
 
   @override
+  String get autoSyncOnSaveTitle => 'Objavi ob shranjevanju';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Opombe, ki jih že sinhroniziraš, se ob shranjevanju znova objavijo. Zgolj lokalne nikoli.';
+
+  @override
+  String get noteBackgroundPhoto => 'Fotografija';
+
+  @override
+  String get noteBackgroundRemove => 'Odstrani fotografijo';
+
+  @override
   String get republishAllNotesButton => 'Znova objavi vse sinhronizirane zapiske';
 
   @override

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../models/note.dart';
+import '../../providers/note_background_provider.dart';
 import '../../providers/note_encryption_provider.dart';
 import '../../providers/notes_provider.dart';
 
@@ -75,6 +76,7 @@ Future<bool> deleteNotes(
   var relayFailures = 0;
   Object? lastError;
   final notesNotifier = ref.read(notesProvider.notifier);
+  final backgrounds = ref.read(noteBackgroundProvider.notifier);
   for (final note in notes) {
     try {
       await notesNotifier.deleteNote(note);
@@ -82,6 +84,11 @@ Future<bool> deleteNotes(
       relayFailures++;
       lastError = e;
     }
+    // A custom background is a photo from the user's library sitting in app
+    // storage; deleting the note it belonged to has to take it with it, the
+    // same way a deleted note's attachments are cleaned up. Done here, at the
+    // single point every deletion goes through, rather than per call site.
+    await backgrounds.clearBackground(note.id);
     progress.value++;
   }
 

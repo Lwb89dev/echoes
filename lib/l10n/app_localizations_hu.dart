@@ -355,6 +355,19 @@ class AppLocalizationsHu extends AppLocalizations {
   String get manageRelaysTitle => 'Relék kezelése';
 
   @override
+  String get autoSyncOnSaveTitle => 'Közzététel mentéskor';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'A már szinkronizált jegyzetek mentéskor azonnal újra közzéteszik. A csak helyi jegyzetek soha.';
+
+  @override
+  String get noteBackgroundPhoto => 'Fotó';
+
+  @override
+  String get noteBackgroundRemove => 'Fotó eltávolítása';
+
+  @override
   String get republishAllNotesButton => 'Minden szinkronizált jegyzet újraközzététele';
 
   @override

@@ -20,6 +20,12 @@ void main() {
     privateKeyHex: authorKeys.private,
   );
   const relays = [Relay(url: 'wss://relay.example')];
+  const fourRelays = [
+    Relay(url: 'wss://relay.one'),
+    Relay(url: 'wss://relay.two'),
+    Relay(url: 'wss://relay.three'),
+    Relay(url: 'wss://relay.four'),
+  ];
 
   Note note({String? owner, List<String> sharedWith = const []}) => Note(
     id: 'note-1',
@@ -59,6 +65,37 @@ void main() {
     expect(result.note.ownerPubkey, 'owner-pubkey');
   });
 
+  test('tapping sync reports how many relays actually took the note', () async {
+    // The bug this pins down: a note accepted by one relay out of four used
+    // to be reported as plainly "synced", which is how it could look
+    // published here and be missing on another device.
+    final harness = _Harness(acceptedRelays: 1);
+    final result = await harness.service.syncNote(
+      note: note(),
+      author: author,
+      relays: fourRelays,
+      uploadProvider: blossomHzrd149Provider,
+    );
+
+    expect(harness.nostr.published, ['self']);
+    expect(result.accepted, 1);
+    expect(result.total, 4);
+  });
+
+  test('a note taken by every relay reports full coverage', () async {
+    final harness = _Harness();
+    final result = await harness.service.syncNote(
+      note: note(),
+      author: author,
+      relays: fourRelays,
+      uploadProvider: blossomHzrd149Provider,
+    );
+
+    expect(result.accepted, result.total);
+    expect(result.note.synced, isTrue);
+    expect(result.note.nostrEventId, isNotNull);
+  });
+
   test('partial recipient failure leaves a resumable unsynced state', () async {
     final harness = _Harness(failOn: 'share:recipient-b');
     final future = harness.service.syncNote(
@@ -75,8 +112,8 @@ void main() {
 }
 
 class _Harness {
-  _Harness({String? failOn}) {
-    nostr = _FakeNostrService(failOn: failOn);
+  _Harness({String? failOn, int? acceptedRelays}) {
+    nostr = _FakeNostrService(failOn: failOn, acceptedRelays: acceptedRelays);
     storage = _FakeStorage();
     service = _OnlineSyncService(
       localStorageService: storage,
@@ -117,9 +154,13 @@ class _FakeStorage extends LocalStorageService {
 }
 
 class _FakeNostrService extends NostrService {
-  _FakeNostrService({this.failOn});
+  _FakeNostrService({this.failOn, this.acceptedRelays});
 
   final String? failOn;
+
+  /// How many relays accept a publish; null means "all of them". Lets a test
+  /// stand in for the real-world case of some relays rejecting or timing out.
+  final int? acceptedRelays;
   final published = <String>[];
   final _keys = Nostr.instance.keys.generateKeyPair();
 
@@ -162,11 +203,12 @@ class _FakeNostrService extends NostrService {
     if (label == failOn) {
       throw StateError('simulated publish failure');
     }
+    final accepted = acceptedRelays ?? relays.length;
     return (
       eventId: event.id!,
-      accepted: relays.length,
+      accepted: accepted,
       total: relays.length,
-      failures: const <String>[],
+      failures: [for (var i = accepted; i < relays.length; i++) 'relay$i: rejected'],
     );
   }
 }

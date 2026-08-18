@@ -355,6 +355,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get manageRelaysTitle => 'Hallitse releitä';
 
   @override
+  String get autoSyncOnSaveTitle => 'Julkaise tallennettaessa';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Jo synkronoidut muistiinpanot julkaistaan uudelleen heti tallennettaessa. Vain paikallisia ei julkaista koskaan.';
+
+  @override
+  String get noteBackgroundPhoto => 'Kuva';
+
+  @override
+  String get noteBackgroundRemove => 'Poista kuva';
+
+  @override
   String get republishAllNotesButton => 'Julkaise kaikki synkronoidut muistiinpanot uudelleen';
 
   @override

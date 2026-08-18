@@ -2,7 +2,7 @@ name: echoes
 description: "Echoes - offline-first note-taking app on the Nostr protocol."
 publish_to: 'none'
 
-version: 0.4.7+11
+version: 0.4.8+12
 
 environment:
   sdk: ^3.12.2
@@ -144,11 +144,13 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/icon.png"
-  # Android gets a dedicated, transparent foreground with its own generous
-  # safe margin. This avoids AOSP adaptive-icon masks cropping the quill.
-  image_path_android: "assets/icon/android_adaptive_foreground.png"
-  # AOSP then draws only the safe foreground mark, without a coloured tile.
-  adaptive_icon_background: "#00000000"
+  # The adaptive icon's two layers: a transparent foreground carrying the mark
+  # (its artwork sits inside ~52% of the canvas, comfortably within the 66%
+  # safe zone every launcher mask is guaranteed to keep) over an OPAQUE brand
+  # tile. The background layer must be opaque — Android's adaptive-icon spec
+  # says so, and a transparent one leaves the launcher masking empty space,
+  # which is what made the drawer icon render wrong.
+  adaptive_icon_background: "#006F70"
   adaptive_icon_foreground: "assets/icon/android_adaptive_foreground.png"
   adaptive_icon_foreground_inset: 0
   remove_alpha_ios: true

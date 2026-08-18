@@ -356,6 +356,19 @@ class AppLocalizationsBg extends AppLocalizations {
   String get manageRelaysTitle => 'Управление на релета';
 
   @override
+  String get autoSyncOnSaveTitle => 'Публикуване при запазване';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Бележките, които вече синхронизирате, се публикуват отново веднага след запазване. Само локалните — никога.';
+
+  @override
+  String get noteBackgroundPhoto => 'Снимка';
+
+  @override
+  String get noteBackgroundRemove => 'Премахни снимката';
+
+  @override
   String get republishAllNotesButton => 'Публикувай отново всички синхронизирани бележки';
 
   @override

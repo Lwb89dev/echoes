@@ -355,6 +355,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get manageRelaysTitle => 'Hantera reläer';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publicera vid sparande';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Anteckningar du redan synkroniserar publiceras om så snart du sparar dem. Endast lokala anteckningar publiceras aldrig.';
+
+  @override
+  String get noteBackgroundPhoto => 'Foto';
+
+  @override
+  String get noteBackgroundRemove => 'Ta bort foto';
+
+  @override
   String get republishAllNotesButton => 'Publicera om alla synkroniserade anteckningar';
 
   @override

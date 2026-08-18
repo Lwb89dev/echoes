@@ -782,6 +782,30 @@ abstract class AppLocalizations {
   /// **'Manage relays'**
   String get manageRelaysTitle;
 
+  /// No description provided for @autoSyncOnSaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish on save'**
+  String get autoSyncOnSaveTitle;
+
+  /// No description provided for @autoSyncOnSaveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes you already sync are republished as soon as you save them. Local-only notes are never published.'**
+  String get autoSyncOnSaveSubtitle;
+
+  /// No description provided for @noteBackgroundPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get noteBackgroundPhoto;
+
+  /// No description provided for @noteBackgroundRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get noteBackgroundRemove;
+
   /// No description provided for @republishAllNotesButton.
   ///
   /// In en, this message translates to:

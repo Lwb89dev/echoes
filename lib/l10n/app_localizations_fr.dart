@@ -358,6 +358,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get manageRelaysTitle => 'Gérer les relais';
 
   @override
+  String get autoSyncOnSaveTitle => 'Publier à l\'enregistrement';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Les notes déjà synchronisées sont republiées dès que vous les enregistrez. Les notes locales ne sont jamais publiées.';
+
+  @override
+  String get noteBackgroundPhoto => 'Photo';
+
+  @override
+  String get noteBackgroundRemove => 'Retirer la photo';
+
+  @override
   String get republishAllNotesButton => 'Republier toutes les notes synchronisées';
 
   @override

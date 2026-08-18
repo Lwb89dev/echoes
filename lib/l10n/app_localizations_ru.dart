@@ -356,6 +356,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get manageRelaysTitle => 'Управление реле';
 
   @override
+  String get autoSyncOnSaveTitle => 'Публиковать при сохранении';
+
+  @override
+  String get autoSyncOnSaveSubtitle =>
+      'Уже синхронизируемые заметки публикуются заново сразу после сохранения. Только локальные — никогда.';
+
+  @override
+  String get noteBackgroundPhoto => 'Фото';
+
+  @override
+  String get noteBackgroundRemove => 'Убрать фото';
+
+  @override
   String get republishAllNotesButton => 'Переопубликовать все синхронизированные заметки';
 
   @override

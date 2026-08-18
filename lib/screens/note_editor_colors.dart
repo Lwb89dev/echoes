@@ -77,10 +77,15 @@ class _ColorSwatchOption extends StatelessWidget {
 /// and updates its own text color on the normal build cycle — only the
 /// fill underneath animates.
 class _NoteColorReveal extends StatefulWidget {
-  const _NoteColorReveal({required this.color, required this.child});
+  const _NoteColorReveal({required this.color, required this.child, this.backgroundPhotoPath});
 
   final Color color;
   final Widget child;
+
+  /// Optional user-chosen photo, painted over the colour fill and under the
+  /// note's content (see [noteBackgroundProvider]). Null for the usual case
+  /// of a plain colour.
+  final String? backgroundPhotoPath;
 
   @override
   State<_NoteColorReveal> createState() => _NoteColorRevealState();
@@ -139,7 +144,36 @@ class _NoteColorRevealState extends State<_NoteColorReveal> with SingleTickerPro
             );
           },
         ),
+        if (widget.backgroundPhotoPath != null)
+          _NoteBackgroundPhoto(path: widget.backgroundPhotoPath!),
         widget.child,
+      ],
+    );
+  }
+}
+
+/// A note's custom background photo: covers the screen, with a scrim over it
+/// so body text stays legible whatever the picture happens to be. The scrim
+/// follows the theme, so it darkens a photo in dark mode and lightens it in
+/// light mode rather than fighting the text colour.
+///
+/// A missing file (storage cleared, photo removed) simply paints nothing —
+/// the note falls back to its colour instead of showing a broken image.
+class _NoteBackgroundPhoto extends StatelessWidget {
+  const _NoteBackgroundPhoto({required this.path});
+
+  final String path;
+
+  @override
+  Widget build(BuildContext context) {
+    final file = File(path);
+    if (!file.existsSync()) return const SizedBox.shrink();
+    final surface = Theme.of(context).colorScheme.surface;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.file(file, fit: BoxFit.cover, errorBuilder: (_, _, _) => const SizedBox.shrink()),
+        ColoredBox(color: surface.withValues(alpha: 0.72)),
       ],
     );
   }
@@ -163,4 +197,58 @@ class _CircleRevealClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant _CircleRevealClipper oldClipper) => oldClipper.fraction != fraction;
+}
+
+/// The "use a photo" (and "remove photo") entry in the colour sheet, shaped
+/// like a swatch so it reads as one more choice in the same row rather than a
+/// separate feature bolted on beside them.
+class _PhotoBackgroundOption extends StatelessWidget {
+  const _PhotoBackgroundOption({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.icon = Icons.image_outlined,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        width: 72,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colorScheme.surfaceContainerHighest,
+                border: Border.all(
+                  color: selected ? colorScheme.primary : colorScheme.outlineVariant,
+                  width: selected ? 3 : 1,
+                ),
+              ),
+              child: Icon(icon, size: 22, color: colorScheme.onSurfaceVariant),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
