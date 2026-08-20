@@ -145,14 +145,18 @@ flutter_launcher_icons:
   ios: true
   image_path: "assets/icon/icon.png"
   # The adaptive icon's two layers: a transparent foreground carrying the mark
-  # (its artwork sits inside ~52% of the canvas, comfortably within the 66%
-  # safe zone every launcher mask is guaranteed to keep) over an OPAQUE brand
-  # tile. The background layer must be opaque — Android's adaptive-icon spec
-  # says so, and a transparent one leaves the launcher masking empty space,
-  # which is what made the drawer icon render wrong.
+  # over an OPAQUE brand tile. The background layer must be opaque — Android's
+  # adaptive-icon spec says so, and a transparent one leaves the launcher
+  # masking empty space, which is what made the drawer icon render wrong.
+  #
+  # The artwork's axis-aligned bounding box is ~52% of the canvas, but the
+  # feather tip reaches ~66% of the half-canvas radius diagonally — past the
+  # 66dp/108dp (~61%) safe-zone circle every launcher mask is guaranteed to
+  # keep, which is what clipped the feather tip on circular-mask launchers
+  # (Pixel, some Samsung/OnePlus skins). A 6% inset pulls it back inside.
   adaptive_icon_background: "#006F70"
   adaptive_icon_foreground: "assets/icon/android_adaptive_foreground.png"
-  adaptive_icon_foreground_inset: 0
+  adaptive_icon_foreground_inset: 6
   remove_alpha_ios: true
   web:
     generate: true
