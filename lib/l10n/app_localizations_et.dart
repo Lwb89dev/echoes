@@ -257,6 +257,9 @@ class AppLocalizationsEt extends AppLocalizations {
   String get formatItalicTooltip => 'Kaldkiri';
 
   @override
+  String get formatStrikethroughTooltip => 'Läbikriipsutatud';
+
+  @override
   String get formatHeadingTooltip => 'Pealkiri';
 
   @override

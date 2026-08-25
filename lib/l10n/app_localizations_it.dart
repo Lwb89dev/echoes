@@ -258,6 +258,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get formatItalicTooltip => 'Corsivo';
 
   @override
+  String get formatStrikethroughTooltip => 'Barrato';
+
+  @override
   String get formatHeadingTooltip => 'Titolo';
 
   @override

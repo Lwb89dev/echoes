@@ -258,6 +258,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get formatItalicTooltip => 'Курсив';
 
   @override
+  String get formatStrikethroughTooltip => 'Зачёркнутый';
+
+  @override
   String get formatHeadingTooltip => 'Заголовок';
 
   @override

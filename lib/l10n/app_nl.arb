@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Spraaknotities worden niet ondersteund op dit apparaat",
   "formatBoldTooltip": "Vet",
   "formatItalicTooltip": "Cursief",
+  "formatStrikethroughTooltip": "Doorhalen",
   "formatHeadingTooltip": "Kop",
   "formatListTooltip": "Opsommingslijst",
   "formatLinkTooltip": "Link",

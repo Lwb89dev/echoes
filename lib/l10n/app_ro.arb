@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Notele vocale nu sunt acceptate pe acest dispozitiv",
   "formatBoldTooltip": "Aldin",
   "formatItalicTooltip": "Cursiv",
+  "formatStrikethroughTooltip": "Tăiat",
   "formatHeadingTooltip": "Titlu",
   "formatListTooltip": "Listă cu marcatori",
   "formatLinkTooltip": "Legătură",

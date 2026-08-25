@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "このデバイスではボイスメモはサポートされていません",
   "formatBoldTooltip": "太字",
   "formatItalicTooltip": "斜体",
+  "formatStrikethroughTooltip": "取り消し線",
   "formatHeadingTooltip": "見出し",
   "formatListTooltip": "箇条書き",
   "formatLinkTooltip": "リンク",

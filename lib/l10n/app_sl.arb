@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Glasovni zapiski niso podprti v tej napravi",
   "formatBoldTooltip": "Krepko",
   "formatItalicTooltip": "Ležeče",
+  "formatStrikethroughTooltip": "Prečrtano",
   "formatHeadingTooltip": "Naslov",
   "formatListTooltip": "Označen seznam",
   "formatLinkTooltip": "Povezava",

@@ -118,13 +118,27 @@ class Note {
   /// home) there is worse than useless — it's how you end up buying the same
   /// thing twice. An all-done checklist therefore previews as empty, which is
   /// the honest answer: there is nothing left on it.
+  /// Line breaks are **kept** (blank lines collapsed) rather than flattened
+  /// into one run of text. A body that is a bulleted list is meant to be read
+  /// as a list; squashing it onto a single line turns "milk / bread / coffee"
+  /// into an unreadable smear. Callers cap how many of these lines they show
+  /// (the grid gives a card several, a one-line row shows the first).
   String get preview {
     final source = isChecklist
-        ? items.where((e) => !e.done).map((e) => e.text).join(', ')
+        ? items.where((e) => !e.done).map((e) => e.text).join('\n')
         : bodyWithoutAttachmentTokens;
-    final singleLine = source.replaceAll('\n', ' ').trim();
-    return singleLine.length <= 120 ? singleLine : '${singleLine.substring(0, 120)}…';
+    final lines = [
+      for (final line in source.split('\n'))
+        if (line.trim().isNotEmpty) line.trim(),
+    ];
+    final text = lines.take(_previewLines).join('\n');
+    return text.length <= _previewChars ? text : '${text.substring(0, _previewChars)}…';
   }
+
+  /// Enough lines to show the shape of a short list, and a character cap so a
+  /// wall of text can't be carried around in memory for every card.
+  static const _previewLines = 8;
+  static const _previewChars = 240;
 
   // `nostrEventId` uses a sentinel default instead of the usual `x ?? this.x`
   // pattern: that pattern can never explicitly pass `null` through to clear

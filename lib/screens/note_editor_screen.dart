@@ -1636,6 +1636,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       return _FormattingToolbar(
         onBold: () => _wrapBodySelection('**'),
         onItalic: () => _wrapBodySelection('*'),
+        // GitHub-flavoured markdown's strikethrough, which the preview
+        // renderer already understands (`del` -> lineThrough).
+        onStrikethrough: () => _wrapBodySelection('~~'),
         onHeading: () => _prefixBodyLines('# '),
         onList: () => _prefixBodyLines('- '),
         onLink: _insertLink,
@@ -1895,6 +1898,7 @@ class _FormattingToolbar extends StatelessWidget {
   const _FormattingToolbar({
     required this.onBold,
     required this.onItalic,
+    required this.onStrikethrough,
     required this.onHeading,
     required this.onList,
     required this.onLink,
@@ -1902,6 +1906,7 @@ class _FormattingToolbar extends StatelessWidget {
 
   final VoidCallback onBold;
   final VoidCallback onItalic;
+  final VoidCallback onStrikethrough;
   final VoidCallback onHeading;
   final VoidCallback onList;
   final VoidCallback onLink;
@@ -1922,6 +1927,11 @@ class _FormattingToolbar extends StatelessWidget {
             icon: const Icon(Icons.format_italic),
             tooltip: l.formatItalicTooltip,
             onPressed: onItalic,
+          ),
+          IconButton(
+            icon: const Icon(Icons.format_strikethrough),
+            tooltip: l.formatStrikethroughTooltip,
+            onPressed: onStrikethrough,
           ),
           IconButton(
             icon: const Icon(Icons.title),

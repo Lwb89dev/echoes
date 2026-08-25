@@ -257,6 +257,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get formatItalicTooltip => 'Kursivointi';
 
   @override
+  String get formatStrikethroughTooltip => 'Yliviivaus';
+
+  @override
   String get formatHeadingTooltip => 'Otsikko';
 
   @override

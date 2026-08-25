@@ -257,6 +257,9 @@ class AppLocalizationsSl extends AppLocalizations {
   String get formatItalicTooltip => 'Ležeče';
 
   @override
+  String get formatStrikethroughTooltip => 'Prečrtano';
+
+  @override
   String get formatHeadingTooltip => 'Naslov';
 
   @override

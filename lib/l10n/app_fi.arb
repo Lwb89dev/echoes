@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Äänimuistiinpanoja ei tueta tällä laitteella",
   "formatBoldTooltip": "Lihavointi",
   "formatItalicTooltip": "Kursivointi",
+  "formatStrikethroughTooltip": "Yliviivaus",
   "formatHeadingTooltip": "Otsikko",
   "formatListTooltip": "Luettelo",
   "formatLinkTooltip": "Linkki",

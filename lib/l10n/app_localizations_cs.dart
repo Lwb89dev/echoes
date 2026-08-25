@@ -258,6 +258,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get formatItalicTooltip => 'Kurzíva';
 
   @override
+  String get formatStrikethroughTooltip => 'Přeškrtnutí';
+
+  @override
   String get formatHeadingTooltip => 'Nadpis';
 
   @override

@@ -257,6 +257,9 @@ class AppLocalizationsHu extends AppLocalizations {
   String get formatItalicTooltip => 'Dőlt';
 
   @override
+  String get formatStrikethroughTooltip => 'Áthúzott';
+
+  @override
   String get formatHeadingTooltip => 'Címsor';
 
   @override

@@ -108,6 +108,7 @@
   "voiceNoteUnsupportedOnPlatform": "Le note vocali non sono supportate su questo dispositivo",
   "formatBoldTooltip": "Grassetto",
   "formatItalicTooltip": "Corsivo",
+  "formatStrikethroughTooltip": "Barrato",
   "formatHeadingTooltip": "Titolo",
   "formatListTooltip": "Elenco puntato",
   "formatLinkTooltip": "Link",

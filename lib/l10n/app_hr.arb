@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Glasovne bilješke nisu podržane na ovom uređaju",
   "formatBoldTooltip": "Podebljano",
   "formatItalicTooltip": "Kurziv",
+  "formatStrikethroughTooltip": "Precrtano",
   "formatHeadingTooltip": "Naslov",
   "formatListTooltip": "Popis s grafičkim oznakama",
   "formatLinkTooltip": "Poveznica",

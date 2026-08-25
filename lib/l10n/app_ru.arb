@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Голосовые заметки не поддерживаются на этом устройстве",
   "formatBoldTooltip": "Жирный",
   "formatItalicTooltip": "Курсив",
+  "formatStrikethroughTooltip": "Зачёркнутый",
   "formatHeadingTooltip": "Заголовок",
   "formatListTooltip": "Маркированный список",
   "formatLinkTooltip": "Ссылка",

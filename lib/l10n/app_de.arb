@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Sprachnotizen werden auf diesem Gerät nicht unterstützt",
   "formatBoldTooltip": "Fett",
   "formatItalicTooltip": "Kursiv",
+  "formatStrikethroughTooltip": "Durchgestrichen",
   "formatHeadingTooltip": "Überschrift",
   "formatListTooltip": "Aufzählung",
   "formatLinkTooltip": "Link",

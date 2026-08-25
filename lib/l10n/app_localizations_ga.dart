@@ -257,6 +257,9 @@ class AppLocalizationsGa extends AppLocalizations {
   String get formatItalicTooltip => 'Iodálach';
 
   @override
+  String get formatStrikethroughTooltip => 'Líne tríd';
+
+  @override
   String get formatHeadingTooltip => 'Ceannteideal';
 
   @override

@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Talebeskeder understøttes ikke på denne enhed",
   "formatBoldTooltip": "Fed",
   "formatItalicTooltip": "Kursiv",
+  "formatStrikethroughTooltip": "Gennemstreget",
   "formatHeadingTooltip": "Overskrift",
   "formatListTooltip": "Punktliste",
   "formatLinkTooltip": "Link",

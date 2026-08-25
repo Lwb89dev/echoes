@@ -258,6 +258,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get formatItalicTooltip => 'Kurziv';
 
   @override
+  String get formatStrikethroughTooltip => 'Precrtano';
+
+  @override
   String get formatHeadingTooltip => 'Naslov';
 
   @override

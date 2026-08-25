@@ -258,6 +258,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get formatItalicTooltip => 'Cursief';
 
   @override
+  String get formatStrikethroughTooltip => 'Doorhalen';
+
+  @override
   String get formatHeadingTooltip => 'Kop';
 
   @override

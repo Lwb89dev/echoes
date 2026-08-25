@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Οι φωνητικές σημειώσεις δεν υποστηρίζονται σε αυτή τη συσκευή",
   "formatBoldTooltip": "Έντονα",
   "formatItalicTooltip": "Πλάγια",
+  "formatStrikethroughTooltip": "Διαγραφή",
   "formatHeadingTooltip": "Επικεφαλίδα",
   "formatListTooltip": "Λίστα με κουκκίδες",
   "formatLinkTooltip": "Σύνδεσμος",

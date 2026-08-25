@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "此设备不支持语音笔记",
   "formatBoldTooltip": "粗体",
   "formatItalicTooltip": "斜体",
+  "formatStrikethroughTooltip": "删除线",
   "formatHeadingTooltip": "标题",
   "formatListTooltip": "项目符号列表",
   "formatLinkTooltip": "链接",

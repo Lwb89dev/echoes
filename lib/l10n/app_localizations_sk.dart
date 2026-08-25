@@ -258,6 +258,9 @@ class AppLocalizationsSk extends AppLocalizations {
   String get formatItalicTooltip => 'Kurzíva';
 
   @override
+  String get formatStrikethroughTooltip => 'Prečiarknutie';
+
+  @override
   String get formatHeadingTooltip => 'Nadpis';
 
   @override

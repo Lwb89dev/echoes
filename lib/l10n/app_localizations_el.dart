@@ -260,6 +260,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get formatItalicTooltip => 'Πλάγια';
 
   @override
+  String get formatStrikethroughTooltip => 'Διαγραφή';
+
+  @override
   String get formatHeadingTooltip => 'Επικεφαλίδα';
 
   @override

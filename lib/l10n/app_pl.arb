@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Notatki głosowe nie są obsługiwane na tym urządzeniu",
   "formatBoldTooltip": "Pogrubienie",
   "formatItalicTooltip": "Kursywa",
+  "formatStrikethroughTooltip": "Przekreślenie",
   "formatHeadingTooltip": "Nagłówek",
   "formatListTooltip": "Lista punktowana",
   "formatLinkTooltip": "Łącze",

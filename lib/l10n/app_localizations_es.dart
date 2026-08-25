@@ -258,6 +258,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get formatItalicTooltip => 'Cursiva';
 
   @override
+  String get formatStrikethroughTooltip => 'Tachado';
+
+  @override
   String get formatHeadingTooltip => 'Encabezado';
 
   @override

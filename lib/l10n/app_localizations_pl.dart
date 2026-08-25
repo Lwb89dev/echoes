@@ -258,6 +258,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get formatItalicTooltip => 'Kursywa';
 
   @override
+  String get formatStrikethroughTooltip => 'Przekreślenie';
+
+  @override
   String get formatHeadingTooltip => 'Nagłówek';
 
   @override

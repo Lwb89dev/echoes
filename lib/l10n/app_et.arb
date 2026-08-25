@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Häälmärkmed ei ole selles seadmes toetatud",
   "formatBoldTooltip": "Paks",
   "formatItalicTooltip": "Kaldkiri",
+  "formatStrikethroughTooltip": "Läbikriipsutatud",
   "formatHeadingTooltip": "Pealkiri",
   "formatListTooltip": "Täpploend",
   "formatLinkTooltip": "Link",

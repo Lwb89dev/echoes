@@ -258,6 +258,9 @@ class AppLocalizationsBg extends AppLocalizations {
   String get formatItalicTooltip => 'Курсив';
 
   @override
+  String get formatStrikethroughTooltip => 'Зачертан';
+
+  @override
   String get formatHeadingTooltip => 'Заглавие';
 
   @override

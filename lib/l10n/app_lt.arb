@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Balso įrašai šiame įrenginyje nepalaikomi",
   "formatBoldTooltip": "Pusjuodis",
   "formatItalicTooltip": "Kursyvas",
+  "formatStrikethroughTooltip": "Perbrauktas",
   "formatHeadingTooltip": "Antraštė",
   "formatListTooltip": "Sąrašas su ženkleliais",
   "formatLinkTooltip": "Nuoroda",

@@ -257,6 +257,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get formatItalicTooltip => 'Kursiv';
 
   @override
+  String get formatStrikethroughTooltip => 'Genomstruken';
+
+  @override
   String get formatHeadingTooltip => 'Rubrik';
 
   @override

@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Balss piezīmes šajā ierīcē netiek atbalstītas",
   "formatBoldTooltip": "Treknraksts",
   "formatItalicTooltip": "Slīpraksts",
+  "formatStrikethroughTooltip": "Pārsvītrots",
   "formatHeadingTooltip": "Virsraksts",
   "formatListTooltip": "Saraksts ar aizzīmēm",
   "formatLinkTooltip": "Saite",

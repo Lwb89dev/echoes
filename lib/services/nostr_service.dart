@@ -413,11 +413,30 @@ class NostrService {
     );
     final urls = relays.map((r) => r.url).toList();
     if (urls.isEmpty) return;
+    // Re-initialising is not free and not harmless: `init` reassigns the
+    // relay list and (by default) clears the library's registries, which
+    // takes any open subscription and pending OK callback with it. Calling it
+    // before every publish and every fetch meant routinely pulling the rug
+    // out from under work already in flight. Skip it when the very same relay
+    // set is already up — `retryOnError`/`retryOnClose` below keep those
+    // sockets alive on their own, so there is nothing to re-establish.
+    final urlSet = urls.toSet();
+    if (_connectedRelayUrls != null &&
+        _connectedRelayUrls!.length == urlSet.length &&
+        _connectedRelayUrls!.containsAll(urlSet)) {
+      return;
+    }
     await _nostr.relays.init(relaysUrl: urls, retryOnError: true, retryOnClose: true);
+    _connectedRelayUrls = urlSet;
   }
+
+  /// The relay set the last successful [connectToRelays] established, so the
+  /// next call can tell "same relays, already connected" from a real change.
+  Set<String>? _connectedRelayUrls;
 
   Future<void> disconnectFromRelays() async {
     developer.log('NostrService.disconnectFromRelays called', name: 'NostrService');
+    _connectedRelayUrls = null;
     await _nostr.relays.freeAllResources();
   }
 
@@ -1088,44 +1107,61 @@ class NostrService {
     }
     await connectToRelays(relays);
 
+    // One broadcast with a per-relay OK callback — never one call per relay
+    // with `relays: [singleUrl]`. That looks like the obvious way to get
+    // per-relay results, and it is a trap: `dart_nostr` funnels such a call
+    // into `init(relaysUrl: [thatOneRelay])`, which reassigns its whole relay
+    // list and clears its registries. Publishing would tear the pool down to
+    // a single relay and take every open subscription with it, breaking sync
+    // app-wide; doing it once per relay also stacked one full timeout per
+    // relay, which is what made deleting a note sit there for ages.
+    final pending = {for (final relay in relays) relay.url};
+    final total = pending.length;
+    final accepted = <String>{};
     final failures = <String>[];
-    String? acceptedEventId;
-    // Sequential rather than parallel: the relay pool is shared, the payloads
-    // are small, and a predictable order keeps the failure list readable.
-    for (final relay in relays) {
-      try {
-        final ok = await _nostr.relays.sendEventToRelaysAsync(
-          event,
-          timeout: const Duration(seconds: 10),
-          relays: [relay.url],
-        );
+    final allAnswered = Completer<void>();
+
+    await _nostr.relays.sendEventToRelays(
+      event,
+      onOk: (relayUrl, ok) {
+        // A relay that answers twice, or one we never asked, changes nothing.
+        if (!pending.remove(relayUrl)) return;
         if (ok.isEventAccepted == true) {
-          acceptedEventId ??= ok.eventId;
+          accepted.add(relayUrl);
         } else {
-          failures.add('${relay.url}: ${ok.message ?? 'rejected'}');
+          failures.add('$relayUrl: ${ok.message ?? 'rejected'}');
         }
-      } catch (e) {
-        failures.add('${relay.url}: $e');
-      }
+        if (pending.isEmpty && !allAnswered.isCompleted) allAnswered.complete();
+      },
+    );
+
+    // A single deadline for the whole broadcast: relays answer in parallel,
+    // so waiting once is both correct and as slow as the slowest relay,
+    // rather than the sum of them all.
+    await Future.any([allAnswered.future, Future<void>.delayed(_publishTimeout)]);
+    for (final silent in pending) {
+      failures.add('$silent: no response within ${_publishTimeout.inSeconds}s');
     }
 
-    if (acceptedEventId == null) {
+    if (accepted.isEmpty) {
       throw StateError('No relay accepted the event — ${failures.join('; ')}');
     }
     if (failures.isNotEmpty) {
       developer.log(
-        'Event ${event.id} reached ${relays.length - failures.length}/${relays.length} relays; '
+        'Event ${event.id} reached ${accepted.length}/$total relays; '
         'failures: ${failures.join('; ')}',
         name: 'NostrService',
       );
     }
-    return (
-      eventId: acceptedEventId,
-      accepted: relays.length - failures.length,
-      total: relays.length,
-      failures: failures,
-    );
+    // Counted from the relays that actually said yes, not from
+    // `total - failures`: a relay could answer twice, or one we never asked
+    // could reply, and the accepted set is the only thing that can't drift.
+    return (eventId: event.id!, accepted: accepted.length, total: total, failures: failures);
   }
+
+  /// How long a publish waits for every relay to answer. One deadline for the
+  /// whole broadcast, not per relay.
+  static const _publishTimeout = Duration(seconds: 10);
 
   /// Fetches every note event (Echoes' application kind) authored by
   /// [author] from every relay in [relays], decrypts them and converts them

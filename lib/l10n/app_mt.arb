@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Noti bil-vuċi mhumiex sostnuti fuq dan l-apparat",
   "formatBoldTooltip": "Grassett",
   "formatItalicTooltip": "Korsiv",
+  "formatStrikethroughTooltip": "Ingassat",
   "formatHeadingTooltip": "Intestatura",
   "formatListTooltip": "Lista bil-punti",
   "formatLinkTooltip": "Ħolqa",

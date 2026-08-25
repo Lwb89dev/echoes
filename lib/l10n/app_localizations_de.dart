@@ -259,6 +259,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get formatItalicTooltip => 'Kursiv';
 
   @override
+  String get formatStrikethroughTooltip => 'Durchgestrichen';
+
+  @override
   String get formatHeadingTooltip => 'Überschrift';
 
   @override

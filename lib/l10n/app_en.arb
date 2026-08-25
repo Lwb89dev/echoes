@@ -136,6 +136,7 @@
   "voiceNoteUnsupportedOnPlatform": "Voice notes aren't supported on this device",
   "formatBoldTooltip": "Bold",
   "formatItalicTooltip": "Italic",
+  "formatStrikethroughTooltip": "Strikethrough",
   "formatHeadingTooltip": "Heading",
   "formatListTooltip": "Bulleted list",
   "formatLinkTooltip": "Link",

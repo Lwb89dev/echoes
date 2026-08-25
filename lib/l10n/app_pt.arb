@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "As notas de voz não são suportadas neste dispositivo",
   "formatBoldTooltip": "Negrito",
   "formatItalicTooltip": "Itálico",
+  "formatStrikethroughTooltip": "Rasurado",
   "formatHeadingTooltip": "Título",
   "formatListTooltip": "Lista com marcadores",
   "formatLinkTooltip": "Ligação",

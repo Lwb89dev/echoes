@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "A hangjegyzetek nem támogatottak ezen az eszközön",
   "formatBoldTooltip": "Félkövér",
   "formatItalicTooltip": "Dőlt",
+  "formatStrikethroughTooltip": "Áthúzott",
   "formatHeadingTooltip": "Címsor",
   "formatListTooltip": "Felsorolás",
   "formatLinkTooltip": "Hivatkozás",

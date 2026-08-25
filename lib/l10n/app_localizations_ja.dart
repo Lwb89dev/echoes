@@ -254,6 +254,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get formatItalicTooltip => '斜体';
 
   @override
+  String get formatStrikethroughTooltip => '取り消し線';
+
+  @override
   String get formatHeadingTooltip => '見出し';
 
   @override

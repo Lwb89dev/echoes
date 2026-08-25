@@ -254,6 +254,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get formatItalicTooltip => '斜体';
 
   @override
+  String get formatStrikethroughTooltip => '删除线';
+
+  @override
   String get formatHeadingTooltip => '标题';
 
   @override

@@ -596,6 +596,12 @@ abstract class AppLocalizations {
   /// **'Italic'**
   String get formatItalicTooltip;
 
+  /// No description provided for @formatStrikethroughTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Strikethrough'**
+  String get formatStrikethroughTooltip;
+
   /// No description provided for @formatHeadingTooltip.
   ///
   /// In en, this message translates to:

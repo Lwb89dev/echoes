@@ -258,6 +258,9 @@ class AppLocalizationsLv extends AppLocalizations {
   String get formatItalicTooltip => 'Slīpraksts';
 
   @override
+  String get formatStrikethroughTooltip => 'Pārsvītrots';
+
+  @override
   String get formatHeadingTooltip => 'Virsraksts';
 
   @override

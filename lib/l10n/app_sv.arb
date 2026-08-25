@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Röstanteckningar stöds inte på den här enheten",
   "formatBoldTooltip": "Fet",
   "formatItalicTooltip": "Kursiv",
+  "formatStrikethroughTooltip": "Genomstruken",
   "formatHeadingTooltip": "Rubrik",
   "formatListTooltip": "Punktlista",
   "formatLinkTooltip": "Länk",

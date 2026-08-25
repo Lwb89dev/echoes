@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Hlasové poznámky nie sú na tomto zariadení podporované",
   "formatBoldTooltip": "Tučné",
   "formatItalicTooltip": "Kurzíva",
+  "formatStrikethroughTooltip": "Prečiarknutie",
   "formatHeadingTooltip": "Nadpis",
   "formatListTooltip": "Zoznam s odrážkami",
   "formatLinkTooltip": "Odkaz",

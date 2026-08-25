@@ -257,6 +257,9 @@ class AppLocalizationsMt extends AppLocalizations {
   String get formatItalicTooltip => 'Korsiv';
 
   @override
+  String get formatStrikethroughTooltip => 'Ingassat';
+
+  @override
   String get formatHeadingTooltip => 'Intestatura';
 
   @override

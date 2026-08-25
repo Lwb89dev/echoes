@@ -91,6 +91,7 @@
   "voiceNoteUnsupportedOnPlatform": "Ní thacaítear le nótaí gutha ar an bhfeiste seo",
   "formatBoldTooltip": "Trom",
   "formatItalicTooltip": "Iodálach",
+  "formatStrikethroughTooltip": "Líne tríd",
   "formatHeadingTooltip": "Ceannteideal",
   "formatListTooltip": "Liosta urchair",
   "formatLinkTooltip": "Nasc",
