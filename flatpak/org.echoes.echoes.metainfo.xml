@@ -36,6 +36,16 @@
   <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.4.10" date="2026-08-25">
+      <description>
+        <p>Fixes note sync and deletion hanging or silently failing when a relay is slow or unreachable — publishing no longer resets the whole relay connection pool per relay. Note previews now keep bulleted lists on their own lines instead of running them together, and strikethrough joins bold/italic in the formatting toolbar.</p>
+      </description>
+    </release>
+    <release version="0.4.9" date="2026-08-20">
+      <description>
+        <p>Fixes the app-drawer icon still being clipped on round-mask launchers (Pixel, some Samsung/OnePlus skins) after the previous icon fix.</p>
+      </description>
+    </release>
     <release version="0.4.8" date="2026-08-11">
       <description>
         <p>Custom photo backgrounds for individual notes, an optional "publish on save" for notes you already sync, a larger note title, and a fix for the Android launcher icon rendering wrongly in the app drawer.</p>
