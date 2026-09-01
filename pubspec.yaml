@@ -2,7 +2,7 @@ name: echoes
 description: "Echoes - offline-first note-taking app on the Nostr protocol."
 publish_to: 'none'
 
-version: 0.4.10+14
+version: 0.4.11+15
 
 environment:
   sdk: ^3.12.2
@@ -110,6 +110,14 @@ dependencies:
   # note_layout_provider.dart) — a plain GridView can't vary tile height
   # per note the way a masonry layout does.
   flutter_staggered_grid_view: ^0.7.0
+
+  # Underline formatting (see lib/utils/underline_syntax.dart) needs
+  # `DelimiterSyntax`/`DelimiterTag` directly — markdown has no native
+  # underline syntax, so this is what implements Echoes' own `++text++`
+  # convention on top of flutter_markdown_plus's parser. Was already a
+  # transitive dependency of flutter_markdown_plus; pinned directly since
+  # the app now imports it itself.
+  markdown: ^7.3.1
 
   # Keeps the screen on while actively recording a voice note — a long
   # recording shouldn't be cut off (or just be awkward to babysit) because

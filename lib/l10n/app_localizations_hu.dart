@@ -229,6 +229,21 @@ class AppLocalizationsHu extends AppLocalizations {
   String get noteColorWhite => 'Fehér';
 
   @override
+  String get noteColorPink => 'Rózsaszín';
+
+  @override
+  String get noteColorTeal => 'Türkiz';
+
+  @override
+  String get noteColorIndigo => 'Indigó';
+
+  @override
+  String get noteColorBrown => 'Barna';
+
+  @override
+  String get noteColorLime => 'Limezöld';
+
+  @override
   String get recordVoiceNoteTooltip => 'Hangjegyzet rögzítése';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsHu extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Áthúzott';
+
+  @override
+  String get formatUnderlineTooltip => 'Aláhúzott';
 
   @override
   String get formatHeadingTooltip => 'Címsor';

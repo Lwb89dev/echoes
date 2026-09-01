@@ -36,6 +36,11 @@
   <url type="vcs-browser">https://github.com/Lwb89dev/echoes</url>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="0.4.11" date="2026-09-01">
+      <description>
+        <p>Fixes relay sync silently going stale after a relay's first connection attempt failed — reconnecting no longer requires restarting the app, so a note that failed to sync once now catches up on its own. Dragging a note to reorder it near the top or bottom of a long list now auto-scrolls instead of freezing. Adds underline to the formatting toolbar, and five more note background colors.</p>
+      </description>
+    </release>
     <release version="0.4.10" date="2026-08-25">
       <description>
         <p>Fixes note sync and deletion hanging or silently failing when a relay is slow or unreachable — publishing no longer resets the whole relay connection pool per relay. Note previews now keep bulleted lists on their own lines instead of running them together, and strikethrough joins bold/italic in the formatting toolbar.</p>

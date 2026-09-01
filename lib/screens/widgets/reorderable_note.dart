@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 /// Wraps a note card so a **selected** note can be dragged onto another card
@@ -51,6 +53,85 @@ class ReorderableNote extends StatefulWidget {
 
 class _ReorderableNoteState extends State<ReorderableNote> {
   bool _hovered = false;
+
+  // Auto-scroll while dragging near the top/bottom edge of the enclosing
+  // list/grid. `Draggable` moves its feedback widget on an `Overlay`, fully
+  // independent of the scroll view underneath — Flutter does not scroll a
+  // list for you just because a drag is hovering at its edge, so without
+  // this a card being reordered towards the top or bottom of a long list
+  // could never actually get there: the drag simply stalls at the edge,
+  // going nowhere, which reads as the screen having frozen.
+  Timer? _autoScrollTimer;
+  double _autoScrollDelta = 0;
+  // Re-read every tick rather than closed over once: the timer can outlive
+  // the `Scrollable` it started against (e.g. the home screen's list/grid
+  // layout toggle swapping the ancestor mid-drag), and ticking against a
+  // stale, detached one would throw.
+  ScrollableState? _activeScrollable;
+
+  static const _hotZoneExtent = 80.0;
+  static const _maxScrollSpeed = 18.0; // px per tick, at the very edge
+  static const _tickInterval = Duration(milliseconds: 16); // ~60fps
+
+  @override
+  void dispose() {
+    _autoScrollTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Called on every pointer move while this card is being dragged. Finds
+  /// the nearest scrollable ancestor (the note list or grid itself) and
+  /// starts, adjusts, or stops auto-scrolling based on how close the finger
+  /// is to its top/bottom edge.
+  void _handleDragUpdate(DragUpdateDetails details) {
+    final scrollable = Scrollable.maybeOf(context);
+    final scrollBox = scrollable?.context.findRenderObject() as RenderBox?;
+    if (scrollable == null || scrollBox == null || !scrollBox.attached) {
+      _stopAutoScroll();
+      return;
+    }
+
+    final local = scrollBox.globalToLocal(details.globalPosition);
+    final height = scrollBox.size.height;
+    final fromTop = local.dy;
+    final fromBottom = height - local.dy;
+
+    double delta = 0;
+    if (fromTop >= 0 && fromTop < _hotZoneExtent) {
+      // Deeper into the hot zone -> faster, up to the cap at the very edge.
+      delta = -_maxScrollSpeed * (1 - fromTop / _hotZoneExtent);
+    } else if (fromBottom >= 0 && fromBottom < _hotZoneExtent) {
+      delta = _maxScrollSpeed * (1 - fromBottom / _hotZoneExtent);
+    }
+
+    if (delta == 0) {
+      _stopAutoScroll();
+      return;
+    }
+    _autoScrollDelta = delta;
+    _activeScrollable = scrollable;
+    _autoScrollTimer ??= Timer.periodic(_tickInterval, (_) => _tickAutoScroll());
+  }
+
+  void _tickAutoScroll() {
+    final scrollable = _activeScrollable;
+    if (scrollable == null || !scrollable.context.mounted) {
+      _stopAutoScroll();
+      return;
+    }
+    final position = scrollable.position;
+    final next = (position.pixels + _autoScrollDelta).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
+    if (next != position.pixels) position.jumpTo(next);
+  }
+
+  void _stopAutoScroll() {
+    _autoScrollTimer?.cancel();
+    _autoScrollTimer = null;
+    _activeScrollable = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +198,9 @@ class _ReorderableNoteState extends State<ReorderableNote> {
         // the list.
         feedback: _LiftedCard(width: constraints.maxWidth, child: widget.child),
         childWhenDragging: Opacity(opacity: 0.25, child: widget.child),
+        onDragUpdate: _handleDragUpdate,
+        onDragEnd: (_) => _stopAutoScroll(),
+        onDraggableCanceled: (_, _) => _stopAutoScroll(),
         child: widget.child,
       ),
     );

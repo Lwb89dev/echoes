@@ -227,6 +227,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noteColorWhite => '白';
 
   @override
+  String get noteColorPink => 'ピンク';
+
+  @override
+  String get noteColorTeal => 'ティール';
+
+  @override
+  String get noteColorIndigo => 'インディゴ';
+
+  @override
+  String get noteColorBrown => '茶色';
+
+  @override
+  String get noteColorLime => 'ライム';
+
+  @override
   String get recordVoiceNoteTooltip => '音声メモを録音';
 
   @override
@@ -255,6 +270,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => '取り消し線';
+
+  @override
+  String get formatUnderlineTooltip => '下線';
 
   @override
   String get formatHeadingTooltip => '見出し';

@@ -229,6 +229,21 @@ class AppLocalizationsMt extends AppLocalizations {
   String get noteColorWhite => 'Abjad';
 
   @override
+  String get noteColorPink => 'Roża';
+
+  @override
+  String get noteColorTeal => 'Blu-aħdar';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Kannella';
+
+  @override
+  String get noteColorLime => 'Aħdar-lumi';
+
+  @override
   String get recordVoiceNoteTooltip => 'Irrekordja nota bil-vuċi';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsMt extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Ingassat';
+
+  @override
+  String get formatUnderlineTooltip => 'Sottolinjat';
 
   @override
   String get formatHeadingTooltip => 'Intestatura';

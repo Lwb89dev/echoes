@@ -230,6 +230,21 @@ class AppLocalizationsLv extends AppLocalizations {
   String get noteColorWhite => 'Balta';
 
   @override
+  String get noteColorPink => 'Rozā';
+
+  @override
+  String get noteColorTeal => 'Tirkīza';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Brūna';
+
+  @override
+  String get noteColorLime => 'Laimzaļa';
+
+  @override
   String get recordVoiceNoteTooltip => 'Ierakstīt balss piezīmi';
 
   @override
@@ -259,6 +274,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Pārsvītrots';
+
+  @override
+  String get formatUnderlineTooltip => 'Pasvītrots';
 
   @override
   String get formatHeadingTooltip => 'Virsraksts';

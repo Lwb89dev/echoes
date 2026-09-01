@@ -23,6 +23,7 @@ import '../utils/formatter.dart';
 import '../utils/note_colors.dart';
 import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
+import '../utils/underline_syntax.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/share_note_sheet.dart';
 import 'widgets/voice_recorder.dart';
@@ -1639,6 +1640,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         // GitHub-flavoured markdown's strikethrough, which the preview
         // renderer already understands (`del` -> lineThrough).
         onStrikethrough: () => _wrapBodySelection('~~'),
+        // Echoes' own non-standard convention — see UnderlineSyntax.
+        onUnderline: () => _wrapBodySelection('++'),
         onHeading: () => _prefixBodyLines('# '),
         onList: () => _prefixBodyLines('- '),
         onLink: _insertLink,
@@ -1726,6 +1729,11 @@ String _noteColorLabel(NoteColor color, AppLocalizations l) => switch (color) {
   NoteColor.green => l.noteColorGreen,
   NoteColor.orange => l.noteColorOrange,
   NoteColor.white => l.noteColorWhite,
+  NoteColor.pink => l.noteColorPink,
+  NoteColor.teal => l.noteColorTeal,
+  NoteColor.indigo => l.noteColorIndigo,
+  NoteColor.brown => l.noteColorBrown,
+  NoteColor.lime => l.noteColorLime,
 };
 
 /// The date chip shown at the top of a diary entry (see
@@ -1899,6 +1907,7 @@ class _FormattingToolbar extends StatelessWidget {
     required this.onBold,
     required this.onItalic,
     required this.onStrikethrough,
+    required this.onUnderline,
     required this.onHeading,
     required this.onList,
     required this.onLink,
@@ -1907,6 +1916,7 @@ class _FormattingToolbar extends StatelessWidget {
   final VoidCallback onBold;
   final VoidCallback onItalic;
   final VoidCallback onStrikethrough;
+  final VoidCallback onUnderline;
   final VoidCallback onHeading;
   final VoidCallback onList;
   final VoidCallback onLink;
@@ -1932,6 +1942,11 @@ class _FormattingToolbar extends StatelessWidget {
             icon: const Icon(Icons.format_strikethrough),
             tooltip: l.formatStrikethroughTooltip,
             onPressed: onStrikethrough,
+          ),
+          IconButton(
+            icon: const Icon(Icons.format_underlined),
+            tooltip: l.formatUnderlineTooltip,
+            onPressed: onUnderline,
           ),
           IconButton(
             icon: const Icon(Icons.title),

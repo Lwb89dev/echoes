@@ -229,6 +229,21 @@ class AppLocalizationsLt extends AppLocalizations {
   String get noteColorWhite => 'Balta';
 
   @override
+  String get noteColorPink => 'Rožinė';
+
+  @override
+  String get noteColorTeal => 'Turkio';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Ruda';
+
+  @override
+  String get noteColorLime => 'Laimo žalia';
+
+  @override
   String get recordVoiceNoteTooltip => 'Įrašyti balso užrašą';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsLt extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Perbrauktas';
+
+  @override
+  String get formatUnderlineTooltip => 'Pabraukta';
 
   @override
   String get formatHeadingTooltip => 'Antraštė';

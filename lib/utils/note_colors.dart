@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /// app's normal surface color", which is why this enum itself has no
 /// "none"/"default" member — that state is the absence of a [NoteColor],
 /// not a member of it.
-enum NoteColor { yellow, red, purple, blue, green, orange, white }
+enum NoteColor { yellow, red, purple, blue, green, orange, white, pink, teal, indigo, brown, lime }
 
 extension NoteColorSwatch on NoteColor {
   /// The Material Design "200"-weight swatches — one step more saturated
@@ -20,6 +20,11 @@ extension NoteColorSwatch on NoteColor {
     NoteColor.green => const Color(0xFFA5D6A7),
     NoteColor.orange => const Color(0xFFFFCC80),
     NoteColor.white => const Color(0xFFFFFFFF),
+    NoteColor.pink => const Color(0xFFF48FB1),
+    NoteColor.teal => const Color(0xFF80CBC4),
+    NoteColor.indigo => const Color(0xFF9FA8DA),
+    NoteColor.brown => const Color(0xFFBCAAA4),
+    NoteColor.lime => const Color(0xFFE6EE9C),
   };
 
   /// The color to render *text* in in front of [background] — see

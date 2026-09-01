@@ -165,6 +165,14 @@ class _MarkdownPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (text.trim().isEmpty) return const SizedBox.shrink();
+    // `MarkdownStyleSheet.styles` has no constructor slot for a `u` tag —
+    // it only takes the fixed set of standard elements — but its getter
+    // hands back the same mutable map the builder reads from, so adding the
+    // underline style this way (rather than forking the package) is enough
+    // for `UnderlineSyntax`'s `u` elements (see underline_syntax.dart) to
+    // pick it up like any of the built-in tags.
+    final styleSheet = MarkdownStyleSheet.fromTheme(Theme.of(context));
+    styleSheet.styles['u'] = const TextStyle(decoration: TextDecoration.underline);
     return MarkdownBody(
       data: text,
       // Plain, normally-aligned text: the theme defaults leave paragraphs
@@ -172,7 +180,8 @@ class _MarkdownPreview extends StatelessWidget {
       // experiment set this to justify (`WrapAlignment.spaceBetween`), but on
       // short lines it stretched the spacing so the text looked centered/
       // spread rather than tidy — reverted.
-      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+      styleSheet: styleSheet,
+      inlineSyntaxes: [UnderlineSyntax()],
       imageBuilder: (uri, title, alt) {
         final attachment = _findAttachment(uri.host);
         if (attachment == null) {

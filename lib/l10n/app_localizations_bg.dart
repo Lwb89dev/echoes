@@ -229,6 +229,21 @@ class AppLocalizationsBg extends AppLocalizations {
   String get noteColorWhite => 'Бяло';
 
   @override
+  String get noteColorPink => 'Розово';
+
+  @override
+  String get noteColorTeal => 'Тюркоазено';
+
+  @override
+  String get noteColorIndigo => 'Индиго';
+
+  @override
+  String get noteColorBrown => 'Кафяво';
+
+  @override
+  String get noteColorLime => 'Лаймово зелено';
+
+  @override
   String get recordVoiceNoteTooltip => 'Запиши гласова бележка';
 
   @override
@@ -259,6 +274,9 @@ class AppLocalizationsBg extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Зачертан';
+
+  @override
+  String get formatUnderlineTooltip => 'Подчертано';
 
   @override
   String get formatHeadingTooltip => 'Заглавие';

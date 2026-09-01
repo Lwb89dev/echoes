@@ -542,6 +542,36 @@ abstract class AppLocalizations {
   /// **'White'**
   String get noteColorWhite;
 
+  /// No description provided for @noteColorPink.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get noteColorPink;
+
+  /// No description provided for @noteColorTeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get noteColorTeal;
+
+  /// No description provided for @noteColorIndigo.
+  ///
+  /// In en, this message translates to:
+  /// **'Indigo'**
+  String get noteColorIndigo;
+
+  /// No description provided for @noteColorBrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Brown'**
+  String get noteColorBrown;
+
+  /// No description provided for @noteColorLime.
+  ///
+  /// In en, this message translates to:
+  /// **'Lime'**
+  String get noteColorLime;
+
   /// No description provided for @recordVoiceNoteTooltip.
   ///
   /// In en, this message translates to:
@@ -601,6 +631,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Strikethrough'**
   String get formatStrikethroughTooltip;
+
+  /// No description provided for @formatUnderlineTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Underline'**
+  String get formatUnderlineTooltip;
 
   /// No description provided for @formatHeadingTooltip.
   ///

@@ -229,6 +229,21 @@ class AppLocalizationsEt extends AppLocalizations {
   String get noteColorWhite => 'Valge';
 
   @override
+  String get noteColorPink => 'Roosa';
+
+  @override
+  String get noteColorTeal => 'Türkiis';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Pruun';
+
+  @override
+  String get noteColorLime => 'Laimiroheline';
+
+  @override
   String get recordVoiceNoteTooltip => 'Salvesta häälmärge';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsEt extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Läbikriipsutatud';
+
+  @override
+  String get formatUnderlineTooltip => 'Allajoonitud';
 
   @override
   String get formatHeadingTooltip => 'Pealkiri';

@@ -230,6 +230,21 @@ class AppLocalizationsHr extends AppLocalizations {
   String get noteColorWhite => 'Bijela';
 
   @override
+  String get noteColorPink => 'Ružičasta';
+
+  @override
+  String get noteColorTeal => 'Tirkizna';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Smeđa';
+
+  @override
+  String get noteColorLime => 'Limeta';
+
+  @override
   String get recordVoiceNoteTooltip => 'Snimi glasovnu bilješku';
 
   @override
@@ -259,6 +274,9 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Precrtano';
+
+  @override
+  String get formatUnderlineTooltip => 'Podcrtano';
 
   @override
   String get formatHeadingTooltip => 'Naslov';

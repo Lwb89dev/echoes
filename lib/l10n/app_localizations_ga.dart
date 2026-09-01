@@ -229,6 +229,21 @@ class AppLocalizationsGa extends AppLocalizations {
   String get noteColorWhite => 'Bán';
 
   @override
+  String get noteColorPink => 'Bándearg';
+
+  @override
+  String get noteColorTeal => 'Gorm-uaine';
+
+  @override
+  String get noteColorIndigo => 'Indeagó';
+
+  @override
+  String get noteColorBrown => 'Donn';
+
+  @override
+  String get noteColorLime => 'Glas líoma';
+
+  @override
   String get recordVoiceNoteTooltip => 'Taifead nóta gutha';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsGa extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Líne tríd';
+
+  @override
+  String get formatUnderlineTooltip => 'Líne faoi';
 
   @override
   String get formatHeadingTooltip => 'Ceannteideal';

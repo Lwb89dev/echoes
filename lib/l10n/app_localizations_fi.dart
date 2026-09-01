@@ -229,6 +229,21 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noteColorWhite => 'Valkoinen';
 
   @override
+  String get noteColorPink => 'Pinkki';
+
+  @override
+  String get noteColorTeal => 'Turkoosi';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Ruskea';
+
+  @override
+  String get noteColorLime => 'Limetinvihreä';
+
+  @override
   String get recordVoiceNoteTooltip => 'Nauhoita äänimuistiinpano';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Yliviivaus';
+
+  @override
+  String get formatUnderlineTooltip => 'Alleviivattu';
 
   @override
   String get formatHeadingTooltip => 'Otsikko';

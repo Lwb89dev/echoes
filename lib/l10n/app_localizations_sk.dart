@@ -229,6 +229,21 @@ class AppLocalizationsSk extends AppLocalizations {
   String get noteColorWhite => 'Biela';
 
   @override
+  String get noteColorPink => 'Ružová';
+
+  @override
+  String get noteColorTeal => 'Tyrkysová';
+
+  @override
+  String get noteColorIndigo => 'Indigová';
+
+  @override
+  String get noteColorBrown => 'Hnedá';
+
+  @override
+  String get noteColorLime => 'Limetková';
+
+  @override
   String get recordVoiceNoteTooltip => 'Nahrať hlasovú poznámku';
 
   @override
@@ -259,6 +274,9 @@ class AppLocalizationsSk extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Prečiarknutie';
+
+  @override
+  String get formatUnderlineTooltip => 'Podčiarknuté';
 
   @override
   String get formatHeadingTooltip => 'Nadpis';

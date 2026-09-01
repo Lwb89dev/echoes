@@ -231,6 +231,21 @@ class AppLocalizationsEl extends AppLocalizations {
   String get noteColorWhite => 'Λευκό';
 
   @override
+  String get noteColorPink => 'Ροζ';
+
+  @override
+  String get noteColorTeal => 'Τιρκουάζ';
+
+  @override
+  String get noteColorIndigo => 'Λουλακί';
+
+  @override
+  String get noteColorBrown => 'Καφέ';
+
+  @override
+  String get noteColorLime => 'Πράσινο λάιμ';
+
+  @override
   String get recordVoiceNoteTooltip => 'Ηχογράφηση φωνητικής σημείωσης';
 
   @override
@@ -261,6 +276,9 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Διαγραφή';
+
+  @override
+  String get formatUnderlineTooltip => 'Υπογράμμιση';
 
   @override
   String get formatHeadingTooltip => 'Επικεφαλίδα';

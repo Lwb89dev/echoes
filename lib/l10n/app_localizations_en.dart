@@ -229,6 +229,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteColorWhite => 'White';
 
   @override
+  String get noteColorPink => 'Pink';
+
+  @override
+  String get noteColorTeal => 'Teal';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Brown';
+
+  @override
+  String get noteColorLime => 'Lime';
+
+  @override
   String get recordVoiceNoteTooltip => 'Record a voice note';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Strikethrough';
+
+  @override
+  String get formatUnderlineTooltip => 'Underline';
 
   @override
   String get formatHeadingTooltip => 'Heading';

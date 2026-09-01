@@ -413,30 +413,29 @@ class NostrService {
     );
     final urls = relays.map((r) => r.url).toList();
     if (urls.isEmpty) return;
-    // Re-initialising is not free and not harmless: `init` reassigns the
-    // relay list and (by default) clears the library's registries, which
-    // takes any open subscription and pending OK callback with it. Calling it
-    // before every publish and every fetch meant routinely pulling the rug
-    // out from under work already in flight. Skip it when the very same relay
-    // set is already up — `retryOnError`/`retryOnClose` below keep those
-    // sockets alive on their own, so there is nothing to re-establish.
-    final urlSet = urls.toSet();
-    if (_connectedRelayUrls != null &&
-        _connectedRelayUrls!.length == urlSet.length &&
-        _connectedRelayUrls!.containsAll(urlSet)) {
-      return;
-    }
+    // Always delegates straight to `init` — do NOT add a "same relay set as
+    // last time, skip" shortcut here again. `dart_nostr`'s own `init`
+    // already does that check, correctly, *per relay*: internally it skips
+    // any relay that is already registered and connected, and only attempts
+    // the ones that are not — see `_startConnectingAndRegisteringRelays`.
+    // A coarser "skip if the URL set matches" guard was tried here once: it
+    // treated a whole relay set as either "seen" or "not", with no way to
+    // tell that one specific relay in that set never actually connected (a
+    // relay's own initial connection failure is swallowed internally and
+    // never rethrown here) — so once a set had been seen, a relay that
+    // failed to connect the first time was *never retried again* for the
+    // rest of the session, confirmed against a local test relay that only
+    // came up after the first attempt. `init` itself does not clear any
+    // registry (that only happens in `freeAllResources`/[disconnectFromRelays]),
+    // so calling it before every publish/fetch is cheap and safe: for an
+    // already-connected relay it is a no-op, and for one that is not, it is
+    // exactly the retry that keeps sync self-healing after a transient
+    // connection failure.
     await _nostr.relays.init(relaysUrl: urls, retryOnError: true, retryOnClose: true);
-    _connectedRelayUrls = urlSet;
   }
-
-  /// The relay set the last successful [connectToRelays] established, so the
-  /// next call can tell "same relays, already connected" from a real change.
-  Set<String>? _connectedRelayUrls;
 
   Future<void> disconnectFromRelays() async {
     developer.log('NostrService.disconnectFromRelays called', name: 'NostrService');
-    _connectedRelayUrls = null;
     await _nostr.relays.freeAllResources();
   }
 

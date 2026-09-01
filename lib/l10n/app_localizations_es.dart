@@ -229,6 +229,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noteColorWhite => 'Blanco';
 
   @override
+  String get noteColorPink => 'Rosa';
+
+  @override
+  String get noteColorTeal => 'Turquesa';
+
+  @override
+  String get noteColorIndigo => 'Índigo';
+
+  @override
+  String get noteColorBrown => 'Marrón';
+
+  @override
+  String get noteColorLime => 'Verde lima';
+
+  @override
   String get recordVoiceNoteTooltip => 'Grabar una nota de voz';
 
   @override
@@ -259,6 +274,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Tachado';
+
+  @override
+  String get formatUnderlineTooltip => 'Subrayado';
 
   @override
   String get formatHeadingTooltip => 'Encabezado';

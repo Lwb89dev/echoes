@@ -227,6 +227,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noteColorWhite => '白色';
 
   @override
+  String get noteColorPink => '粉色';
+
+  @override
+  String get noteColorTeal => '蓝绿色';
+
+  @override
+  String get noteColorIndigo => '靛蓝色';
+
+  @override
+  String get noteColorBrown => '棕色';
+
+  @override
+  String get noteColorLime => '青柠色';
+
+  @override
   String get recordVoiceNoteTooltip => '录制语音笔记';
 
   @override
@@ -255,6 +270,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => '删除线';
+
+  @override
+  String get formatUnderlineTooltip => '下划线';
 
   @override
   String get formatHeadingTooltip => '标题';

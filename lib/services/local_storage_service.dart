@@ -57,8 +57,19 @@ class LocalStorageService {
     final box = _requireNotesBox;
     final notes = <Note>[];
     for (final stored in box.values) {
-      final json = await _decodeStoredNote(stored);
-      notes.add(Note.fromJson(jsonDecode(json) as Map<String, dynamic>));
+      try {
+        final json = await _decodeStoredNote(stored);
+        notes.add(Note.fromJson(jsonDecode(json) as Map<String, dynamic>));
+      } catch (e) {
+        // One entry failing to parse (e.g. an app downgrade rolling back to
+        // a binary that doesn't recognize a field a newer version wrote,
+        // such as a `NoteColor` name it doesn't know) shouldn't take the
+        // whole cache down with it — every other note is still perfectly
+        // readable. Skipping it here is the same "degrade, don't crash"
+        // choice already made for a missing/undecryptable attachment (see
+        // `_ImageAttachmentPreview`), just at the note level.
+        developer.log('Skipping unreadable note: $e', name: 'LocalStorageService');
+      }
     }
     notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     return notes;

@@ -229,6 +229,21 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noteColorWhite => 'Vit';
 
   @override
+  String get noteColorPink => 'Rosa';
+
+  @override
+  String get noteColorTeal => 'Turkos';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Brun';
+
+  @override
+  String get noteColorLime => 'Limegrön';
+
+  @override
   String get recordVoiceNoteTooltip => 'Spela in en röstanteckning';
 
   @override
@@ -258,6 +273,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Genomstruken';
+
+  @override
+  String get formatUnderlineTooltip => 'Understruken';
 
   @override
   String get formatHeadingTooltip => 'Rubrik';

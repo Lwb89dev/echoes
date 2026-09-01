@@ -229,6 +229,21 @@ class AppLocalizationsRo extends AppLocalizations {
   String get noteColorWhite => 'Alb';
 
   @override
+  String get noteColorPink => 'Roz';
+
+  @override
+  String get noteColorTeal => 'Turcoaz';
+
+  @override
+  String get noteColorIndigo => 'Indigo';
+
+  @override
+  String get noteColorBrown => 'Maro';
+
+  @override
+  String get noteColorLime => 'Verde lime';
+
+  @override
   String get recordVoiceNoteTooltip => 'Înregistrează o notiță vocală';
 
   @override
@@ -259,6 +274,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get formatStrikethroughTooltip => 'Tăiat';
+
+  @override
+  String get formatUnderlineTooltip => 'Subliniat';
 
   @override
   String get formatHeadingTooltip => 'Titlu';
