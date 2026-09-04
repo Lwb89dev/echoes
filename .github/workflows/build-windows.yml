@@ -1,0 +1,53 @@
+name: Build Windows
+
+# Flutter's Windows desktop target can only be built on a Windows host —
+# there's no cross-compiling it from the Linux/macOS machines this project
+# is otherwise developed and released from (Android/Linux/APK/.deb builds
+# all happen locally). This runs on GitHub's own windows-latest runner
+# instead, so a Windows build exists at all.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter pub get
+
+      - run: flutter build windows --release
+
+      # A Flutter Windows release is the .exe plus its bundled DLLs and
+      # data/ directory — never distributable as a bare .exe on its own,
+      # same as the .deb packages the Linux bundle rather than shipping a
+      # lone binary.
+      - name: Zip the release bundle
+        run: |
+          $version = "${{ github.ref_name }}"
+          if (-not $version) { $version = "dev" }
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "echoes-windows-$version.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: echoes-windows
+          path: echoes-windows-*.zip
+
+      # Only when this run was triggered by an actual version tag (not a
+      # manual workflow_dispatch with no ref) is there a matching GitHub
+      # Release to attach the zip to.
+      - name: Attach to the matching GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.ref_name }}" echoes-windows-*.zip --clobber
