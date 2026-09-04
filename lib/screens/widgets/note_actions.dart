@@ -12,6 +12,7 @@ import '../../models/note.dart';
 import '../../providers/note_background_provider.dart';
 import '../../providers/note_encryption_provider.dart';
 import '../../providers/notes_provider.dart';
+import '../../utils/app_messenger.dart';
 
 /// Shared note actions used from more than one screen (the note list's
 /// long-press/multi-select menu in `home_screen.dart`, the editor's trash
@@ -21,13 +22,22 @@ import '../../providers/notes_provider.dart';
 
 /// Confirms, then deletes, every note in [notes] (works for both "delete
 /// this one note" — a single-element list, e.g. from the editor's trash
-/// button — and "delete everything selected" from multi-select). Local
-/// deletion always succeeds per note; a relay-retraction failure is
-/// summarized in one SnackBar afterwards rather than one per note (see
-/// [NotesNotifier.deleteNote]).
+/// button — and "delete everything selected" from multi-select).
 ///
-/// Returns true if the user confirmed (regardless of whether every relay
-/// retraction succeeded), false if they cancelled.
+/// Only the local deletion (see [NotesNotifier.deleteNoteLocal]) is waited
+/// on here — fast, disk-only, and what actually makes a note disappear
+/// from the list. The relay retraction (NIP-09, one per previously-synced
+/// note) is the slow, network-bound half, and runs entirely in the
+/// background afterward (see [_retractFromRelaysInBackground]): a slow or
+/// unreachable relay used to leave the whole screen sitting behind a
+/// non-dismissible "deleting…" dialog for as long as that relay took to
+/// answer (up to the publish timeout, per note, one after another for a
+/// multi-select delete) — the notes were already gone locally the entire
+/// time. Any retraction failures are still reported, just afterwards, via
+/// [showAppSnackBar] rather than a same-screen SnackBar, since the screen
+/// that asked for the deletion may well be gone by the time relays answer.
+///
+/// Returns true if the user confirmed, false if they cancelled.
 Future<bool> deleteNotes(
   BuildContext context,
   WidgetRef ref,
@@ -58,11 +68,6 @@ Future<bool> deleteNotes(
   if (confirmed != true) return false;
   if (!context.mounted) return false;
 
-  // Deleting talks to the relays (a NIP-09 retraction per synced note), so
-  // for anything more than a note or two this can take a visible moment —
-  // shown fire-and-forget (not awaited) so it runs alongside the loop below
-  // rather than blocking it, and dismissed programmatically once that loop
-  // finishes.
   final progress = ValueNotifier<int>(0);
   final total = notes.length;
   unawaited(
@@ -73,17 +78,10 @@ Future<bool> deleteNotes(
     ),
   );
 
-  var relayFailures = 0;
-  Object? lastError;
   final notesNotifier = ref.read(notesProvider.notifier);
   final backgrounds = ref.read(noteBackgroundProvider.notifier);
   for (final note in notes) {
-    try {
-      await notesNotifier.deleteNote(note);
-    } catch (e) {
-      relayFailures++;
-      lastError = e;
-    }
+    await notesNotifier.deleteNoteLocal(note);
     // A custom background is a photo from the user's library sitting in app
     // storage; deleting the note it belonged to has to take it with it, the
     // same way a deleted note's attachments are cleaned up. Done here, at the
@@ -95,13 +93,42 @@ Future<bool> deleteNotes(
   if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
   progress.dispose();
 
-  if (context.mounted && relayFailures > 0) {
-    final message = notes.length == 1
-        ? l.deleteNoteRelayError(lastError.toString())
-        : l.deleteNotesRelayError(relayFailures);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-  }
+  // `notesNotifier` — not `ref` itself — is what the background task below
+  // gets: it very plausibly outlives the screen that called `deleteNotes`
+  // (that's the whole point of not blocking on it), and a `WidgetRef` throws
+  // once the widget it came from is disposed. The notifier is a plain
+  // long-lived object owned by the provider container, not the widget tree,
+  // so it stays perfectly usable after that.
+  unawaited(_retractFromRelaysInBackground(notesNotifier, l, notes));
   return true;
+}
+
+/// The network half of [deleteNotes], run in the background: retracts
+/// every already-locally-deleted note that had ever been synced, and
+/// reports any failures once all of them have settled — never one message
+/// per note, which for a multi-select delete would just be a burst of
+/// SnackBars stepping on each other.
+Future<void> _retractFromRelaysInBackground(
+  NotesNotifier notesNotifier,
+  AppLocalizations l,
+  List<Note> notes,
+) async {
+  var relayFailures = 0;
+  Object? lastError;
+  for (final note in notes) {
+    try {
+      await notesNotifier.retractNoteFromRelays(note);
+    } catch (e) {
+      relayFailures++;
+      lastError = e;
+    }
+  }
+  if (relayFailures == 0) return;
+  showAppSnackBar(
+    notes.length == 1
+        ? l.deleteNoteRelayError(lastError.toString())
+        : l.deleteNotesRelayError(relayFailures),
+  );
 }
 
 /// Publishes every note in [notes] to Nostr (best-effort per note — see

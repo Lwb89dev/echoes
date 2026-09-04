@@ -6,6 +6,7 @@ import '../providers/onboarding_provider.dart';
 import '../providers/relay_provider.dart';
 import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
+import '../theme/echoes_theme.dart';
 import '../widgets/brand_mark.dart';
 import 'widgets/nostr_login_form.dart';
 import 'widgets/relay_widgets.dart';
@@ -178,7 +179,7 @@ class _IntroPage extends StatelessWidget {
           children: [
             const BrandMark(size: 112),
             const SizedBox(height: 20),
-            Text(l.onboardingWelcomeTitle, style: Theme.of(context).textTheme.headlineSmall),
+            Text(l.onboardingWelcomeTitle, style: Theme.of(context).textTheme.displaySmall),
             const SizedBox(height: 24),
             _FeatureRow(
               icon: Icons.smartphone,
@@ -224,23 +225,26 @@ class _FeatureRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                Text(body, style: Theme.of(context).textTheme.bodyMedium),
-              ],
+      padding: const EdgeInsets.only(bottom: EchoesTokens.md),
+      child: EchoesSurface(
+        padding: const EdgeInsets.all(EchoesTokens.lg),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: EchoesTokens.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 4),
+                  Text(body, style: Theme.of(context).textTheme.bodyMedium),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -24,6 +24,7 @@ import '../utils/note_colors.dart';
 import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
 import '../utils/underline_syntax.dart';
+import '../theme/echoes_theme.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/share_note_sheet.dart';
 import 'widgets/voice_recorder.dart';
@@ -82,6 +83,11 @@ class NoteEditorScreen extends ConsumerStatefulWidget {
 class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   late final TextEditingController _titleController;
   late final TextEditingController _bodyController;
+  // Only so [_onBodySelectionChanged] can tell "the body field has focus"
+  // from "the body field last held a selection before focus moved
+  // elsewhere" — a `TextEditingController`'s `selection` says nothing about
+  // whether its field is actually focused right now.
+  late final FocusNode _bodyFocusNode;
   late bool _isChecklist;
 
   // Stable for the lifetime of this screen, generated once instead of at
@@ -157,12 +163,17 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
   bool _showRecorder = false;
 
-  /// Whether the body's formatting toolbar is showing — driven by
-  /// [_bodyController]'s selection (see the listener added in [initState]),
-  /// not a manually-toggled flag: it appears the moment there's an actual
-  /// text selection (e.g. from a long-press) and disappears the moment
-  /// there isn't, freeing that same slot for [_VoiceRecorderTrigger]/
-  /// [VoiceRecorder] the rest of the time (see [_buildEditBody]).
+  /// Whether the body's own formatting toolbar is showing — driven by focus
+  /// and selection (see [_onBodySelectionChanged]), not a manually-toggled
+  /// flag. Deliberately shown only while the field is focused with *no*
+  /// active range selection: the moment there is one, Android's own
+  /// selection popup takes over that same job (see
+  /// [_bodyContextMenuBuilder], which adds the same formatting actions to
+  /// it) — showing both at once is what used to make the two toolbars fight
+  /// over the same strip of screen, and the system's own toolbar is the one
+  /// that actually tracks a selection correctly regardless of how long it
+  /// is. The rest of the time this slot is [_VoiceRecorderTrigger]/
+  /// [VoiceRecorder] instead (see [_buildEditBody]).
   bool _showFormattingToolbar = false;
 
   /// Checklist-only, transient: the row being typed in, plus every
@@ -220,6 +231,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _bodyController = TextEditingController(text: note?.body ?? '')
       ..addListener(_markDirty)
       ..addListener(_onBodySelectionChanged);
+    _bodyFocusNode = FocusNode()..addListener(_onBodySelectionChanged);
     _isChecklist = note?.isChecklist ?? (_isNewNote && widget.startAsChecklist);
     _attachments.addAll(note?.attachments ?? const <Attachment>[]);
     _showRecorder = _isNewNote && widget.startRecording && PlatformSupport.supportsVoiceNotes;
@@ -318,16 +330,20 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     if (!_editing) setState(() => _editing = true);
   }
 
-  /// Shows/hides the formatting toolbar based on whether the body field
-  /// currently has an actual (non-collapsed) text selection — called on
-  /// every change to [_bodyController], not just text edits, since
-  /// changing the *selection* alone (e.g. a long-press, or dragging a
-  /// handle) still notifies a `TextEditingController`'s listeners.
+  /// Shows/hides the formatting toolbar based on focus and selection —
+  /// called on every change to [_bodyController] (not just text edits,
+  /// since changing the *selection* alone, e.g. a long-press or dragging a
+  /// handle, still notifies a `TextEditingController`'s listeners) and on
+  /// every focus change of [_bodyFocusNode]. Shown only while focused with
+  /// the selection collapsed (just a cursor, nothing selected) — see
+  /// [_showFormattingToolbar] for why an active range selection hides it
+  /// instead of showing it.
   void _onBodySelectionChanged() {
-    final hasSelection =
+    final hasRangeSelection =
         _bodyController.selection.isValid && !_bodyController.selection.isCollapsed;
-    if (hasSelection != _showFormattingToolbar) {
-      setState(() => _showFormattingToolbar = hasSelection);
+    final showToolbar = _bodyFocusNode.hasFocus && !hasRangeSelection;
+    if (showToolbar != _showFormattingToolbar) {
+      setState(() => _showFormattingToolbar = showToolbar);
     }
   }
 
@@ -374,6 +390,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     }
     _titleController.dispose();
     _bodyController.dispose();
+    _bodyFocusNode.dispose();
     for (final controller in _checklistControllers) {
       controller.dispose();
     }
@@ -744,6 +761,49 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         selection: TextSelection(baseOffset: urlOffset, extentOffset: urlOffset + 3),
       );
     });
+  }
+
+  /// The body field's selection popup: Android/iOS's own copy/cut/paste
+  /// menu, with Echoes' formatting actions appended to it.
+  ///
+  /// Selecting a longer phrase used to leave the system's own selection
+  /// popup sitting right on top of [_FormattingToolbar] — that toolbar is
+  /// pinned under the title, and the system's popup grows to follow
+  /// wherever the selection actually is, so a selection reaching that high
+  /// up the screen (which a short, single-word one rarely does, but a
+  /// longer one routinely does) put both toolbars in the same place,
+  /// fighting over which one the next tap actually landed on. Building the
+  /// formatting actions *into* this menu instead means there is only ever
+  /// one toolbar on screen for a selection, and it is the one Flutter/the
+  /// OS already knows how to anchor correctly next to a selection of any
+  /// length.
+  Widget _bodyContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
+    final l = AppLocalizations.of(context);
+
+    ContextMenuButtonItem formattingButton(String label, VoidCallback action) {
+      return ContextMenuButtonItem(
+        label: label,
+        onPressed: () {
+          action();
+          editableTextState.hideToolbar();
+        },
+      );
+    }
+
+    final buttonItems = [
+      ...editableTextState.contextMenuButtonItems,
+      formattingButton(l.formatBoldTooltip, () => _wrapBodySelection('**')),
+      formattingButton(l.formatItalicTooltip, () => _wrapBodySelection('*')),
+      formattingButton(l.formatStrikethroughTooltip, () => _wrapBodySelection('~~')),
+      formattingButton(l.formatUnderlineTooltip, () => _wrapBodySelection('++')),
+      formattingButton(l.formatHeadingTooltip, () => _prefixBodyLines('# ')),
+      formattingButton(l.formatListTooltip, () => _prefixBodyLines('- ')),
+      formattingButton(l.formatLinkTooltip, _insertLink),
+    ];
+    return AdaptiveTextSelectionToolbar.buttonItems(
+      anchors: editableTextState.contextMenuAnchors,
+      buttonItems: buttonItems,
+    );
   }
 
   /// Bottom sheet offering the predefined widths an inline image can be
@@ -1551,7 +1611,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// itself lives in the app bar now (see [_buildAppBarTitle]), not here.
   Widget _buildEditBody(AppLocalizations l) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(
+        EchoesTokens.xl,
+        EchoesTokens.md,
+        EchoesTokens.xl,
+        EchoesTokens.xxl,
+      ),
       child: MaxWidthCenter(
         maxWidth: 760,
         child: Column(
@@ -1586,9 +1651,19 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               const SizedBox(height: 12),
               TextField(
                 controller: _bodyController,
-                decoration: InputDecoration(labelText: l.bodyFieldHint, border: InputBorder.none),
+                focusNode: _bodyFocusNode,
+                contextMenuBuilder: _bodyContextMenuBuilder,
+                cursorColor: Theme.of(context).colorScheme.primary,
+                decoration: InputDecoration(
+                  hintText: l.bodyFieldHint,
+                  hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  border: InputBorder.none,
+                  filled: false,
+                  contentPadding: EdgeInsets.zero,
+                ),
                 maxLines: null,
                 minLines: 10,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
               ),
             ],
             const SizedBox(height: 12),
@@ -1670,7 +1745,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         behavior: HitTestBehavior.translucent,
         onTap: _enterEditMode,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            EchoesTokens.xl,
+            EchoesTokens.md,
+            EchoesTokens.xl,
+            EchoesTokens.xxl,
+          ),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             // Top-align: the box is full-height so a tap anywhere enters edit

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 import '../widgets/brand_mark.dart';
+import '../theme/echoes_theme.dart';
 import 'home_screen.dart';
 import 'widgets/nostr_login_form.dart';
 
@@ -36,7 +37,7 @@ class LoginScreen extends StatelessWidget {
               children: [
                 const BrandMark(size: 128),
                 const SizedBox(height: 20),
-                Text(AppConstants.appName, style: Theme.of(context).textTheme.headlineMedium),
+                Text(AppConstants.appName, style: Theme.of(context).textTheme.displaySmall),
                 const SizedBox(height: 8),
                 Text(
                   l.loginSubtitle,
@@ -44,12 +45,15 @@ class LoginScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                NostrLoginForm(
-                  onLoggedIn: () {
-                    Navigator.of(
-                      context,
-                    ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
-                  },
+                EchoesSurface(
+                  padding: const EdgeInsets.all(EchoesTokens.lg),
+                  child: NostrLoginForm(
+                    onLoggedIn: () {
+                      Navigator.of(
+                        context,
+                      ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+                    },
+                  ),
                 ),
               ],
             ),

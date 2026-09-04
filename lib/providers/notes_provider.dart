@@ -67,18 +67,13 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     }
   }
 
-  /// Deletes [note] from local storage, and — if it had ever been synced —
-  /// best-effort retracts it from the relays too (NIP-09 deletion event,
-  /// see [NostrService.deleteNoteEvent]).
-  ///
-  /// The local delete always happens regardless of whether the retraction
-  /// does: relay state is a separate, best-effort concern from local
-  /// storage, same as everywhere else sync happens in this app. A
-  /// retraction failure is rethrown afterwards (after the note is already
-  /// gone locally) so `HomeScreen` can warn that it may still be visible on
-  /// the relay, instead of silently leaving a "deleted" note there forever.
-  Future<void> deleteNote(Note note) async {
-    developer.log('NotesNotifier.deleteNote called: ${note.id}', name: 'NotesNotifier');
+  /// Deletes [note] from local storage — fast, no network involved — and
+  /// updates the in-memory list right away. Split out from the relay side
+  /// of deletion (see [retractNoteFromRelays]) so a caller deleting several
+  /// notes, or one facing a slow/unreachable relay, isn't stuck waiting on
+  /// the network just to make a note disappear locally.
+  Future<void> deleteNoteLocal(Note note) async {
+    developer.log('NotesNotifier.deleteNoteLocal called: ${note.id}', name: 'NotesNotifier');
     final current = state.value ?? const <Note>[];
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
@@ -90,19 +85,26 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     // traces (a pending recording's only copy, a decrypted-cache image) —
     // "deleted" can't mean "the text is gone but the photo is still on
     // disk for anyone with filesystem access". Best-effort, like the
-    // relay retraction below: the note is already gone either way.
+    // relay retraction: the note is already gone either way.
     final uploadService = ref.read(attachmentUploadServiceProvider);
     for (final attachment in note.attachments) {
       await uploadService.discardLocalData(attachment);
     }
+  }
 
+  /// Best-effort NIP-09 retraction of an already-locally-deleted [note]
+  /// from the relays (see [NostrService.deleteNoteEvent]). No-op if [note]
+  /// was never synced, or there's no logged-in account to sign with.
+  ///
+  /// Deliberately separate from [deleteNoteLocal]: this is the slow,
+  /// network-bound half of deletion, meant to be run in the background
+  /// (see `deleteNotes` in `note_actions.dart`) rather than blocking the UI
+  /// on a relay that may be slow or unreachable.
+  Future<void> retractNoteFromRelays(Note note) async {
     final author = ref.read(authProvider).value;
-    if (note.nostrEventId != null && author != null) {
-      final relays = ref.read(relayProvider).value ?? const [];
-      await ref
-          .read(nostrServiceProvider)
-          .deleteNoteEvent(note: note, author: author, relays: relays);
-    }
+    if (note.nostrEventId == null || author == null) return;
+    final relays = ref.read(relayProvider).value ?? const [];
+    await ref.read(nostrServiceProvider).deleteNoteEvent(note: note, author: author, relays: relays);
   }
 
   /// Explicitly publishes a single [note] to Nostr right now — the cloud

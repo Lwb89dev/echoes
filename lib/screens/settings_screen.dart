@@ -22,6 +22,7 @@ import '../services/local_storage_service.dart';
 import '../utils/constants.dart';
 import '../utils/formatter.dart';
 import '../utils/responsive.dart';
+import '../theme/echoes_theme.dart';
 import 'login_screen.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/relay_widgets.dart';
@@ -41,34 +42,37 @@ class SettingsScreen extends ConsumerWidget {
       body: MaxWidthCenter(
         maxWidth: 760,
         child: ListView(
+          padding: const EdgeInsets.only(bottom: EchoesTokens.xxl),
           children: [
             _SectionHeader(l.sectionAccount),
-            const _AccountSection(),
+            const EchoesSurface(child: _AccountSection()),
             _SectionHeader(l.relaysTitle),
-            const _RelaySection(),
+            const EchoesSurface(child: _RelaySection()),
             _SectionHeader(l.sectionSecurity),
-            encryptionState.when(
-              data: (state) => _EncryptionSection(state: state),
-              loading: () => ListTile(
-                leading: const CircularProgressIndicator(strokeWidth: 2),
-                title: Text(l.loadingLabel),
-              ),
-              error: (error, stackTrace) => ListTile(
-                leading: const Icon(Icons.error_outline),
-                title: Text(l.encryptionLoadError),
-                subtitle: Text('$error'),
+            EchoesSurface(
+              child: encryptionState.when(
+                data: (state) => _EncryptionSection(state: state),
+                loading: () => ListTile(
+                  leading: const CircularProgressIndicator(strokeWidth: 2),
+                  title: Text(l.loadingLabel),
+                ),
+                error: (error, stackTrace) => ListTile(
+                  leading: const Icon(Icons.error_outline),
+                  title: Text(l.encryptionLoadError),
+                  subtitle: Text('$error'),
+                ),
               ),
             ),
             _SectionHeader(l.sectionAppearance),
-            const _AppearanceSection(),
+            const EchoesSurface(child: _AppearanceSection()),
             _SectionHeader(l.sectionLanguage),
-            const _LanguageSection(),
+            const EchoesSurface(child: _LanguageSection()),
             _SectionHeader(l.sectionData),
-            const _DataSection(),
+            const EchoesSurface(child: _DataSection()),
             _SectionHeader(l.sectionAttachments),
-            const _AttachmentsSection(),
+            const EchoesSurface(child: _AttachmentsSection()),
             _SectionHeader(l.sectionSupport),
-            const _DonationTile(),
+            const EchoesSurface(child: _DonationTile()),
           ],
         ),
       ),
@@ -352,15 +356,7 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Text(
-        title,
-        style: Theme.of(
-          context,
-        ).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.primary),
-      ),
-    );
+    return EchoesSectionLabel(title);
   }
 }
 
