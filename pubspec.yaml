@@ -2,7 +2,17 @@ name: echoes
 description: "Echoes - offline-first note-taking app on the Nostr protocol."
 publish_to: 'none'
 
-version: 1.0.0+16
+# The build number (+N) jumps to 2014 here on purpose, not a typo: v0.3.0
+# and (briefly, since fixed) v0.4.9 were built with `flutter build apk
+# --split-per-abi`, which silently inflates versionCode with Flutter's own
+# per-ABI offset (arm64 +2000) on top of the real number — v0.4.9 shipped as
+# versionCode 2013 before that was caught. Android refuses to install a
+# lower versionCode over a higher one already on a device, so every release
+# below 2014 is invisible as an update to anyone who ever got one of those
+# builds. Every release from here on must keep incrementing from 2014, never
+# reset lower — see the "versionCode poisoning" project memory for the full
+# incident writeups.
+version: 1.0.1+2014
 
 environment:
   sdk: ^3.12.2
