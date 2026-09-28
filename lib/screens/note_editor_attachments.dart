@@ -135,6 +135,8 @@ class _MarkdownPreview extends StatelessWidget {
   const _MarkdownPreview({
     required this.text,
     required this.attachments,
+    required this.linkIndex,
+    required this.onOpenEcho,
     required this.onTapImage,
     required this.onRemoveVoice,
     required this.onSetVoiceTimestamp,
@@ -142,6 +144,8 @@ class _MarkdownPreview extends StatelessWidget {
 
   final String text;
   final List<Attachment> attachments;
+  final NoteLinkIndex linkIndex;
+  final void Function(String href) onOpenEcho;
 
   /// Called with the tapped image's attachment and its current size
   /// keyword (null if the token had none/an unrecognized one).
@@ -174,7 +178,12 @@ class _MarkdownPreview extends StatelessWidget {
     final styleSheet = MarkdownStyleSheet.fromTheme(Theme.of(context));
     styleSheet.styles['u'] = const TextStyle(decoration: TextDecoration.underline);
     return MarkdownBody(
-      data: text,
+      data: wikilinksToMarkdown(text, linkIndex),
+      onTapLink: (_, href, _) {
+        if (href == null) return;
+        final echo = href.startsWith('echoes:') || href.startsWith('echoes-title:');
+        if (echo) onOpenEcho(href);
+      },
       // Plain, normally-aligned text: the theme defaults leave paragraphs
       // left-aligned (start), which is how prose should read. An earlier
       // experiment set this to justify (`WrapAlignment.spaceBetween`), but on

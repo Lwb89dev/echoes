@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../theme/echoes_theme.dart';
+
 /// Wraps a note card so a **selected** note can be dragged onto another card
 /// to take its place.
 ///
@@ -156,8 +158,8 @@ class _ReorderableNoteState extends State<ReorderableNote> {
         // it's obvious *where* the card is about to land rather than only
         // that something is being dragged.
         return AnimatedScale(
-          scale: _hovered ? 0.96 : 1,
-          duration: const Duration(milliseconds: 150),
+          scale: _hovered ? 0.97 : 1,
+          duration: EchoesTokens.shortMotion,
           curve: Curves.easeOut,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
@@ -218,13 +220,14 @@ class _LiftedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      elevation: 8,
-      borderRadius: BorderRadius.circular(16),
-      shadowColor: Colors.black54,
+    final palette = EchoesPalette.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(EchoesTokens.radiusMd),
+        boxShadow: EchoesTokens.liftedShadow(palette.shadowSoft),
+      ),
       child: Transform.scale(
-        scale: 1.04,
+        scale: 1.03,
         child: SizedBox(width: width, child: child),
       ),
     );

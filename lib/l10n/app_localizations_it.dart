@@ -54,7 +54,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noSearchResultsMessage => 'Nessun risultato.';
 
   @override
-  String get emptyNotesMessage => 'Nessuna nota. Tocca + per crearne una.';
+  String get emptyNotesMessage => 'Non è ancora riecheggiato nulla.';
 
   @override
   String get notesTabLabel => 'Note';
@@ -63,7 +63,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get diaryTabLabel => 'Diario';
 
   @override
-  String get emptyDiaryMessage => 'Nessuna voce di diario. Tocca + per scriverne una.';
+  String get emptyDiaryMessage => 'Questo diario è ancora una pagina bianca.';
 
   @override
   String get diaryToday => 'Oggi';
@@ -738,4 +738,96 @@ class AppLocalizationsIt extends AppLocalizations {
   String abandonSharedNoteError(String error) {
     return 'Impossibile abbandonare: $error';
   }
+
+  @override
+  String get newPhotoOption => 'Foto';
+
+  @override
+  String get newNoteSemantics =>
+      'Nuova nota. Tieni premuto per scriverla subito, oppure tocca per nota, checklist, foto e voce.';
+
+  @override
+  String get pinNote => 'Fissa';
+
+  @override
+  String get unpinNote => 'Togli';
+
+  @override
+  String get archiveNote => 'Archivia';
+
+  @override
+  String get unarchiveNote => 'Rimetti sulla scrivania';
+
+  @override
+  String get archiveTitle => 'Archivio';
+
+  @override
+  String get emptyArchiveMessage => 'L\'archivio è vuoto.';
+
+  @override
+  String get pinnedLabel => 'Fissata';
+
+  @override
+  String notesOnDesk(int count) {
+    return '$count sulla scrivania';
+  }
+
+  @override
+  String get syncLocalLabel => 'Solo qui';
+
+  @override
+  String get syncEchoedLabel => 'Echeggiata';
+
+  @override
+  String get syncPendingLabel => 'Non ancora echeggiata';
+
+  @override
+  String get noteColorPaper => 'Carta';
+
+  @override
+  String get noteColorSand => 'Sabbia';
+
+  @override
+  String get noteColorSage => 'Salvia';
+
+  @override
+  String get noteColorTerracotta => 'Terracotta';
+
+  @override
+  String get noteColorLavender => 'Lavanda';
+
+  @override
+  String get noteColorOcean => 'Oceano';
+
+  @override
+  String get noteColorCharcoal => 'Carbone';
+
+  @override
+  String get echoesSectionTitle => 'Echoes';
+
+  @override
+  String echoesFromNotes(int count) {
+    return 'Echoes da $count note';
+  }
+
+  @override
+  String get echoesFromOneNote => 'Echoe da 1 nota';
+
+  @override
+  String get echoesLinked => 'Collegate';
+
+  @override
+  String get linkANote => 'Collega una nota';
+
+  @override
+  String get pickNoteToLink => 'Scegli una nota';
+
+  @override
+  String get noNotesToLink => 'Non c\'è ancora un\'altra nota da collegare.';
+
+  @override
+  String get noteLinkMissing => 'Nessuna nota con questo nome.';
+
+  @override
+  String get moreActionsTooltip => 'Altro';
 }

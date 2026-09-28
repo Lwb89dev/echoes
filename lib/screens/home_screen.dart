@@ -6,6 +6,7 @@ import '../l10n/app_localizations.dart';
 import '../models/note.dart';
 import '../providers/fab_menu_provider.dart';
 import '../providers/home_tab_provider.dart';
+import '../providers/note_desk_provider.dart';
 import '../providers/note_encryption_provider.dart';
 import '../providers/note_layout_provider.dart';
 import '../providers/note_order_provider.dart';
@@ -13,12 +14,12 @@ import '../providers/note_search_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/selection_provider.dart';
 import '../utils/constants.dart';
-import '../utils/formatter.dart';
-import '../utils/note_colors.dart';
-import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
 import '../theme/echoes_theme.dart';
 import '../widgets/brand_mark.dart';
+import '../widgets/diary_timeline.dart';
+import '../widgets/note_card.dart';
+import '../widgets/quick_capture_fab.dart';
 import 'note_editor_screen.dart';
 import 'settings_screen.dart';
 import 'widgets/note_actions.dart';
@@ -84,25 +85,28 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: (notesUnlocked && selection.isEmpty)
-          ? (tab == HomeTab.notes ? const _NewNoteFab() : const _NewDiaryEntryFab())
+          ? (tab == HomeTab.notes ? const QuickCaptureFab() : const DiaryCaptureFab())
           : null,
       bottomNavigationBar: (notesUnlocked && selection.isEmpty)
-          ? NavigationBar(
-              selectedIndex: tab.index,
-              onDestinationSelected: (index) =>
-                  ref.read(homeTabProvider.notifier).select(HomeTab.values[index]),
-              destinations: [
-                NavigationDestination(
-                  icon: const Icon(Icons.notes_outlined),
-                  selectedIcon: const Icon(Icons.notes),
-                  label: l.notesTabLabel,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.auto_stories_outlined),
-                  selectedIcon: const Icon(Icons.auto_stories),
-                  label: l.diaryTabLabel,
-                ),
-              ],
+          ? GlassPane(
+              radius: 0,
+              child: NavigationBar(
+                selectedIndex: tab.index,
+                onDestinationSelected: (index) =>
+                    ref.read(homeTabProvider.notifier).select(HomeTab.values[index]),
+                destinations: [
+                  NavigationDestination(
+                    icon: const Icon(Icons.notes_outlined),
+                    selectedIcon: const Icon(Icons.notes),
+                    label: l.notesTabLabel,
+                  ),
+                  NavigationDestination(
+                    icon: const Icon(Icons.auto_stories_outlined),
+                    selectedIcon: const Icon(Icons.auto_stories),
+                    label: l.diaryTabLabel,
+                  ),
+                ],
+              ),
             )
           : null,
     );
@@ -144,9 +148,12 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final layout = ref.watch(noteLayoutProvider);
-    final scheme = Theme.of(context).colorScheme;
+    final desk = ref.watch(noteDeskProvider);
+    final palette = EchoesPalette.of(context);
+    final allNotes = ref.watch(notesProvider).value;
+    final subtitle = _homeSubtitle(l, widget.tab, desk, allNotes);
     return Material(
-      color: scheme.surface,
+      type: MaterialType.transparency,
       child: AppBar(
         toolbarHeight: 72,
         titleSpacing: EchoesTokens.lg,
@@ -160,17 +167,21 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
-            Text(
-              widget.tab == HomeTab.notes ? l.notesTabLabel : l.diaryTabLabel,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant),
-            ),
+            if (subtitle != null)
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: palette.textMuted),
+              ),
           ],
         ),
         actions: [
+          IconButton(
+            icon: Icon(desk.viewingArchive ? Icons.inventory_2 : Icons.inventory_2_outlined),
+            tooltip: l.archiveTitle,
+            onPressed: () => ref.read(noteDeskProvider.notifier).toggleViewingArchive(),
+          ),
           if (widget.tab == HomeTab.notes)
             IconButton(
               icon: Icon(
@@ -199,23 +210,29 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
               EchoesTokens.lg,
               EchoesTokens.md,
             ),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: l.searchNotesHint,
-                prefixIcon: const Icon(Icons.search_rounded),
-                suffixIcon: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: _searchController,
-                  builder: (context, value, child) => value.text.isEmpty
-                      ? const SizedBox.shrink()
-                      : IconButton(
-                          icon: const Icon(Icons.close_rounded),
-                          tooltip: l.closeSearchTooltip,
-                          onPressed: () {
-                            _searchController.clear();
-                            ref.read(noteSearchProvider.notifier).clear();
-                          },
-                        ),
+            child: GlassPane(
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: l.searchNotesHint,
+                  prefixIcon: Icon(Icons.search_rounded, color: palette.textSecondary),
+                  filled: false,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: _searchBorder(palette.accentPrimary, width: 1.5),
+                  suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _searchController,
+                    builder: (context, value, child) => value.text.isEmpty
+                        ? const SizedBox.shrink()
+                        : IconButton(
+                            icon: const Icon(Icons.close_rounded),
+                            tooltip: l.closeSearchTooltip,
+                            onPressed: () {
+                              _searchController.clear();
+                              ref.read(noteSearchProvider.notifier).clear();
+                            },
+                          ),
+                  ),
                 ),
               ),
             ),
@@ -226,8 +243,35 @@ class _HomeAppBarState extends ConsumerState<_HomeAppBar> {
   }
 }
 
+OutlineInputBorder _searchBorder(Color color, {double width = 1}) {
+  return OutlineInputBorder(
+    borderRadius: BorderRadius.circular(EchoesTokens.radiusPill),
+    borderSide: BorderSide(color: color, width: width),
+  );
+}
+
+String? _homeSubtitle(AppLocalizations l, HomeTab tab, NoteDesk desk, List<Note>? notes) {
+  if (desk.viewingArchive) return l.archiveTitle;
+  if (tab == HomeTab.diary) return l.diaryTabLabel;
+  if (notes == null) return null;
+  final count = notes.where((note) {
+    return !note.isDiaryEntry && !desk.archived.contains(note.id);
+  }).length;
+  return l.notesOnDesk(count);
+}
+
 bool _notesOnly(Note note) => !note.isDiaryEntry;
 bool _diaryOnly(Note note) => note.isDiaryEntry;
+
+void _toggleArchive(WidgetRef ref, String id) {
+  final desk = ref.read(noteDeskProvider);
+  final notifier = ref.read(noteDeskProvider.notifier);
+  if (desk.archived.contains(id)) {
+    notifier.unarchive(id);
+  } else {
+    notifier.archive(id);
+  }
+}
 
 /// Shared by both tabs: watches [notesProvider], applies [filter], and
 /// wraps the result ([builder]) in the same pull-to-refresh behavior — only
@@ -243,6 +287,7 @@ class _RefreshableNotesBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notesState = ref.watch(notesProvider);
     final query = ref.watch(noteSearchProvider).trim().toLowerCase();
+    final desk = ref.watch(noteDeskProvider);
     final l = AppLocalizations.of(context);
     return RefreshIndicator(
       onRefresh: () async {
@@ -262,7 +307,10 @@ class _RefreshableNotesBody extends ConsumerWidget {
           final matched = query.isEmpty
               ? tabFiltered
               : tabFiltered.where((n) => _matchesQuery(n, query));
-          return builder(notes: matched.toList());
+          final visible = matched.where(
+            (note) => noteVisibleOnDesk(note, desk, searching: query.isNotEmpty),
+          );
+          return builder(notes: visible.toList());
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => _ErrorState(error: error),
@@ -328,6 +376,32 @@ class _SelectionAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ref.read(selectionProvider.notifier).clear();
           },
         ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_horiz),
+          tooltip: l.moreActionsTooltip,
+          onSelected: (value) {
+            final ids = selectedNotes.map((note) => note.id);
+            final notifier = ref.read(noteDeskProvider.notifier);
+            if (value == 'pin') notifier.pinAll(ids);
+            if (value == 'archive') {
+              final restore = ref.read(noteDeskProvider).viewingArchive;
+              notifier.setArchived(ids, !restore);
+            }
+            ref.read(selectionProvider.notifier).clear();
+          },
+          itemBuilder: (context) {
+            final desk = ref.read(noteDeskProvider);
+            final ids = selectedNotes.map((note) => note.id).toList();
+            final allPinned = ids.isNotEmpty && ids.every(desk.pinned.contains);
+            return [
+              PopupMenuItem(value: 'pin', child: Text(allPinned ? l.unpinNote : l.pinNote)),
+              PopupMenuItem(
+                value: 'archive',
+                child: Text(desk.viewingArchive ? l.unarchiveNote : l.archiveNote),
+              ),
+            ];
+          },
+        ),
         IconButton(
           icon: const Icon(Icons.delete_outline),
           tooltip: l.deleteSelectedTooltip,
@@ -359,14 +433,16 @@ class _NotesList extends ConsumerWidget {
       // one" would be misleading here, the notes it's talking about exist,
       // they just don't match.
       final searching = ref.watch(noteSearchProvider).trim().isNotEmpty;
+      final viewingArchive = ref.watch(noteDeskProvider).viewingArchive;
+      final message = searching
+          ? l.noSearchResultsMessage
+          : (viewingArchive ? l.emptyArchiveMessage : l.emptyNotesMessage);
       return LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: _EmptyNotesState(
-              message: searching ? l.noSearchResultsMessage : l.emptyNotesMessage,
-            ),
+            child: _EmptyNotesState(message: message),
           ),
         ),
       );
@@ -374,20 +450,23 @@ class _NotesList extends ConsumerWidget {
 
     // The user's hand-arranged order, applied here rather than in
     // [_RefreshableNotesBody] so the diary tab keeps its own by-date grouping.
+    // Pinned sheets sit above that order, still on this device only.
+    final desk = ref.watch(noteDeskProvider);
     final ordered = applyNoteOrder(notes, ref.watch(noteOrderProvider));
+    final arranged = desk.viewingArchive ? ordered : pinFirst(ordered, desk.pinned);
     // Reordering a *filtered* list would persist an arrangement covering
     // notes that aren't on screen, so it's off while searching.
-    final canReorder = ref.watch(noteSearchProvider).trim().isEmpty;
+    final canReorder = ref.watch(noteSearchProvider).trim().isEmpty && !desk.viewingArchive;
 
     void move(int from, int to) {
-      final next = [...ordered];
+      final next = [...arranged];
       next.insert(to, next.removeAt(from));
       ref.read(noteOrderProvider.notifier).setOrder([for (final note in next) note.id]);
     }
 
     return switch (layout) {
-      NoteLayout.list => _NotesListView(notes: ordered, canReorder: canReorder, onMove: move),
-      NoteLayout.grid => _NotesGridView(notes: ordered, canReorder: canReorder, onMove: move),
+      NoteLayout.list => _NotesListView(notes: arranged, canReorder: canReorder, onMove: move),
+      NoteLayout.grid => _NotesGridView(notes: arranged, canReorder: canReorder, onMove: move),
     };
   }
 }
@@ -405,19 +484,20 @@ class _NotesListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selection = ref.watch(selectionProvider);
     final selectionMode = selection.isNotEmpty;
+    final desk = ref.watch(noteDeskProvider);
 
     return MaxWidthCenter(
       maxWidth: 900,
       child: ListView.builder(
+        padding: const EdgeInsets.only(bottom: 96),
         itemCount: notes.length,
         itemBuilder: (context, index) {
           final note = notes[index];
-          final selected = selection.contains(note.id);
           return ReorderableNote(
             index: index,
             // Only the selected card can be lifted, but every card must be
             // able to receive it — otherwise the drag has nowhere to land.
-            canDrag: canReorder && selected,
+            canDrag: canReorder && selection.contains(note.id),
             canReceive: canReorder,
             onMove: onMove,
             child: Padding(
@@ -427,14 +507,7 @@ class _NotesListView extends ConsumerWidget {
                 EchoesTokens.lg,
                 EchoesTokens.sm,
               ),
-              child: _NotePreviewCard(
-                note: note,
-                selected: selected,
-                selectionMode: selectionMode,
-                previewLines: 2,
-                onTap: () => _openNote(context, ref, note, selectionMode),
-                onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
-              ),
+              child: _deskCard(context, ref, note, selection, selectionMode, desk),
             ),
           );
         },
@@ -457,110 +530,52 @@ class _NotesGridView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l = AppLocalizations.of(context);
     final selection = ref.watch(selectionProvider);
     final selectionMode = selection.isNotEmpty;
+    final desk = ref.watch(noteDeskProvider);
 
     return LayoutBuilder(
       builder: (context, constraints) => MasonryGridView.count(
-        padding: const EdgeInsets.fromLTRB(
-          EchoesTokens.lg,
-          EchoesTokens.sm,
-          EchoesTokens.lg,
-          EchoesTokens.xl,
-        ),
+        padding: const EdgeInsets.fromLTRB(EchoesTokens.lg, EchoesTokens.sm, EchoesTokens.lg, 96),
         crossAxisCount: gridColumnsForWidth(constraints.maxWidth),
         mainAxisSpacing: EchoesTokens.md,
         crossAxisSpacing: EchoesTokens.md,
         itemCount: notes.length,
         itemBuilder: (context, index) {
           final note = notes[index];
-          final selected = selection.contains(note.id);
-          final colorScheme = Theme.of(context).colorScheme;
-          // Selection highlight wins over a note's own color when both would
-          // otherwise apply — the tint is a transient UI state, not the
-          // note's actual color, and needs to stay recognizable regardless
-          // of what that color is.
-          final cardColor = selected ? colorScheme.primaryContainer : note.color?.background;
-          final textColor = !selected ? note.color?.onBackground : null;
-          final mutedColor = !selected && note.color != null
-              ? mutedTextColorOn(note.color!.background)
-              : null;
           return ReorderableNote(
             index: index,
-            // Only the selected card can be lifted, but every card must be
-            // able to receive it — otherwise the drag has nowhere to land.
-            canDrag: canReorder && selected,
+            canDrag: canReorder && selection.contains(note.id),
             canReceive: canReorder,
             onMove: onMove,
-            child: EchoesSurface(
-              color: cardColor,
-              radius: EchoesTokens.radiusMd,
-              shadowIntensity: 1.7,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(EchoesTokens.radiusMd),
-                onTap: () => _openNote(context, ref, note, selectionMode),
-                onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            selectionMode
-                                ? (selected ? Icons.check_circle : Icons.circle_outlined)
-                                : (note.isChecklist ? Icons.checklist : Icons.notes),
-                            size: 18,
-                            color: mutedColor ?? colorScheme.onSurfaceVariant,
-                          ),
-                          const Spacer(),
-                          Icon(
-                            note.synced
-                                ? Icons.cloud_done_outlined
-                                : (note.nostrEventId != null
-                                      ? Icons.cloud_sync_outlined
-                                      : Icons.cloud_off_outlined),
-                            size: 14,
-                            color: note.synced ? colorScheme.primary : colorScheme.outline,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        note.title.isEmpty ? l.untitledNote : note.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor),
-                      ),
-                      if (note.preview.isNotEmpty) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          note.preview,
-                          maxLines: 6,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: mutedColor),
-                        ),
-                      ],
-                      const SizedBox(height: 8),
-                      Text(
-                        Formatter.relativeTimestamp(note.updatedAt, l),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: mutedColor ?? colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            child: _deskCard(context, ref, note, selection, selectionMode, desk),
           );
         },
       ),
     );
   }
+}
+
+NoteCard _deskCard(
+  BuildContext context,
+  WidgetRef ref,
+  Note note,
+  Set<String> selection,
+  bool selectionMode,
+  NoteDesk desk,
+) {
+  return NoteCard(
+    key: ValueKey(note.id),
+    note: note,
+    selected: selection.contains(note.id),
+    selectionMode: selectionMode,
+    pinned: desk.pinned.contains(note.id),
+    archived: desk.archived.contains(note.id),
+    onTap: () => _openNote(context, ref, note, selectionMode),
+    onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
+    onTogglePin: () => ref.read(noteDeskProvider.notifier).togglePin(note.id),
+    onToggleArchive: () => _toggleArchive(ref, note.id),
+  );
 }
 
 /// Shared by both layouts: toggles selection while already selecting one or
@@ -573,157 +588,7 @@ void _openNote(BuildContext context, WidgetRef ref, Note note, bool selectionMod
   Navigator.of(context).push(MaterialPageRoute(builder: (_) => NoteEditorScreen(note: note)));
 }
 
-/// A note preview is a small page fragment, not a generic list row. The same
-/// surface is used by the list and can be reused by future note collections.
-class _NotePreviewCard extends StatelessWidget {
-  const _NotePreviewCard({
-    required this.note,
-    required this.selected,
-    required this.selectionMode,
-    required this.previewLines,
-    required this.onTap,
-    required this.onLongPress,
-    this.shadowIntensity = 1.7,
-  });
-
-  final Note note;
-  final bool selected;
-  final bool selectionMode;
-  final int previewLines;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
-  final double shadowIntensity;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final background = selected ? scheme.primaryContainer : note.color?.background;
-    final foreground = selected ? scheme.onPrimaryContainer : note.color?.onBackground;
-    final muted = selected
-        ? scheme.onPrimaryContainer.withValues(alpha: 0.72)
-        : note.color == null
-        ? scheme.onSurfaceVariant
-        : mutedTextColorOn(note.color!.background);
-    final syncIcon = note.synced
-        ? Icons.cloud_done_outlined
-        : (note.nostrEventId != null ? Icons.cloud_sync_outlined : Icons.cloud_off_outlined);
-
-    return EchoesSurface(
-      color: background,
-      radius: EchoesTokens.radiusMd,
-      shadowIntensity: 1.7,
-      onTap: onTap,
-      padding: const EdgeInsets.fromLTRB(
-        EchoesTokens.lg,
-        EchoesTokens.md,
-        EchoesTokens.lg,
-        EchoesTokens.md,
-      ),
-      child: GestureDetector(
-        onLongPress: onLongPress,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  selectionMode
-                      ? (selected ? Icons.check_circle : Icons.circle_outlined)
-                      : (note.isChecklist ? Icons.checklist_rounded : Icons.notes_rounded),
-                  size: 19,
-                  color: foreground ?? scheme.primary,
-                ),
-                const SizedBox(width: EchoesTokens.sm),
-                if (note.isSharedWithMe) Icon(Icons.person_outline_rounded, size: 17, color: muted),
-                const Spacer(),
-                Icon(
-                  syncIcon,
-                  size: 17,
-                  color: note.synced ? (foreground ?? scheme.primary) : muted,
-                ),
-              ],
-            ),
-            const SizedBox(height: EchoesTokens.md),
-            Text(
-              note.title.isEmpty ? AppLocalizations.of(context).untitledNote : note.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: foreground, fontWeight: FontWeight.w700),
-            ),
-            if (note.preview.isNotEmpty) ...[
-              const SizedBox(height: EchoesTokens.sm),
-              Text(
-                note.preview,
-                maxLines: previewLines,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: muted, height: 1.35),
-              ),
-            ],
-            const SizedBox(height: EchoesTokens.md),
-            Row(
-              children: [
-                // Flexible, not a bare Text: a relative-timestamp phrase
-                // ("il y a 2 heures", "vor 2 Stunden") can run considerably
-                // longer than English in some locales, and this row has no
-                // other give — sharing a line with the attachment count and
-                // the diary label with nothing to shrink used to be able to
-                // overflow.
-                Flexible(
-                  child: Text(
-                    Formatter.relativeTimestamp(note.updatedAt, AppLocalizations.of(context)),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(color: muted),
-                  ),
-                ),
-                if (note.attachments.isNotEmpty) ...[
-                  const SizedBox(width: EchoesTokens.md),
-                  Icon(Icons.attachment_rounded, size: 15, color: muted),
-                  const SizedBox(width: EchoesTokens.xs),
-                  Text(
-                    '${note.attachments.length}',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(color: muted),
-                  ),
-                ],
-                const Spacer(),
-                if (note.isDiaryEntry)
-                  Text(
-                    AppLocalizations.of(context).diaryTabLabel,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(color: muted),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Diary ────────────────────────────────────────────────────────────────
-
-/// A single flattened row in [_DiaryList]'s [ListView.builder]: either a
-/// day header or an entry belonging to the day above it. Flattening into
-/// one list (rather than one `ListView` per day) avoids nesting a
-/// scrollable inside a scrollable for what's otherwise the same
-/// "grouped list" shape as the day dividers below.
-class _DiaryRow {
-  const _DiaryRow.header(this.date) : note = null;
-  const _DiaryRow.entry(this.note) : date = null;
-
-  final DateTime? date;
-  final Note? note;
-
-  bool get isHeader => date != null;
-}
-
-/// The diary's entries, grouped by the calendar day they're tagged with
-/// ([Note.entryDate]) — most recent day first, each day introduced by a
-/// small timeline-style marker (a dot + a rule) rather than a plain text
-/// label, so scrolling through past days reads as a timeline rather than
-/// just another flat note list.
+/// The diary, as a month-sticky timeline rather than another note grid.
 class _DiaryList extends ConsumerWidget {
   const _DiaryList({required this.notes});
 
@@ -735,117 +600,35 @@ class _DiaryList extends ConsumerWidget {
 
     if (notes.isEmpty) {
       final searching = ref.watch(noteSearchProvider).trim().isNotEmpty;
+      final viewingArchive = ref.watch(noteDeskProvider).viewingArchive;
+      final message = searching
+          ? l.noSearchResultsMessage
+          : (viewingArchive ? l.emptyArchiveMessage : l.emptyDiaryMessage);
       return LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: _EmptyNotesState(
-              message: searching ? l.noSearchResultsMessage : l.emptyDiaryMessage,
-            ),
+            child: _EmptyNotesState(message: message),
           ),
         ),
       );
     }
 
-    final sorted = [...notes]
-      ..sort((a, b) => (b.entryDate ?? b.updatedAt).compareTo(a.entryDate ?? a.updatedAt));
-
-    final rows = <_DiaryRow>[];
-    DateTime? currentDay;
-    for (final note in sorted) {
-      final date = note.entryDate ?? note.updatedAt;
-      final day = DateTime(date.year, date.month, date.day);
-      if (currentDay == null || day != currentDay) {
-        rows.add(_DiaryRow.header(day));
-        currentDay = day;
-      }
-      rows.add(_DiaryRow.entry(note));
-    }
-
     final selection = ref.watch(selectionProvider);
-    final selectionMode = selection.isNotEmpty;
-
+    final desk = ref.watch(noteDeskProvider);
     return MaxWidthCenter(
-      maxWidth: 900,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 8),
-        itemCount: rows.length,
-        itemBuilder: (context, index) {
-          final row = rows[index];
-          if (row.isHeader) return _DiaryDayHeader(date: row.date!);
-          final note = row.note!;
-          return _DiaryEntryTile(
-            note: note,
-            selected: selection.contains(note.id),
-            selectionMode: selectionMode,
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// The small timeline marker introducing each day's entries in
-/// [_DiaryList]: a dot in the app's accent color, the day's label (via
-/// [Formatter.diaryDateLabel] — "Today"/"Yesterday" or a full localized
-/// date), and a rule trailing off to the edge.
-class _DiaryDayHeader extends StatelessWidget {
-  const _DiaryDayHeader({required this.date});
-
-  final DateTime date;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: colorScheme.primary, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            Formatter.diaryDateLabel(date, l, Localizations.localeOf(context)),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(child: Divider(color: colorScheme.outlineVariant)),
-        ],
-      ),
-    );
-  }
-}
-
-/// A single diary entry within its day's group — same shape as
-/// [_NotesListView]'s row (title/preview/sync state) but indented under
-/// the day header's dot, so it visually nests underneath it.
-class _DiaryEntryTile extends ConsumerWidget {
-  const _DiaryEntryTile({required this.note, required this.selected, required this.selectionMode});
-
-  final Note note;
-  final bool selected;
-  final bool selectionMode;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(34, EchoesTokens.xs, EchoesTokens.lg, EchoesTokens.xs),
-      child: _NotePreviewCard(
-        note: note,
-        selected: selected,
-        selectionMode: selectionMode,
-        previewLines: 2,
-        shadowIntensity: 1,
-        onTap: () => _openNote(context, ref, note, selectionMode),
-        onLongPress: () => ref.read(selectionProvider.notifier).toggle(note.id),
+      maxWidth: 760,
+      child: DiaryTimeline(
+        notes: notes,
+        selectedIds: selection,
+        selectionMode: selection.isNotEmpty,
+        pinnedIds: desk.pinned,
+        archivedIds: desk.archived,
+        onOpen: (note) => _openNote(context, ref, note, selection.isNotEmpty),
+        onLongPress: (note) => ref.read(selectionProvider.notifier).toggle(note.id),
+        onTogglePin: (note) => ref.read(noteDeskProvider.notifier).togglePin(note.id),
+        onToggleArchive: (note) => _toggleArchive(ref, note.id),
       ),
     );
   }
@@ -877,25 +660,6 @@ class _EmptyNotesState extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// The Diary tab's FAB: a single action (there's only one kind of diary
-/// entry, unlike the Notes tab's plain/checklist/voice choice), so this
-/// skips [_NewNoteFab]'s speed-dial menu entirely and opens a fresh entry
-/// directly.
-class _NewDiaryEntryFab extends StatelessWidget {
-  const _NewDiaryEntryFab();
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: 'fab_diary',
-      onPressed: () => Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const NoteEditorScreen(isDiaryEntry: true))),
-      child: const Icon(Icons.add),
     );
   }
 }
@@ -994,188 +758,6 @@ class _ErrorState extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Text(AppLocalizations.of(context).errorLoadingNotes(error.toString())),
       ),
-    );
-  }
-}
-
-/// The Home FAB, expanded into a small floating menu of icon-only buttons
-/// (each with its label to its left, no card/panel behind the group) for
-/// the three kinds of note that can be started: plain, checklist, voice.
-/// Tapping the main `+` again (now rotated into a `×`) collapses it.
-class _NewNoteFab extends ConsumerStatefulWidget {
-  const _NewNoteFab();
-
-  @override
-  ConsumerState<_NewNoteFab> createState() => _NewNoteFabState();
-}
-
-class _NewNoteFabState extends ConsumerState<_NewNoteFab> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 280),
-  );
-
-  // One eased sub-interval of the controller per option, staggered so they
-  // don't all move in lockstep. Ordered by on-screen distance from the main
-  // FAB (closest first) so the nearest option leads the rise on open — and,
-  // since a reversed Animation just plays the same curve backwards, leads
-  // the collapse back into the FAB on close too.
-  late final List<Animation<double>> _optionAnimations = List.generate(
-    3,
-    (order) => CurvedAnimation(
-      parent: _controller,
-      curve: Interval(order * 0.15, order * 0.15 + 0.7, curve: Curves.easeOutCubic),
-      reverseCurve: Interval(order * 0.15, order * 0.15 + 0.7, curve: Curves.easeInCubic),
-    ),
-  );
-
-  void _choose(BuildContext context, Widget screen) {
-    ref.read(fabMenuProvider.notifier).close();
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  /// Wraps [option] so it visually "grows out of" the main FAB and rises
-  /// into place as [animation] goes 0→1, and sinks back down into it in
-  /// reverse — rather than an instant show/hide. Collapsing the allocated
-  /// height too (via `Align.heightFactor`, not just fading/scaling in
-  /// place) means a closed option doesn't leave a dead gap above the FAB
-  /// or an invisible-but-still-tappable hit area. `widthFactor: 1` keeps
-  /// this shrink-wrapped to the option's own width — without it, `Align`
-  /// expands to fill the row's available width and, combined with
-  /// `crossAxisAlignment.end` on the parent `Column`, throws the whole
-  /// button off to the left instead of hugging the right edge.
-  Widget _animatedOption(Animation<double> animation, Widget option) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, child) {
-        final t = animation.value;
-        return IgnorePointer(
-          ignoring: t == 0,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            heightFactor: t,
-            widthFactor: 1,
-            child: Opacity(
-              opacity: t,
-              child: Transform.scale(scale: t, alignment: Alignment.bottomRight, child: child),
-            ),
-          ),
-        );
-      },
-      child: Padding(padding: const EdgeInsets.only(bottom: 12), child: option),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context);
-    // The open/closed flag lives in a provider (not local State) so a tap
-    // anywhere else on the screen — via HomeScreen's dismiss barrier — can
-    // close this menu too, not just tapping the FAB itself again. `ref.listen`
-    // (rather than comparing state inline during build) drives the
-    // AnimationController exactly once per actual open/close transition.
-    ref.listen<bool>(fabMenuProvider, (previous, open) {
-      if (open) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
-    final open = ref.watch(fabMenuProvider);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        // Voice notes need `audio_waveforms` for playback, which has no
-        // Linux/Windows backend — see [PlatformSupport.supportsVoiceNotes].
-        if (PlatformSupport.supportsVoiceNotes)
-          _animatedOption(
-            _optionAnimations[2],
-            _FabOption(
-              heroTag: 'fab_voice',
-              label: l.newVoiceNoteOption,
-              icon: Icons.mic_none_outlined,
-              onTap: () => _choose(context, const NoteEditorScreen(startRecording: true)),
-            ),
-          ),
-        _animatedOption(
-          _optionAnimations[1],
-          _FabOption(
-            heroTag: 'fab_checklist',
-            label: l.newChecklistOption,
-            icon: Icons.checklist,
-            onTap: () => _choose(context, const NoteEditorScreen(startAsChecklist: true)),
-          ),
-        ),
-        _animatedOption(
-          _optionAnimations[0],
-          _FabOption(
-            heroTag: 'fab_note',
-            label: l.newPlainNoteOption,
-            icon: Icons.notes,
-            onTap: () => _choose(context, const NoteEditorScreen()),
-          ),
-        ),
-        FloatingActionButton(
-          heroTag: 'fab_main',
-          onPressed: () => ref.read(fabMenuProvider.notifier).toggle(),
-          // A full spin that lands on the ×. Geometry note: a "+" glyph only
-          // reads as a "×" at 45° (+ any multiple of 90°); a literal 450°
-          // (1.25 turns) is 360°+90°, which spins right back to looking like a
-          // "+". 405° (1.125 turns) is the nearest value that both does the
-          // extra whirl the user wanted and actually lands on the ×.
-          child: AnimatedRotation(
-            turns: open ? 1.125 : 0,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOutBack,
-            // Bigger than the 24dp default inside the same-sized button, so
-            // the glyph reads as a confident "+"/"×" rather than a small mark
-            // floating in the middle. (Material's icon font ships a single
-            // weight, so size — not a bold variant — is the lever here.)
-            child: const Icon(Icons.add, size: 34),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _FabOption extends StatelessWidget {
-  const _FabOption({
-    required this.heroTag,
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String heroTag;
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // The label sits directly on the note list behind it — no
-        // card/box background, per the request — with just enough shadow
-        // to stay legible over whatever content happens to be underneath.
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            shadows: [Shadow(blurRadius: 6, color: Theme.of(context).scaffoldBackgroundColor)],
-          ),
-        ),
-        const SizedBox(width: 12),
-        FloatingActionButton.small(heroTag: heroTag, onPressed: onTap, child: Icon(icon)),
-      ],
     );
   }
 }

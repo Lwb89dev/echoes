@@ -184,7 +184,10 @@ class _RelaySection extends ConsumerWidget {
 
     return Column(
       children: [
-        const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: RelayUrlInput()),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: RelayUrlInput(outlined: false),
+        ),
         const SizedBox(height: 12),
         // A darker surface tone when expanded (animated, via
         // `ExpansionTile`'s own built-in color tween — no manual
@@ -593,15 +596,8 @@ class _LanguageSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final locale = ref.watch(localeProvider);
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        border: Border.all(color: colorScheme.outlineVariant),
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String?>(
           value: locale?.languageCode,
@@ -823,13 +819,8 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
           child: Text(l.attachmentProviderSubtitle, style: Theme.of(context).textTheme.bodySmall),
         ),
         const SizedBox(height: 8),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            border: Border.all(color: colorScheme.outlineVariant),
-            borderRadius: BorderRadius.circular(12),
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: isCustom ? 'custom' : selected.id,
@@ -873,7 +864,10 @@ class _AttachmentsSectionState extends ConsumerState<_AttachmentsSection> {
                   decoration: InputDecoration(
                     labelText: l.attachmentCustomUrlLabel,
                     hintText: 'https://…',
-                    border: const OutlineInputBorder(),
+                    filled: false,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
                   ),
                   keyboardType: TextInputType.url,
                   onSubmitted: (_) => _selectCustom(),
@@ -950,14 +944,8 @@ class _DonationTile extends StatelessWidget {
 
     return InkWell(
       onTap: () => _donate(context),
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: colorScheme.primary.withValues(alpha: 0.4)),
-        ),
         child: Row(
           children: [
             Icon(Icons.bolt_rounded, color: colorScheme.primary, size: 18),

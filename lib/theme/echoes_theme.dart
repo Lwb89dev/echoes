@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
+import '../utils/note_colors.dart';
 
 /// The small set of visual tokens shared by every Echoes surface. Keeping
 /// these values here prevents individual screens from slowly becoming a
@@ -35,25 +39,244 @@ abstract final class EchoesTokens {
 
   static List<BoxShadow> raisedShadow(Color color, {double intensity = 1}) => [
     BoxShadow(
-      color: color.withValues(alpha: 0.08 * intensity),
-      blurRadius: 18,
-      offset: const Offset(0, 7),
+      color: color.withValues(alpha: 0.05 * intensity),
+      blurRadius: 14,
+      offset: const Offset(0, 6),
     ),
     BoxShadow(
-      color: Colors.white.withValues(alpha: 0.2 * intensity),
-      blurRadius: 1,
-      offset: const Offset(0, -1),
+      color: color.withValues(alpha: 0.04 * intensity),
+      blurRadius: 2,
+      offset: const Offset(0, 1),
     ),
   ];
 
-  static List<BoxShadow> tealShadow() => [
-    BoxShadow(color: deepTeal.withValues(alpha: 0.28), blurRadius: 16, offset: const Offset(0, 7)),
-    BoxShadow(
-      color: Colors.white.withValues(alpha: 0.18),
-      blurRadius: 1,
-      offset: const Offset(0, -1),
-    ),
+  static List<BoxShadow> liftedShadow(Color color) => [
+    BoxShadow(color: color.withValues(alpha: 0.16), blurRadius: 22, offset: const Offset(0, 12)),
+    BoxShadow(color: color.withValues(alpha: 0.06), blurRadius: 4, offset: const Offset(0, 2)),
   ];
+}
+
+/// Semantic colors for the stationery desk. Screens read these instead of
+/// picking their own hex values. Dark is its own warm ink palette, not an
+/// inversion of the ivory one.
+class EchoesPalette {
+  const EchoesPalette({
+    required this.backgroundPrimary,
+    required this.backgroundSecondary,
+    required this.surfacePaper,
+    required this.surfaceElevated,
+    required this.surfacePressed,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.textMuted,
+    required this.accentPrimary,
+    required this.accentSecondary,
+    required this.accentSoft,
+    required this.borderSubtle,
+    required this.shadowSoft,
+    required this.semanticSuccess,
+    required this.semanticWarning,
+    required this.semanticError,
+    required this.syncLocal,
+    required this.syncEchoed,
+    required this.onAccent,
+    required this.accentContainer,
+    required this.onAccentContainer,
+  });
+
+  final Color backgroundPrimary;
+  final Color backgroundSecondary;
+  final Color surfacePaper;
+  final Color surfaceElevated;
+  final Color surfacePressed;
+  final Color textPrimary;
+  final Color textSecondary;
+  final Color textMuted;
+  final Color accentPrimary;
+  final Color accentSecondary;
+  final Color accentSoft;
+  final Color borderSubtle;
+  final Color shadowSoft;
+  final Color semanticSuccess;
+  final Color semanticWarning;
+  final Color semanticError;
+  final Color syncLocal;
+  final Color syncEchoed;
+  final Color onAccent;
+  final Color accentContainer;
+  final Color onAccentContainer;
+
+  static const light = EchoesPalette(
+    backgroundPrimary: Color(0xFFF6EEFF),
+    backgroundSecondary: Color(0xFFFFE4F1),
+    surfacePaper: Color(0xFFF8F2FF),
+    surfaceElevated: Color(0xFFFFF7FB),
+    surfacePressed: Color(0xFFE7D8FF),
+    textPrimary: Color(0xFF1C1233),
+    textSecondary: Color(0xFF3A2A58),
+    textMuted: Color(0xFF4A3868),
+    accentPrimary: Color(0xFF6A35F0),
+    accentSecondary: Color(0xFFFF4F78),
+    accentSoft: Color(0xFFE6D6FF),
+    borderSubtle: Color(0x66FFFFFF),
+    shadowSoft: Color(0xFF3A1870),
+    semanticSuccess: Color(0xFF1F8A4C),
+    semanticWarning: Color(0xFFB86A00),
+    semanticError: Color(0xFFC6284A),
+    syncLocal: Color(0xFF4A3868),
+    syncEchoed: Color(0xFF6A35F0),
+    onAccent: Color(0xFFFFFFFF),
+    accentContainer: Color(0xFFE9DCFF),
+    onAccentContainer: Color(0xFF2A1166),
+  );
+
+  static const dark = EchoesPalette(
+    backgroundPrimary: Color(0xFF160C28),
+    backgroundSecondary: Color(0xFF2A1244),
+    surfacePaper: Color(0xFF241438),
+    surfaceElevated: Color(0xFF321C4C),
+    surfacePressed: Color(0xFF1C1030),
+    textPrimary: Color(0xFFF8F2FF),
+    textSecondary: Color(0xFFE4D8FF),
+    textMuted: Color(0xFFD2C4F2),
+    accentPrimary: Color(0xFFC4A6FF),
+    accentSecondary: Color(0xFFFF8AA8),
+    accentSoft: Color(0xFF3A2468),
+    borderSubtle: Color(0x55FFFFFF),
+    shadowSoft: Color(0xFF000000),
+    semanticSuccess: Color(0xFF8EE8B0),
+    semanticWarning: Color(0xFFFFC56A),
+    semanticError: Color(0xFFFF8A9E),
+    syncLocal: Color(0xFFD2C4F2),
+    syncEchoed: Color(0xFFC4A6FF),
+    onAccent: Color(0xFF2A1160),
+    accentContainer: Color(0xFF3A2270),
+    onAccentContainer: Color(0xFFF3E9FF),
+  );
+
+  /// Aurora behind the glass. Light stops stay pale so dark ink still reads;
+  /// dark stops stay deep so light ink still reads.
+  static const lightGlow = <Color>[
+    Color(0xFFFFD0E6),
+    Color(0xFFE4D0FF),
+    Color(0xFFFFE0C4),
+    Color(0xFFD4E2FF),
+  ];
+
+  static const darkGlow = <Color>[
+    Color(0xFF2A0E44),
+    Color(0xFF4A1868),
+    Color(0xFF6A2458),
+    Color(0xFF1A1860),
+  ];
+
+  static EchoesPalette of(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? dark : light;
+  }
+}
+
+/// False when the system asks for reduced motion. New motion should check
+/// this and skip the flourish; the state change itself still happens.
+bool echoesMotionEnabled(BuildContext context) => !MediaQuery.disableAnimationsOf(context);
+
+/// The wash every screen sits on. One gradient for the whole app, so cards
+/// can stay solid enough to read and still feel like glass over light.
+class EchoesBackdrop extends StatelessWidget {
+  const EchoesBackdrop({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: dark ? EchoesPalette.darkGlow : EchoesPalette.lightGlow,
+        ),
+      ),
+      child: const SizedBox.expand(),
+    );
+  }
+}
+
+/// Frosted chrome: search, the tab bar, a menu chip. Blur stays on these
+/// few surfaces. Note cards do not use it — a blur per card while scrolling
+/// is how a list gets sticky.
+class GlassPane extends StatelessWidget {
+  const GlassPane({
+    super.key,
+    required this.child,
+    this.radius = EchoesTokens.radiusPill,
+    this.padding,
+  });
+
+  final Widget child;
+  final double radius;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final radius = BorderRadius.circular(this.radius);
+    final fill = dark ? const Color(0xCC241438) : const Color(0xBFFFFFFF);
+    final edge = dark ? const Color(0x55FFFFFF) : const Color(0xEEFFFFFF);
+    return ClipRRect(
+      borderRadius: radius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            border: Border.all(color: edge),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(alpha: dark ? 0.16 : 0.55),
+                fill,
+              ],
+            ),
+          ),
+          child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
+        ),
+      ),
+    );
+  }
+}
+
+/// The same top-to-bottom gloss the home cards use. The editor paints this
+/// full-screen so an opened note is the card, not a flat fill.
+LinearGradient echoesSheetGradient(Color tint) {
+  final lightInk = readableTextColorOn(tint) == Colors.white;
+  final top = lightInk
+      ? Color.alphaBlend(Colors.white.withValues(alpha: 0.10), tint)
+      : Color.alphaBlend(Colors.white.withValues(alpha: 0.42), tint);
+  return LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [top, tint],
+  );
+}
+
+/// A sheet of tinted glass. The fill stays close to [tint] so text chosen
+/// for that tint still clears it; the gloss is a light top edge, not a wash
+/// that fades the words.
+BoxDecoration echoesGlassDecoration({
+  required Color tint,
+  required bool dark,
+  double radius = EchoesTokens.radiusMd,
+  Color? borderColor,
+  List<BoxShadow>? shadow,
+}) {
+  return BoxDecoration(
+    borderRadius: BorderRadius.circular(radius),
+    gradient: echoesSheetGradient(tint),
+    border: Border.all(
+      color: borderColor ?? (dark ? const Color(0x66FFFFFF) : const Color(0xEEFFFFFF)),
+    ),
+    boxShadow: shadow,
+  );
 }
 
 class EchoesSurface extends StatelessWidget {
@@ -79,15 +302,20 @@ class EchoesSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = color ?? (inset ? scheme.surfaceContainer : scheme.surfaceContainerLowest);
-    final decoration = BoxDecoration(
-      color: surfaceColor,
-      borderRadius: BorderRadius.circular(radius),
-      border: Border.all(color: scheme.outlineVariant.withValues(alpha: inset ? 0.35 : 0.22)),
-      boxShadow: inset
-          ? null
-          : EchoesTokens.raisedShadow(scheme.shadow, intensity: shadowIntensity),
-    );
+    final decoration = inset
+        ? BoxDecoration(
+            color: surfaceColor,
+            borderRadius: BorderRadius.circular(radius),
+            border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.35)),
+          )
+        : echoesGlassDecoration(
+            tint: surfaceColor,
+            dark: dark,
+            radius: radius,
+            shadow: EchoesTokens.raisedShadow(scheme.shadow, intensity: shadowIntensity),
+          );
     final content = Padding(padding: padding ?? EdgeInsets.zero, child: child);
     return DecoratedBox(
       decoration: decoration,
@@ -134,33 +362,37 @@ class EchoesSectionLabel extends StatelessWidget {
 
 ThemeData echoesTheme(Brightness brightness) {
   final isDark = brightness == Brightness.dark;
-  final scheme = ColorScheme.fromSeed(seedColor: EchoesTokens.teal, brightness: brightness)
+  final palette = isDark ? EchoesPalette.dark : EchoesPalette.light;
+  final scheme = ColorScheme.fromSeed(seedColor: palette.accentPrimary, brightness: brightness)
       .copyWith(
-        primary: isDark ? const Color(0xFF79D8D3) : EchoesTokens.teal,
-        onPrimary: isDark ? EchoesTokens.deepTeal : Colors.white,
-        primaryContainer: isDark ? const Color(0xFF0D5152) : const Color(0xFFC5E9E5),
-        onPrimaryContainer: isDark ? const Color(0xFFC9F6F1) : EchoesTokens.deepTeal,
-        secondary: isDark ? const Color(0xFFB7CBC8) : const Color(0xFF526B6B),
-        onSecondary: isDark ? const Color(0xFF223836) : Colors.white,
-        secondaryContainer: isDark ? const Color(0xFF334A49) : const Color(0xFFD7E8E4),
-        onSecondaryContainer: isDark ? const Color(0xFFD6EAE7) : const Color(0xFF183331),
-        tertiary: isDark ? const Color(0xFF91E0DA) : EchoesTokens.aqua,
-        onTertiary: isDark ? EchoesTokens.deepTeal : Colors.white,
-        surface: isDark ? EchoesTokens.darkSurface : EchoesTokens.ivory,
-        onSurface: isDark ? const Color(0xFFF7F1E8) : EchoesTokens.ink,
-        onSurfaceVariant: isDark ? const Color(0xFFBBCDCA) : EchoesTokens.inkMuted,
-        surfaceContainerLowest: isDark ? EchoesTokens.darkInset : EchoesTokens.paperRaised,
-        surfaceContainerLow: isDark ? const Color(0xFF112D2E) : const Color(0xFFF9F6F0),
-        surfaceContainer: isDark ? EchoesTokens.darkRaised : EchoesTokens.paper,
-        surfaceContainerHigh: isDark ? const Color(0xFF1E3939) : const Color(0xFFECEFEA),
-        surfaceContainerHighest: isDark ? const Color(0xFF294443) : const Color(0xFFE4EAE5),
-        outline: isDark ? const Color(0xFF8EA7A3) : const Color(0xFF718582),
-        outlineVariant: isDark ? const Color(0xFF3D5755) : const Color(0xFFC0D0CC),
+        primary: palette.accentPrimary,
+        onPrimary: palette.onAccent,
+        primaryContainer: palette.accentContainer,
+        onPrimaryContainer: palette.onAccentContainer,
+        secondary: palette.accentSecondary,
+        onSecondary: isDark ? const Color(0xFF3A1020) : Colors.white,
+        secondaryContainer: isDark ? const Color(0xFF4A2040) : const Color(0xFFFFD6E4),
+        onSecondaryContainer: isDark ? const Color(0xFFFFE4EE) : const Color(0xFF5A1830),
+        tertiary: palette.semanticSuccess,
+        onTertiary: isDark ? const Color(0xFF063018) : Colors.white,
+        error: palette.semanticError,
+        onError: isDark ? const Color(0xFF2C1210) : Colors.white,
+        surface: palette.backgroundPrimary,
+        onSurface: palette.textPrimary,
+        onSurfaceVariant: palette.textSecondary,
+        surfaceContainerLowest: palette.surfacePaper,
+        surfaceContainerLow: palette.backgroundSecondary,
+        surfaceContainer: isDark ? palette.surfacePaper : const Color(0xFFF3EBDF),
+        surfaceContainerHigh: palette.surfaceElevated,
+        surfaceContainerHighest: palette.surfacePressed,
+        outline: palette.textMuted,
+        outlineVariant: palette.borderSubtle,
+        shadow: palette.shadowSoft,
       );
   final base = ThemeData(
     colorScheme: scheme,
     useMaterial3: true,
-    scaffoldBackgroundColor: scheme.surface,
+    scaffoldBackgroundColor: Colors.transparent,
   );
   final inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(EchoesTokens.radiusMd),
@@ -181,7 +413,7 @@ ThemeData echoesTheme(Brightness brightness) {
           titleLarge: base.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
     appBarTheme: AppBarTheme(
-      backgroundColor: scheme.surface,
+      backgroundColor: Colors.transparent,
       foregroundColor: scheme.onSurface,
       surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
@@ -236,11 +468,12 @@ ThemeData echoesTheme(Brightness brightness) {
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: scheme.primary,
       foregroundColor: scheme.onPrimary,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(EchoesTokens.radiusMd)),
+      elevation: 6,
+      highlightElevation: 8,
+      shape: const CircleBorder(),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: scheme.surfaceContainerLowest,
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       indicatorColor: scheme.primaryContainer,

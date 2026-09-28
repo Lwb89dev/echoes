@@ -16,15 +16,19 @@ import '../models/note.dart';
 import '../providers/auth_provider.dart';
 import '../providers/auto_sync_provider.dart';
 import '../providers/note_background_provider.dart';
+import '../providers/note_desk_provider.dart';
 import '../providers/notes_provider.dart';
 import '../providers/service_providers.dart';
 import '../utils/app_messenger.dart';
 import '../utils/formatter.dart';
 import '../utils/note_colors.dart';
+import '../utils/note_links.dart';
 import '../utils/platform_support.dart';
 import '../utils/responsive.dart';
 import '../utils/underline_syntax.dart';
 import '../theme/echoes_theme.dart';
+import '../widgets/echo_mark.dart';
+import '../widgets/note_echoes_section.dart';
 import 'widgets/note_actions.dart';
 import 'widgets/share_note_sheet.dart';
 import 'widgets/voice_recorder.dart';
@@ -52,6 +56,7 @@ class NoteEditorScreen extends ConsumerStatefulWidget {
     this.note,
     this.startAsChecklist = false,
     this.startRecording = false,
+    this.startWithImage = false,
     this.isDiaryEntry = false,
   });
 
@@ -66,6 +71,10 @@ class NoteEditorScreen extends ConsumerStatefulWidget {
   /// [VoiceRecorder]) inline as soon as this screen opens, instead of
   /// requiring an extra tap to start recording.
   final bool startRecording;
+
+  /// Set by the Home FAB's photo option. Opens the existing image picker
+  /// once the new note is on screen.
+  final bool startWithImage;
 
   /// Set by [DiaryScreen]'s FAB when creating a brand-new diary entry — has
   /// no effect when [note] is non-null (an existing note's own
@@ -235,6 +244,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _isChecklist = note?.isChecklist ?? (_isNewNote && widget.startAsChecklist);
     _attachments.addAll(note?.attachments ?? const <Attachment>[]);
     _showRecorder = _isNewNote && widget.startRecording && PlatformSupport.supportsVoiceNotes;
+    if (_isNewNote && widget.startWithImage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _addImage();
+      });
+    }
     // A checklist has nothing sensible to *read* — it's a working list,
     // not prose — so it skips the read-only view entirely and always
     // opens straight into editing, same as a brand-new note.
@@ -654,6 +668,53 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     _insertAttachmentToken('![voice](attachment://$attachmentId)');
   }
 
+  void _toggleEditorArchive() {
+    final desk = ref.read(noteDeskProvider);
+    final notifier = ref.read(noteDeskProvider.notifier);
+    if (desk.archived.contains(_noteId)) {
+      notifier.unarchive(_noteId);
+    } else {
+      notifier.archive(_noteId);
+    }
+  }
+
+  /// Appends a stable wikilink. The id, not the title, is what the
+  /// relationship follows, so renaming the target later does not break it.
+  void _insertLinkedNote(Note target) {
+    final raw = target.title.trim().replaceAll(RegExp(r'[\[\]|]'), '');
+    final lines = plainNoteExcerpt(target.body).split('\n');
+    final excerpt = lines.isEmpty ? '' : lines.first.replaceAll(RegExp(r'[\[\]|]'), '').trim();
+    final label = raw.isNotEmpty ? raw : (excerpt.isNotEmpty ? excerpt : 'note');
+    final shown = label.length > 48 ? label.substring(0, 48) : label;
+    _insertAttachmentToken('[[$shown|${target.id}]]');
+  }
+
+  void _openEchoHref(String href) {
+    final l = AppLocalizations.of(context);
+    final notes = ref.read(notesProvider).value ?? const <Note>[];
+    final index = NoteLinkIndex.from(notes);
+    final id = index.idForHref(href);
+    final target = id == null ? null : index.byId[id];
+    if (target == null || target.id == _noteId) {
+      if (target == null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.noteLinkMissing)));
+      }
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => NoteEditorScreen(note: target)));
+  }
+
+  Widget _echoesSection() {
+    return NoteEchoesSection(
+      noteId: _noteId,
+      body: _bodyController.text,
+      onInsert: _insertLinkedNote,
+      onOpen: (note) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => NoteEditorScreen(note: note)));
+      },
+    );
+  }
+
   /// Changes an already-inserted image's size keyword in place — the tap
   /// target in the read-only view (see [_InlineAttachmentImage]) for
   /// "resize" without a drag handle.
@@ -1064,7 +1125,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 selected: _color == null,
                 onTap: () => Navigator.of(sheetContext).pop(noColorSentinel),
               ),
-              for (final option in NoteColor.values)
+              for (final option in _paletteOptions(_color))
                 _ColorSwatchOption(
                   color: option,
                   label: _noteColorLabel(option, l),
@@ -1407,6 +1468,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     final l = AppLocalizations.of(context);
     final hasNostrAccount = ref.watch(authProvider).value != null;
     final colorScheme = Theme.of(context).colorScheme;
+    final desk = ref.watch(noteDeskProvider);
+    final pinnedHere = desk.pinned.contains(_noteId);
+    final archivedHere = desk.archived.contains(_noteId);
+    final echoLabel = _synced
+        ? l.syncEchoedLabel
+        : (_nostrEventId != null ? l.syncPendingLabel : l.syncLocalLabel);
     final color = _color;
     // The app bar — and the system status bar right above it — follow this
     // note's own color when it has one, for the same "consistent, not two
@@ -1454,22 +1521,21 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                     ),
                   )
                 : IconButton.outlined(
-                    // Three visually distinct states: never synced (plain
-                    // "off" cloud), synced and up to date (filled cloud,
-                    // primary color), and previously synced but edited
-                    // since (a "needs sync" cloud, same outline color as
-                    // "never synced" since the tap action is identical —
-                    // publish now — but a different icon shape so editing
-                    // an already-shared note doesn't look identical to a
-                    // note that was never shared at all).
-                    icon: Icon(
-                      _synced
-                          ? Icons.cloud_done_outlined
-                          : (_nostrEventId != null
-                                ? Icons.cloud_sync_outlined
-                                : Icons.cloud_off_outlined),
+                    // Local, echoed, or edited since the last echo. The
+                    // glyph is the state; the tooltip is the action, which
+                    // is still an explicit tap — nothing here publishes a
+                    // note that the user has not chosen to sync.
+                    icon: EchoMark(
+                      identity: _noteId,
+                      echoed: _synced,
+                      label: echoLabel,
+                      announce: false,
+                      size: 22,
+                      color: _synced ? colorScheme.primary : (appBarOnColor ?? colorScheme.outline),
                     ),
-                    tooltip: _synced ? l.unsyncNoteTooltip : l.syncNoteTooltip,
+                    tooltip: _synced
+                        ? '${l.syncEchoedLabel}. ${l.unsyncNoteTooltip}'
+                        : '$echoLabel. ${l.syncNoteTooltip}',
                     style: IconButton.styleFrom(
                       side: BorderSide(color: _synced ? colorScheme.primary : colorScheme.outline),
                       foregroundColor: _synced ? colorScheme.primary : colorScheme.outline,
@@ -1504,6 +1570,21 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             tooltip: l.shareNoteTooltip,
             onPressed: _openShareSheet,
           ),
+        PopupMenuButton<String>(
+          icon: Icon(Icons.more_horiz, color: appBarOnColor),
+          tooltip: l.moreActionsTooltip,
+          onSelected: (value) {
+            if (value == 'pin') ref.read(noteDeskProvider.notifier).togglePin(_noteId);
+            if (value == 'archive') _toggleEditorArchive();
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(value: 'pin', child: Text(pinnedHere ? l.unpinNote : l.pinNote)),
+            PopupMenuItem(
+              value: 'archive',
+              child: Text(archivedHere ? l.unarchiveNote : l.archiveNote),
+            ),
+          ],
+        ),
         if (!_isNewNote)
           IconButton(
             icon: const Icon(Icons.delete_outline),
@@ -1538,7 +1619,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         // animates between two solid fills, including the "back to no
         // custom color" direction, which needs just as real a target as
         // any actual [NoteColor] — the theme's own surface color, here.
-        color: color?.background ?? Theme.of(context).colorScheme.surface,
+        color: color?.background ?? EchoesPalette.of(context).surfacePaper,
         // A chosen photo sits on top of that fill, behind all the content.
         // Scrimmed rather than shown raw: note text has to stay readable over
         // whatever picture the user picked, and a photo at full strength
@@ -1687,6 +1768,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                   onSetTimestamp: (timestamp) => _setAttachmentTimestamp(attachment.id, timestamp),
                 ),
               ),
+            _echoesSection(),
           ],
         ),
       ),
@@ -1765,6 +1847,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                   if (_isDiaryEntry) _DiaryDateSelector(date: _entryDate!, onTap: _enterEditMode),
                   _MarkdownPreview(
                     text: _bodyController.text,
+                    linkIndex: NoteLinkIndex.from(ref.watch(notesProvider).value ?? const <Note>[]),
+                    onOpenEcho: _openEchoHref,
                     attachments: _attachments,
                     // Same resize/remove bottom sheet as while editing
                     // (see [_editInlineImage]) rather than routing through
@@ -1791,6 +1875,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                             _setAttachmentTimestamp(attachment.id, timestamp),
                       ),
                     ),
+                  _echoesSection(),
                 ],
               ),
             ),
@@ -1801,18 +1886,25 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   }
 }
 
+/// Stationery materials first. A note that already uses an older pigment
+/// still shows that swatch, so the check mark has somewhere to sit.
+List<NoteColor> _paletteOptions(NoteColor? current) {
+  if (current == null || stationeryPalette.contains(current)) return stationeryPalette;
+  return [...stationeryPalette, current];
+}
+
 String _noteColorLabel(NoteColor color, AppLocalizations l) => switch (color) {
-  NoteColor.yellow => l.noteColorYellow,
+  NoteColor.white => l.noteColorPaper,
+  NoteColor.yellow => l.noteColorSand,
+  NoteColor.green => l.noteColorSage,
+  NoteColor.orange => l.noteColorTerracotta,
+  NoteColor.purple => l.noteColorLavender,
+  NoteColor.blue => l.noteColorOcean,
+  NoteColor.brown => l.noteColorCharcoal,
   NoteColor.red => l.noteColorRed,
-  NoteColor.purple => l.noteColorPurple,
-  NoteColor.blue => l.noteColorBlue,
-  NoteColor.green => l.noteColorGreen,
-  NoteColor.orange => l.noteColorOrange,
-  NoteColor.white => l.noteColorWhite,
   NoteColor.pink => l.noteColorPink,
   NoteColor.teal => l.noteColorTeal,
   NoteColor.indigo => l.noteColorIndigo,
-  NoteColor.brown => l.noteColorBrown,
   NoteColor.lime => l.noteColorLime,
 };
 

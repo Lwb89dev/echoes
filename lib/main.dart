@@ -73,6 +73,9 @@ class EchoesApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) {
+        return Stack(fit: StackFit.expand, children: [const EchoesBackdrop(), ?child]);
+      },
       home: const _AppRoot(),
     );
   }

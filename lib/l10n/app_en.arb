@@ -15,10 +15,10 @@
   "closeSearchTooltip": "Close search",
   "searchNotesHint": "Search notes",
   "noSearchResultsMessage": "No matches.",
-  "emptyNotesMessage": "No notes yet. Tap + to create one.",
+  "emptyNotesMessage": "Nothing has echoed yet.",
   "notesTabLabel": "Notes",
   "diaryTabLabel": "Diary",
-  "emptyDiaryMessage": "No diary entries yet. Tap + to write one.",
+  "emptyDiaryMessage": "This diary is still a blank page.",
   "diaryToday": "Today",
   "diaryYesterday": "Yesterday",
   "newPlainNoteOption": "Note",
@@ -405,5 +405,44 @@
         "type": "String"
       }
     }
-  }
+  },
+  "newPhotoOption": "Photo",
+  "newNoteSemantics": "New note. Long press to write immediately, or tap for note, checklist, photo and voice.",
+  "pinNote": "Pin",
+  "unpinNote": "Unpin",
+  "archiveNote": "Archive",
+  "unarchiveNote": "Put back",
+  "archiveTitle": "Archive",
+  "emptyArchiveMessage": "The archive is empty.",
+  "pinnedLabel": "Pinned",
+  "notesOnDesk": "{count} on the desk",
+  "@notesOnDesk": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "syncLocalLabel": "Local",
+  "syncEchoedLabel": "Echoed",
+  "syncPendingLabel": "Not echoed yet",
+  "noteColorPaper": "Paper",
+  "noteColorSand": "Sand",
+  "noteColorSage": "Sage",
+  "noteColorTerracotta": "Terracotta",
+  "noteColorLavender": "Lavender",
+  "noteColorOcean": "Ocean",
+  "noteColorCharcoal": "Charcoal",
+  "echoesSectionTitle": "Echoes",
+  "echoesFromNotes": "Echoes from {count} notes",
+  "@echoesFromNotes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "echoesFromOneNote": "Echoes from 1 note",
+  "echoesLinked": "Linked",
+  "linkANote": "Link a note",
+  "pickNoteToLink": "Choose a note",
+  "noNotesToLink": "There isn't another note to link yet.",
+  "noteLinkMissing": "No note matches that name.",
+  "moreActionsTooltip": "More"
 }

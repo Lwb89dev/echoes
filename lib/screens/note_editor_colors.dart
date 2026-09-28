@@ -38,10 +38,10 @@ class _ColorSwatchOption extends StatelessWidget {
           children: [
             Container(
               width: 44,
-              height: 44,
+              height: 36,
               decoration: BoxDecoration(
                 color: swatchColor ?? colorScheme.surface,
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: selected ? colorScheme.primary : colorScheme.outlineVariant,
                   width: selected ? 3 : 1,
@@ -134,11 +134,13 @@ class _NoteColorRevealState extends State<_NoteColorReveal> with SingleTickerPro
             return Stack(
               fit: StackFit.expand,
               children: [
-                ColoredBox(color: _fromColor),
+                DecoratedBox(decoration: BoxDecoration(gradient: echoesSheetGradient(_fromColor))),
                 if (_progress.value > 0)
                   ClipPath(
                     clipper: _CircleRevealClipper(fraction: _progress.value),
-                    child: ColoredBox(color: _toColor),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(gradient: echoesSheetGradient(_toColor)),
+                    ),
                   ),
               ],
             );

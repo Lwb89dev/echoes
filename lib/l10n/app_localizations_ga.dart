@@ -738,4 +738,96 @@ class AppLocalizationsGa extends AppLocalizations {
   String abandonSharedNoteError(String error) {
     return 'Níorbh fhéidir imeacht: $error';
   }
+
+  @override
+  String get newPhotoOption => 'Photo';
+
+  @override
+  String get newNoteSemantics =>
+      'New note. Long press to write immediately, or tap for note, checklist, photo and voice.';
+
+  @override
+  String get pinNote => 'Pin';
+
+  @override
+  String get unpinNote => 'Unpin';
+
+  @override
+  String get archiveNote => 'Archive';
+
+  @override
+  String get unarchiveNote => 'Put back';
+
+  @override
+  String get archiveTitle => 'Archive';
+
+  @override
+  String get emptyArchiveMessage => 'The archive is empty.';
+
+  @override
+  String get pinnedLabel => 'Pinned';
+
+  @override
+  String notesOnDesk(int count) {
+    return '$count on the desk';
+  }
+
+  @override
+  String get syncLocalLabel => 'Local';
+
+  @override
+  String get syncEchoedLabel => 'Echoed';
+
+  @override
+  String get syncPendingLabel => 'Not echoed yet';
+
+  @override
+  String get noteColorPaper => 'Paper';
+
+  @override
+  String get noteColorSand => 'Sand';
+
+  @override
+  String get noteColorSage => 'Sage';
+
+  @override
+  String get noteColorTerracotta => 'Terracotta';
+
+  @override
+  String get noteColorLavender => 'Lavender';
+
+  @override
+  String get noteColorOcean => 'Ocean';
+
+  @override
+  String get noteColorCharcoal => 'Charcoal';
+
+  @override
+  String get echoesSectionTitle => 'Echoes';
+
+  @override
+  String echoesFromNotes(int count) {
+    return 'Echoes from $count notes';
+  }
+
+  @override
+  String get echoesFromOneNote => 'Echoes from 1 note';
+
+  @override
+  String get echoesLinked => 'Linked';
+
+  @override
+  String get linkANote => 'Link a note';
+
+  @override
+  String get pickNoteToLink => 'Choose a note';
+
+  @override
+  String get noNotesToLink => 'There isn\'t another note to link yet.';
+
+  @override
+  String get noteLinkMissing => 'No note matches that name.';
+
+  @override
+  String get moreActionsTooltip => 'More';
 }

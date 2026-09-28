@@ -12,7 +12,7 @@ publish_to: 'none'
 # builds. Every release from here on must keep incrementing from 2014, never
 # reset lower — see the "versionCode poisoning" project memory for the full
 # incident writeups.
-version: 1.0.1+2014
+version: 1.1.0+2015
 
 environment:
   sdk: ^3.12.2

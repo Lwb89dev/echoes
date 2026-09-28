@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptyNotesMessage.
   ///
   /// In en, this message translates to:
-  /// **'No notes yet. Tap + to create one.'**
+  /// **'Nothing has echoed yet.'**
   String get emptyNotesMessage;
 
   /// No description provided for @notesTabLabel.
@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptyDiaryMessage.
   ///
   /// In en, this message translates to:
-  /// **'No diary entries yet. Tap + to write one.'**
+  /// **'This diary is still a blank page.'**
   String get emptyDiaryMessage;
 
   /// No description provided for @diaryToday.
@@ -1441,6 +1441,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not leave: {error}'**
   String abandonSharedNoteError(String error);
+
+  /// No description provided for @newPhotoOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get newPhotoOption;
+
+  /// No description provided for @newNoteSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'New note. Long press to write immediately, or tap for note, checklist, photo and voice.'**
+  String get newNoteSemantics;
+
+  /// No description provided for @pinNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pinNote;
+
+  /// No description provided for @unpinNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get unpinNote;
+
+  /// No description provided for @archiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archiveNote;
+
+  /// No description provided for @unarchiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Put back'**
+  String get unarchiveNote;
+
+  /// No description provided for @archiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archiveTitle;
+
+  /// No description provided for @emptyArchiveMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The archive is empty.'**
+  String get emptyArchiveMessage;
+
+  /// No description provided for @pinnedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get pinnedLabel;
+
+  /// No description provided for @notesOnDesk.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} on the desk'**
+  String notesOnDesk(int count);
+
+  /// No description provided for @syncLocalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Local'**
+  String get syncLocalLabel;
+
+  /// No description provided for @syncEchoedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Echoed'**
+  String get syncEchoedLabel;
+
+  /// No description provided for @syncPendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not echoed yet'**
+  String get syncPendingLabel;
+
+  /// No description provided for @noteColorPaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper'**
+  String get noteColorPaper;
+
+  /// No description provided for @noteColorSand.
+  ///
+  /// In en, this message translates to:
+  /// **'Sand'**
+  String get noteColorSand;
+
+  /// No description provided for @noteColorSage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sage'**
+  String get noteColorSage;
+
+  /// No description provided for @noteColorTerracotta.
+  ///
+  /// In en, this message translates to:
+  /// **'Terracotta'**
+  String get noteColorTerracotta;
+
+  /// No description provided for @noteColorLavender.
+  ///
+  /// In en, this message translates to:
+  /// **'Lavender'**
+  String get noteColorLavender;
+
+  /// No description provided for @noteColorOcean.
+  ///
+  /// In en, this message translates to:
+  /// **'Ocean'**
+  String get noteColorOcean;
+
+  /// No description provided for @noteColorCharcoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Charcoal'**
+  String get noteColorCharcoal;
+
+  /// No description provided for @echoesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Echoes'**
+  String get echoesSectionTitle;
+
+  /// No description provided for @echoesFromNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Echoes from {count} notes'**
+  String echoesFromNotes(int count);
+
+  /// No description provided for @echoesFromOneNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Echoes from 1 note'**
+  String get echoesFromOneNote;
+
+  /// No description provided for @echoesLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get echoesLinked;
+
+  /// No description provided for @linkANote.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a note'**
+  String get linkANote;
+
+  /// No description provided for @pickNoteToLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a note'**
+  String get pickNoteToLink;
+
+  /// No description provided for @noNotesToLink.
+  ///
+  /// In en, this message translates to:
+  /// **'There isn\'t another note to link yet.'**
+  String get noNotesToLink;
+
+  /// No description provided for @noteLinkMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No note matches that name.'**
+  String get noteLinkMissing;
+
+  /// No description provided for @moreActionsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get moreActionsTooltip;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

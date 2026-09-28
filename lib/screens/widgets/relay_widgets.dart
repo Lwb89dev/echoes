@@ -9,7 +9,11 @@ import '../../providers/relay_status_provider.dart';
 /// A text field + "add" button for entering a custom relay URL. Shared by
 /// Settings' relay section and the relay-setup step of [OnboardingScreen].
 class RelayUrlInput extends ConsumerStatefulWidget {
-  const RelayUrlInput({super.key});
+  const RelayUrlInput({super.key, this.outlined = true});
+
+  /// Settings already draws a card around this field. A second outline there
+  /// sits on top of that card, so the settings screen turns it off.
+  final bool outlined;
 
   @override
   ConsumerState<RelayUrlInput> createState() => _RelayUrlInputState();
@@ -42,7 +46,10 @@ class _RelayUrlInputState extends ConsumerState<RelayUrlInput> {
             controller: _urlController,
             decoration: InputDecoration(
               labelText: l.relayUrlHint,
-              border: const OutlineInputBorder(),
+              filled: widget.outlined,
+              border: widget.outlined ? const OutlineInputBorder() : InputBorder.none,
+              enabledBorder: widget.outlined ? null : InputBorder.none,
+              focusedBorder: widget.outlined ? null : InputBorder.none,
             ),
             onSubmitted: (_) => _addRelay(),
           ),
