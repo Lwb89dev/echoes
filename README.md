@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon/icon.png" alt="Echoes app icon" width="120" height="120">
+</p>
+
 # Echoes
 
 **Offline-first, end-to-end encrypted notes — synced privately over [Nostr](https://nostr.com), on your terms.**

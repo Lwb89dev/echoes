@@ -1691,6 +1691,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   /// was always on this screen before the read/edit split. The title
   /// itself lives in the app bar now (see [_buildAppBarTitle]), not here.
   Widget _buildEditBody(AppLocalizations l) {
+    final color = _color;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
         EchoesTokens.xl,
@@ -1734,17 +1735,38 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 controller: _bodyController,
                 focusNode: _bodyFocusNode,
                 contextMenuBuilder: _bodyContextMenuBuilder,
-                cursorColor: Theme.of(context).colorScheme.primary,
+                // Explicit colors, not just whatever `Theme.of(context)`
+                // hands back: this method is a plain instance method of the
+                // screen's own State, called — and its `Theme.of(context)`
+                // calls resolved — *before* `_applyNoteColorTheme` wraps the
+                // result in a recolored `Theme`, so that ancestor override
+                // never actually reaches a style built this way. The app's
+                // own ambient theme color leaking through here is exactly
+                // what made the body font unreadable on a light note color
+                // (paper/sand/sage/lavender/terracotta/ocean) while the app
+                // itself was in dark mode — right color computed, just never
+                // applied. Setting it explicitly, from the same `onColor`/
+                // `mutedColor` [_applyNoteColorTheme] itself computed,
+                // sidesteps the propagation gap instead of needing to fix it
+                // everywhere at once.
+                cursorColor: color?.onBackground ?? Theme.of(context).colorScheme.primary,
                 decoration: InputDecoration(
                   hintText: l.bodyFieldHint,
-                  hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  hintStyle: TextStyle(
+                    color: color == null
+                        ? Theme.of(context).colorScheme.onSurfaceVariant
+                        : mutedTextColorOn(color.background),
+                  ),
                   border: InputBorder.none,
                   filled: false,
                   contentPadding: EdgeInsets.zero,
                 ),
                 maxLines: null,
                 minLines: 10,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  height: 1.6,
+                  color: color?.onBackground,
+                ),
               ),
             ],
             const SizedBox(height: 12),
