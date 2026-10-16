@@ -12,7 +12,7 @@ publish_to: 'none'
 # builds. Every release from here on must keep incrementing from 2014, never
 # reset lower — see the "versionCode poisoning" project memory for the full
 # incident writeups.
-version: 1.1.1+2016
+version: 1.1.2+2017
 
 environment:
   sdk: ^3.12.2
@@ -195,28 +195,30 @@ flutter_launcher_icons:
     generate: true
     background_color: "#FCF8F0"
     theme_color: "#FCF8F0"
-  # Windows: generates windows/runner/resources/app_icon.ico from the same
-  # source image. Linux has no equivalent step here — its icon comes from
-  # the hicolor-themed PNG referenced by the Flatpak manifest instead (see
-  # org.echoes.echoes.json / org.echoes.echoes.appdata.xml) — kept in sync
-  # by hand (resized from the same assets/icon/icon.png) since this tool
-  # doesn't generate it.
+  # Windows embeds this as windows/runner/resources/app_icon.ico.
+  # icon_squircle.png keeps the artwork's rounded-squircle silhouette on a
+  # transparent canvas. icon.png stays the edge-to-edge square the Android
+  # and iOS masks expect; pointing Windows at that file paints the corners
+  # cream and the squircle disappears. Linux has no step here — hicolor
+  # PNGs under flatpak/ are the same squircle, resized by hand.
   windows:
     generate: true
-    image_path: "assets/icon/icon.png"
+    image_path: "assets/icon/icon_squircle.png"
     icon_size: 256
 
-# Native splash screen (the transparent notebook-and-quill mark over Echoes
-# teal). Regenerate with:
+# Native splash. The mark is the squircle itself (assets/icon/icon-new.png
+# with the black canvas removed), not a square flood-fill of it. Android 12
+# still masks the center image to a circle: splash_icon_android12.png is
+# 1152px with the whole squircle inside the 768px safe circle, so the mask
+# does not clip the corners. Regenerate with:
 #   dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#006F70"
-  color_dark: "#003B3C"
+  # Same backdrops as EchoesPalette, so the splash meets the first frame.
+  color: "#F6EEFF"
+  color_dark: "#160C28"
   image: assets/splash/splash_icon.png
   android_12:
-    # Android 12 masks the center image to a circle. This 1152px variant
-    # keeps the notebook-and-quill mark inside its documented safe area.
     image: assets/splash/splash_icon_android12.png
-    color: "#006F70"
-    color_dark: "#003B3C"
+    color: "#F6EEFF"
+    color_dark: "#160C28"
   web: false

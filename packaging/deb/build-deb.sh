@@ -2,8 +2,8 @@
 # Builds a single .deb of the Echoes Flutter Linux desktop app for
 # Debian-based distributions. One package, no split: the self-contained
 # Flutter bundle (executable + bundled libraries + assets) is installed under
-# /usr/lib/echoes, with a thin launcher on PATH, a desktop entry, icons and
-# AppStream metadata.
+# /usr/lib/echoes, with a thin launcher on PATH, a desktop entry, icons,
+# AppStream metadata, and an XDG autostart entry so Echoes opens at login.
 #
 # Usage: packaging/deb/build-deb.sh [--no-build]
 #   --no-build   package the existing build/linux/x64/release/bundle as-is
@@ -47,6 +47,8 @@ LAUNCH
 chmod 755 "$STAGE/usr/bin/echoes"
 
 # --- desktop entry ---------------------------------------------------------
+# One launcher. The same entry is installed for the menu and for session
+# autostart, so the package both shows up and opens itself at login.
 install -d "$STAGE/usr/share/applications"
 cat > "$STAGE/usr/share/applications/$APP_ID.desktop" <<DESKTOP
 [Desktop Entry]
@@ -59,8 +61,23 @@ Icon=$APP_ID
 Terminal=false
 Categories=Office;
 Keywords=notes;encrypted;nostr;diary;checklist;
+StartupNotify=true
 StartupWMClass=$APP_ID
 DESKTOP
+
+install -d "$STAGE/etc/xdg/autostart"
+cat > "$STAGE/etc/xdg/autostart/$APP_ID.desktop" <<AUTOSTART
+[Desktop Entry]
+Type=Application
+Name=Echoes
+Comment=Offline-first, end-to-end encrypted notes synced over Nostr
+Exec=echoes
+Icon=$APP_ID
+Terminal=false
+StartupNotify=true
+X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-Delay=3
+AUTOSTART
 
 # --- icons -----------------------------------------------------------------
 for size in 128 256 512; do
@@ -79,7 +96,7 @@ fi
 
 # --- control ---------------------------------------------------------------
 # Installed-Size in KiB, as dpkg expects.
-INSTALLED_KB="$(du -ks "$STAGE/usr" | cut -f1)"
+INSTALLED_KB="$(du -ks --exclude=DEBIAN "$STAGE" | cut -f1)"
 install -d "$STAGE/DEBIAN"
 cat > "$STAGE/DEBIAN/control" <<CONTROL
 Package: echoes
@@ -99,9 +116,41 @@ Description: Offline-first, end-to-end encrypted notes over Nostr
  and file hosts only ever see ciphertext.
 CONTROL
 
+# --- maintainer scripts ----------------------------------------------------
+# Refresh the menu and the icon cache so the launcher is usable immediately,
+# without a relogin. Failures here must not fail the install.
+cat > "$STAGE/DEBIAN/postinst" <<'POSTINST'
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ]; then
+  if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications || true
+  fi
+  if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -q /usr/share/icons/hicolor || true
+  fi
+fi
+POSTINST
+chmod 755 "$STAGE/DEBIAN/postinst"
+
+cat > "$STAGE/DEBIAN/postrm" <<'POSTRM'
+#!/bin/sh
+set -e
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+  if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications || true
+  fi
+  if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -q /usr/share/icons/hicolor || true
+  fi
+fi
+POSTRM
+chmod 755 "$STAGE/DEBIAN/postrm"
+
 # --- desktop-file validation (best effort) ---------------------------------
 if command -v desktop-file-validate >/dev/null 2>&1; then
   desktop-file-validate "$STAGE/usr/share/applications/$APP_ID.desktop" || true
+  desktop-file-validate "$STAGE/etc/xdg/autostart/$APP_ID.desktop" || true
 fi
 
 # --- build -----------------------------------------------------------------
