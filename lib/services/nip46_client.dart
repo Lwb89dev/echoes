@@ -5,8 +5,134 @@ import 'dart:math';
 
 import 'package:dart_nostr/dart_nostr.dart';
 
+import '../utils/constants.dart';
 import '../utils/crypto.dart';
 import '../utils/network_url.dart';
+
+/// Constant-time compare for a NIP-46 association secret. A mismatch of
+/// length returns false immediately; equal lengths never stop at the first
+/// differing byte.
+bool nip46SecretsMatch(String? offered, String expected) {
+  if (offered == null) return false;
+  final left = utf8.encode(offered);
+  final right = utf8.encode(expected);
+  if (left.length != right.length) return false;
+  var diff = 0;
+  for (var i = 0; i < left.length; i++) {
+    diff |= left[i] ^ right[i];
+  }
+  return diff == 0;
+}
+
+String _redactSecret(String message, String secret) {
+  if (secret.isEmpty || !message.contains(secret)) return message;
+  return 'The signer rejected the connection.';
+}
+
+/// A client-initiated NIP-46 connection. The ephemeral keypair is the
+/// transport identity only — it is not the user's Nostr identity — and
+/// [secret] is single-use handshake material. Neither value is logged.
+/// [toString] redacts both.
+class Nip46ConnectOffer {
+  Nip46ConnectOffer({
+    required this.clientPrivateKeyHex,
+    required this.clientPublicKeyHex,
+    required this.secret,
+    required this.relays,
+    required this.uri,
+  });
+
+  final String clientPrivateKeyHex;
+  final String clientPublicKeyHex;
+  final String secret;
+  final List<String> relays;
+  final String uri;
+
+  /// Smallest permission set Echoes needs from a remote signer: publish and
+  /// delete notes, authorize Blossom and NIP-96 uploads, and NIP-44
+  /// encrypt/decrypt kind 30078 payloads. No other methods are requested.
+  static List<String> get permissions => [
+    'sign_event:${AppConstants.noteEventKind}',
+    'sign_event:${AppConstants.deletionEventKind}',
+    'sign_event:${AppConstants.nip98AuthEventKind}',
+    'sign_event:${AppConstants.blossomAuthEventKind}',
+    'nip44_encrypt',
+    'nip44_decrypt',
+  ];
+
+  factory Nip46ConnectOffer.generate({
+    required List<String> relays,
+    String name = 'Echoes',
+    String url = 'https://github.com/Lwb89dev/echoes',
+  }) {
+    if (relays.isEmpty) {
+      throw const Nip46Exception('A Nostr Connect URI needs at least one relay.');
+    }
+    final relayUrls = [for (final relay in relays) requireWebSocketUri(relay).toString()];
+    final clientPrivateKeyHex = Nostr.instance.keys.generatePrivateKey();
+    final clientPublicKeyHex = Nostr.instance.keys
+        .generateKeyPairFromExistingPrivateKey(clientPrivateKeyHex)
+        .public
+        .toLowerCase();
+    final secret = _randomSecret();
+    return Nip46ConnectOffer(
+      clientPrivateKeyHex: clientPrivateKeyHex,
+      clientPublicKeyHex: clientPublicKeyHex,
+      secret: secret,
+      relays: List<String>.unmodifiable(relayUrls),
+      uri: _buildUri(
+        clientPublicKeyHex: clientPublicKeyHex,
+        relays: relayUrls,
+        secret: secret,
+        name: name,
+        url: url,
+      ),
+    );
+  }
+
+  static String _randomSecret() {
+    final bytes = List<int>.generate(32, (_) => Random.secure().nextInt(256));
+    return bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
+  }
+
+  static String _buildUri({
+    required String clientPublicKeyHex,
+    required List<String> relays,
+    required String secret,
+    required String name,
+    required String url,
+  }) {
+    final parts = <String>[
+      for (final relay in relays) 'relay=${Uri.encodeQueryComponent(relay)}',
+      'secret=${Uri.encodeQueryComponent(secret)}',
+      'perms=${Uri.encodeQueryComponent(permissions.join(','))}',
+      'name=${Uri.encodeQueryComponent(name)}',
+      'url=${Uri.encodeQueryComponent(url)}',
+    ];
+    return 'nostrconnect://$clientPublicKeyHex?${parts.join('&')}';
+  }
+
+  @override
+  String toString() => 'Nip46ConnectOffer(client=$clientPublicKeyHex, relays=$relays)';
+}
+
+/// Cancel handle for a [Nip46Client.discover] wait. The UI calls [cancel]
+/// when the user dismisses the QR; the in-flight login then fails and the
+/// transport key is dropped with the client.
+class Nip46LoginAttempt {
+  Nip46Client? _client;
+  bool cancelled = false;
+
+  void attach(Nip46Client client) {
+    _client = client;
+    if (cancelled) client.dispose();
+  }
+
+  Future<void> cancel() async {
+    cancelled = true;
+    await _client?.dispose();
+  }
+}
 
 /// A NIP-46 ("Nostr Connect" / remote signing) client — the desktop- and
 /// mobile-friendly alternative to holding an nsec or to Amber's Android-only
@@ -35,12 +161,42 @@ import '../utils/network_url.dart';
 ///  * Nothing sensitive is ever logged: not the client key, not the connect
 ///    secret, not any decrypted payload.
 class Nip46Client {
-  Nip46Client({required this.session, this.onAuthChallenge})
-    : _clientKeyPairs = Nostr.instance.keys.generateKeyPairFromExistingPrivateKey(
+  Nip46Client({required Nip46Session session, this.onAuthChallenge, bool signerPinned = true})
+    : session = session,
+      _signerPinned = signerPinned,
+      _clientKeyPairs = Nostr.instance.keys.generateKeyPairFromExistingPrivateKey(
         session.clientPrivateKeyHex,
       );
 
-  final Nip46Session session;
+  /// Listens for a signer that scanned [offer]'s `nostrconnect://` URI.
+  /// The remote signer pubkey is unknown until that signer proves it knows
+  /// [Nip46ConnectOffer.secret].
+  factory Nip46Client.discover({
+    required String clientPrivateKeyHex,
+    required List<String> relays,
+    required String secret,
+    void Function(String authUrl)? onAuthChallenge,
+  }) {
+    if (secret.isEmpty) {
+      throw const Nip46Exception('The connection secret is missing.');
+    }
+    final keys = Nostr.instance.keys.generateKeyPairFromExistingPrivateKey(clientPrivateKeyHex);
+    return Nip46Client(
+      session: Nip46Session(
+        clientPrivateKeyHex: clientPrivateKeyHex,
+        remoteSignerPubHex: keys.public.toLowerCase(),
+        relays: relays,
+        userPubHex: '',
+        secret: secret,
+      ),
+      onAuthChallenge: onAuthChallenge,
+      signerPinned: false,
+    );
+  }
+
+  Nip46Session session;
+
+  bool _signerPinned;
 
   /// Invoked when the signer asks the user to approve the connection out of
   /// band (it returns an `auth_url` instead of an immediate result). The UI
@@ -64,6 +220,7 @@ class Nip46Client {
   final Nostr _nostr = Nostr();
   final _pending = <String, Completer<String>>{};
   final _authNotified = <String>{};
+  Completer<void>? _discovered;
   NostrEventsStream? _subscription;
   StreamSubscription<NostrEvent>? _streamSub;
 
@@ -77,6 +234,11 @@ class Nip46Client {
 
   /// Opens the transport: connects the bunker relay(s) and starts listening
   /// for responses addressed to our ephemeral client key. Idempotent.
+  ///
+  /// Until the remote signer is pinned (the `nostrconnect://` wait), the
+  /// subscription cannot filter by author — that pubkey is what the
+  /// handshake is supposed to discover. After the pin, events from any
+  /// other author are dropped in [_onEvent].
   Future<void> start() async {
     if (_subscription != null) return;
     developer.log('Nip46Client.start', name: 'Nip46Client');
@@ -86,7 +248,7 @@ class Nip46Client {
         filters: [
           NostrFilter(
             kinds: const [24133],
-            authors: [session.remoteSignerPubHex],
+            authors: _signerPinned ? [session.remoteSignerPubHex] : null,
             p: [clientPublicKeyHex],
           ),
         ],
@@ -94,6 +256,75 @@ class Nip46Client {
     );
     _subscription = sub;
     _streamSub = sub.stream.listen(_onEvent);
+  }
+
+  /// Resolves when a remote signer returns [Nip46Session.secret] as the
+  /// `connect` response result. The signer's pubkey is taken from that
+  /// event's author, and only after the signature and the secret both check
+  /// out. A wrong secret is ignored so a stranger who learned the client
+  /// pubkey cannot finish the handshake.
+  Future<void> waitForSigner({Duration timeout = const Duration(minutes: 5)}) async {
+    if (_signerPinned) return;
+    final discovered = _discovered ??= Completer<void>();
+    await start();
+    try {
+      await discovered.future.timeout(
+        timeout,
+        onTimeout: () =>
+            throw const Nip46Exception('The signer did not approve the connection in time.'),
+      );
+    } on Nip46Exception {
+      rethrow;
+    }
+  }
+
+  /// Asks the signer which relays should carry the session from now on.
+  /// A missing method, a refusal, or `null` keeps the relays already in
+  /// use. Never throws — a signer that does not implement `switch_relays`
+  /// is still a usable signer.
+  Future<void> trySwitchRelays() async {
+    if (!_signerPinned) return;
+    try {
+      final raw = await _request('switch_relays', const []);
+      final decoded = jsonDecode(raw);
+      if (decoded is! List || decoded.isEmpty) return;
+      final next = <String>[];
+      for (final item in decoded) {
+        if (item is! String) return;
+        next.add(requireWebSocketUri(item).toString());
+      }
+      session = Nip46Session(
+        clientPrivateKeyHex: session.clientPrivateKeyHex,
+        remoteSignerPubHex: session.remoteSignerPubHex,
+        relays: next,
+        userPubHex: session.userPubHex,
+      );
+    } catch (_) {
+      // The handshake already succeeded. Relay preference is optional.
+    }
+  }
+
+  /// Replaces the in-memory session, usually to drop the single-use connect
+  /// secret once the account pubkey is known. The replacement must already
+  /// be valid.
+  void adoptSession(Nip46Session next) {
+    next._validate();
+    session = next;
+    _signerPinned = true;
+  }
+
+  /// Tells the signer this session is over, then closes the local transport.
+  /// The remote `logout` is a courtesy: local key material is dropped either
+  /// way, including when the signer is offline or refuses.
+  Future<void> logout() async {
+    if (_signerPinned && _subscription != null) {
+      try {
+        await _request('logout', const []);
+      } catch (_) {
+        // Offline, rejected, or already gone. Local deletion still happens.
+      }
+    }
+    await dispose();
   }
 
   /// Sends the `connect` handshake and resolves the account's real pubkey via
@@ -135,7 +366,11 @@ class Nip46Client {
   Future<String> nip44Decrypt({required String peerPubkey, required String ciphertext}) =>
       _request('nip44_decrypt', [peerPubkey, ciphertext]);
 
+  bool _closed = false;
+
   Future<void> dispose() async {
+    if (_closed) return;
+    _closed = true;
     await _streamSub?.cancel();
     _subscription?.close();
     _streamSub = null;
@@ -146,6 +381,13 @@ class Nip46Client {
       }
     }
     _pending.clear();
+    final discovered = _discovered;
+    if (discovered != null && !discovered.isCompleted) {
+      // A timed-out wait may already have dropped its listener. ignore()
+      // keeps completeError from becoming an unhandled async error.
+      discovered.future.ignore();
+      discovered.completeError(const Nip46Exception('Client disposed.'));
+    }
     // Close the dedicated transport's sockets so logout doesn't leave a live
     // connection to the signer relay hanging around. A later login re-inits.
     try {
@@ -161,6 +403,9 @@ class Nip46Client {
   /// a kind-24133 event signed by the ephemeral client key, and awaits the
   /// matching response. The request id ties the response back to this call.
   Future<String> _request(String method, List<String> params) async {
+    if (!_signerPinned) {
+      throw const Nip46Exception('The signer has not finished connecting.');
+    }
     await start();
     final id = _randomId();
     final payload = jsonEncode({'id': id, 'method': method, 'params': params});
@@ -201,9 +446,11 @@ class Nip46Client {
   /// security boundary — see the class doc. A failed check drops the event
   /// silently: it is not a response we can trust, so it is not a response.
   void _onEvent(NostrEvent event) {
-    if (event.pubkey != session.remoteSignerPubHex) return;
+    if (event.kind != 24133) return;
     if (!_pTaggedToClient(event)) return;
     if (!_isVerified(event)) return;
+    final author = event.pubkey.toLowerCase();
+    if (_signerPinned && author != session.remoteSignerPubHex.toLowerCase()) return;
     final content = event.content;
     if (content == null || content.isEmpty) return;
 
@@ -212,7 +459,7 @@ class Nip46Client {
       plaintext = CryptoUtils.decryptNip44(
         ciphertext: content,
         privateKeyHex: session.clientPrivateKeyHex,
-        senderPublicKeyHex: session.remoteSignerPubHex,
+        senderPublicKeyHex: author,
       );
     } catch (_) {
       return; // Not actually encrypted to us — ignore.
@@ -220,6 +467,10 @@ class Nip46Client {
 
     final response = parseResponse(plaintext);
     if (response == null) return;
+    if (!_signerPinned) {
+      _acceptDiscovery(author, response);
+      return;
+    }
     final completer = _pending[response.id];
     if (completer == null) return; // Unknown or already-served id.
 
@@ -236,10 +487,35 @@ class Nip46Client {
 
     _pending.remove(response.id);
     if (response.error != null && response.error!.isNotEmpty) {
-      completer.completeError(Nip46Exception(response.error!));
+      final secret = session.secret;
+      final message = secret == null ? response.error! : _redactSecret(response.error!, secret);
+      completer.completeError(Nip46Exception(message));
     } else {
       completer.complete(response.result ?? '');
     }
+  }
+
+  /// Pins the remote signer only when [response] carries the exact connect
+  /// secret. An error paired with that secret is a real rejection. Any other
+  /// payload is ignored.
+  void _acceptDiscovery(String author, Nip46Response response) {
+    final secret = session.secret;
+    final discovered = _discovered;
+    if (secret == null || discovered == null || discovered.isCompleted) return;
+    if (!nip46SecretsMatch(response.result, secret)) return;
+    if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(author)) return;
+    if (response.error != null && response.error!.isNotEmpty) {
+      discovered.completeError(Nip46Exception(_redactSecret(response.error!, secret)));
+      return;
+    }
+    session = Nip46Session(
+      clientPrivateKeyHex: session.clientPrivateKeyHex,
+      remoteSignerPubHex: author,
+      relays: session.relays,
+      userPubHex: '',
+    );
+    _signerPinned = true;
+    discovered.complete();
   }
 
   bool _pTaggedToClient(NostrEvent event) {
@@ -374,10 +650,10 @@ class Nip46Session {
   };
 
   factory Nip46Session.fromJson(Map<String, dynamic> json) => Nip46Session(
-    clientPrivateKeyHex: json['clientPrivateKeyHex'] as String,
-    remoteSignerPubHex: json['remoteSignerPubHex'] as String,
+    clientPrivateKeyHex: (json['clientPrivateKeyHex'] as String).toLowerCase(),
+    remoteSignerPubHex: (json['remoteSignerPubHex'] as String).toLowerCase(),
     relays: (json['relays'] as List<dynamic>).map((e) => e as String).toList(),
-    userPubHex: json['userPubHex'] as String,
+    userPubHex: (json['userPubHex'] as String).toLowerCase(),
     secret: json['secret'] as String?,
   ).._validate();
 

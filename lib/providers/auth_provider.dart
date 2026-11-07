@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/user.dart';
+import '../services/nip46_client.dart';
 import 'service_providers.dart';
 
 /// Global authentication state: `null` = no local Nostr account, so
@@ -74,16 +75,56 @@ class AuthNotifier extends AsyncNotifier<User?> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final nostrService = ref.read(nostrServiceProvider);
-      final localStorageService = ref.read(localStorageServiceProvider);
       final result = await nostrService.loginWithBunker(
         bunkerUri,
         onAuthChallenge: onAuthChallenge,
       );
-      await localStorageService.saveBunkerSession(result.session);
-      await localStorageService.savePublicKey(result.user.publicKeyHex);
-      await localStorageService.saveLoginMethod(LoginMethod.bunker);
+      await _persistBunker(result.session, result.user);
       return result.user;
     });
+  }
+
+  /// Login with a signer that scans a `nostrconnect://` QR. Same persisted
+  /// session shape as [loginWithBunker]: transport key in the keyring, no
+  /// association secret, no user nsec. [attempt] cancels the wait.
+  Future<void> loginWithNostrConnect(
+    Nip46ConnectOffer offer, {
+    Duration timeout = const Duration(minutes: 5),
+    Nip46LoginAttempt? attempt,
+    void Function(String authUrl)? onAuthChallenge,
+  }) async {
+    developer.log('AuthNotifier.loginWithNostrConnect called', name: 'AuthNotifier');
+    state = const AsyncLoading();
+    final next = await AsyncValue.guard(() async {
+      final nostrService = ref.read(nostrServiceProvider);
+      final result = await nostrService.loginWithNostrConnect(
+        offer,
+        timeout: timeout,
+        attempt: attempt,
+        onAuthChallenge: onAuthChallenge,
+      );
+      await _persistBunker(result.session, result.user);
+      return result.user;
+    });
+    if (attempt?.cancelled == true) {
+      state = const AsyncData(null);
+      return;
+    }
+    state = next;
+  }
+
+  Future<void> _persistBunker(Nip46Session session, User user) async {
+    final localStorageService = ref.read(localStorageServiceProvider);
+    final nostrService = ref.read(nostrServiceProvider);
+    try {
+      await localStorageService.saveBunkerSession(session);
+      await localStorageService.savePublicKey(user.publicKeyHex);
+      await localStorageService.saveLoginMethod(LoginMethod.bunker);
+    } catch (e) {
+      await nostrService.logoutBunker();
+      await localStorageService.clearSession();
+      rethrow;
+    }
   }
 
   /// Imports an existing Nostr account from a private key (hex or nsec).
