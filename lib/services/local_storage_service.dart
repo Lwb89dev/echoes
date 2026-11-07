@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,6 +9,7 @@ import '../models/note.dart';
 import '../models/relay.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
+import 'credential_store.dart';
 import 'nip46_client.dart';
 import 'note_encryption_service.dart';
 
@@ -20,10 +20,14 @@ import 'note_encryption_service.dart';
 /// to [NostrService] for syncing — the user must never lose a note just
 /// because there is no network connection.
 class LocalStorageService {
-  LocalStorageService({required NoteEncryptionService noteEncryptionService})
-    : _noteEncryption = noteEncryptionService;
+  LocalStorageService({
+    required NoteEncryptionService noteEncryptionService,
+    CredentialStore? credentials,
+  }) : _noteEncryption = noteEncryptionService,
+       _credentials = credentials ?? SecureCredentialStore();
 
   final NoteEncryptionService _noteEncryption;
+  final CredentialStore _credentials;
 
   Box<Map>? _notesBox;
 
@@ -349,28 +353,28 @@ class LocalStorageService {
   // [LoginMethod.amber] there is no private key to store here at all.
   // ---------------------------------------------------------------------
 
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
   /// Persists the private key (hex) in the native keystore/keychain. Only
   /// used for [LoginMethod.privateKey]: with Amber there is no key to save.
+  /// Refuses to write when Secret Service is missing. Never falls back to
+  /// SharedPreferences.
   Future<void> savePrivateKey(String privateKeyHex) async {
     developer.log('LocalStorageService.savePrivateKey called', name: 'LocalStorageService');
-    await _secureStorage.write(key: AppConstants.secureStoragePrivateKeyKey, value: privateKeyHex);
+    await _credentials.write(key: AppConstants.secureStoragePrivateKeyKey, value: privateKeyHex);
   }
 
   /// Reads the saved private key, if any (null when there is no local
   /// session, including the Amber case).
   Future<String?> loadPrivateKey() async {
     developer.log('LocalStorageService.loadPrivateKey called', name: 'LocalStorageService');
-    return _secureStorage.read(key: AppConstants.secureStoragePrivateKeyKey);
+    return _credentials.read(key: AppConstants.secureStoragePrivateKeyKey);
   }
 
   /// Clears the private key, if any.
   Future<void> clearPrivateKey() async {
     developer.log('LocalStorageService.clearPrivateKey called', name: 'LocalStorageService');
-    await _secureStorage.delete(key: AppConstants.secureStoragePrivateKeyKey);
+    await _credentials.delete(key: AppConstants.secureStoragePrivateKeyKey);
   }
 
   /// Persists the NIP-46 bunker [session] JSON in the native keystore. It
@@ -378,9 +382,10 @@ class LocalStorageService {
   /// never in SharedPreferences.
   Future<void> saveBunkerSession(Nip46Session session) async {
     developer.log('LocalStorageService.saveBunkerSession called', name: 'LocalStorageService');
-    await _secureStorage.write(
+    final stored = session.withoutSecret();
+    await _credentials.write(
       key: AppConstants.secureStorageBunkerSessionKey,
-      value: jsonEncode(session.toJson()),
+      value: jsonEncode(stored.toJson()),
     );
   }
 
@@ -388,7 +393,7 @@ class LocalStorageService {
   /// unreadable — treated as "no session" rather than crashing login).
   Future<Nip46Session?> loadBunkerSession() async {
     developer.log('LocalStorageService.loadBunkerSession called', name: 'LocalStorageService');
-    final raw = await _secureStorage.read(key: AppConstants.secureStorageBunkerSessionKey);
+    final raw = await _credentials.read(key: AppConstants.secureStorageBunkerSessionKey);
     if (raw == null) return null;
     try {
       final session = Nip46Session.fromJson(jsonDecode(raw) as Map<String, dynamic>);
@@ -404,7 +409,7 @@ class LocalStorageService {
 
   Future<void> clearBunkerSession() async {
     developer.log('LocalStorageService.clearBunkerSession called', name: 'LocalStorageService');
-    await _secureStorage.delete(key: AppConstants.secureStorageBunkerSessionKey);
+    await _credentials.delete(key: AppConstants.secureStorageBunkerSessionKey);
   }
 
   /// Clears the whole local session, including both possible local secrets
