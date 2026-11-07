@@ -20,6 +20,37 @@ import 'widgets/nostr_login_form.dart';
 ///
 /// TODO: for people who don't have a Nostr account yet, this should
 /// eventually point to a full client like Amethyst to create one.
+class _LoginBody extends StatelessWidget {
+  const _LoginBody({required this.subtitle});
+
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const BrandMark(size: 96),
+        const SizedBox(height: 20),
+        Text(AppConstants.appName, style: Theme.of(context).textTheme.displaySmall),
+        const SizedBox(height: 8),
+        Text(subtitle, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+        const SizedBox(height: 32),
+        EchoesSurface(
+          padding: const EdgeInsets.all(EchoesTokens.lg),
+          child: NostrLoginForm(
+            onLoggedIn: () {
+              Navigator.of(
+                context,
+              ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -27,37 +58,20 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
 
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const BrandMark(size: 128),
-                const SizedBox(height: 20),
-                Text(AppConstants.appName, style: Theme.of(context).textTheme.displaySmall),
-                const SizedBox(height: 8),
-                Text(
-                  l.loginSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                EchoesSurface(
-                  padding: const EdgeInsets.all(EchoesTokens.lg),
-                  child: NostrLoginForm(
-                    onLoggedIn: () {
-                      Navigator.of(
-                        context,
-                      ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final available = constraints.maxHeight - 48 - bottomInset;
+            return SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + bottomInset),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: available < 0 ? 0 : available),
+                child: Center(child: _LoginBody(subtitle: l.loginSubtitle)),
+              ),
+            );
+          },
         ),
       ),
     );

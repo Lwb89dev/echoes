@@ -36,6 +36,29 @@ class AppLocalizationsIt extends AppLocalizations {
   String get bunkerAuthPrompt => 'Approva la connessione nel tuo firmatario, poi torna qui';
 
   @override
+  String get nostrConnectButton => 'Collega un firmatario con il QR';
+
+  @override
+  String get nostrConnectHint =>
+      'Inquadra il codice con Amber, nsec.app o un altro firmatario NIP-46. Echoes non riceve la chiave privata.';
+
+  @override
+  String get copyNostrConnectButton => 'Copia il collegamento';
+
+  @override
+  String get nostrConnectCopied => 'Collegamento copiato';
+
+  @override
+  String get nostrConnectWaiting => 'In attesa dell\'approvazione del firmatario…';
+
+  @override
+  String get cancelNostrConnectButton => 'Annulla';
+
+  @override
+  String get secretStorageUnavailable =>
+      'Il portachiavi di sistema è bloccato o assente. Echoes non salva l\'account finché Secret Service non è disponibile.';
+
+  @override
   String get relaysTitle => 'Relay';
 
   @override

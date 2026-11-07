@@ -200,6 +200,48 @@ abstract class AppLocalizations {
   /// **'Approve the connection in your signer, then come back'**
   String get bunkerAuthPrompt;
 
+  /// No description provided for @nostrConnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect a signer with a QR code'**
+  String get nostrConnectButton;
+
+  /// No description provided for @nostrConnectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this with Amber, nsec.app, or another NIP-46 signer. Echoes never receives your private key.'**
+  String get nostrConnectHint;
+
+  /// No description provided for @copyNostrConnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get copyNostrConnectButton;
+
+  /// No description provided for @nostrConnectCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection link copied'**
+  String get nostrConnectCopied;
+
+  /// No description provided for @nostrConnectWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the signer to approve…'**
+  String get nostrConnectWaiting;
+
+  /// No description provided for @cancelNostrConnectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelNostrConnectButton;
+
+  /// No description provided for @secretStorageUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The system keyring is locked or missing. Echoes will not save the account until Secret Service is available.'**
+  String get secretStorageUnavailable;
+
   /// No description provided for @relaysTitle.
   ///
   /// In en, this message translates to:

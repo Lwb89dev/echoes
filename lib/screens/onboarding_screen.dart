@@ -260,9 +260,10 @@ class _LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.fromLTRB(24, 16, 24, 16 + bottomInset),
       child: MaxWidthCenter(
         maxWidth: 480,
         child: Column(

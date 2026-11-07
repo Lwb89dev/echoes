@@ -36,6 +36,29 @@ class AppLocalizationsDa extends AppLocalizations {
   String get bunkerAuthPrompt => 'Godkend forbindelsen i din signer, og kom tilbage';
 
   @override
+  String get nostrConnectButton => 'Connect a signer with a QR code';
+
+  @override
+  String get nostrConnectHint =>
+      'Scan this with Amber, nsec.app, or another NIP-46 signer. Echoes never receives your private key.';
+
+  @override
+  String get copyNostrConnectButton => 'Copy link';
+
+  @override
+  String get nostrConnectCopied => 'Connection link copied';
+
+  @override
+  String get nostrConnectWaiting => 'Waiting for the signer to approve…';
+
+  @override
+  String get cancelNostrConnectButton => 'Cancel';
+
+  @override
+  String get secretStorageUnavailable =>
+      'The system keyring is locked or missing. Echoes will not save the account until Secret Service is available.';
+
+  @override
   String get relaysTitle => 'Relæer';
 
   @override
