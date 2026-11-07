@@ -53,6 +53,7 @@ flutter run        # add -d linux to run the desktop build
 - **Android**: `flutter build apk --release` produces per-ABI APKs under `build/app/outputs/flutter-apk/`. Release signing is read from `android/key.properties` (never committed).
 - **Debian/Ubuntu**: `./packaging/deb/build-deb.sh` builds a single `.deb` of the Linux desktop app into `dist/`.
 - **Flatpak**: a manifest for `org.echoes.echoes` lives under `flatpak/`.
+- **Arch Linux / Arch Linux ARM**: `packaging/arch/PKGBUILD` builds a native package when Flutter is already on `PATH`. It does not cross-compile and it does not download an SDK. The AArch64 prebuilt recipe and the status of the Omarchy Mobile port are in [`docs/OMAMOBILE-PORTING.md`](docs/OMAMOBILE-PORTING.md). On Linux, sign-in is NIP-46 (`nostrconnect://` or `bunker://`) or an explicit nsec import. Amber stays on Android.
 
 ### Development
 

@@ -134,6 +134,10 @@ dependencies:
   # the device fell asleep mid-take.
   wakelock_plus: ^1.5.2
 
+  # QR for the NIP-46 nostrconnect:// handshake. Pure Dart (no native
+  # library), so the same widget runs on Android and on Linux ARM64.
+  qr_flutter: ^4.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

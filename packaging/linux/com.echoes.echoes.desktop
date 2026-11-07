@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Name=Echoes
+GenericName=Notes
+Comment=Offline-first, end-to-end encrypted notes synced over Nostr
+Exec=echoes
+Icon=com.echoes.echoes
+Terminal=false
+Categories=Office;
+Keywords=notes;encrypted;nostr;diary;checklist;
+StartupNotify=true
+# GTK application id from linux/CMakeLists.txt. On Hyprland this is what
+# ties the window to the launcher. The Flutter Linux embedder is GTK; under
+# Hyprland it is often an XWayland client unless the engine is running as a
+# native Wayland client.
+StartupWMClass=com.echoes.echoes

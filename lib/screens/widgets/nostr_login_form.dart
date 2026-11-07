@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../models/relay.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/relay_provider.dart';
+import '../../services/credential_store.dart';
+import '../../services/nip46_client.dart';
 import '../../utils/network_url.dart';
 import '../../utils/platform_support.dart';
+import 'nostr_connect_panel.dart';
 
-/// The Amber / import-nsec login controls, shared by [LoginScreen] and the
-/// onboarding carousel's login step. Calls [onLoggedIn] once [authProvider]
-/// resolves to a non-null user right after a login attempt — the two call
-/// sites decide what "logged in" means for them (push to [HomeScreen],
-/// advance to the next onboarding page, pop a dialog, ...).
+/// The Amber / NIP-46 / import-nsec login controls, shared by [LoginScreen]
+/// and the onboarding carousel's login step. Calls [onLoggedIn] once
+/// [authProvider] resolves to a non-null user right after a login attempt.
 class NostrLoginForm extends ConsumerStatefulWidget {
   const NostrLoginForm({super.key, required this.onLoggedIn});
 
@@ -26,11 +30,16 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
   final _bunkerController = TextEditingController();
   bool _showImportField = false;
   bool _showBunkerField = false;
+  Nip46ConnectOffer? _offer;
+  Nip46LoginAttempt? _attempt;
 
   @override
   void dispose() {
     _importController.dispose();
     _bunkerController.dispose();
+    final attempt = _attempt;
+    _attempt = null;
+    attempt?.cancel();
     super.dispose();
   }
 
@@ -55,6 +64,42 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
     _notifyIfLoggedIn();
   }
 
+  List<String> _connectRelays() {
+    final configured = ref.read(relayProvider).value;
+    final urls = configured?.map((relay) => relay.url).where((url) => url.isNotEmpty).toList();
+    if (urls != null && urls.isNotEmpty) return urls;
+    return defaultRelayUrls;
+  }
+
+  Future<void> _startNostrConnect() async {
+    final offer = Nip46ConnectOffer.generate(relays: _connectRelays());
+    final attempt = Nip46LoginAttempt();
+    setState(() {
+      _offer = offer;
+      _attempt = attempt;
+    });
+    await ref.read(authProvider.notifier).loginWithNostrConnect(offer, attempt: attempt);
+    if (!mounted) return;
+    _notifyIfLoggedIn();
+  }
+
+  Future<void> _cancelNostrConnect() async {
+    final attempt = _attempt;
+    _attempt = null;
+    setState(() => _offer = null);
+    await attempt?.cancel();
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _copyNostrConnect() async {
+    final uri = _offer?.uri;
+    if (uri == null) return;
+    await Clipboard.setData(ClipboardData(text: uri));
+    if (!mounted) return;
+    final l = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.nostrConnectCopied)));
+  }
+
   /// The signer asked the user to approve the connection out of band: open the
   /// URL it handed us and tell the user to approve there. The connect call is
   /// still waiting, so the real result lands once they do.
@@ -73,11 +118,19 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
     if (ref.read(authProvider).value != null) widget.onLoggedIn();
   }
 
+  String _errorText(AppLocalizations l, Object error) {
+    if (error is InvalidPrivateKeyException) return l.invalidPrivateKeyError;
+    if (error is SecretStorageException) return l.secretStorageUnavailable;
+    return l.genericErrorPrefix(error.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading;
+    final offer = _offer;
+    final buttonSize = const Size(48, 48);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -87,52 +140,39 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Text(
-              // Never interpolate the raw error for a bad private key: it
-              // can embed the key the user just typed (see
-              // [InvalidPrivateKeyException]). Only non-key errors (e.g.
-              // Amber failures) get the detailed message.
-              authState.error is InvalidPrivateKeyException
-                  ? l.invalidPrivateKeyError
-                  : l.genericErrorPrefix(authState.error.toString()),
+              _errorText(l, authState.error!),
               style: TextStyle(color: Theme.of(context).colorScheme.error),
               textAlign: TextAlign.center,
             ),
           ),
-        // Amber (NIP-55) is Android-only — see [PlatformSupport.supportsAmber].
         if (PlatformSupport.supportsAmber) ...[
           FilledButton.icon(
             onPressed: isLoading ? null : _loginWithAmber,
             icon: const Icon(Icons.shield_outlined),
             label: Text(l.loginWithAmberButton),
+            style: FilledButton.styleFrom(minimumSize: buttonSize),
           ),
           const SizedBox(height: 12),
         ],
-        OutlinedButton.icon(
-          onPressed: isLoading ? null : () => setState(() => _showImportField = !_showImportField),
-          icon: const Icon(Icons.key),
-          label: Text(l.importAccountButton),
+        FilledButton.icon(
+          onPressed: isLoading ? null : _startNostrConnect,
+          icon: const Icon(Icons.qr_code_2),
+          label: Text(l.nostrConnectButton),
+          style: FilledButton.styleFrom(minimumSize: buttonSize),
         ),
-        if (_showImportField) ...[
-          const SizedBox(height: 16),
-          TextField(
-            controller: _importController,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: l.importAccountFieldLabel,
-              border: const OutlineInputBorder(),
-            ),
+        if (offer != null)
+          NostrConnectPanel(
+            uri: offer.uri,
+            waiting: isLoading,
+            onCopy: _copyNostrConnect,
+            onCancel: _cancelNostrConnect,
           ),
-          const SizedBox(height: 12),
-          FilledButton(onPressed: isLoading ? null : _importAccount, child: Text(l.importButton)),
-        ],
         const SizedBox(height: 12),
-        // Remote signer (NIP-46 "bunker") — every platform, unlike Amber.
-        // The private key stays in the signer; the app only ever holds an
-        // ephemeral connection key.
         OutlinedButton.icon(
           onPressed: isLoading ? null : () => setState(() => _showBunkerField = !_showBunkerField),
           icon: const Icon(Icons.hub_outlined),
           label: Text(l.bunkerLoginButton),
+          style: OutlinedButton.styleFrom(minimumSize: buttonSize),
         ),
         if (_showBunkerField) ...[
           const SizedBox(height: 16),
@@ -150,10 +190,37 @@ class _NostrLoginFormState extends ConsumerState<NostrLoginForm> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: isLoading ? null : _loginWithBunker,
+            style: FilledButton.styleFrom(minimumSize: buttonSize),
             child: Text(l.bunkerConnectButton),
           ),
         ],
-        if (isLoading) ...[
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: isLoading ? null : () => setState(() => _showImportField = !_showImportField),
+          icon: const Icon(Icons.key),
+          label: Text(l.importAccountButton),
+          style: OutlinedButton.styleFrom(minimumSize: buttonSize),
+        ),
+        if (_showImportField) ...[
+          const SizedBox(height: 16),
+          TextField(
+            controller: _importController,
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+            decoration: InputDecoration(
+              labelText: l.importAccountFieldLabel,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: isLoading ? null : _importAccount,
+            style: FilledButton.styleFrom(minimumSize: buttonSize),
+            child: Text(l.importButton),
+          ),
+        ],
+        if (isLoading && offer == null) ...[
           const SizedBox(height: 24),
           const Center(child: CircularProgressIndicator()),
         ],
