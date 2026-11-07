@@ -1,0 +1,90 @@
+# Maintainer: Lwb89dev <luigi.antona89@protonmail.com>
+#
+# Source build of Echoes for Arch Linux and Arch Linux ARM.
+# This file is not in the official repositories. There is no official
+# package named "echoes" (checked against archlinux.org on 2026-11-07;
+# AUR has unrelated "echo" and "echo-music" packages).
+#
+# Flutter is not a makedepend. It is not in the official repos, and this
+# PKGBUILD does not download an SDK or a remote install script. Install
+# Flutter yourself and leave it on PATH, then from this directory:
+#
+#   makepkg -sf
+#
+# The build follows the host CPU. An x86_64 machine cannot produce the
+# aarch64 package. Uninstall removes /usr files only. Notes and
+# credentials under $HOME are not touched.
+
+pkgname=echoes
+pkgver=1.1.2
+pkgrel=1
+pkgdesc='Offline-first, end-to-end encrypted notes on Nostr'
+arch=('aarch64' 'x86_64')
+url='https://github.com/Lwb89dev/echoes'
+license=('GPL-3.0-or-later')
+depends=('gtk3' 'libsecret')
+makedepends=('clang' 'cmake' 'ninja' 'pkgconf')
+optdepends=(
+  'gnome-keyring: Secret Service so a Nostr session can be stored'
+  'xdg-desktop-portal: idle-inhibit portal used by wakelock_plus'
+  'pipewire: parecord binary; voice notes stay hidden on Linux anyway'
+)
+# The Flutter engine and libapp.so are installed as the build produced them.
+options=('!strip')
+
+_repo_root() {
+  cd "${startdir}/../.." && pwd
+}
+
+_bundle_dir() {
+  local root="$1"
+  local x64="${root}/build/linux/x64/release/bundle"
+  if [[ "$CARCH" != "aarch64" ]]; then
+    printf '%s\n' "$x64"
+    return
+  fi
+  local arm="${root}/build/linux/arm64/release/bundle"
+  if [[ -x "${arm}/echoes" ]]; then
+    printf '%s\n' "$arm"
+    return
+  fi
+  printf '%s\n' "$x64"
+}
+
+build() {
+  if [[ "$(uname -m)" != "$CARCH" ]]; then
+    echo "Refusing to cross-compile: host $(uname -m), package $CARCH." >&2
+    exit 1
+  fi
+  if ! command -v flutter >/dev/null 2>&1; then
+    echo "flutter is not on PATH. This PKGBUILD does not download it." >&2
+    exit 1
+  fi
+  cd "$(_repo_root)"
+  flutter config --enable-linux-desktop
+  flutter pub get
+  flutter gen-l10n
+  flutter build linux --release
+}
+
+package() {
+  local root bundle expect
+  root="$(_repo_root)"
+  bundle="$(_bundle_dir "$root")"
+  expect="x86_64"
+  if [[ "$CARCH" == "aarch64" ]]; then
+    expect="aarch64"
+  fi
+  bash "${root}/scripts/verify-linux-bundle-arch.sh" "$bundle" "$expect"
+
+  install -d "${pkgdir}/usr/lib/echoes"
+  cp -a "${bundle}/." "${pkgdir}/usr/lib/echoes/"
+  install -Dm755 "${root}/packaging/arch/echoes-launcher.sh" "${pkgdir}/usr/bin/echoes"
+  install -Dm644 "${root}/packaging/linux/com.echoes.echoes.desktop" \
+    "${pkgdir}/usr/share/applications/com.echoes.echoes.desktop"
+  local size
+  for size in 128 256 512; do
+    install -Dm644 "${root}/flatpak/org.echoes.echoes-${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/com.echoes.echoes.png"
+  done
+}

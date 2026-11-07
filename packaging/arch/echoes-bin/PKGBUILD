@@ -1,0 +1,72 @@
+# Maintainer: Lwb89dev <luigi.antona89@protonmail.com>
+#
+# Packages a Linux AArch64 bundle that already exists. It does not compile
+# Flutter and it does not download a release. There is no published AArch64
+# tarball yet, and this file does not invent its sha256.
+#
+# From a clone of this repository:
+#   1. Copy dist/echoes-linux-aarch64-<version>-<commit>.tar.gz and the
+#      matching .sha256 into this directory. scripts/build-linux-aarch64.sh
+#      writes both. CI uploads the same pair.
+#   2. Set _tarball below to that file name.
+#   3. makepkg -sf
+#
+# prepare() checks the sibling .sha256. sha256sums for the tarball stays
+# SKIP on purpose: the checksum lives next to the artifact, not here.
+# Uninstall removes /usr files only.
+
+pkgname=echoes
+pkgver=1.1.2
+pkgrel=1
+pkgdesc='Offline-first, end-to-end encrypted notes on Nostr (prebuilt aarch64 bundle)'
+arch=('aarch64')
+url='https://github.com/Lwb89dev/echoes'
+license=('GPL-3.0-or-later')
+depends=('gtk3' 'libsecret')
+optdepends=(
+  'gnome-keyring: Secret Service so a Nostr session can be stored'
+  'xdg-desktop-portal: idle-inhibit portal used by wakelock_plus'
+  'pipewire: parecord binary; voice notes stay hidden on Linux anyway'
+)
+options=('!strip')
+
+# Replace COMMIT with the 12-character id from the artifact file name.
+_tarball="echoes-linux-aarch64-${pkgver}-COMMIT.tar.gz"
+source=("$_tarball")
+sha256sums=('SKIP')
+
+_repo_root() {
+  cd "${startdir}/../.." && pwd
+}
+
+prepare() {
+  cd "${startdir}"
+  if [[ ! -f "${_tarball}" ]]; then
+    echo "Missing ${_tarball} in ${startdir}." >&2
+    echo "Copy the CI or scripts/build-linux-aarch64.sh artifact here." >&2
+    exit 1
+  fi
+  if [[ ! -f "${_tarball}.sha256" ]]; then
+    echo "Missing ${_tarball}.sha256." >&2
+    echo "This PKGBUILD does not embed a tarball checksum." >&2
+    exit 1
+  fi
+  sha256sum -c "${_tarball}.sha256"
+}
+
+package() {
+  local root
+  root="$(_repo_root)"
+  bash "${root}/scripts/verify-linux-bundle-arch.sh" "${srcdir}" aarch64
+
+  install -d "${pkgdir}/usr/lib/echoes"
+  cp -a "${srcdir}/." "${pkgdir}/usr/lib/echoes/"
+  install -Dm755 "${root}/packaging/arch/echoes-launcher.sh" "${pkgdir}/usr/bin/echoes"
+  install -Dm644 "${root}/packaging/linux/com.echoes.echoes.desktop" \
+    "${pkgdir}/usr/share/applications/com.echoes.echoes.desktop"
+  local size
+  for size in 128 256 512; do
+    install -Dm644 "${root}/flatpak/org.echoes.echoes-${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/com.echoes.echoes.png"
+  done
+}
