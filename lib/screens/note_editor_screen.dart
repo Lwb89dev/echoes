@@ -861,11 +861,27 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       formattingButton(l.formatListTooltip, () => _prefixBodyLines('- ')),
       formattingButton(l.formatLinkTooltip, _insertLink),
     ];
-    return AdaptiveTextSelectionToolbar.buttonItems(
-      anchors: editableTextState.contextMenuAnchors,
-      buttonItems: buttonItems,
+    return _inAppTheme(
+      AdaptiveTextSelectionToolbar.buttonItems(
+        anchors: editableTextState.contextMenuAnchors,
+        buttonItems: buttonItems,
+      ),
     );
   }
+
+  /// The plain system selection menu, for the checklist rows.
+  Widget _checklistContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
+    return _inAppTheme(AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState));
+  }
+
+  /// The selection menu floats on the app's own surface, not on the note,
+  /// so it has to be drawn with the app's theme. Inside
+  /// [_applyNoteColorTheme] `onSurface` is the note's text color, which the
+  /// toolbar uses for its labels while keeping the app's `surface` for its
+  /// background: dark labels on a dark menu (pastel note, dark theme) or
+  /// light on light (charcoal note, light theme). This [context] is the
+  /// screen's own, above that override.
+  Widget _inAppTheme(Widget toolbar) => Theme(data: Theme.of(context), child: toolbar);
 
   /// Bottom sheet offering the predefined widths an inline image can be
   /// shown at (no drag-to-resize — see the FAB/deletion-progress work this
@@ -1721,6 +1737,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                 onAddItem: () => _addChecklistItemAfter(_checklistControllers.length - 1),
                 completedSuggestions: _completedSuggestions,
                 onRestoreCompleted: _restoreCompletedItem,
+                contextMenuBuilder: _checklistContextMenuBuilder,
               ),
               const SizedBox(height: 8),
               _voiceRecorderSlot(),
@@ -2229,6 +2246,7 @@ class _ChecklistEditor extends StatelessWidget {
     required this.onAddItem,
     required this.completedSuggestions,
     required this.onRestoreCompleted,
+    required this.contextMenuBuilder,
   });
 
   final List<bool> doneFlags;
@@ -2253,6 +2271,10 @@ class _ChecklistEditor extends StatelessWidget {
 
   /// Called with the index of the completed item the user picked.
   final void Function(int existing) onRestoreCompleted;
+
+  /// Selection menu for each row, drawn in the app theme (see
+  /// `_inAppTheme` on the screen).
+  final EditableTextContextMenuBuilder contextMenuBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -2327,6 +2349,7 @@ class _ChecklistEditor extends StatelessWidget {
           child: TextField(
             controller: controllers[i],
             focusNode: focusNodes[i],
+            contextMenuBuilder: contextMenuBuilder,
             textInputAction: TextInputAction.next,
             // An explicit, slightly thicker caret in the note's own text
             // color: the default takes the theme's primary color, which on a
